@@ -1,0 +1,21 @@
+{
+  "name": "passportjs",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "test": "parcel build src/test.ts --no-cache --no-content-hash --no-source-maps --no-optimize --dist-dir dist"
+  },
+  "author": "",
+  "license": "ISC",
+  "browserslist": [
+    "since 2017-06"
+  ],
+  "alias": {
+    "process": {
+      "global": "{}"
+    }
+  },
+  "dependencies": {
+    "parcel": "^2.3.2"
+  }
+}
