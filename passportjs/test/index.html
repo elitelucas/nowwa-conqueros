@@ -53,14 +53,19 @@
                 }
             }
 
-            function CallDefault () {
-                Log('call default');
+            function CallGetDefault () {
+                Log('call get default...');
                 Call("GET","http://localhost:9876");
             }
 
-            function CallPassportLocal () {
-                Log('call passport local');
-                Call("POST","http://localhost:9876/passport-local", {username:"username", password:"password"});
+            function CallPostAuthenticate () {
+                Log('call post authenticate...');
+                Call("POST","http://localhost:9876/authenticate", {username:"username", password:"password"});
+            }
+
+            function CallPostRegister () {
+                Log('call post register...');
+                Call("POST","http://localhost:9876/register", {username:"username", password:"password"});
             }
 
             window.onload = Init;
@@ -68,7 +73,8 @@
     </head>
     <body>
         <textarea id="output"></textarea>
-        <br/><button onclick="CallDefault();">Default</button>
-        <br/><button onclick="CallPassportLocal();">Passport Custom</button>
+        <br/><button onclick="CallGetDefault();">Default</button>
+        <br/><button onclick="CallPostAuthenticate();">Authenticate</button>
+        <br/><button onclick="CallPostRegister();">Register</button>
     </body>
 </html>

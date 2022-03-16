@@ -22,8 +22,8 @@ class PassportJS {
     constructor () {
         this.app = express();
         this.InitExpress();
-        this.InitPassport();
-        this.InitMongoose();
+        this.InitAuthentication();
+        this.InitDatabase();
         if (environment == 'development') {
             open(`http://localhost:${this.port}/test`);
         }
@@ -61,8 +61,9 @@ class PassportJS {
                 self.app.use('/test', express.static('test'));
             }
 
-            self.ExpressGetDefault(self.app);
-            self.ExpressPostPassportLocal(self.app);
+            self.ExpressGetDefault();
+            self.ExpressPostAuthenticate();
+            self.ExpressPostRegister();
     
             console.log(`set port...`);
             self.app.listen(self.port);
@@ -76,28 +77,32 @@ class PassportJS {
     /**
      * Set express response for GET default '/' call.
      */
-    private async ExpressGetDefault (app:express.Express) {
-        console.log(`set get express default...`);
+    private async ExpressGetDefault () {
+        console.log(`set express get default...`);
     
-        app.get('/', (req, res) => {
-            console.log(`request default`);
+        var self:PassportJS = this;
+    
+        self.app.get('/', (req, res) => {
+            console.log(`<-- request default`);
             res.send('response default');
         });
 
     }
 
     /**
-     * Set express response for POST '/passport-local' call.
+     * Set express response for POST '/authenticate' call.
      */
-    private async ExpressPostPassportLocal (app:express.Express) {
-        console.log(`set express passsport local...`);
+    private async ExpressPostAuthenticate () {
+        console.log(`set express post authenticate...`);
     
-        app.post('/passport-local', (req, res) => {
+        var self:PassportJS = this;
+    
+        self.app.post('/authenticate', (req, res) => {
             //var params = req.body;
             // var key = params.key;
             // res.send(`got key: ${key}`);
             //res.send('response default');
-            console.log(`request passport local`);
+            console.log(`<-- request authenticate`);
             passport.authenticate('local', (err:Error, user?:any) => {
                 if (err) {
                     res.send(err.message);
@@ -110,10 +115,32 @@ class PassportJS {
     }
 
     /**
-     * Initialize MongoDB connection.
+     * Set express response for POST '/register' call.
      */
-    private async InitMongoose () {
-        console.log(`init mongoose...`);
+    private async ExpressPostRegister () {
+        console.log(`set express post register...`);
+    
+        var self:PassportJS = this;
+    
+        self.app.post('/register', (req, res) => {
+            console.log(`<-- request register`);
+            var params = req.body;
+            var username:string = params.username;
+            var password:string = params.password;
+            User.findOne({ username: username }, (err:any, user:any) => {
+                if (err) { return res.send(err.message); }
+                if (user) { return res.send("user already exists"); }
+                return res.send("creating new user...");
+            });
+        });
+
+    }
+
+    /**
+     * Initialize database connection.
+     */
+    private async InitDatabase () {
+        console.log(`init database...`);
 
         var self:PassportJS = this;
 
@@ -135,10 +162,10 @@ class PassportJS {
     }
 
     /**
-     * Initialize PassportJS for local authentication.
+     * Initialize authentication using PassportJS.
      */
-    private InitPassport () {
-        console.log(`init passsport...`);
+    private InitAuthentication () {
+        console.log(`init authentication...`);
 
         var self:PassportJS = this;
         
@@ -154,20 +181,6 @@ class PassportJS {
                 if (!user.verifyPassword(password)) { return done(new Error("incorrect password"), false); }
                 return done(null, user);
             });
-            /*
-            if (!username) {
-                return done(new Error("unindentified username"));
-            }
-            if (!password) {
-                return done(new Error("unindentified password"));
-            }
-            console.log(`username: ${username}`);
-            console.log(`password: ${password}`);
-            done(null, {
-                username: username,
-                password: password
-            })
-            */
         }));
     }
 }

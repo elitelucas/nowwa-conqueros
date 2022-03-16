@@ -1,6 +1,6 @@
 Make sure you have these installed :
 
-1. npm
+1. nodejs (https://nodejs.org/en/download/)
 
 
 To run a project, go to a specific folder, then :
