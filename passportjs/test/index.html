@@ -6,9 +6,14 @@
             }
 
             textarea {
-                width: 500px; 
+                width: 600px; 
                 height: 200px;
                 resize: none;
+            }
+
+            input {
+                width: 200px;
+                height: 20px;
             }
         </style>
         <script>
@@ -59,13 +64,37 @@
             }
 
             function CallPostAuthenticate () {
+                var username = document.getElementById('fld_username').value;
+                var password = document.getElementById('fld_password').value;
+                if (username.length == 0) {  
+                    return Log('username cannot be empty!');
+                }
+                if (password.length == 0) {  
+                    return Log('password cannot be empty!');
+                } 
                 Log('call post authenticate...');
-                Call("POST","http://localhost:9876/authenticate", {username:"username", password:"password"});
+                Call("POST","http://localhost:9876/authenticate", {username:username, password:password});
             }
 
             function CallPostRegister () {
+                var username = document.getElementById('fld_username').value;
+                var password = document.getElementById('fld_password').value;
+                var repassword = document.getElementById('fld_repassword').value;
+                if (username.length == 0) {  
+                    return Log('username cannot be empty!');
+                }
+                if (password.length == 0) {  
+                    return Log('password cannot be empty!');
+                } 
+                if (repassword != password) {  
+                    return Log('password mismatch!');
+                }
                 Log('call post register...');
-                Call("POST","http://localhost:9876/register", {username:"username", password:"password"});
+                Call("POST","http://localhost:9876/register", {username:username, password:password});
+            }
+
+            function GetField () {
+                
             }
 
             window.onload = Init;
@@ -74,7 +103,7 @@
     <body>
         <textarea id="output"></textarea>
         <br/><button onclick="CallGetDefault();">Default</button>
-        <br/><button onclick="CallPostAuthenticate();">Authenticate</button>
-        <br/><button onclick="CallPostRegister();">Register</button>
+        <br/><button onclick="CallPostAuthenticate();">Authenticate</button><input placeholder="username" id="fld_username" type="text"><input placeholder="password" id="fld_password" type="password">
+        <br/><button onclick="CallPostRegister();">Register</button><input placeholder="retype password" id="fld_repassword" type="password">
     </body>
 </html>

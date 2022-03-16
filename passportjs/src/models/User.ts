@@ -1,39 +1,26 @@
 import mongoose from 'mongoose';
-import passportLocalMongoose from 'passport-local-mongoose';
+import bcrypt from "bcrypt";
 
-const ThirdPartyProviderSchema = new mongoose.Schema({
-    providerName    : {
-        type        : String,
-        default     : null,
-    },
-    providerId      : {
-        type        : String,
-        default     : null,
-    },
-    providerData    : {
-        type        : {},
-        default     : null,
-    }
-});
+type verifyPasswordFunction = (candidatePassword: string, cb: (err: any, isMatch: any) => void) => void;
 
-const UserSchema = new mongoose.Schema({
-    userName        : {
-        type        : String,
-        unique      : true,
-    },
+export type UserDocument = mongoose.Document & {
+    email           : string,
+    isEmailVerified : boolean,
+    password        : string,
+    verifyPassword  : verifyPasswordFunction
+};
+
+const UserSchema = new mongoose.Schema<UserDocument>({
     email           : {
         type        : String,
-        required    : true,
-        unique      : true,
     },
     isEmailVerified : {
         type        : Boolean,
         default     : false,
     },
     password        : {
-        type        : String,
+        type        : String
     },
-    thirdPartyAuth  : [ThirdPartyProviderSchema],
     dateCreated     : {
         type        : Date,
         default     : Date.now
@@ -42,6 +29,23 @@ const UserSchema = new mongoose.Schema({
     strict          : false
 });
 
-UserSchema.plugin(passportLocalMongoose);
+UserSchema.pre("save", function save(next) {
+    const user = this as UserDocument;
+    if (!user.isModified("password")) { return next(); }
+    bcrypt.genSalt(10, (err, salt) => {
+        if (err) { return next(err); }
+        bcrypt.hash(user.password, salt, (err, hash) => {
+            if (err) { return next(err); }
+            user.password = hash;
+            next();
+        });
+    });
+});
 
-export default mongoose.model("Users", UserSchema as mongoose.PassportLocalSchema); 
+UserSchema.methods.verifyPassword = function (this: any, candidatePassword:string, cb:(error:Error | undefined, isMatch:boolean) => void) {
+    bcrypt.compare(candidatePassword, this.password, function (error, isMatch) {
+        cb(error, isMatch);
+    });
+};
+
+export default mongoose.model("Users", UserSchema); 

@@ -84,7 +84,7 @@ class PassportJS {
     
         self.app.get('/', (req, res) => {
             console.log(`<-- request default`);
-            res.send('response default');
+            self.SendResponse(res, null, { message: 'response default'});
         });
 
     }
@@ -103,12 +103,8 @@ class PassportJS {
             // res.send(`got key: ${key}`);
             //res.send('response default');
             console.log(`<-- request authenticate`);
-            passport.authenticate('local', (err:Error, user?:any) => {
-                if (err) {
-                    res.send(err.message);
-                } else {
-                    res.send(JSON.stringify(user));
-                }
+            passport.authenticate('local', (error:Error, user?:any) => {
+                return self.SendResponse(res,error,user);
             })(req, res);
         });
 
@@ -122,18 +118,21 @@ class PassportJS {
     
         var self:PassportJS = this;
     
-        self.app.post('/register', (req, res) => {
+        self.app.post('/register', (req:express.Request, res:express.Response) => {
             console.log(`<-- request register`);
-            var params = req.body;
-            var username:string = params.username;
-            var password:string = params.password;
-            User.findOne({ username: username }, (err:any, user:any) => {
-                if (err) { return res.send(err.message); }
-                if (user) { return res.send("user already exists"); }
-                return res.send("creating new user...");
+            User.findOne({ username: req.body.username }, async (error:any, user?:any) => {
+                if (error) { return self.SendResponse(res, error); }
+                if (user) { return self.SendResponse(res, new Error("user already exists!")); }
+                const newUser = new User({ username: req.body.username, password: req.body.password });
+                await newUser.save();
+                return self.SendResponse(res, null, newUser);
+                /*
+                User.reg(newUser, req.body.password, (error:any, user?:any) => {
+                    if (error) { return self.SendResponse(res, error); }
+                });
+                */
             });
         });
-
     }
 
     /**
@@ -155,6 +154,16 @@ class PassportJS {
         })
         .then(() => {
             console.log("Successfully connect to MongoDB.");
+            /*
+            (async () => {
+                var indexes = await User.listIndexes();
+                console.log(JSON.stringify(indexes)); 
+                await User.deleteMany({});
+                console.log('success');
+                //mongoose.connection.deleteModel('Users')
+            })();
+            */
+            
         })
         .catch((e) => {
             console.error("Connection error", e);
@@ -168,20 +177,28 @@ class PassportJS {
         console.log(`init authentication...`);
 
         var self:PassportJS = this;
-        
-        passport.use(User.createStrategy());
 
         passport.use(new passportLocal.Strategy({
             passwordField: "password",
             usernameField: "username"
         },(username,password,done)=>{
-            User.findOne({ username: username }, (err:any, user:any) => {
-                if (err) { return done(err); }
+            User.findOne({ username: username }, async (error:Error, user?:any) => {
+                if (error) { return done(error); }
                 if (!user) { return done(new Error("user does not exists"), false); }
-                if (!user.verifyPassword(password)) { return done(new Error("incorrect password"), false); }
-                return done(null, user);
+                user.verifyPassword(password, (error:Error, isMatch:boolean) => {
+                    if (error) { return done(error); }
+                    if (!isMatch) { return done(new Error("incorrect password"), false); }
+                    return done(null, user);
+                });
             });
         }));
+    }
+
+    private SendResponse (res:express.Response, error:Error | null, value?:any) {
+        res.send({
+            error: error?.message,
+            value: value
+        });
     }
 }
 
