@@ -1,0 +1,74 @@
+<html>
+    <head>
+        <style>
+            button {
+                width: 200px;
+            }
+
+            textarea {
+                width: 500px; 
+                height: 200px;
+                resize: none;
+            }
+        </style>
+        <script>
+            function Init () {
+
+            }
+
+            var logs = [];
+            var maxLogs = 10;
+
+            function Log(log) {
+                logs.push(log);
+                if (logs.length > maxLogs) logs.shift();
+                var output = "";
+                for (var i = 0; i < logs.length; i++) {
+                    output += logs[i];
+                    output += '\n';
+                }
+                console.log(log);
+                document.getElementById(`output`).innerHTML = output;
+            }
+
+            function Call (method, url, data) {
+                try {
+                    var xhttp = new XMLHttpRequest();
+                    xhttp.onreadystatechange = function() {
+                        if (this.readyState == 4 && this.status == 200) {
+                            // Typical action to be performed when the document is ready:
+                            Log(xhttp.responseText);
+                        }
+                    };
+                    xhttp.open(method, url, true);
+                    xhttp.setRequestHeader('Content-Type', 'application/json');
+                    if (method == "POST") {
+                        xhttp.send(JSON.stringify(data));
+                    } else if (method == "GET") {
+                        xhttp.send();
+                    }
+                }
+                catch (e) {
+                    Log(e.message);
+                }
+            }
+
+            function CallDefault () {
+                Log('call default');
+                Call("GET","http://localhost:9876");
+            }
+
+            function CallPassportLocal () {
+                Log('call passport local');
+                Call("POST","http://localhost:9876/passport-local", {username:"username", password:"password"});
+            }
+
+            window.onload = Init;
+        </script>
+    </head>
+    <body>
+        <textarea id="output"></textarea>
+        <br/><button onclick="CallDefault();">Default</button>
+        <br/><button onclick="CallPassportLocal();">Passport Custom</button>
+    </body>
+</html>
