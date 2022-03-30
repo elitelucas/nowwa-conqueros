@@ -1,0 +1,1 @@
+mongosh "mongodb+srv://doadmin:Hi730Rw829Pk4J1q@db-mongodb-conqueros-a434f3ba.mongo.ondigitalocean.com/admin?authSource=admin&replicaSet=db-mongodb-conqueros" --tls --tlsCAFile credentials/db.ca-certificate.crt

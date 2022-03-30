@@ -15,6 +15,12 @@
                 width: 200px;
                 height: 20px;
             }
+            input[type="file"]:-webkit-file-upload-button {
+                visibility: hidden;
+                content: 'Select some files';
+                width: 200px;
+                height: 20px;
+            }
         </style>
         <script>
             function Init () {
@@ -23,8 +29,10 @@
 
             var logs = [];
             var maxLogs = 10;
+            var port = 9876
+            var url = `http://localhost:${port}`;
 
-            function Log(log) {
+            function Log(log, isError) {
                 logs.push(log);
                 if (logs.length > maxLogs) logs.shift();
                 var output = "";
@@ -32,38 +40,36 @@
                     output += logs[i];
                     output += '\n';
                 }
-                console.log(log);
+                if (isError) {
+                    console.error(log);
+                } else {
+                    console.log(log);
+                }
                 document.getElementById(`output`).innerHTML = output;
             }
 
-            function Call (method, url, data) {
+            async function Call (method, url, data) {
                 try {
-                    var xhttp = new XMLHttpRequest();
-                    xhttp.onreadystatechange = function() {
-                        if (this.readyState == 4 && this.status == 200) {
-                            // Typical action to be performed when the document is ready:
-                            Log(xhttp.responseText);
-                        }
-                    };
-                    xhttp.open(method, url, true);
-                    xhttp.setRequestHeader('Content-Type', 'application/json');
-                    if (method == "POST") {
-                        xhttp.send(JSON.stringify(data));
-                    } else if (method == "GET") {
-                        xhttp.send();
-                    }
+                    var response = await fetch (url, { 
+                        method  : method,
+                        body    : data
+                    });
+                    var data = await response.json();
+                    Log(JSON.stringify(data));
+                    return data;
                 }
-                catch (e) {
-                    Log(e.message);
+                catch (error) {
+                    Log(error, true);
+                    return null;
                 }
             }
 
-            function CallGetDefault () {
+            async function CallGetDefault () {
                 Log('call get default...');
-                Call("GET","http://localhost:9876");
+                await Call("GET",url);
             }
 
-            function CallPostAuthenticate () {
+            async function CallPostAuthenticate () {
                 var username = document.getElementById('fld_username').value;
                 var password = document.getElementById('fld_password').value;
                 if (username.length == 0) {  
@@ -73,10 +79,10 @@
                     return Log('password cannot be empty!');
                 } 
                 Log('call post authenticate...');
-                Call("POST","http://localhost:9876/authenticate", {username:username, password:password});
+                await Call("POST",url + "/authenticate", {username:username, password:password});
             }
 
-            function CallPostRegister () {
+            async function CallPostRegister () {
                 var username = document.getElementById('fld_username').value;
                 var password = document.getElementById('fld_password').value;
                 var repassword = document.getElementById('fld_repassword').value;
@@ -90,11 +96,18 @@
                     return Log('password mismatch!');
                 }
                 Log('call post register...');
-                Call("POST","http://localhost:9876/register", {username:username, password:password});
+                await Call("POST",url + "/register", {username:username, password:password});
             }
 
-            function GetField () {
-                
+            async function CallPostUpload () {
+                var filename = document.getElementById('fld_file').value;
+                if (filename.length == 0) {  
+                    return Log('file cannot be empty!');
+                }
+                let formData = new FormData();
+                formData.append("fld_file", document.getElementById("fld_file").files[0]);
+                Log('call post upload...');
+                await Call("POST",url + "/upload", formData);
             }
 
             window.onload = Init;
@@ -105,5 +118,6 @@
         <br/><button onclick="CallGetDefault();">Default</button>
         <br/><button onclick="CallPostAuthenticate();">Authenticate</button><input placeholder="username" id="fld_username" type="text"><input placeholder="password" id="fld_password" type="password">
         <br/><button onclick="CallPostRegister();">Register</button><input placeholder="retype password" id="fld_repassword" type="password">
+        <br/><button onclick="CallPostUpload();">Upload</button><input placeholder="select file" id="fld_file" type="file">
     </body>
 </html>
