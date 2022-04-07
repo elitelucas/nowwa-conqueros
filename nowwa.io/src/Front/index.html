@@ -1,0 +1,36 @@
+<html>
+    <head>
+        <style>
+            button {
+                width: 200px;
+            }
+
+            textarea {
+                width: 600px; 
+                height: 200px;
+                resize: none;
+            }
+
+            input {
+                width: 200px;
+                height: 20px;
+            }
+            input[type="file"]:-webkit-file-upload-button {
+                visibility: hidden;
+                content: 'Select some files';
+                width: 200px;
+                height: 20px;
+            }
+        </style>
+        <script src="/index.js"></script>
+        <script>
+        </script>
+    </head>
+    <body>
+        <textarea id="output"></textarea>
+        <br/><button onclick="CallGetDefault();">Default</button>
+        <br/><button onclick="CallPostAuthenticate();">Authenticate</button><input placeholder="username" id="fld_username" type="text"><input placeholder="password" id="fld_password" type="password">
+        <br/><button onclick="CallPostRegister();">Register</button><input placeholder="retype password" id="fld_repassword" type="password">
+        <br/><button onclick="CallPostUpload();">Upload</button><input placeholder="select file" id="fld_file" type="file">
+    </body>
+</html>

@@ -1,21 +1,29 @@
-import express from 'express';
-import open from 'open';
+import express, { response } from 'express';
 import cors from 'cors';
 import passport from 'passport';
 import passportLocal from 'passport-local';
 import mongoose from 'mongoose';
-import Config from './Config';
-import User from './models/User';
 import session from 'express-session';
 import crypto from 'crypto';
 import multer from 'multer';
 import cloudinary from 'cloudinary';
+import path from 'path';
+import { load } from 'ts-dotenv';
+import User from './models/User';
+import Environment from './Environment';
 
-const environment:string = process.env.NODE_ENV as string;
+console.log(`project path: ${__dirname}`);
 
-class PassportJS {
+const envPath = path.resolve(__dirname, '../../.env');
+console.log(`load .env from: ${envPath}`);
+const env = load(Environment, {
+    path: envPath,
+    encoding: 'utf-8',
+});
+
+class Core {
     
-    private port:number = 9876;
+    private port:number = 9000;
 
     private app:express.Express;
 
@@ -26,9 +34,7 @@ class PassportJS {
         this.InitExpress();
         this.InitAuthentication();
         this.InitDatabase();
-        if (environment == 'development') {
-            open(`http://localhost:${this.port}/test`);
-        }
+        this.InitCloudinary();
     }
 
     /**
@@ -38,7 +44,7 @@ class PassportJS {
         try {
             console.log(`init express...`);
     
-            var self:PassportJS = this;
+            var self:Core = this;
 
             console.log('set parser...'); 
             self.app.use(express.json());
@@ -57,11 +63,6 @@ class PassportJS {
 
             console.log('set cors...'); 
             self.app.use(cors());
-
-            if (environment == 'development') {
-                console.log(`set static express...`);
-                self.app.use('/test', express.static('test'));
-            }
 
             self.ExpressGetDefault();
             self.ExpressPostAuthenticate();
@@ -83,13 +84,12 @@ class PassportJS {
     private async ExpressGetDefault () {
         console.log(`set express get default...`);
     
-        var self:PassportJS = this;
+        var self:Core = this;
     
-        self.app.get('/', (req, res) => {
-            console.log(`<-- request default`);
-            self.SendResponse(res, null, { message: 'response default'});
+        self.app.use('/', express.static(path.join(__dirname,'../Front')));
+        self.app.get('/', (req,res) => {
+            res.sendFile(path.join(__dirname,'../Front/index.html'));
         });
-
     }
 
     /**
@@ -98,12 +98,15 @@ class PassportJS {
     private async ExpressPostAuthenticate () {
         console.log(`set express post authenticate...`);
     
-        var self:PassportJS = this;
+        var self:Core = this;
     
         self.app.post('/authenticate', (req, res) => {
             console.log(`<-- request authenticate`);
             passport.authenticate('local', (error:Error, user?:any) => {
-                return self.SendResponse(res,error,user);
+                if (error) {
+                    return res.send({ success: false, error: error });
+                }
+                return res.send({ success: true, user: user });
             })(req, res);
         });
 
@@ -115,16 +118,20 @@ class PassportJS {
     private async ExpressPostRegister () {
         console.log(`set express post register...`);
     
-        var self:PassportJS = this;
+        var self:Core = this;
     
         self.app.post('/register', (req:express.Request, res:express.Response) => {
             console.log(`<-- request register`);
             User.findOne({ username: req.body.username }, async (error:any, user?:any) => {
-                if (error) { return self.SendResponse(res, error); }
-                if (user) { return self.SendResponse(res, new Error("user already exists!")); }
+                if (error) { 
+                    return res.send({ success: false, error: error });
+                }
+                if (user) { 
+                    return res.send({ success: false, error: new Error("user already exists!") });
+                }
                 const newUser = new User({ username: req.body.username, password: req.body.password });
                 await newUser.save();
-                return self.SendResponse(res, null, newUser);
+                return res.send({ success: true, user: newUser });
                 /*
                 User.reg(newUser, req.body.password, (error:any, user?:any) => {
                     if (error) { return self.SendResponse(res, error); }
@@ -140,13 +147,13 @@ class PassportJS {
     private async ExpressPostUpload () {
         console.log(`set express post upload...`);
     
-        var self:PassportJS = this;
+        var self:Core = this;
         
         var storage = multer.diskStorage({ 
-            destination: function (req, file, callback) {
+            destination: (req, file, callback) => {
                 callback(null, `temp/`);
             },
-            filename: function (req, file, callback) {
+            filename: (req, file, callback) => {
                 /*
                 var extensionRegex:RegExp = /[^.]+$/i;
                 var extension = file.originalname.match(extensionRegex);
@@ -169,23 +176,25 @@ class PassportJS {
             var file:Express.Multer.File | undefined = req.file;
 
             if (typeof (file) != `undefined`) {
-                console.log(`set cloudinary config...`);
-                cloudinary.v2.config(Config.Cloudinary);
                 console.log(`upload file to cloudinary...`);
-                cloudinary.v2.uploader.upload(file.path, result => {
-    
-                    // This will return the output after the code is exercuted both in the terminal and web browser
-                    // When successful, the output will consist of the metadata of the uploaded file one after the other. These include the name, type, size and many more.
-                    console.log(`get result from cloudinary...`);
-                    console.log(typeof (result));
-                    if (typeof (result) != `undefined`) {
+                cloudinary.v2.uploader.upload(file.path, (error) => {
+                    if (error) {
                         // The results in the web browser will be returned inform of plain text formart. We shall use the util that we required at the top of this code to do this.
-                        return self.SendResponse(res, null, { message: 'file uploaded!'});
+                        res.send({ success: false, error: error });
                     }
-                    return self.SendResponse(res, null, { message: 'file uploaded 2!'});
+                })
+                .then(response => {
+                    res.send({ 
+                        success: true, 
+                        message: 'file uploaded!',
+                        response: response
+                    });
+                })
+                .catch((error:Error) => {
+                    res.send({ success: false, error: error });
                 });
             } else {
-                return self.SendResponse(res, null, { message: 'file uploaded fails...'});
+                res.send({ success: false, error: new Error('file uploaded fails...') });
             }
 
         });
@@ -197,16 +206,16 @@ class PassportJS {
     private async InitDatabase () {
         console.log(`init database...`);
 
-        var self:PassportJS = this;
+        var self:Core = this;
 
-        var uri:string = `mongodb+srv://${Config.Database.USER}:${Config.Database.PASS}@${Config.Database.HOST}/${Config.Database.DB}`;
+        var uri:string = `mongodb+srv://${env.MONGODB_USER}:${env.MONGODB_PASS}@${env.MONGODB_HOST}/${env.MONGODB_DB}`;
         console.log(`connect to: ${uri}`);
         await mongoose.connect(uri, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
             ssl: true,
             sslValidate: false,
-            sslCert: `${__dirname}/../credentials/db.ca-certificate.crt`
+            sslCert: `${env.MONGODB_CERT}`
         })
         .then(() => {
             console.log("Successfully connect to MongoDB.");
@@ -226,12 +235,12 @@ class PassportJS {
     }
 
     /**
-     * Initialize authentication using PassportJS.
+     * Initialize authentication using Core.
      */
     private InitAuthentication () {
         console.log(`init authentication...`);
 
-        var self:PassportJS = this;
+        var self:Core = this;
 
         passport.use(new passportLocal.Strategy({
             passwordField: "password",
@@ -249,12 +258,21 @@ class PassportJS {
         }));
     }
 
-    private SendResponse (res:express.Response, error:Error | null, value?:any) {
-        res.send({
-            error: error?.message,
-            value: value
+    /**
+     * Initialize Cloudinary usage.
+     */
+    private InitCloudinary () {
+        console.log(`init cloudinary...`);
+
+        var self:Core = this;
+
+        console.log(`set cloudinary config...`);
+        cloudinary.v2.config({
+            cloud_name  : `${env.CLOUDINARY_NAME}`,
+            api_key     : `${env.CLOUDINARY_KEY}`,
+            api_secret  : `${env.CLOUDINARY_SECRET}`,
         });
     }
 }
 
-new PassportJS();
+new Core();

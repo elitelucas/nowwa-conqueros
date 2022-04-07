@@ -1,10 +1,12 @@
 {
-  "name": "passportjs",
+  "name": "master",
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "build": "cross-env NODE_ENV=production npx tsc",
-    "test": "cross-env NODE_ENV=development tsc-watch --onSuccess \"node ./dist/Main.js\""
+    "dev-core"    : "copyfiles -u 1 ./src/Front/*.html ./dist/ && tsc-watch --onSuccess \"node ./dist/Core/Main.js\"",
+    "build-core"  : "copyfiles -u 1 ./src/Front/*.html ./dist/ && tsc",
+    "test"        : "tsc-watch --onSuccess \"node ./dist/Core/Main.js\"",
+    "test-front"  : "copyfiles -u 1 ./src/Front/*.html ./dist/ && tsc-watch --onSuccess \"http-server ./dist/Front -p 9000\""
   },
   "author": "",
   "license": "ISC",
@@ -20,9 +22,11 @@
     "@types/passport-local": "^1.0.34",
     "@types/passport-local-mongoose": "^6.1.0",
     "@types/tsc-watch": "^4.2.0",
+    "copyfiles": "^2.4.1",
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
     "open": "^8.4.0",
+    "rimraf": "^3.0.2",
     "typescript": "^4.6.2"
   },
   "dependencies": {
@@ -41,6 +45,7 @@
     "passport-custom": "^1.1.1",
     "passport-local": "^1.0.0",
     "passport-local-mongoose": "^7.0.0",
+    "ts-dotenv": "^0.8.3",
     "tsc-watch": "^4.6.2"
   }
 }
