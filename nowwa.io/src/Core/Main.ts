@@ -14,13 +14,6 @@ import Environment from './Environment';
 
 console.log(`project path: ${__dirname}`);
 
-const envPath = path.resolve(__dirname, '../../.env');
-console.log(`load .env from: ${envPath}`);
-const env = load(Environment, {
-    path: envPath,
-    encoding: 'utf-8',
-});
-
 class Core {
     
     private port:number = 9000;
@@ -29,12 +22,36 @@ class Core {
 
     private secret:string = "conqueros";
 
+    private env:any;
+
     constructor () {
         this.app = express();
+        this.InitEnvironment();
         this.InitExpress();
         this.InitAuthentication();
         this.InitDatabase();
         this.InitCloudinary();
+    }
+
+    /**
+     * Initialize environment variables.
+     */
+    private async InitEnvironment ():Promise<void> {
+        console.log(`init environment...`);
+    
+        var self:Core = this;
+        
+        var mode:string = '';
+        console.log(process.env.mode);
+        if (typeof process.env.mode != 'undefined') {
+            mode = '.' + process.env.mode as string;
+        }
+        const envPath = path.resolve(__dirname, `../../.env${mode}`);
+        console.log(`load .env from: ${envPath}`);
+        self.env = load(Environment, {
+            path: envPath,
+            encoding: 'utf-8',
+        }); 
     }
 
     /**
@@ -208,14 +225,14 @@ class Core {
 
         var self:Core = this;
 
-        var uri:string = `mongodb+srv://${env.MONGODB_USER}:${env.MONGODB_PASS}@${env.MONGODB_HOST}/${env.MONGODB_DB}`;
+        var uri:string = `mongodb+srv://${self.env.MONGODB_USER}:${self.env.MONGODB_PASS}@${self.env.MONGODB_HOST}/${self.env.MONGODB_DB}`;
         console.log(`connect to: ${uri}`);
         await mongoose.connect(uri, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
             ssl: true,
             sslValidate: false,
-            sslCert: `${env.MONGODB_CERT}`
+            sslCert: `${self.env.MONGODB_CERT}`
         })
         .then(() => {
             console.log("Successfully connect to MongoDB.");
@@ -229,8 +246,8 @@ class Core {
             })();
             */
         })
-        .catch((e) => {
-            console.error("Connection error", e);
+        .catch((error:Error) => {
+            console.error("Connection error", error);
         });
     }
 
@@ -268,11 +285,18 @@ class Core {
 
         console.log(`set cloudinary config...`);
         cloudinary.v2.config({
-            cloud_name  : `${env.CLOUDINARY_NAME}`,
-            api_key     : `${env.CLOUDINARY_KEY}`,
-            api_secret  : `${env.CLOUDINARY_SECRET}`,
+            cloud_name  : `${self.env.CLOUDINARY_NAME}`,
+            api_key     : `${self.env.CLOUDINARY_KEY}`,
+            api_secret  : `${self.env.CLOUDINARY_SECRET}`,
         });
+    }
+
+    /**
+     * Create new model on database.
+     */
+    public CreateNewModel (rawFields:string, values:any) {
+
     }
 }
 
-new Core();
+var c:Core = new Core();

@@ -1,8 +1,17 @@
 <html>
     <head>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <style>
+            select {
+                width: 200px;
+            }
+
             button {
                 width: 200px;
+            }
+
+            button.small {
+                width: 30px;
             }
 
             textarea {
@@ -32,5 +41,19 @@
         <br/><button onclick="CallPostAuthenticate();">Authenticate</button><input placeholder="username" id="fld_username" type="text"><input placeholder="password" id="fld_password" type="password">
         <br/><button onclick="CallPostRegister();">Register</button><input placeholder="retype password" id="fld_repassword" type="password">
         <br/><button onclick="CallPostUpload();">Upload</button><input placeholder="select file" id="fld_file" type="file">
+        <div id="custom">
+            <p style=" margin: 0; padding: 0; height:20px;" >Custom Schema
+            </p>
+            <input placeholder="schema name" id="fld_schema" type="text">
+            <div id="con_field_0">
+                <input placeholder="field name" id="fld_field_0" type="text"><select id="sel_field_0" name="cars">
+                <option value="string">string</option>
+                <option value="number">number</option>
+                <option value="boolean">boolean</option>
+                <option value="date">date</option>
+                </select><button class="small" onclick="AddCustomField()">+</button>
+            </div>
+        </div>
+        <button onclick="CallPostAddSchema();">Add Schema</button>
     </body>
 </html>

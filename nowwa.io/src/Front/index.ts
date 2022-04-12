@@ -10,29 +10,6 @@ var url:string = `https://${host}` + (port == 80) ? `` : `:${port}`;
 
 type Method = "GET" | "POST";
 
-function GetInputTextValue(id:string):string {
-    if (document != null)  {
-        var element:HTMLElement | null  = document.getElementById(id);
-        if (element != null) {
-            return (element as HTMLInputElement).value;
-        }
-    }
-    return "";
-}
-
-function GetInputFileValue(id:string):File | null {
-    if (document != null)  {
-        var element:HTMLElement | null  = document.getElementById(id);
-        if (element != null) {
-            var files:FileList | null = (element as HTMLInputElement).files;
-            if (files != null) {
-                return files[0];
-            }
-        }
-    }
-    return null;
-}
-
 function Log(log:any, isError?:boolean):void {
     if (typeof log != 'string') {
         logs.push(JSON.stringify(log));
@@ -80,8 +57,8 @@ async function CallGetDefault ():Promise<void> {
 }
 
 async function CallPostAuthenticate ():Promise<void> {
-    var username:string = GetInputTextValue(`fld_username`);
-    var password:string = GetInputTextValue(`fld_password`);
+    var username:string = $(`#fld_username`).val() as string;
+    var password:string = $(`#fld_password`).val() as string;
     if (username.length == 0) {  
         return Log('username cannot be empty!');
     }
@@ -93,9 +70,9 @@ async function CallPostAuthenticate ():Promise<void> {
 }
 
 async function CallPostRegister ():Promise<void> {
-    var username:string = GetInputTextValue(`fld_username`);
-    var password:string = GetInputTextValue(`fld_password`);
-    var repassword:string = GetInputTextValue(`fld_repassword`);
+    var username:string = $(`#fld_username`).val() as string;
+    var password:string = $(`#fld_password`).val() as string;
+    var repassword:string = $(`#fld_repassword`).val() as string;
     if (username.length == 0) {  
         Log('username cannot be empty!');
         return Promise.resolve();
@@ -113,17 +90,63 @@ async function CallPostRegister ():Promise<void> {
 }
 
 async function CallPostUpload ():Promise<void> {
-    var filename = GetInputTextValue(`fld_file`);
+    var filename = ($(`#fld_file`).val()) as string;
     if (filename.length == 0) {  
         return Log('file cannot be empty!');
     }
-    var file:File | null = GetInputFileValue("fld_file");
+    var method:Method = "POST";
+    var file:File | null = (($(`#fld_file`) as unknown as HTMLInputElement[])[0]).files![0];
     if (file != null) {
         let formData = new FormData();
         formData.append("fld_file", file);
         Log('call post upload...');
-        return Call("POST",url + "/upload", formData);
+        return Call(method,url + "/upload", formData);
     }
+}
+
+var lastFieldNum:number = 1;
+var fieldNumbers:number[] = [0];
+
+function AddCustomField ():void {
+    $( "#custom" ).append( 
+        `<div id="con_field_${lastFieldNum}">
+            <input placeholder="field name" id="fld_field_${lastFieldNum}" type="text"><select id="sel_field_${lastFieldNum}" name="cars">
+                <option value="string">string</option>
+                <option value="number">number</option>
+                <option value="boolean">boolean</option>
+                <option value="date">date</option>
+            </select><button class="small" onclick="AddCustomField();">+</button><button class="small" onclick="RemoveCustomField(${lastFieldNum});">-</button>
+        </div>`
+    ); 
+    fieldNumbers.push(lastFieldNum);
+    lastFieldNum++;
+} 
+
+function RemoveCustomField (fieldNumber:number):void {
+    for( var i = 0; i < fieldNumbers.length; i++){ 
+        if ( fieldNumbers[i] === fieldNumber) { 
+            fieldNumbers.splice(i, 1); 
+        }
+    }
+    $(`#con_field_${fieldNumber}`).remove(); 
+} 
+
+async function CallPostAddSchema ():Promise<void> {
+    var schema:string = ($(`#fld_schema`).val()) as string;
+    Log(`add schema: ${schema}`);
+    for (var i:number = 0; i < fieldNumbers.length; i++) {
+        var fieldNumber:number = fieldNumbers[i];
+        var fieldType:string = $(`#sel_field_${fieldNumber}`).find(":selected").text();
+        var fieldName:string = ($(`#fld_field_${fieldNumber}`).val()) as string;
+        Log(`add field: ${fieldName} as ${fieldType}`);
+        $(`#sel_field_${fieldNumber}`).val("string");
+        $(`#fld_field_${fieldNumber}`).val('');
+        if (fieldNumber != 0) {
+            $(`#con_field_${fieldNumber}`).remove(); 
+        }
+    }
+    $(`#fld_schema`).val('');
+    return Promise.resolve();
 }
 
 window.onload = Init;
