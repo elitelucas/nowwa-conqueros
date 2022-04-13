@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "core:dev": "copyfiles -u 1 ./src/Front/*.html ./dist/ && tsc-watch --onSuccess \"cross-env mode=dev node ./dist/Core/Main.js\"",
+    "core:dev": "copyfiles -u 1 ./src/Front/*.html ./dist/ && tsc-watch --onSuccess \"node ./dist/Core/Main.js\"",
     "core:build": "copyfiles -u 1 ./src/Front/*.html ./dist/ && tsc",
     "test": "tsc-watch --onSuccess \"node ./dist/Core/Main.js\"",
     "front:test": "copyfiles -u 1 ./src/Front/*.html ./dist/ && tsc-watch --onSuccess \"http-server ./dist/Front -p 9000\""
@@ -14,10 +14,13 @@
     "@tsconfig/node16": "^1.0.2",
     "@types/bcrypt": "^5.0.0",
     "@types/bcrypt-nodejs": "^0.0.31",
+    "@types/busboy": "^1.5.0",
     "@types/cors": "^2.8.12",
     "@types/express": "^4.17.13",
+    "@types/express-fileupload": "^1.2.2",
     "@types/express-session": "^1.17.4",
     "@types/jquery": "^3.5.14",
+    "@types/multer": "^1.4.7",
     "@types/node": "^17.0.21",
     "@types/passport": "^1.0.7",
     "@types/passport-local": "^1.0.34",
@@ -31,13 +34,9 @@
     "typescript": "^4.6.2"
   },
   "dependencies": {
-    "@types/busboy": "^1.5.0",
-    "@types/multer": "^1.4.7",
     "bcrypt": "^5.0.1",
-    "bcrypt-nodejs": "^0.0.3",
     "busboy": "^1.5.0",
     "cloudinary": "^1.29.0",
-    "crypto": "^1.0.1",
     "express": "^4.17.3",
     "express-session": "^1.17.2",
     "mongoose": "^6.2.6",

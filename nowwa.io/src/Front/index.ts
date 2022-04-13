@@ -35,15 +35,21 @@ function Log(log:any, isError?:boolean):void {
     }
 }
 
-async function Call (method:Method, url:string, data?:any):Promise<any> {
+async function Call (method:Method, url:string, reqdata?:any, isFile?:boolean):Promise<any> {
     try {
-        var response:Response = await fetch (url, { 
+        var requestInit:RequestInit = { 
             method  : method,
-            body    : data
-        });
-        var data:any = await response.json();
-        Log(data);
-        return data;
+            body    : isFile ? reqdata : JSON.stringify(reqdata),
+            headers : isFile ? undefined : {
+                'Content-Type'  : 'application/json'
+            }
+        };
+        console.log(requestInit);
+        var response:Response = await fetch (url, requestInit);
+        Log(reqdata);
+        var resdata:any = await response.json();
+        Log(resdata);
+        return resdata;
     }
     catch (error:any) {
         Log(error, true);
@@ -53,7 +59,7 @@ async function Call (method:Method, url:string, data?:any):Promise<any> {
 
 async function CallGetDefault ():Promise<void> {
     Log('call get default...');
-    await Call("GET", url);
+    return Call("GET", url);
 }
 
 async function CallPostAuthenticate ():Promise<void> {
@@ -66,7 +72,7 @@ async function CallPostAuthenticate ():Promise<void> {
         return Log('password cannot be empty!');
     } 
     Log('call post authenticate...');
-    await Call("POST",url + "/authenticate", {username:username, password:password});
+    return Call("POST",url + "/authenticate", {username:username, password:password});
 }
 
 async function CallPostRegister ():Promise<void> {
@@ -95,12 +101,15 @@ async function CallPostUpload ():Promise<void> {
         return Log('file cannot be empty!');
     }
     var method:Method = "POST";
-    var file:File | null = (($(`#fld_file`) as unknown as HTMLInputElement[])[0]).files![0];
-    if (file != null) {
+    var files:FileList | null = (($(`#fld_file`) as unknown as HTMLInputElement[])[0]).files;
+    if (files != null) {
         let formData = new FormData();
-        formData.append("fld_file", file);
+        for (var i:number = 0; i < files.length; i++) {
+            console.log(files[i]);
+            formData.append(`fld_file_${i}`, files[i]);
+        }
         Log('call post upload...');
-        return Call(method,url + "/upload", formData);
+        return Call(method,url + "/upload", formData, true);
     }
 }
 
@@ -132,8 +141,14 @@ function RemoveCustomField (fieldNumber:number):void {
 } 
 
 async function CallPostAddSchema ():Promise<void> {
-    var schema:string = ($(`#fld_schema`).val()) as string;
-    Log(`add schema: ${schema}`);
+    var value:{ 
+        schema:string, 
+        fields:{[key:string]:string} 
+    } = {
+        schema: ($(`#fld_schema`).val()) as string,
+        fields: {}
+    }
+    Log(`add schema: ${value.schema}`);
     for (var i:number = 0; i < fieldNumbers.length; i++) {
         var fieldNumber:number = fieldNumbers[i];
         var fieldType:string = $(`#sel_field_${fieldNumber}`).find(":selected").text();
@@ -142,11 +157,13 @@ async function CallPostAddSchema ():Promise<void> {
         $(`#sel_field_${fieldNumber}`).val("string");
         $(`#fld_field_${fieldNumber}`).val('');
         if (fieldNumber != 0) {
-            $(`#con_field_${fieldNumber}`).remove(); 
+            $(`#con_field_${fieldNumber}`).remove();
         }
+        value.fields[fieldName] = fieldType;
     }
     $(`#fld_schema`).val('');
-    return Promise.resolve();
+    Log('call post add schema...');
+    return Call("POST", url + "/add_schema", {value:value});
 }
 
 window.onload = Init;
