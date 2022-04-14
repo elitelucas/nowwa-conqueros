@@ -1,5 +1,5 @@
 function Init () {
-
+    CallGetLoadCustomSchemas();
 }
 
 var logs:string[] = [];
@@ -117,9 +117,9 @@ var lastFieldNum:number = 1;
 var fieldNumbers:number[] = [0];
 
 function AddCustomField ():void {
-    $( "#custom" ).append( 
+    $( "#custom_schema_create" ).append( 
         `<div id="con_field_${lastFieldNum}">
-            <input placeholder="field name" id="fld_field_${lastFieldNum}" type="text"><select id="sel_field_${lastFieldNum}" name="cars">
+            <input placeholder="field name" id="fld_field_create_${lastFieldNum}" type="text"><select id="sel_field_${lastFieldNum}" name="cars">
                 <option value="string">string</option>
                 <option value="number">number</option>
                 <option value="boolean">boolean</option>
@@ -137,22 +137,30 @@ function RemoveCustomField (fieldNumber:number):void {
             fieldNumbers.splice(i, 1); 
         }
     }
-    $(`#con_field_${fieldNumber}`).remove(); 
+    $(`#con_field_create_${fieldNumber}`).remove(); 
 } 
 
-async function CallPostAddSchema ():Promise<void> {
+async function CallPostAddCustomSchema ():Promise<void> {
     var value:{ 
         schema:string, 
         fields:{[key:string]:string} 
     } = {
-        schema: ($(`#fld_schema`).val()) as string,
+        schema: ($(`#fld_schema_create`).val()) as string,
         fields: {}
+    }
+    if (value.schema.length == 0) {
+        Log('schema name cannot be empty!');
+        return Promise.resolve();
     }
     Log(`add schema: ${value.schema}`);
     for (var i:number = 0; i < fieldNumbers.length; i++) {
         var fieldNumber:number = fieldNumbers[i];
-        var fieldType:string = $(`#sel_field_${fieldNumber}`).find(":selected").text();
+        var fieldType:string = $(`#sel_field_create_${fieldNumber}`).find(":selected").text();
         var fieldName:string = ($(`#fld_field_${fieldNumber}`).val()) as string;
+        if (fieldName.length == 0) {
+            Log('one of the field cannot be empty!');
+            return Promise.resolve();
+        }
         Log(`add field: ${fieldName} as ${fieldType}`);
         $(`#sel_field_${fieldNumber}`).val("string");
         $(`#fld_field_${fieldNumber}`).val('');
@@ -162,8 +170,74 @@ async function CallPostAddSchema ():Promise<void> {
         value.fields[fieldName] = fieldType;
     }
     $(`#fld_schema`).val('');
-    Log('call post add schema...');
-    return Call("POST", url + "/add_schema", {value:value});
+    Log('call post add custom schema...');
+    var output = await Call("POST", url + "/add_custom_schema", value);
+    if (!output) {
+        await CallGetLoadCustomSchemas();
+    }
+}
+
+var customSchemas:{[key:string]:any} = {};
+
+async function CallGetLoadCustomSchemas ():Promise<void> {
+    Log('call post get load custom schemas...');
+    var schemas = (await Call("GET", url + "/load_custom_schemas")).value;
+    
+    for (var i:number = 0; i < schemas.length; i++) {
+        var data = schemas[i];
+        if (customSchemas[data.schema] == undefined) {
+            customSchemas[data.schema] = data;
+            $( "#custom_schema_list" ).append( 
+                `<br/><button onclick="ShowCustomSchema('${data.schema}');">${data.schema}</button>`
+            ); 
+        }
+    }
+    SelectCustomSchema(schemas.length == 0 ? undefined : schemas[0].schema);
+    if (schemas.length > 0) {
+        OnSelectCustomSchema();
+    }
+}
+
+function ShowCustomSchema(schemaName:string) {
+    var detail:string = `${schemaName}:\n` + JSON.stringify(customSchemas[schemaName].fields, null, 4);
+    $( "#custom_schema_detail" ).val(detail);
+}
+
+function SelectCustomSchema(schemaName?:string) {
+    $( "#sel_schema_save" ).val([]);
+    if (schemaName) {
+        var schemaNames = Object.keys(customSchemas);
+        if (schemaNames.length > 0) {
+            for (var i:number = 0; i < schemaNames.length; i++) {
+                console.log(`Schema Name: ${schemaNames[i]}`);
+                $( "#sel_schema_save" ).append( 
+                    `<option value="${schemaNames[i]}">${schemaNames[i]}</button>`
+                ); 
+            }
+        }
+    }
+}
+
+function OnSelectCustomSchema () {
+    $( "#con_field_save" ).empty();
+    var selcetedSchemaName = $( "#sel_schema_save" ).find(":selected").text();
+    var schema = customSchemas[selcetedSchemaName];
+    var fieldNames = Object.keys(schema.fields);
+    for (var i:number = 0; i < fieldNames.length; i++) {
+        var fieldName = fieldNames[i];
+        var fieldType = schema.fields[fieldName];
+        $( "#con_field_save" ).append( 
+            `<input type="text" value="${fieldName} - ${fieldType}" readonly><input placeholder="field value" id="fld_field_save_${i}" type="text"><br/>`
+        ); 
+    }
+}
+
+async function CallPostSaveCustomSchema ():Promise<void> {
+    var selcetedSchemaName = $( "#sel_schema_save" ).find(":selected").text();
+    if (selcetedSchemaName.length == 0) {
+        Log('schema name cannot be empty!');
+        return Promise.resolve();
+    }
 }
 
 window.onload = Init;

@@ -41,19 +41,32 @@
         <br/><button onclick="CallPostAuthenticate();">Authenticate</button><input placeholder="username" id="fld_username" type="text"><input placeholder="password" id="fld_password" type="password">
         <br/><button onclick="CallPostRegister();">Register</button><input placeholder="retype password" id="fld_repassword" type="password">
         <br/><button onclick="CallPostUpload();">Upload</button><input placeholder="select file" id="fld_file" type="file">
-        <div id="custom">
-            <p style=" margin: 0; padding: 0; height:20px;" >Custom Schema
-            </p>
-            <input placeholder="schema name" id="fld_schema" type="text">
-            <div id="con_field_0">
-                <input placeholder="field name" id="fld_field_0" type="text"><select id="sel_field_0" name="cars">
-                <option value="string">string</option>
-                <option value="number">number</option>
-                <option value="boolean">boolean</option>
-                <option value="date">date</option>
+        <div id="custom_schema_list">
+            <p style=" margin: 0; padding: 0; height:20px;" >Custom Schema - List</p>
+            <textarea id="custom_schema_detail"></textarea>
+            
+        </div>
+        <div id="custom_schema_create">
+            <p style=" margin: 0; padding: 0; height:20px;" >Custom Schema - Create</p>
+            <input placeholder="schema name" id="fld_schema_create" type="text">
+            <div id="con_field_create_0">
+                <input placeholder="field name" id="fld_field_create_0" type="text"><select id="sel_field_create_0" name="types">
+                    <option value="string">string</option>
+                    <option value="number">number</option>
+                    <option value="boolean">boolean</option>
+                    <option value="date">date</option>
                 </select><button class="small" onclick="AddCustomField()">+</button>
             </div>
         </div>
-        <button onclick="CallPostAddSchema();">Add Schema</button>
+        <button onclick="CallPostAddCustomSchema();">Add Schema</button>
+        <div id="custom_schema_save">
+            <p style=" margin: 0; padding: 0; height:20px;" >Custom Schema - Save</p>
+            <select id="sel_schema_save" name="schemas" onchange="OnSelectCustomSchema();" >
+            </select>
+            <div id="con_field_save">
+                <input id="fld_field_save_0" type="text" value="Field Name - Field Type" readonly><input placeholder="field name" id="fld_field_save_0" type="text">
+            </div>
+        </div>
+        <button onclick="CallPostSaveCustomSchema();">Save Schema Data</button>
     </body>
 </html>

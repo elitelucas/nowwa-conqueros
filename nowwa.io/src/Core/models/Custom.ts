@@ -2,15 +2,13 @@ import mongoose from 'mongoose';
 
 export type CustomDocument = mongoose.Document & {
     name            : string,
-    value           : string
+    value           : {[key:string]:string}
 };
 
 const CustomSchema = new mongoose.Schema<CustomDocument>({
     name            : {
         type        : String,
-    },
-    value           : {
-        type        : String,
+        unique      : true
     },
 }, {
     strict          : false

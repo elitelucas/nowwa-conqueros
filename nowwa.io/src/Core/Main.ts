@@ -10,6 +10,7 @@ import path from 'path';
 import { load } from 'ts-dotenv';
 import User from './Models/User';
 import Environment from './Environment';
+import Custom from './Models/Custom';
 import CustomSchema from './Types/CustomSchema';
 import crypto from 'crypto';
 
@@ -81,14 +82,15 @@ class Core {
             self.ExpressPostAuthenticate();
             self.ExpressPostRegister();
             self.ExpressPostUpload();
-            self.ExpressPostAddSchema();
+            self.ExpressPostAddCustomSchema();
+            self.ExpressGetLoadCustomSchemas();
     
             console.log(`set port...`);
             self.app.listen(self.port);
             console.log(`listeneing on port ${self.port}`);
         }
-        catch (e) {
-            console.error(e);
+        catch (error) {
+            console.error(<Error>error);
         }
     }
 
@@ -239,21 +241,78 @@ class Core {
             sslValidate: false,
             sslCert: `${env.MONGODB_CERT}`
         })
-        .then(() => {
-            console.log("Successfully connect to MongoDB.");
-            /*
-            (async () => {
-                var indexes = await User.listIndexes();
-                console.log(JSON.stringify(indexes)); 
-                await User.deleteMany({});
-                console.log('success');
-                //mongoose.connection.deleteModel('Users')
-            })();
-            */
-        })
         .catch((error:Error) => {
             console.error("Connection error", error);
+            throw error;
         });
+
+        console.log("Successfully connect to MongoDB.");
+
+        // // clear database
+        // (async () => {
+        //     var indexes = await User.listIndexes();
+        //     console.log(JSON.stringify(indexes)); 
+        //     await User.deleteMany({});
+        //     console.log('success');
+        //     mongoose.connection.deleteModel('Users')
+        // })();
+    }
+
+    /**
+     * Load custom models for database.
+     */
+    private async DatabaseLoadCustomSchemas ():Promise<CustomSchema[]> {
+        console.log(`load custom schemas...`);
+        
+        var output:CustomSchema[] = [];
+        var query = Custom.find({} , (error, data) => {
+            if (error) {
+                console.log(error);
+                throw error;
+            }
+            data.map((custom) => {
+                output.push({
+                    schema: custom.name,
+                    fields: custom.value
+                });
+            });
+        });
+        //@ts-ignore
+        await query.clone();
+        return output;
+    }
+
+    /**
+     * Create custom model for database.
+     */
+    private DatabaseCreateCustomModel (schema:string, fields:any) {
+        console.log(`database create custom model...`);
+    
+        type MapSchemaTypes = {
+            string      : string;
+            number      : number;
+            boolean     : boolean;
+            date        : Date;
+        }
+          
+        type MapSchema<T extends Record<string, keyof MapSchemaTypes>> = {
+            -readonly [K in keyof T]: MapSchemaTypes[T[K]]
+        }
+
+        function asSchema<T extends Record<string, keyof MapSchemaTypes>>(t: T): T {
+            return t;
+        }
+
+        var data = asSchema(fields);
+        type DataType = MapSchema<typeof data>;
+        
+        type NewDocument = mongoose.Document & DataType;
+
+        const NewSchema = new mongoose.Schema<NewDocument>({}, {
+            strict          : true
+        });
+
+        return mongoose.model(schema, NewSchema);
     }
 
     /**
@@ -300,20 +359,51 @@ class Core {
     }
 
     /**
-     * Create new model on database.
+     * Create new custom schema on database.
      */
-    public ExpressPostAddSchema () {
-        console.log(`set express post add schema...`);
+    private ExpressPostAddCustomSchema () {
+        console.log(`set express post add custom schema...`);
     
         var self:Core = this;
 
-        self.app.post('/add_schema', (req:express.Request, res:express.Response) => {
-            console.log(`<-- request add schema`);
+        self.app.post('/add_custom_schema', async (req:express.Request, res:express.Response) => {
+            console.log(`<-- request add custom schema`);
 
-            var value:CustomSchema = req.body.value;
-            console.log(`value: ${value}`);
-            console.log(`schema: ${value.schema}`);
-            console.log(`fields: ${JSON.stringify(value.fields)}`);
+            var fields = req.body.fields;
+            var schema = req.body.schema;
+
+            try {
+                const newCustom = new Custom({ name: schema, value: fields });
+                await newCustom.save();
+                res.send({ success: true, value: newCustom });
+
+            } 
+            catch (error) {
+                res.send({ success: false, error: (<Error>error).message });
+            }
+        });
+    }
+
+    /**
+     * List all custom schemas on database.
+     */
+    private ExpressGetLoadCustomSchemas () {
+        console.log(`set express post add custom schema...`);
+    
+        var self:Core = this;
+
+        self.app.get('/load_custom_schemas', async (req:express.Request, res:express.Response) => {
+            console.log(`<-- request load custom schemas`);
+
+            try {
+                var schemas:CustomSchema[] = await self.DatabaseLoadCustomSchemas();
+
+                res.send({ success: true, value: schemas });
+
+            } 
+            catch (error) {
+                res.send({ success: false, error: (<Error>error).message });
+            }
         });
     }
 }
