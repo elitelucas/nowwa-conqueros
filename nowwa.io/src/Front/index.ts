@@ -1,4 +1,11 @@
+//@ts-ignore
+declare var Conquer:any;
+
 function Init () {
+    var data = {
+        fields: {}
+    }
+    Conquer.SaveSchemaStructure(data);
     CallGetLoadCustomSchemas();
 }
 

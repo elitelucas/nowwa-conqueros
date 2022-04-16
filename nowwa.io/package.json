@@ -4,9 +4,7 @@
   "description": "",
   "scripts": {
     "core:dev": "copyfiles -u 1 ./src/Front/*.html ./dist/ && tsc-watch --onSuccess \"node ./dist/Core/Main.js\"",
-    "core:build": "copyfiles -u 1 ./src/Front/*.html ./dist/ && tsc",
-    "test": "tsc-watch --onSuccess \"node ./dist/Core/Main.js\"",
-    "front:test": "copyfiles -u 1 ./src/Front/*.html ./dist/ && tsc-watch --onSuccess \"http-server ./dist/Front -p 9000\""
+    "core:build": "copyfiles -u 1 ./src/Front/*.html ./dist/ && tsc"
   },
   "author": "",
   "license": "ISC",
