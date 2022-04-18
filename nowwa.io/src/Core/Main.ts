@@ -10,7 +10,7 @@ import path from 'path';
 import { load } from 'ts-dotenv';
 import User from './Models/User';
 import Environment from './Environment';
-import Custom from './Models/Custom';
+import { Custom, CustomType } from './Models/Custom';
 import CustomSchema from './Types/CustomSchema';
 import crypto from 'crypto';
 
@@ -31,7 +31,7 @@ class Core {
 
     private secret:string = "conqueros";
 
-    private env:any;
+    private baseUrl:string = `/webhook/v${env.VERSION}`;
 
     constructor () {
         this.app = express();
@@ -82,8 +82,10 @@ class Core {
             self.ExpressPostAuthenticate();
             self.ExpressPostRegister();
             self.ExpressPostUpload();
-            self.ExpressPostAddCustomSchema();
-            self.ExpressGetLoadCustomSchemas();
+            self.ExpressPostSchemaStructureSave();
+            self.ExpressPostSchemaStructureLoad();
+            // self.ExpressPostSchemaDataSave();
+            // self.ExpressPostSchemaDataLoad();
     
             console.log(`set port...`);
             self.app.listen(self.port);
@@ -117,7 +119,7 @@ class Core {
     
         var self:Core = this;
     
-        self.app.post('/authenticate', (req, res) => {
+        self.app.post(`${self.baseUrl}/authenticate`, (req, res) => {
             console.log(`<-- request authenticate`);
             // console.log(`req.body.username: ${req.body.username}`);
             // console.log(`req.body.password: ${req.body.password}`);
@@ -140,7 +142,7 @@ class Core {
     
         var self:Core = this;
     
-        self.app.post('/register', (req:express.Request, res:express.Response) => {
+        self.app.post(`${self.baseUrl}/register`, (req:express.Request, res:express.Response) => {
             console.log(`<-- request register`);
             // console.log(`req.body.username: ${req.body.username}`);
             // console.log(`req.body.password: ${req.body.password}`);
@@ -192,7 +194,7 @@ class Core {
 
         var upload = multer({ storage: storage });
     
-        self.app.post('/upload', upload.single('fld_file_0'), (req, res) => {
+        self.app.post(`${self.baseUrl}/upload`, upload.single('fld_file_0'), (req, res) => {
             console.log(`<-- request upload`);
 
             var file:Express.Multer.File | undefined = req.file;
@@ -248,38 +250,45 @@ class Core {
 
         console.log("Successfully connect to MongoDB.");
 
-        // // clear database
-        // (async () => {
-        //     var indexes = await User.listIndexes();
-        //     console.log(JSON.stringify(indexes)); 
-        //     await User.deleteMany({});
-        //     console.log('success');
-        //     mongoose.connection.deleteModel('Users')
-        // })();
+        // // Purge model
+        await (async () => {
+            // var indexes = await Custom.listIndexes();
+            // console.log(indexes);
+            // console.log(mongoose.connection.models);
+            // await Custom.deleteMany({}).exec();
+        })();
     }
 
     /**
      * Load custom models for database.
      */
-    private async DatabaseLoadCustomSchemas ():Promise<CustomSchema[]> {
+    private async DatabaseLoadSchemaStructures (schemaNames?:string[]):Promise<CustomSchema[]> {
         console.log(`load custom schemas...`);
-        
-        var output:CustomSchema[] = [];
-        var query = Custom.find({} , (error, data) => {
-            if (error) {
-                console.log(error);
-                throw error;
+        try {
+            var query;
+            if (schemaNames) {
+                var $or:{[key:string]:any}[] = [];
+                for (var i = 0; i < schemaNames.length; i++) {
+                    $or.push({name: schemaNames[i]});
+                }
+                query = Custom.find({ $or: $or });
+            } else {
+                query = Custom.find({ });
             }
-            data.map((custom) => {
+            query.select('schemaName schemaFields');
+            var data = await query.exec();
+            var output:CustomSchema[] = [];
+            for (var i = 0; i < data.length; i++) {
                 output.push({
-                    schema: custom.name,
-                    fields: custom.value
+                    schemaName     : data[i].schemaName,
+                    schemaFields    : data[i].schemaFields
                 });
-            });
-        });
-        //@ts-ignore
-        await query.clone();
-        return output;
+            }
+            return Promise.resolve(output);
+        } catch (error:any) {
+            console.log(error);
+            return Promise.reject(error);
+        }
     }
 
     /**
@@ -359,23 +368,57 @@ class Core {
     }
 
     /**
-     * Create new custom schema on database.
+     * Create or modify a custom schema structure.
      */
-    private ExpressPostAddCustomSchema () {
-        console.log(`set express post add custom schema...`);
+    private ExpressPostSchemaStructureSave () {
+        console.log(`set express post schema structure save...`);
     
         var self:Core = this;
 
-        self.app.post('/add_custom_schema', async (req:express.Request, res:express.Response) => {
-            console.log(`<-- request add custom schema`);
+        self.app.post(`${self.baseUrl}/schema_structure_save`, async (req:express.Request, res:express.Response) => {
+            console.log(`<-- request schema structure save`);
 
-            var fields = req.body.fields;
-            var schema = req.body.schema;
+            var schemaFields = req.body.schemaFields;
+            var schemaName = req.body.schemaName;
 
             try {
-                const newCustom = new Custom({ name: schema, value: fields });
-                await newCustom.save();
-                res.send({ success: true, value: newCustom });
+                var finalFields:{[key:string]:string} = {...schemaFields.add};
+                // TODO : check if old schema exists
+                var originalFilter:CustomType = {
+                    schemaName      : schemaName
+                };
+                var query = Custom.findOne(originalFilter);
+                var original = await query.exec();
+                if (original) {
+                    finalFields = {
+                        ...finalFields,
+                        ...original.schemaFields
+                    };
+                    if (schemaFields.remove) {
+                        var fieldsToBeRemoved = Object.keys(schemaFields.remove);
+                        for (var i = 0; i < fieldsToBeRemoved.length; i++) {
+                            var fieldName = fieldsToBeRemoved[i];
+                            delete finalFields[fieldName];
+                        }
+                    }
+                }
+                console.log(finalFields);
+                var filter:CustomType = { 
+                    schemaName      : schemaName, 
+                    schemaFields    : finalFields 
+                };
+                var structure = await Custom.findOneAndUpdate(filter)
+                .setOptions({
+                    overwrite       : true,
+                    upsert          : true,
+                    new             : true
+                })
+                .exec();
+                console.log(structure);
+                res.send({ 
+                    success         : true, 
+                    value           : structure
+                });
 
             } 
             catch (error) {
@@ -385,21 +428,21 @@ class Core {
     }
 
     /**
-     * List all custom schemas on database.
+     * Load one or all custom schema structures.
      */
-    private ExpressGetLoadCustomSchemas () {
+    private ExpressPostSchemaStructureLoad () {
         console.log(`set express post add custom schema...`);
     
         var self:Core = this;
 
-        self.app.get('/load_custom_schemas', async (req:express.Request, res:express.Response) => {
-            console.log(`<-- request load custom schemas`);
+        self.app.post(`${self.baseUrl}/schema_structure_load`, async (req:express.Request, res:express.Response) => {
+            console.log(`<-- request schema structure load`);
 
             try {
-                var schemas:CustomSchema[] = await self.DatabaseLoadCustomSchemas();
-
+                var schemaNames = req.body.schemaNames;
+                var schemas:CustomSchema[] = await self.DatabaseLoadSchemaStructures(schemaNames);
+                console.log(JSON.stringify(schemas));
                 res.send({ success: true, value: schemas });
-
             } 
             catch (error) {
                 res.send({ success: false, error: (<Error>error).message });

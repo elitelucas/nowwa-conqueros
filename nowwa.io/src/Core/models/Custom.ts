@@ -1,12 +1,18 @@
 import mongoose from 'mongoose';
 
-export type CustomDocument = mongoose.Document & {
-    name            : string,
-    value           : {[key:string]:string}
+export type CustomType = {
+    schemaName      : string,
+    schemaFields?    : {[key:string]:string}
 };
 
+type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] };
+
+type MongooseCustomType = WithRequired<CustomType, 'schemaFields'>;
+
+type CustomDocument = mongoose.Document & MongooseCustomType;
+
 const CustomSchema = new mongoose.Schema<CustomDocument>({
-    name            : {
+    schemaName          : {
         type        : String,
         unique      : true
     },
@@ -14,5 +20,4 @@ const CustomSchema = new mongoose.Schema<CustomDocument>({
     strict          : false
 });
 
-
-export default mongoose.model("Customs", CustomSchema); 
+export const Custom = mongoose.model("Customs", CustomSchema); 

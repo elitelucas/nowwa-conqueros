@@ -5,15 +5,16 @@ function Init () {
     var data = {
         fields: {}
     }
-    Conquer.SaveSchemaStructure(data);
-    CallGetLoadCustomSchemas();
+    
+    SchemaStructureLoad();
 }
 
 var logs:string[] = [];
 var maxLogs:number = 10;
 var port:number = 80;
 var host:string = 'nowwa.io';
-var url:string = `https://${host}` + (port == 80) ? `` : `:${port}`;
+var version:string = '0.0.1';
+var url:string = `https://${host}/webhook/${version}` + (port == 80) ? `` : `:${port}`;
 
 type Method = "GET" | "POST";
 
@@ -120,122 +121,123 @@ async function CallPostUpload ():Promise<void> {
     }
 }
 
-var lastFieldNum:number = 1;
-var fieldNumbers:number[] = [0];
+var lastFieldNum:number = 0;
+var fieldNumbers:number[] = [];
 
-function AddCustomField ():void {
-    $( "#custom_schema_create" ).append( 
-        `<div id="con_field_${lastFieldNum}">
-            <input placeholder="field name" id="fld_field_create_${lastFieldNum}" type="text"><select id="sel_field_${lastFieldNum}" name="cars">
-                <option value="string">string</option>
-                <option value="number">number</option>
-                <option value="boolean">boolean</option>
-                <option value="date">date</option>
-            </select><button class="small" onclick="AddCustomField();">+</button><button class="small" onclick="RemoveCustomField(${lastFieldNum});">-</button>
-        </div>`
-    ); 
+function SchemaStructureAddField (reset:boolean, schemaName?:string, fieldName?:string, fieldType?:string):void {
+    if (reset) {
+        for( var i = 0; i < fieldNumbers.length; i++){ 
+            var fieldNumber = fieldNumbers[i];
+            $(`#con_field_structure_${fieldNumber}`).remove(); 
+        }
+        fieldNumbers = [];
+        lastFieldNum = 0;
+        
+        if (schemaName) {
+            $("#fld_schema_structure").attr('disabled', 'disabled');
+            $("#fld_schema_structure").val(schemaName);
+        } else {
+            $("#fld_schema_structure").removeAttr('disabled');
+            $("#fld_schema_structure").val('');
+        }
+    }
+    var removeButton = lastFieldNum > 0 ?
+    `<button class="small" onclick="SchemaStructureRemoveField(${lastFieldNum});">-</button>` :
+    ``;
+    var schemaNameRaw = schemaName ? `'${schemaName}'` : undefined;
+    var element = 
+    `<div id="con_field_structure_${lastFieldNum}">
+        <input placeholder="enter field name..." id="fld_field_structure_${lastFieldNum}" type="text" value="${fieldName || ''}"><select id="sel_field_structure_${lastFieldNum}" name="cars">
+            <option value="string" ${fieldType == 'string' ? 'selected' : ''}>string</option>
+            <option value="number" ${fieldType == 'number' ? 'selected' : ''}>number</option>
+            <option value="boolean" ${fieldType == 'boolean' ? 'selected' : ''}>boolean</option>
+            <option value="date" ${fieldType == 'date' ? 'selected' : ''}>date</option>
+        </select><button class="small" onclick="SchemaStructureAddField(false, ${schemaNameRaw});">+</button>${removeButton}
+    </div>`
+    $( "#custom_schema_structure" ).append(element); 
     fieldNumbers.push(lastFieldNum);
     lastFieldNum++;
 } 
 
-function RemoveCustomField (fieldNumber:number):void {
+function SchemaStructureRemoveField (fieldNumber:number, schemaName?:string):void {
+    // TODO : check for removal of a field
     for( var i = 0; i < fieldNumbers.length; i++){ 
         if ( fieldNumbers[i] === fieldNumber) { 
             fieldNumbers.splice(i, 1); 
         }
     }
-    $(`#con_field_create_${fieldNumber}`).remove(); 
+    $(`#con_field_structure_${fieldNumber}`).remove(); 
 } 
 
-async function CallPostAddCustomSchema ():Promise<void> {
+async function SchemaStructureSave ():Promise<void> {
     var value:{ 
-        schema:string, 
-        fields:{[key:string]:string} 
+        schemaName:string, 
+        schemaFields: {
+            add: {[key:string]:string}
+        }
     } = {
-        schema: ($(`#fld_schema_create`).val()) as string,
-        fields: {}
+        schemaName: ($(`#fld_schema_structure`).val()) as string,
+        schemaFields: {
+            add: {}
+        }
     }
-    if (value.schema.length == 0) {
+    if (value.schemaName.length == 0) {
         Log('schema name cannot be empty!');
-        return Promise.resolve();
+        return Promise.reject(new Error('schema name cannot be empty!'));
     }
-    Log(`add schema: ${value.schema}`);
+
+    // Prepare data to be sent
     for (var i:number = 0; i < fieldNumbers.length; i++) {
         var fieldNumber:number = fieldNumbers[i];
-        var fieldType:string = $(`#sel_field_create_${fieldNumber}`).find(":selected").text();
-        var fieldName:string = ($(`#fld_field_${fieldNumber}`).val()) as string;
+        var fieldType:string = $(`#sel_field_structure_${fieldNumber}`).find(":selected").text();
+        var fieldName:string = ($(`#fld_field_structure_${fieldNumber}`).val()) as string;
         if (fieldName.length == 0) {
             Log('one of the field cannot be empty!');
-            return Promise.resolve();
+            return Promise.reject(new Error('one of the field cannot be empty!'));
         }
-        Log(`add field: ${fieldName} as ${fieldType}`);
-        $(`#sel_field_${fieldNumber}`).val("string");
-        $(`#fld_field_${fieldNumber}`).val('');
-        if (fieldNumber != 0) {
-            $(`#con_field_${fieldNumber}`).remove();
-        }
-        value.fields[fieldName] = fieldType;
+        Log(`add field: ${fieldName} as ${fieldType}...`);
+        value.schemaFields.add[fieldName] = fieldType;
     }
-    $(`#fld_schema`).val('');
-    Log('call post add custom schema...');
-    var output = await Call("POST", url + "/add_custom_schema", value);
-    if (!output) {
-        await CallGetLoadCustomSchemas();
+
+    Log(`save schema: ${value.schemaName}...`);
+    try {
+        await Conquer.SchemaStructureSave(value);
+        await SchemaStructureLoad();
+        Log(`schema '${value.schemaName}' added!`);
+    }
+    catch (error:any) {
+        console.error(error);
     }
 }
 
 var customSchemas:{[key:string]:any} = {};
 
-async function CallGetLoadCustomSchemas ():Promise<void> {
-    Log('call post get load custom schemas...');
-    var schemas = (await Call("GET", url + "/load_custom_schemas")).value;
-    
+async function SchemaStructureLoad (schemaNames?:string[]):Promise<void> {
+    Log('load custom schemas...');
+    var schemas = await Conquer.SchemaStructureLoad(schemaNames);
+    $( "#custom_schema_list" ).empty();
     for (var i:number = 0; i < schemas.length; i++) {
         var data = schemas[i];
-        if (customSchemas[data.schema] == undefined) {
-            customSchemas[data.schema] = data;
+        if (customSchemas[data.schemaName as string] == undefined) {
+            customSchemas[data.schemaName as string] = data;
             $( "#custom_schema_list" ).append( 
-                `<br/><button onclick="ShowCustomSchema('${data.schema}');">${data.schema}</button>`
+                `${i > 0 ? '<br/>' : ''}<button onclick="SchemaStructureSelect('${data.schemaName}');">${data.schemaName}</button>`
             ); 
         }
     }
-    SelectCustomSchema(schemas.length == 0 ? undefined : schemas[0].schema);
-    if (schemas.length > 0) {
-        OnSelectCustomSchema();
-    }
+
 }
 
-function ShowCustomSchema(schemaName:string) {
-    var detail:string = `${schemaName}:\n` + JSON.stringify(customSchemas[schemaName].fields, null, 4);
-    $( "#custom_schema_detail" ).val(detail);
-}
-
-function SelectCustomSchema(schemaName?:string) {
-    $( "#sel_schema_save" ).val([]);
+function SchemaStructureSelect(schemaName?:string) {
     if (schemaName) {
-        var schemaNames = Object.keys(customSchemas);
-        if (schemaNames.length > 0) {
-            for (var i:number = 0; i < schemaNames.length; i++) {
-                console.log(`Schema Name: ${schemaNames[i]}`);
-                $( "#sel_schema_save" ).append( 
-                    `<option value="${schemaNames[i]}">${schemaNames[i]}</button>`
-                ); 
-            }
+        var structure = customSchemas[schemaName];
+        console.log(`Schema Name: ${structure.schemaName}`);
+        var fieldNames = Object.keys(structure.schemaFields);
+        for (var i:number = 0; i < fieldNames.length; i++) {
+            var fieldName = fieldNames[i];
+            var fieldType = structure.schemaFields[fieldName];
+            SchemaStructureAddField(i == 0, schemaName, fieldName, fieldType);
         }
-    }
-}
-
-function OnSelectCustomSchema () {
-    $( "#con_field_save" ).empty();
-    var selcetedSchemaName = $( "#sel_schema_save" ).find(":selected").text();
-    var schema = customSchemas[selcetedSchemaName];
-    var fieldNames = Object.keys(schema.fields);
-    for (var i:number = 0; i < fieldNames.length; i++) {
-        var fieldName = fieldNames[i];
-        var fieldType = schema.fields[fieldName];
-        $( "#con_field_save" ).append( 
-            `<input type="text" value="${fieldName} - ${fieldType}" readonly><input placeholder="field value" id="fld_field_save_${i}" type="text"><br/>`
-        ); 
     }
 }
 

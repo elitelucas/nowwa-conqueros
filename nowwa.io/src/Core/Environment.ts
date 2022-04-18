@@ -1,4 +1,6 @@
 var Environment = {
+    VERSION             : String,
+
     MONGODB_HOST        : String,
     MONGODB_PORT        : Number,
     MONGODB_DB          : String,

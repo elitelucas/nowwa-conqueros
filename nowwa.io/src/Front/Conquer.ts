@@ -1,9 +1,13 @@
 //@ts-ignore
 module Conquer {
 
-    var port:number = 80;
-    var host:string = 'nowwa.io';
-    var url:string = `https://${host}` + (port == 80) ? `` : `:${port}`;
+    var version:string = '0.0.1';
+    var host:string = 'localhost:9000';
+    // var host:string = 'nowwa.io';
+    var useSSL:boolean = false;
+    // var useSSL:boolean = true;
+    var protocol:string = useSSL ? 'https' : 'http';
+    var url:string = `${protocol}://${host}/webhook/v${version}`;
 
     var Types:string[] = [
         'string',
@@ -14,8 +18,8 @@ module Conquer {
     type Method = "GET" | "POST";
 
     type Data = {
-        schema? : string,
-        fields? : {
+        schemaName? : string,
+        schemaFields? : {
             remove? : string[],
             add?    : {[key:string]:string}
             values? : {[key:string]:any},
@@ -29,126 +33,105 @@ module Conquer {
         if (data == undefined) {
             throw new Error(`must have an object to be processed!`);
         }
-        if (!data.schema) {
+        if (!data.schemaName) {
             throw new Error(`property 'schema' is needed!`);
         }
-        if (!data.fields) {
+        if (!data.schemaFields) {
             throw new Error(`property 'fields' is needed!`);
         }
         return null;
     }
 
-    export async function SaveSchemaStructure (structure:Data):Promise<void> {
+    export async function SchemaStructureSave (structure:Data):Promise<void> {
         try {
             BasicCheck(structure);
             
-            // Check possible property 'fields.add' & 'fields.remove' 
-            var fieldsToAdd = structure.fields?.add;
-            var fieldsToRemove = structure.fields?.remove;
+            // Check possible property 'schemaFields.add' & 'schemaFields.remove' 
+            var fieldsToAdd = structure.schemaFields?.add;
+            var fieldsToRemove = structure.schemaFields?.remove;
             if (!fieldsToAdd && !fieldsToRemove) {
-                throw new Error(`property 'fields.add' or 'fields.remove' is needed!`);
+                throw new Error(`property 'schemaFields.add' or 'schemaFields.remove' is needed!`);
             }
 
-            // If 'fields.add' is present
+            // If 'schemaFields.add' is present
             if (fieldsToAdd) {
 
                 // Check if fieldsToAdd has at least 1 property
                 if (Object.keys(fieldsToAdd).length == 0) {
-                    throw new Error(`property 'fields.add' need at least 1 property!`);
+                    throw new Error(`property 'schemaFields.add' need at least 1 property!`);
                 }
                 
-                // Iterate through 'fields.add'
-                var structureFieldNamesToAdd:string[] = Object.keys(structure.fields?.add as {[key:string]:string});
-                for (var fieldName in structureFieldNamesToAdd) {
+                // Iterate through 'schemaFields.add'
+                var structureFieldNamesToAdd:string[] = Object.keys(structure.schemaFields?.add as {[key:string]:string});
+                console.log(structure.schemaName);
+                for (var i = 0; i < structureFieldNamesToAdd.length; i++) {
+                    var fieldName:string = structureFieldNamesToAdd[i];
                     
                     // Check field type reference
-                    var fieldType = structure.fields?.add?.[`'${fieldName}'`];
+                    var fieldType = structure.schemaFields?.add?.[`${fieldName}`];
+                    console.log(fieldName + ":" + fieldType);
                     if (typeof fieldType != 'string') {
-                        throw new Error(`property 'fields.add.${fieldName}' needs to be defined in string! (e.g 'number' or 'boolean' or 'string')`);
+                        throw new Error(`property 'schemaFields.add.${fieldName}' needs to be defined in string! (e.g 'number' or 'boolean' or 'string')`);
                     }
                     if (fieldType && !Types.includes(fieldType)) {
-                        throw new Error(`property 'fields.add.${fieldName}' has an unknown type: '${fieldType}'!`);
+                        throw new Error(`property 'schemaFields.add.${fieldName}' has an unknown type: '${fieldType}'!`);
                     }
                 }
             }
 
-            // If 'fields.remove' is present
+            // If 'schemaFields.remove' is present
             if (fieldsToRemove) {
                 
                 // Check if fieldsToRemove has at least 1 property
                 if (fieldsToRemove.length == 0 || typeof fieldsToRemove != 'object') {
-                    throw new Error(`property 'fields.remove' need to be at least an array with 1 string element!`);
+                    throw new Error(`property 'schemaFields.remove' need to be at least an array with 1 string element!`);
                 }
                 
-                // Iterate through 'fields.remove'
+                // Iterate through 'schemaFields.remove'
                 if (fieldsToRemove) {
                     var structureFieldNamesToRemove = fieldsToRemove as any[];
                     for (var i:number = 0; i < structureFieldNamesToRemove.length; i++) {
                         
                         // Check field type reference
                         if (typeof structureFieldNamesToRemove[i] != 'string') {
-                            throw new Error(`element no.[${i}] in 'fields.remove' needs to be a string! (it was ${structureFieldNamesToRemove[i]})`);
+                            throw new Error(`element no.[${i}] in 'schemaFields.remove' needs to be a string! (it was ${structureFieldNamesToRemove[i]})`);
                         }
                     }
                 }
             }
 
             // TODO: Send schema structure to server
-            return Promise.resolve();
-        }
-        catch (error:any) {
-            return Promise.reject(error);
-        }
-    }
-
-    export async function LoadSchemaStructure (schema:string):Promise<Data> {
-        try {
-            // TODO: Send schema name to server
-            
-            // TODO : Return schema structure from server
-            var data:Data = {
-                schema  : schema,
-                fields  : {
-                    types   : {
-                        name    : "string",
-                        price   : "number"
-                    }
-                }
+            var response = await Call("POST", url + '/schema_structure_save', structure);
+            if (response.success) {
+                return Promise.resolve();
             }
-            return Promise.resolve(data);
+            return Promise.reject(response.error);
         }
         catch (error:any) {
             return Promise.reject(error);
         }
     }
 
-    export async function SaveSchemaData (data:Data):Promise<void> {
+    export async function SchemaStructureLoad (schemaNames?:string[]):Promise<Data[]> {
+        try {
+            var response = await Call("POST", url + '/schema_structure_load', { schemaNames: schemaNames });
+            if (response.success) {
+                return Promise.resolve(response.value);
+            }
+            return Promise.reject(response.error);
+        }
+        catch (error:any) {
+            return Promise.reject(error);
+        }
+    }
+
+    export async function SchemaDataSave (data:Data):Promise<void> {
         try {
             BasicCheck(data);
 
-            // Check necessary property 'fields.value'
-            if (!data.fields?.values) {
-                throw new Error(`property 'fields.values' is needed!`);
-            }
-
-            // Load schema structure
-            var structure:Data = await LoadSchemaStructure(data.schema as string);
-
-            // Iterate through 'fields.value'
-            var dataFieldNames:string[] = Object.keys(data.fields?.values as {[key:string]:any});
-            for (var fieldName in dataFieldNames) {
-                
-                // Check field name reference
-                var structureFieldType = structure.fields?.types?.[`'${fieldName}'`];
-                if (!structureFieldType) {
-                    throw new Error(`property 'fields.values.${fieldName}' is not needed!`);
-                }
-
-                // Check field type reference
-                var fieldValue = data.fields?.values?.[`'${fieldName}'`];
-                if (typeof fieldValue != structureFieldType) {
-                    throw new Error(`property 'fields.values.${fieldName}' has incorrect type!`);
-                }
+            // Check necessary property 'schemaFields.value'
+            if (!data.schemaFields?.values) {
+                throw new Error(`property 'schemaFields.values' is needed!`);
             }
 
             // TODO: Send schema data to server
@@ -159,37 +142,37 @@ module Conquer {
         }
     }
 
-    export async function LoadSchemaData (data:Data):Promise<Data> {
+    export async function SchemaDataLoad (data:Data):Promise<Data> {
         try {
             BasicCheck(data);
 
-            // Check possible property 'fields.where' 
-            var fieldsWhere = data.fields?.where;
-            var fieldsLimit = data.fields?.limit;
+            // Check possible property 'schemaFields.where' 
+            var fieldsWhere = data.schemaFields?.where;
+            var fieldsLimit = data.schemaFields?.limit;
             if (!fieldsWhere && !fieldsLimit) {
-                throw new Error(`property 'fields.where' or 'fields.limit' is needed!`);
+                throw new Error(`property 'schemaFields.where' or 'schemaFields.limit' is needed!`);
             }
 
-            // If 'fields.where' is present
+            // If 'schemaFields.where' is present
             if (fieldsWhere) {
 
                 // Load schema structure
-                var structure:Data = await LoadSchemaStructure(data.schema as string);
+                var structure:Data = (await SchemaStructureLoad([data.schemaName as string]))[0];
 
-                // Iterate through 'fields.where'
-                var dataFieldNames:string[] = Object.keys(data.fields?.where as {[key:string]:any});
+                // Iterate through 'schemaFields.where'
+                var dataFieldNames:string[] = Object.keys(data.schemaFields?.where as {[key:string]:any});
                 for (var fieldName in dataFieldNames) {
                     
                     // Check field name reference
-                    var structureFieldType = structure.fields?.types?.[`'${fieldName}'`];
+                    var structureFieldType = structure.schemaFields?.types?.[`'${fieldName}'`];
                     if (!structureFieldType) {
-                        throw new Error(`property 'fields.where.${fieldName}' does not exists!`);
+                        throw new Error(`property 'schemaFields.where.${fieldName}' does not exists!`);
                     }
 
                     // Check field type reference
-                    var fieldValue = data.fields?.where?.[`'${fieldName}'`];
+                    var fieldValue = data.schemaFields?.where?.[`'${fieldName}'`];
                     if (typeof fieldValue != structureFieldType) {
-                        throw new Error(`property 'fields.where.${fieldName}' has incorrect type!`);
+                        throw new Error(`property 'schemaFields.where.${fieldName}' has incorrect type!`);
                     }
                 }
             }
@@ -199,9 +182,9 @@ module Conquer {
 
             // TODO : Return schema data from server
             var output:Data = {
-                schema  : data.schema,
-                fields  : {
-                    values  : {
+                schemaName      : data.schemaName,
+                schemaFields    : {
+                    values      : {
                         name    : "Loot Box",
                         price   : 100
                     }
@@ -218,7 +201,7 @@ module Conquer {
         try {
             var requestInit:RequestInit = { 
                 method  : method,
-                body    : isFile ? reqdata : JSON.stringify(reqdata),
+                body    : isFile || !reqdata ? reqdata : JSON.stringify(reqdata),
                 headers : isFile ? undefined : {
                     'Content-Type'  : 'application/json'
                 }
