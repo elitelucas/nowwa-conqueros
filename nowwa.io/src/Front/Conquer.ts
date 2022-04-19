@@ -1,3 +1,5 @@
+import mongoose from "mongoose";
+
 //@ts-ignore
 module Conquer {
 
@@ -24,7 +26,21 @@ module Conquer {
             add?    : {[key:string]:string}
             values? : {[key:string]:any},
             types?  : {[key:string]:string},
-            where?  : {[key:string]:any},
+            where?  : {[key:string]:
+                string | 
+                number | 
+                {
+                    $lt?    : number, // less than
+                    $lte?   : number, // less than equal to
+                    $gt?    : number, // greater than
+                    $gte?   : number, // greater than equal to
+                    $ne?    : number, // not equal to
+                    $in?    : number[] | string[], // in an array of
+                    $nin?   : number[] | string[], // not in an array of 
+                    $regex? : string | RegExp, // match regex
+                    $size?  : number, // is an array with size of   
+                }
+            },
             limit?  : number,
         }
     }
@@ -69,7 +85,6 @@ module Conquer {
                     
                     // Check field type reference
                     var fieldType = structure.schemaFields?.add?.[`${fieldName}`];
-                    console.log(fieldName + ":" + fieldType);
                     if (typeof fieldType != 'string') {
                         throw new Error(`property 'schemaFields.add.${fieldName}' needs to be defined in string! (e.g 'number' or 'boolean' or 'string')`);
                     }
@@ -100,7 +115,7 @@ module Conquer {
                 }
             }
 
-            // TODO: Send schema structure to server
+            // Send schema structure to server
             var response = await Call("POST", url + '/schema_structure_save', structure);
             if (response.success) {
                 return Promise.resolve();
@@ -130,12 +145,18 @@ module Conquer {
             BasicCheck(data);
 
             // Check necessary property 'schemaFields.value'
-            if (!data.schemaFields?.values) {
+            console.log(data);
+            var values = data.schemaFields?.values;
+            if (!values) {
                 throw new Error(`property 'schemaFields.values' is needed!`);
             }
 
-            // TODO: Send schema data to server
-            return Promise.resolve();
+            // Send schema data to server
+            var response = await Call("POST", url + '/schema_data_save', data);
+            if (response.success) {
+                return Promise.resolve();
+            }
+            return Promise.reject(response.error);
         }
         catch (error:any) {
             return Promise.reject(error);
@@ -207,9 +228,7 @@ module Conquer {
                 }
             };
             var response:Response = await fetch (fullurl, requestInit);
-            console.log(reqdata);
             var resdata:any = await response.json();
-            console.log(resdata);
             return resdata;
         }
         catch (error:any) {

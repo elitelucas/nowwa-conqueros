@@ -42,21 +42,18 @@
         <br/><button onclick="CallPostAuthenticate();">Authenticate</button><input placeholder="username" id="fld_username" type="text"><input placeholder="password" id="fld_password" type="password">
         <br/><button onclick="CallPostRegister();">Register</button><input placeholder="retype password" id="fld_repassword" type="password">
         <br/><button onclick="CallPostUpload();">Upload</button><input placeholder="select file" id="fld_file" type="file">
-        <br/><p style=" margin: 0; padding: 0; height:20px;" >Custom Schema - List</p>
-        <div id="custom_schema_list">
-        </div>
-        <button onclick="SchemaStructureAddField(true)">Add New Schema</button>
-        <div id="custom_schema_structure">
-            <p style=" margin: 0; padding: 0; height:20px;" >Schema Structure - Detail</p>
-            <input placeholder="enter schema name..." id="fld_schema_structure" disabled type="text">
-        </div>
-        <button onclick="SchemaStructureSave();">Save Schema</button>
-        <div id="custom_schema_save">
-            <p style=" margin: 0; padding: 0; height:20px;" >Schema Data</p>
-            <div id="con_field_save">
-                <input id="fld_field_save_0" type="text" value="Field Name - Field Type" readonly><input placeholder="field name" id="fld_field_save_0" type="text">
-            </div>
-        </div>
-        <button onclick="CallPostSaveCustomSchema();">Save Schema Data</button>
+        <br/><p style="margin: 0; padding: 0; height:20px;" >Custom Schema - List</p>
+
+        <div id="custom_schema_list"></div>
+        <button onclick="SchemaStructureNew()">Add New Schema</button>
+        
+        <p style="margin: 0; padding: 0; height:20px;" >Schema Structure</p>
+        <input placeholder="enter schema name..." id="fld_schema_structure" disabled type="text">
+        <div id="custom_schema_structure"></div>
+        <button onclick="SchemaStructureSave();">Save Structure</button>
+
+        <p style="margin: 0; padding: 0; height:20px;" id="lbl_schema_data">Schema Data</p>
+        <div id="custom_schema_data"></div>
+        <button onclick="SchemaDataSave();">Save Data</button>
     </body>
 </html>
