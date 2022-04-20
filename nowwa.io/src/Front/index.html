@@ -48,12 +48,17 @@
         <button onclick="SchemaStructureNew()">Add New Schema</button>
         
         <p style="margin: 0; padding: 0; height:20px;" >Schema Structure</p>
-        <input placeholder="enter schema name..." id="fld_schema_structure" disabled type="text">
+        <input placeholder="enter schema name..." id="fld_schema_structure" disabled type="text" style="display: none;">
         <div id="custom_schema_structure"></div>
-        <button onclick="SchemaStructureSave();">Save Structure</button>
+        <button onclick="SchemaStructureSave();" id="btn_schema_structure_save" style="display: none;">Save Structure</button>
 
         <p style="margin: 0; padding: 0; height:20px;" id="lbl_schema_data">Schema Data</p>
         <div id="custom_schema_data"></div>
-        <button onclick="SchemaDataSave();">Save Data</button>
+        <button id="btn_schema_data_save" onclick="SchemaDataSave();" style="display: none;">Save Data</button>
+        <br/>
+        <button onclick="ExampleStructureSave();">JSON Structure Save</button><button onclick="ExampleStructureLoad();">Array Structure Load</button>
+        <textarea id="input"></textarea>
+        <p style="margin: 0; padding: 0; height:20px;" id="lbl_command"></p>
+        <br/><button onclick="RunCommand();">Run Command</button>
     </body>
 </html>

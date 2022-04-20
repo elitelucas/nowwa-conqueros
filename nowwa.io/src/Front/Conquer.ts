@@ -1,5 +1,3 @@
-import mongoose from "mongoose";
-
 //@ts-ignore
 module Conquer {
 
@@ -15,6 +13,7 @@ module Conquer {
         'string',
         'number',
         'boolean',
+        'object'
     ]
 
     type Method = "GET" | "POST";
@@ -29,6 +28,7 @@ module Conquer {
             where?  : {[key:string]:
                 string | 
                 number | 
+                boolean |
                 {
                     $lt?    : number, // less than
                     $lte?   : number, // less than equal to
@@ -115,6 +115,8 @@ module Conquer {
                 }
             }
 
+            console.log(structure);
+
             // Send schema structure to server
             var response = await Call("POST", url + '/schema_structure_save', structure);
             if (response.success) {
@@ -154,7 +156,7 @@ module Conquer {
             // Send schema data to server
             var response = await Call("POST", url + '/schema_data_save', data);
             if (response.success) {
-                return Promise.resolve();
+                return Promise.resolve(response.value);
             }
             return Promise.reject(response.error);
         }
@@ -174,44 +176,12 @@ module Conquer {
                 throw new Error(`property 'schemaFields.where' or 'schemaFields.limit' is needed!`);
             }
 
-            // If 'schemaFields.where' is present
-            if (fieldsWhere) {
-
-                // Load schema structure
-                var structure:Data = (await SchemaStructureLoad([data.schemaName as string]))[0];
-
-                // Iterate through 'schemaFields.where'
-                var dataFieldNames:string[] = Object.keys(data.schemaFields?.where as {[key:string]:any});
-                for (var fieldName in dataFieldNames) {
-                    
-                    // Check field name reference
-                    var structureFieldType = structure.schemaFields?.types?.[`'${fieldName}'`];
-                    if (!structureFieldType) {
-                        throw new Error(`property 'schemaFields.where.${fieldName}' does not exists!`);
-                    }
-
-                    // Check field type reference
-                    var fieldValue = data.schemaFields?.where?.[`'${fieldName}'`];
-                    if (typeof fieldValue != structureFieldType) {
-                        throw new Error(`property 'schemaFields.where.${fieldName}' has incorrect type!`);
-                    }
-                }
+            // Send schema data request to server
+            var response = await Call("POST", url + '/schema_data_load', data);
+            if (response.success) {
+                return Promise.resolve(response.value);
             }
-
-            // TODO: Send schema data to server
-            //var output = await Call("POST", url + "/schema_data_load", data); 
-
-            // TODO : Return schema data from server
-            var output:Data = {
-                schemaName      : data.schemaName,
-                schemaFields    : {
-                    values      : {
-                        name    : "Loot Box",
-                        price   : 100
-                    }
-                }
-            }
-            return Promise.resolve(output);
+            return Promise.reject(response.error);
         }
         catch (error:any) {
             return Promise.reject(error);

@@ -2,7 +2,7 @@ import express, { response } from 'express';
 import cors from 'cors';
 import passport from 'passport';
 import passportLocal from 'passport-local';
-import mongoose from 'mongoose';
+import mongoose, { mongo } from 'mongoose';
 import session from 'express-session';
 import multer from 'multer';
 import cloudinary from 'cloudinary';
@@ -32,7 +32,7 @@ class Core {
 
     private baseUrl:string = `/webhook/v${env.VERSION}`;
 
-    private models:{[key:string]:any};
+    private models:{[key:string]:mongoose.Model<any, {}, {}>};
 
     constructor () {
         this.app = express();
@@ -87,7 +87,7 @@ class Core {
             self.ExpressPostSchemaStructureSave();
             self.ExpressPostSchemaStructureLoad();
             self.ExpressPostSchemaDataSave();
-            // self.ExpressPostSchemaDataLoad();
+            self.ExpressPostSchemaDataLoad();
     
             console.log(`set port...`);
             self.app.listen(self.port);
@@ -254,38 +254,43 @@ class Core {
         await (async () => {
             // var indexes = await Custom.listIndexes();
             // console.log(indexes);
+            // //@ts-ignore
+            // Custom.collection.dropIndex('name_1');
             // console.log(mongoose.connection.models);
             // await Custom.deleteMany({}).exec();
             // var customs = await Custom.find({}).exec();
             // console.log(customs);
 
-            var custom:CustomType = {
-                schemaName      : "schema001",
-                schemaFields    : {
-                    field003    : 'number',
-                    field005    : 'string',
-                    field007    : 'number',
-                    field009    : 'boolean'
-                }
-            } 
-            if (!self.models[custom.schemaName]) {
-                self.models[custom.schemaName] = self.DatabaseCreateCustomModel(custom.schemaName, custom.schemaFields);
-            }
-            var model = self.models[custom.schemaName];
-            // await model.deleteMany({}).exec();
-            // var testnew = await model.create({
-            //     field003: 10,
-            //     field005: 'hehe',
-            //     field007: 199,
-            //     field009: false
-            // });
-            var documents = await model.find({
-                field005 : "the string x",
-                field007 : {
-                    $lt : -500
-                }
-            }).exec();
-            console.log(documents);
+            // var structures = await Custom.findOne({ schemaName: 'schema001' }).exec();
+            // console.log(structures);
+
+            // var custom:CustomType = {
+            //     schemaName      : "schema001",
+            //     schemaFields    : {
+            //         field003    : 'number',
+            //         field005    : 'string',
+            //         field007    : 'number',
+            //         field009    : 'boolean'
+            //     }
+            // } 
+            // if (!self.models[custom.schemaName]) {
+            //     self.models[custom.schemaName] = self.DatabaseCreateCustomModel(custom.schemaName, custom.schemaFields);
+            // }
+            // var model = self.models[custom.schemaName];
+            // // await model.deleteMany({}).exec();
+            // // var testnew = await model.create({
+            // //     field003: 10,
+            // //     field005: 'hehe',
+            // //     field007: 199,
+            // //     field009: false
+            // // });
+            // var documents = await model.find({
+            //     field005 : "the string x",
+            //     field007 : {
+            //         $lt : -500
+            //     }
+            // }).exec();
+            // console.log(documents);
         })();
     }
 
@@ -328,13 +333,14 @@ class Core {
     /**
      * Create custom model for database.
      */
-    private DatabaseCreateCustomModel (schemaName:string, rawFields:any) {
+    private DatabaseCreateCustomModel (schemaName:string, fields:any) {
         console.log(`database create custom model...`);
     
         type MapSchemaTypes = {
             string      : string;
             number      : number;
             boolean     : boolean;
+            object      : object;
             date        : Date;
         }
           
@@ -345,7 +351,7 @@ class Core {
         function asSchema<T extends Record<string, keyof MapSchemaTypes>>(t: T): T {
             return t;
         }
-        var fields = rawFields instanceof Map ? Object.fromEntries(rawFields) : rawFields;
+        // var fields = rawFields instanceof Map ? Object.fromEntries(rawFields) : rawFields;
         var data = asSchema(fields);
         var structure = {};
         var fieldNames = Object.keys(fields);
@@ -384,6 +390,14 @@ class Core {
                     }
                 };
             }
+            else if (fieldType == 'object') {
+                structure = { 
+                    ...structure,
+                    [fieldName] : {
+                        type    : mongoose.Schema.Types.Mixed
+                    }
+                };
+            }
         }
         type DataType = MapSchema<typeof data>;
         
@@ -393,7 +407,7 @@ class Core {
             strict      : "throw"
         });
 
-        console.log(`database custom model '${schemaName}' created...`);
+        console.log(`database custom model '${schemaName}' created!`);
         return mongoose.model(schemaName, NewSchema);
     }
 
@@ -458,11 +472,11 @@ class Core {
                     schemaName      : schemaName
                 };
                 var query = Custom.findOne(originalFilter);
-                var original = await query.exec();
-                if (original) {
+                var structure = await query.exec();
+                if (structure) {
                     // Combine old fields with new fields
                     finalFields = {
-                        ...original.schemaFields,
+                        ...structure.schemaFields,
                         ...finalFields,
                     };
                     if (schemaFields.remove) {
@@ -471,18 +485,18 @@ class Core {
                             delete finalFields[fieldName];
                         }
                     }
+                    console.log('finalFields after');
+                    console.log(finalFields);
+                    structure.schemaFields = finalFields;
+                    structure.markModified(CustomProperty.schemaFields);
+                    structure = await structure.save();
+                } else {
+                    var newStructure:CustomType = {
+                        schemaName      : schemaName,
+                        schemaFields    : finalFields 
+                    }
+                    structure = await Custom.create(newStructure);
                 }
-                var filter:CustomType = { 
-                    schemaName      : schemaName, 
-                    schemaFields    : finalFields 
-                };
-                var structure = await Custom.findOneAndUpdate(filter)
-                    .setOptions({
-                        overwrite       : true,
-                        upsert          : true,
-                        new             : true
-                    })
-                    .exec();
                 res.send({ 
                     success         : true, 
                     value           : structure
@@ -516,7 +530,6 @@ class Core {
             }
         });
     }
-    
 
     /**
      * Create or modify a custom schema data.
@@ -542,15 +555,67 @@ class Core {
                     }
                     var model = self.models[schemaName];
 
-                    // Check previously stored data
                     if (schemaFields.where) {
-
-                    } else {
-                        var values = schemaFields.values;
-                        var document = await model.create(values);
-                        res.send({ success: true, value: document });
+                        var query = model.find(schemaFields.where).limit(1);
+                        var documents = await query.exec();
+                        if (documents && documents.length == 1) {
+                            var document = documents[0];
+                            var fieldNames = Object.keys(schemaFields.values);
+                            for (var i:number = 0; i < fieldNames.length; i++) {
+                                var fieldName = fieldNames[i];
+                                var fieldValue = schemaFields.values[fieldName];
+                                document.schemaFields[fieldName] = fieldValue;
+                            }
+                            await document.save();
+                            res.send({ success: true, value: document });
+                            return;
+                        }
+                        res.send({ success: false, error: 'matching entry not found!' });
                         return;
                     }
+                    var document = await model.create(schemaFields.values);
+                    res.send({ success: true, value: document });
+                    return;
+                }
+                res.send({ success: false, error: `schema '${schemaName}' not found!` });
+
+            } 
+            catch (error) {
+                res.send({ success: false, error: (<Error>error).message });
+            }
+        });
+    }
+
+    /**
+     * Load a custom schema data.
+     */
+     private ExpressPostSchemaDataLoad () {
+        console.log(`set express post schema data load...`);
+    
+        var self:Core = this;
+
+        self.app.post(`${self.baseUrl}/schema_data_load`, async (req:express.Request, res:express.Response) => {
+            console.log(`<-- request schema data load`);
+
+            var schemaFields = req.body.schemaFields;
+            var schemaName = req.body.schemaName;
+
+            try {
+                // Check schema structure
+                var schemas:CustomType[] = await self.DatabaseLoadSchemaStructures([schemaName]);
+                if (schemas && schemas.length > 0) {
+                    if (!self.models[schemaName]) {
+                        console.log(`register new model: ${schemaName}...`)
+                        self.models[schemaName] = self.DatabaseCreateCustomModel(schemaName, schemas[0].schemaFields);
+                    }
+                    var model = self.models[schemaName];
+                    var query = model.find(schemaFields.where || {});
+                    if (schemaFields.limit) {
+                        query.limit(schemaFields.limit);
+                    }
+                    var documents = await query.exec();
+                    res.send({ success: true, value: documents });
+                    return;
                 }
                 res.send({ success: false, error: `schema '${schemaName}' not found!` });
 

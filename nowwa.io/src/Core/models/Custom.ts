@@ -22,11 +22,10 @@ const CustomSchema = new mongoose.Schema<CustomDocument>({
         unique      : true
     },
     schemaFields    : {
-        type        : Map,
-        of          : String
+        type        : mongoose.Schema.Types.Mixed
     }
 }, {
-    strict          : true
+    strict          : false
 });
 
 export const Custom = mongoose.model("Customs", CustomSchema); 
