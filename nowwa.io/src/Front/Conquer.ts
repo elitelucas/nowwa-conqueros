@@ -1,11 +1,13 @@
 //@ts-ignore
-module Conquer {
+module CONQUER {
 
-    var version:string = '0.0.1';
-    var host:string = 'localhost:9000';
-    // var host:string = 'nowwa.io';
-    var useSSL:boolean = false;
-    // var useSSL:boolean = true;
+    export var version:string = '0.0.1';
+
+    var host = 'localhost:9000';
+    // var host = 'nowwa.io';
+    var useSSL = false;
+    // var useSSL = true;
+
     var protocol:string = useSSL ? 'https' : 'http';
     var url:string = `${protocol}://${host}/webhook/v${version}`;
 
@@ -79,7 +81,6 @@ module Conquer {
                 
                 // Iterate through 'schemaFields.add'
                 var structureFieldNamesToAdd:string[] = Object.keys(structure.schemaFields?.add as {[key:string]:string});
-                console.log(structure.schemaName);
                 for (var i = 0; i < structureFieldNamesToAdd.length; i++) {
                     var fieldName:string = structureFieldNamesToAdd[i];
                     
@@ -115,8 +116,6 @@ module Conquer {
                 }
             }
 
-            console.log(structure);
-
             // Send schema structure to server
             var response = await Call("POST", url + '/schema_structure_save', structure);
             if (response.success) {
@@ -147,7 +146,6 @@ module Conquer {
             BasicCheck(data);
 
             // Check necessary property 'schemaFields.value'
-            console.log(data);
             var values = data.schemaFields?.values;
             if (!values) {
                 throw new Error(`property 'schemaFields.values' is needed!`);

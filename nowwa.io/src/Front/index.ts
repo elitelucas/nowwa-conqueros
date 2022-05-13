@@ -1,12 +1,99 @@
 //@ts-ignore
 declare var Conquer:any;
 
-function Init () {
-    var data = {
-        fields: {}
-    }
+async function Init () {
+
+    var structure002 = {
+        "schemaName"        : "schema002",
+        "schemaFields"      : {
+            "add"           : {
+                "field001"  : "number",
+                "field002"  : "string",
+                "field003"  : "boolean"
+            },
+        }
+    };
+    await CONQUER.SchemaStructureSave(structure002);
+    console.log('schema structure saved');
     
-    SchemaStructureLoad();
+    // Case invalid data type
+    // var data001 = {
+    //     "schemaName"        : "schema002",
+    //     "schemaFields"      : {
+    //         "values"        : {
+    //             "field001"  : "a string value", // invalid, should be number as defined above
+    //             "field002"  : 100, // invalid, should be string as defined above
+    //             "field003"  : true, // valid
+    //         },
+    //     }
+    // };
+    // await CONQUER.SchemaDataSave(data001);
+    
+    // Case valid data type
+    var data001 = {
+        "schemaName"        : "schema002",
+        "schemaFields"      : {
+            "values"        : {
+                "field001"  : -99, // valid
+                "field002"  : "hello", // valid
+                "field003"  : false, // valid
+            },
+        }
+    };
+    await CONQUER.SchemaDataSave(data001);
+    console.log('schema data saved');
+    
+    // Case valid search filter
+    var filter001 = {
+        "schemaName"        : "schema002",
+        "schemaFields"      : {
+            "where"         : {
+                "field002"  : {
+                    $lt     : 100 // less than operator ($lt) 
+                }
+            },
+        }
+    };
+    var data = await CONQUER.SchemaDataLoad(filter001);
+    console.log('schema data loaded');
+    console.log(data);
+
+    var structure002alter001 = {
+        "schemaName"        : "schema002",
+        "schemaFields"      : {
+            "add"           : {
+                "field004"  : "object"
+            },
+        }
+    };
+    await CONQUER.SchemaStructureSave(structure002alter001);
+    console.log('schema structure altered');
+    
+    
+    var structure002Alter002 = {
+        "schemaName"        : "schema002",
+        "schemaFields"      : {
+            "remove"        : ["field001"]
+        }
+    };
+    await CONQUER.SchemaStructureSave(structure002Alter002);
+    console.log('schema structure altered');
+
+    // Case valid data type
+    var data002 = {
+        "schemaName"        : "schema002",
+        "schemaFields"      : {
+            "values"        : {
+                "field004"  : {
+                    "key"   : "value"
+                }, // valid
+                "field002"  : "hello", // valid
+                "field003"  : false, // valid
+            },
+        }
+    };
+    await CONQUER.SchemaDataSave(data002);
+    console.log('schema data saved');
 }
 
 var logs:string[] = [];
@@ -366,7 +453,7 @@ function ExampleStructureSave () {
 `{
     "schemaName"        : "schema001",
     "schemaFields"      : {
-        "values"        : {
+        "add"           : {
             "field001"  : "number",
             "field002"  : "string",
             "field003"  : "boolean",

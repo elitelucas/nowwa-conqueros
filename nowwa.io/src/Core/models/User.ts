@@ -1,18 +1,33 @@
 import mongoose from 'mongoose';
+import { WithRequired } from '../Utils';
+import { FiledocDocument, FiledocSchema } from './Filedoc';
 import bcrypt from "bcrypt";
 
-type verifyPasswordFunction = (candidatePassword: string, cb: (err: any, isMatch: any) => void) => void;
+type verifyPasswordFunction = (candidatePassword: string, cb: (error:Error | undefined, isMatch:boolean) => void) => void;
 
-export type UserDocument = mongoose.Document & {
-    email           : string,
+type addFileFunction = (filedoc:FiledocDocument, cb: (error:Error | undefined) => void) => void;
+
+export type UserType = {
+    username        : string,
+    email?          : string,
     isEmailVerified : boolean,
     password        : string,
-    verifyPassword  : verifyPasswordFunction
+    files           : FiledocDocument[]
 };
 
-const UserSchema = new mongoose.Schema<UserDocument>({
+export type UserDocument = mongoose.Document & WithRequired<UserType, 'email'> & {
+    verifyPassword  : verifyPasswordFunction,
+    addFile         : addFileFunction
+};
+
+export const UserSchema = new mongoose.Schema<UserDocument>({
+    username        : {
+        type        : String,
+        unique      : true,
+    },
     email           : {
         type        : String,
+        unique      : true,
     },
     isEmailVerified : {
         type        : Boolean,
@@ -24,6 +39,10 @@ const UserSchema = new mongoose.Schema<UserDocument>({
     dateCreated     : {
         type        : Date,
         default     : Date.now
+    },
+    files           : {
+        type        : [FiledocSchema],
+        default     : []
     }
 }, {
     strict          : false
@@ -42,10 +61,10 @@ UserSchema.pre("save", function save(next) {
     });
 });
 
-UserSchema.methods.verifyPassword = function (this: any, candidatePassword:string, cb:(error:Error | undefined, isMatch:boolean) => void) {
+UserSchema.methods.verifyPassword = function (this:UserDocument, candidatePassword:string, cb:(error:Error | undefined, isMatch:boolean) => void) {
     bcrypt.compare(candidatePassword, this.password, function (error, isMatch) {
         cb(error, isMatch);
     });
 };
 
-export default mongoose.model("Users", UserSchema); 
+export const User = mongoose.model("Users", UserSchema); 

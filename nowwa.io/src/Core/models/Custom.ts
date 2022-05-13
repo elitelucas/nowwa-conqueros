@@ -1,15 +1,12 @@
 import mongoose from 'mongoose';
+import { WithRequired } from '../Utils';
 
 export type CustomType = {
     schemaName      : string,
     schemaFields?   : {[key:string]:string}
 };
 
-type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] };
-
-type MongooseCustomType = WithRequired<CustomType, 'schemaFields'>;
-
-type CustomDocument = mongoose.Document & MongooseCustomType;
+type CustomDocument = mongoose.Document & WithRequired<CustomType, 'schemaFields'>;
 
 export enum CustomProperty {
     schemaName      = 'schemaName',
