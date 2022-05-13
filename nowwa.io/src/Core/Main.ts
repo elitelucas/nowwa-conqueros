@@ -153,7 +153,7 @@ class Core {
                 if (error) {
                     return res.send({ success: false, error: error.message });
                 }
-                return res.send({ success: true, user: user });
+                return res.send({ success: true, value: user });
             })(req, res);
         });
 
@@ -180,7 +180,7 @@ class Core {
                 }
                 const newUser = new User({ username: req.body.username, password: req.body.password });
                 await newUser.save();
-                return res.send({ success: true, user: newUser });
+                return res.send({ success: true, value: newUser });
                 /*
                 User.reg(newUser, req.body.password, (error:any, user?:any) => {
                     if (error) { return self.SendResponse(res, error); }

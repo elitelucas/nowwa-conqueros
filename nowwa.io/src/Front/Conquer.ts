@@ -186,6 +186,44 @@ module CONQUER {
         }
     }
 
+    export async function UserAuthenticate (username:string, password:string) {
+        try {
+            var data = {
+                username: username,
+                password: password
+            }
+
+            // Send schema data request to server
+            var response = await Call("POST", url + '/authenticate', data);
+            if (response.success) {
+                return Promise.resolve(response.value);
+            }
+            return Promise.reject(response.error);
+        }
+        catch (error:any) {
+            return Promise.reject(error);
+        }
+    }
+
+    export async function UserRegister (username:string, password:string) {
+        try {
+            var data = {
+                username: username,
+                password: password
+            }
+
+            // Send schema data request to server
+            var response = await Call("POST", url + '/register', data);
+            if (response.success) {
+                return Promise.resolve(response.value);
+            }
+            return Promise.reject(response.error);
+        }
+        catch (error:any) {
+            return Promise.reject(error);
+        }
+    }
+
     async function Call (method:Method, fullurl:string, reqdata?:any, isFile?:boolean):Promise<any> {
         try {
             var requestInit:RequestInit = { 

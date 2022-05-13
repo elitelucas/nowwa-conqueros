@@ -3,18 +3,18 @@ declare var Conquer:any;
 
 async function Init () {
 
-    var structure002 = {
-        "schemaName"        : "schema002",
-        "schemaFields"      : {
-            "add"           : {
-                "field001"  : "number",
-                "field002"  : "string",
-                "field003"  : "boolean"
-            },
-        }
-    };
-    await CONQUER.SchemaStructureSave(structure002);
-    console.log('schema structure saved');
+    // var structure002 = {
+    //     "schemaName"        : "schema002",
+    //     "schemaFields"      : {
+    //         "add"           : {
+    //             "field001"  : "number",
+    //             "field002"  : "string",
+    //             "field003"  : "boolean"
+    //         },
+    //     }
+    // };
+    // await CONQUER.SchemaStructureSave(structure002);
+    // console.log('schema structure saved');
     
     // Case invalid data type
     // var data001 = {
@@ -30,78 +30,79 @@ async function Init () {
     // await CONQUER.SchemaDataSave(data001);
     
     // Case valid data type
-    var data001 = {
-        "schemaName"        : "schema002",
-        "schemaFields"      : {
-            "values"        : {
-                "field001"  : -99, // valid
-                "field002"  : "hello", // valid
-                "field003"  : false, // valid
-            },
-        }
-    };
-    await CONQUER.SchemaDataSave(data001);
-    console.log('schema data saved');
+    // var data001 = {
+    //     "schemaName"        : "schema002",
+    //     "schemaFields"      : {
+    //         "values"        : {
+    //             "field001"  : -99, // valid
+    //             "field002"  : "hello", // valid
+    //             "field003"  : false, // valid
+    //         },
+    //     }
+    // };
+    // await CONQUER.SchemaDataSave(data001);
+    // console.log('schema data saved');
     
     // Case valid search filter
-    var filter001 = {
-        "schemaName"        : "schema002",
-        "schemaFields"      : {
-            "where"         : {
-                "field002"  : {
-                    $lt     : 100 // less than operator ($lt) 
-                }
-            },
-        }
-    };
-    var data = await CONQUER.SchemaDataLoad(filter001);
-    console.log('schema data loaded');
-    console.log(data);
+    // var filter001 = {
+    //     "schemaName"        : "schema002",
+    //     "schemaFields"      : {
+    //         "where"         : {
+    //             "field002"  : {
+    //                 $lt     : 100 // less than operator ($lt) 
+    //             }
+    //         },
+    //     }
+    // };
+    // var data = await CONQUER.SchemaDataLoad(filter001);
+    // console.log('schema data loaded');
+    // console.log(data);
 
-    var structure002alter001 = {
-        "schemaName"        : "schema002",
-        "schemaFields"      : {
-            "add"           : {
-                "field004"  : "object"
-            },
-        }
-    };
-    await CONQUER.SchemaStructureSave(structure002alter001);
-    console.log('schema structure altered');
+    // var structure002alter001 = {
+    //     "schemaName"        : "schema002",
+    //     "schemaFields"      : {
+    //         "add"           : {
+    //             "field004"  : "object"
+    //         },
+    //     }
+    // };
+    // await CONQUER.SchemaStructureSave(structure002alter001);
+    // console.log('schema structure altered');
     
     
-    var structure002Alter002 = {
-        "schemaName"        : "schema002",
-        "schemaFields"      : {
-            "remove"        : ["field001"]
-        }
-    };
-    await CONQUER.SchemaStructureSave(structure002Alter002);
-    console.log('schema structure altered');
+    // var structure002Alter002 = {
+    //     "schemaName"        : "schema002",
+    //     "schemaFields"      : {
+    //         "remove"        : ["field001"]
+    //     }
+    // };
+    // await CONQUER.SchemaStructureSave(structure002Alter002);
+    // console.log('schema structure altered');
 
     // Case valid data type
-    var data002 = {
-        "schemaName"        : "schema002",
-        "schemaFields"      : {
-            "values"        : {
-                "field004"  : {
-                    "key"   : "value"
-                }, // valid
-                "field002"  : "hello", // valid
-                "field003"  : false, // valid
-            },
-        }
-    };
-    await CONQUER.SchemaDataSave(data002);
-    console.log('schema data saved');
+    // var data002 = {
+    //     "schemaName"        : "schema002",
+    //     "schemaFields"      : {
+    //         "values"        : {
+    //             "field004"  : {
+    //                 "key"   : "value"
+    //             }, // valid
+    //             "field002"  : "hello", // valid
+    //             "field003"  : false, // valid
+    //         },
+    //     }
+    // };
+    // await CONQUER.SchemaDataSave(data002);
+    // console.log('schema data saved');
 }
 
 var logs:string[] = [];
 var maxLogs:number = 10;
-var port:number = 80;
-var host:string = 'nowwa.io';
+var port:number = 9000;
+var host:string = 'localhost';
 var version:string = '0.0.1';
-var url:string = `https://${host}/webhook/${version}` + (port == 80) ? `` : `:${port}`;
+var targetURL:string = `https://${host}/webhook/${version}` + ((port == 80) ? `` : `:${port}`);
+console.log(targetURL);
 
 type Method = "GET" | "POST";
 
@@ -154,7 +155,7 @@ async function Call (method:Method, url:string, reqdata?:any, isFile?:boolean):P
 
 async function CallGetDefault ():Promise<void> {
     Log('call get default...');
-    return Call("GET", url);
+    return Call("GET", targetURL);
 }
 
 async function CallPostAuthenticate ():Promise<void> {
@@ -165,9 +166,14 @@ async function CallPostAuthenticate ():Promise<void> {
     }
     if (password.length == 0) {  
         return Log('password cannot be empty!');
-    } 
-    Log('call post authenticate...');
-    return Call("POST",url + "/authenticate", {username:username, password:password});
+    }
+    try {
+        var user = await CONQUER.UserAuthenticate(username, password);
+        Log(user);
+    }
+    catch (error) {
+        Log(error);
+    }
 }
 
 async function CallPostRegister ():Promise<void> {
@@ -186,8 +192,13 @@ async function CallPostRegister ():Promise<void> {
         Log('password mismatch!');
         return Promise.resolve();
     }
-    Log('call post register...');
-    return Call("POST", url + "/register", {username:username, password:password});
+    try {
+        var user = await CONQUER.UserRegister(username, password);
+        Log(user);
+    }
+    catch (error) {
+        Log(error);
+    }
 }
 
 async function CallPostUpload ():Promise<void> {
@@ -204,7 +215,7 @@ async function CallPostUpload ():Promise<void> {
             formData.append(`fld_file_${i}`, files[i]);
         }
         Log('call post upload...');
-        return Call(method,url + "/upload", formData, true);
+        return Call(method, targetURL + "/upload", formData, true);
     }
 }
 
