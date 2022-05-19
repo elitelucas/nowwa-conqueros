@@ -224,6 +224,10 @@ module CONQUER {
         }
     }
 
+    export async function UserUpload () {
+        
+    }
+
     async function Call (method:Method, fullurl:string, reqdata?:any, isFile?:boolean):Promise<any> {
         try {
             var requestInit:RequestInit = { 

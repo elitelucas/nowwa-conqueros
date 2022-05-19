@@ -9,7 +9,6 @@ import cloudinary from 'cloudinary';
 import path from 'path';
 import { load } from 'ts-dotenv';
 import { User, UserDocument } from './Models/User';
-import { Filedoc } from './Models/Filedoc';
 import { Custom, CustomProperty, CustomType } from './Models/Custom';
 import Environment from './Environment';
 import crypto from 'crypto';
