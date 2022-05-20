@@ -72,7 +72,7 @@ async function archiveBranches(config, branchData) {
         await archiveProject(config, branch.name, branch.id, "temp/out");
 
         let zipName = `${config.playcanvas.nam}_Archive_${branch.name}.zip`;
-        let zipPath = path.resolve(__dirname, `temp/out/${zipName}`);
+        let zipPath = `temp/out/${zipName}`;
         await UploadArchive(zipPath, zipName);
 
         currentJobCount++;
