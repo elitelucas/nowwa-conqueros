@@ -71,7 +71,7 @@ async function archiveBranches(config, branchData) {
         console.log("↪️ " + (i+1) + " of " + branchData.length + " branches: " + branch.name);
         await archiveProject(config, branch.name, branch.id, "temp/out");
 
-        let zipName = `${config.playcanvas.nam}_Archive_${branchName}.zip`;
+        let zipName = `${config.playcanvas.nam}_Archive_${branch.name}.zip`;
         let zipPath = path.resolve(__dirname, `temp/out/${zipName}`);
         await UploadArchive(zipPath, zipName);
 
