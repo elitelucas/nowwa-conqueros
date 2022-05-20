@@ -8,6 +8,8 @@ import crypto from 'crypto';
 import multer from 'multer';
 import fs from 'fs';
 
+const platform:"WIN" | "UNIX" = 'UNIX'; 
+
 console.log(`project path: ${__dirname}`);
 
 const envPath = path.resolve(__dirname, `../.env`);
@@ -67,12 +69,10 @@ class Main {
                 }));
 
             self.ExpressGetDefault();
-            self.ExpressPostUpload();
-            self.ExpressGetExplorer();
     
             console.log(`set port...`);
             self.app.listen(self.port);
-            console.log(`listeneing on port ${self.port}`);
+            console.log(`listening on port ${self.port}`);
         }
         catch (error) {
             console.error(<Error>error);
@@ -87,112 +87,101 @@ class Main {
     
         var self:Main = this;
     
-        self.app.use('/', express.static(path.join(__dirname,'../public')));
-    }
-
-    /**
-     * Set express response for GET '/explorer' call.
-     */
-    private async ExpressGetExplorer () {
-        console.log(`set express get explorer...`);
-    
-        var self:Main = this;
-    
-        self.app.use('/explorer', (req, res) => {
+        self.app.use((req, res, next) => {
             console.log(`req.url: ${req.url}`);
-            
-            var folderPath = path.join(__dirname, '../public', req.url);
-            
-            // list all files in the directory
-            fs.readdir(folderPath, (err, files) => {
-                if (err) {
-                    throw err;
-                }
-
-                var paths = req.url.length > 1 ? req.url.split('/') : [];
-                var output:string = "";
-                var numLevel = paths.length > 1 && paths[1].length > 0 ? paths.length - 1 : 0;
-                var currentPath = '';
-                var shouldStop = false;
-                for (var i = 1; i < numLevel; i++) {
-                    currentPath += `${paths[i]}`;
-                }
-                output += `${req.baseUrl}${req.url}<br/>`;
-                if (numLevel > 0) {
-                    output += `<a href='${req.baseUrl}${currentPath}'>[^]..</a><br/>`;
-                }
-                // files object contains all files names
-                // log them on console
-                files.forEach(file => {
-                    console.log(`file: ${file}`);
-                    var newPath = path.join(folderPath, file);
-                    var isDirectory:boolean = fs.statSync(newPath).isDirectory();
-                    var isFile:boolean = fs.statSync(newPath).isFile();
-                    var extra1:string = numLevel > 0 ? '/' : '';
-                    var extra2:string = isDirectory ? '[D]' : '[F]';
-                    if (!isDirectory) {
-                        output += `<a href='${req.url}${extra1}${file}'>${extra2} ${file}</a><br/>`;
-                    } else {
-                        output += `<a href='${req.baseUrl}${req.url}${extra1}${file}'>${extra2} ${file}</a><br/>`;
-                    }
-                });
-                if (shouldStop) {
-                    return;
-                }
-
-                res.status(200).send(output);
-            });
+            var adjustedUrl = req.url;
+            if (adjustedUrl.indexOf('//') == 0) {
+                adjustedUrl = adjustedUrl.slice(1);
+            } 
+            if (adjustedUrl.indexOf('/explorer') == 0) {
+                console.log(`access explorer`);
+                adjustedUrl = adjustedUrl.slice('/explorer'.length);
+                self.ExecuteExplorer(adjustedUrl, res);
+            } else if (adjustedUrl.indexOf('/upload') == 0) {
+                console.log(`access upload`);
+                adjustedUrl = adjustedUrl.slice('/upload'.length);
+                self.ExecuteUpload(req, res);
+            } else {
+                console.log(`access file`);
+                fs.createReadStream(path.join(__dirname, '../public', adjustedUrl)).pipe(res);
+            }
         });
     }
 
     /**
-     * Set express response for POST '/upload' call.
+     * Show file and folder explorer.
      */
-    private async ExpressPostUpload () {
+    private async ExecuteExplorer (url:string, res:any) {
+    
+        var self:Main = this;
+            
+        var folderPath = path.join(__dirname, '../public', url);
+        console.log(`folderPath: ${folderPath}`);
+        
+        // list all files in the directory
+        fs.readdir(folderPath, (err, files) => {
+            if (err) {
+                throw err;
+            }
+
+            var paths = url.length > 1 ? url.split('/') : [];
+            var output:string = "";
+            var numLevel = paths.length > 1 && paths[1].length > 0 ? paths.length - 1 : 0;
+            var currentPath = '';
+            var shouldStop = false;
+            for (var i = 1; i < numLevel; i++) {
+                currentPath += `${paths[i]}`;
+            }
+            output += (numLevel == 0 ? '/' : '') + `${url}<br/>`;
+            var extraUrl:string = platform == 'UNIX' ? '/storage' : '';
+            if (numLevel > 0) {
+                output += `<a href='${extraUrl}/explorer${currentPath}'>[^]..</a><br/>`;
+            }
+            // files object contains all files names
+            // log them on console
+            files.forEach(file => {
+                console.log(`file: ${file}`);
+                var newPath = path.join(folderPath, file);
+                var isDirectory:boolean = fs.statSync(newPath).isDirectory();
+                var isFile:boolean = fs.statSync(newPath).isFile();
+                var extra:string = isDirectory ? '[D]' : '[F]';
+                if (!isDirectory) {
+                    output += `<a href='${extraUrl}${url}/${file}'>${extra} ${file}</a><br/>`;
+                } else { 
+                    output += `<a href='${extraUrl}/explorer/${url}${file}'>${extra} ${file}</a><br/>`;
+                }
+            });
+            if (shouldStop) {
+                return;
+            }
+
+            res.status(200).send(output);
+        });
+    }
+
+    /**
+     * Handle upload file.
+     */
+    private async ExecuteUpload (req:any, res:any) {
         console.log(`set express post upload...`);
     
         var self:Main = this;
-        
-        var storage = multer.diskStorage({ 
-            destination: (req, file, callback) => {
-                callback(null, path.resolve(__dirname, '../temp/'));
-            },
-            filename: (req, file, callback) => {
-                console.log(`file.originalName: ${file.originalname}`);
-                /*
-                var extensionRegex:RegExp = /[^.]+$/i;
-                var extension = file.originalname.match(extensionRegex);
-                if (extension != null) {
-                    var extensionName = extension[0];
-                    var fieldName:string = file.fieldname;
-                    callback(null, `${fieldName}.${extensionName}`);
-                }
-                callback(null, `${fieldName}.${extensionName}`);
-                */
-                callback(null, file.originalname);
-            }
-        });
 
-        var upload = multer({ storage: storage });
-    
-        self.app.post(`/upload`, upload.single('file'), (req, res) => {
-            console.log(`<-- request upload`);
+        var extraHeaders = JSON.parse(req.headers['content-disposition']);
+        var filename = extraHeaders.filename;
+        var filepath = path.join(__dirname, '../public', filename);
 
-            var file:Express.Multer.File | undefined = req.file;
+        var writeStream = fs.createWriteStream(filepath);
             
-            if (typeof (file) != `undefined`) {
-                console.log(`file uploaded!`);
-                
-                res.send({ 
-                    success: true, 
-                    message: 'file uploaded!',
-                    response: response
-                });
-            } else {
-                res.send({ success: false, error: "file uploaded fails..." });
-            }
-
+        writeStream.on('error', function (err) {
+            console.log(err);
         });
+
+        req.on('end', () => {
+            res.status(200).send('file uploaded!');
+        });
+
+        req.pipe(writeStream);
     }
 
 }
