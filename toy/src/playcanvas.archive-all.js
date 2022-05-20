@@ -73,7 +73,7 @@ async function archiveBranches(config, branchData) {
 
         let zipPath = path.resolve(__dirname, directory + "/" + config.playcanvas.name + '_Archive_' + branchName + '.zip');
         await UploadArchive(zipPath, config.playcanvas.name + '_Archive_' + branchName + '.zip');
-        
+
         currentJobCount++;
 
         if (currentJobCount === maxJobs) {
@@ -329,12 +329,10 @@ function UploadArchive (inputFilePath, outputFileName) {
     });
 };
 
-// await UploadArchive('../test/hob.txt', 'hehe.txt');
+const config = readConfig();
 
-// const config = readConfig();
-
-// getBranches(config)
-//     .then(processBranches)
-//     .then((branchData) => archiveBranches(config, branchData))
-//     .then(() => console.log("Success"))
-//     .catch(err => console.log("Error", err));
+getBranches(config)
+    .then(processBranches)
+    .then((branchData) => archiveBranches(config, branchData))
+    .then(() => console.log("Success"))
+    .catch(err => console.log("Error", err));
