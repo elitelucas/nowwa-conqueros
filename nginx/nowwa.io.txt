@@ -21,8 +21,10 @@ server {
 	
 	access_log /var/log/nginx/nowwa.io.access.log;
 	error_log  /var/log/nginx/error.log info;
+
+	client_max_body_size 200M;
 	
-	keepalive_timeout 75 75;
+	keepalive_timeout 36000;
 		
 	location / {
 		proxy_pass http://127.0.0.1:9000/; # redirect to this url, make sure the '/' exists

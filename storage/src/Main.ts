@@ -51,10 +51,6 @@ class Main {
             var self:Main = this;
 
             self.app
-                .use(express.json())
-                .use(express.urlencoded({
-                    extended            :false
-                }))
                 .use(cors({
                     origin: '*'
                 }))
@@ -66,6 +62,13 @@ class Main {
                     cookie              : {
                         maxAge          : (1000 * 60 * 100)
                     }
+                })) 
+                .use(express.json({
+                    limit               : '200mb'
+                }))
+                .use(express.urlencoded({
+                    extended            : false,
+                    limit               : '200mb'
                 }));
 
             self.ExpressGetDefault();

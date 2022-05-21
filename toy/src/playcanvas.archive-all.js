@@ -9,7 +9,7 @@ const __dirname = path.dirname(__filename);
 import https from 'https';
 import http from 'http';
 import formdata from 'form-data';
-
+ 
 function getBranches(config) {
     return new Promise((resolve, reject) => {
         console.log(config.playcanvas.project_id);
@@ -301,6 +301,9 @@ function UploadArchive (inputFilePath, outputFileName) {
         const protocol = platform == 'UNIX' ? https : http;
         
         var filepath = path.join(__dirname, inputFilePath);
+
+        console.log(`about to upload zip: ${outputFileName}`);
+        console.log(filepath);
 
         var formData = new formdata();
         formData.append('file', fs.createReadStream(filepath));
