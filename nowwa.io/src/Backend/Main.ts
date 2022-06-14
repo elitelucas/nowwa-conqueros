@@ -12,6 +12,9 @@ import { User, UserDocument } from './Models/User';
 import { Custom, CustomProperty, CustomType } from './Models/Custom';
 import Environment from './Environment';
 import crypto from 'crypto';
+import { Server, Socket } from "socket.io";
+import { createServer } from "http";
+import { ClientToServerEvents, InterServerEvents, ServerToClientEvents, SocketData } from './Interfaces/SocketInterfaces';
 
 console.log(`project path: ${__dirname}`);
 
@@ -44,11 +47,7 @@ type MapSchemaTypes = {
     date        : Date;
 }
 
-class Core {
-    
-    private port:number = 9000;
-
-    private app:express.Express;
+class Main {
 
     private secret:string = "conqueros";
 
@@ -57,20 +56,19 @@ class Core {
     private models:{[key:string]:mongoose.Model<any, {}, {}>};
 
     constructor () {
-        this.app = express();
         this.models = {};
         this.Initialize();
     }
-
 
     /**
      * Initialize necessary components.
      */
     private async Initialize () {
         console.log(`initialize...`);
-        await this.InitExpress();
-        await this.InitDatabase();
+        this.InitExpress();
+        this.InitDatabase();
         this.InitCloudinary();
+        this.InitSocket();
     }
 
     /**
@@ -80,9 +78,10 @@ class Core {
         try {
             console.log(`init express...`);
     
-            var self:Core = this;
+            var self:Main = this;
 
-            self.app
+            var app:express.Express = express();
+            app
                 .use(express.json())
                 .use(express.urlencoded({
                     extended            :false
@@ -102,18 +101,17 @@ class Core {
 
             self.InitAuthentication();
 
-            self.ExpressGetDefault();
-            self.ExpressPostAuthenticate();
-            self.ExpressPostRegister();
-            self.ExpressPostUpload();
-            self.ExpressPostSchemaStructureSave();
-            self.ExpressPostSchemaStructureLoad();
-            self.ExpressPostSchemaDataSave();
-            self.ExpressPostSchemaDataLoad();
+            self.ExpressGetDefault(app);
+            self.ExpressPostAuthenticate(app);
+            self.ExpressPostRegister(app);
+            self.ExpressPostUpload(app);
+            self.ExpressPostSchemaStructureSave(app);
+            self.ExpressPostSchemaStructureLoad(app);
+            self.ExpressPostSchemaDataSave(app);
+            self.ExpressPostSchemaDataLoad(app);
     
-            console.log(`set port...`);
-            self.app.listen(self.port);
-            console.log(`listeneing on port ${self.port}`);
+            app.listen(env.MAIN_PORT);
+            console.log(`[Express] listening on port ${env.MAIN_PORT}`);
         }
         catch (error) {
             console.error(<Error>error);
@@ -123,50 +121,72 @@ class Core {
     /**
      * Set express response for GET default '/' call.
      */
-    private async ExpressGetDefault () {
+    private async ExpressGetDefault (app:express.Express) {
         console.log(`set express get default...`);
     
-        var self:Core = this;
+        var self:Main = this;
     
-        self.app.use('/', express.static(path.join(__dirname,'../Front')));
-        self.app.get('/', (req, res) => {
+        app.get(`${self.baseUrl}`, (req, res) => {
             console.log('<-- request default');
-            res.sendFile(path.join(__dirname,'../Front/index.html'));
+            res.send({ success: true });
         });
     }
 
     /**
      * Set express response for POST '/authenticate' call.
      */
-    private async ExpressPostAuthenticate () {
+    private async ExpressPostAuthenticate (app:express.Express) {
         console.log(`set express post authenticate...`);
     
-        var self:Core = this;
+        var self:Main = this;
     
-        self.app.post(`${self.baseUrl}/authenticate`, (req, res) => {
+        app.post(`${self.baseUrl}/authenticate`, (req, res) => {
             console.log(`<-- request authenticate`);
             // console.log(`req.body.username: ${req.body.username}`);
             // console.log(`req.body.password: ${req.body.password}`);
-            passport.authenticate('local', (error:Error, user?:any) => {
-                
-                if (error) {
-                    return res.send({ success: false, error: error.message });
-                }
-                return res.send({ success: true, value: user });
-            })(req, res);
+            self.UserAuthenticate({username:req.body.username, password:req.body.password})
+            .then((user) => {
+                res.send({ success: true, value: user });
+            })
+            .catch((error) => {
+                res.send({ success: false, error: error.message });
+            });
         });
 
     }
 
     /**
+     * Authenticate user.
+     * @param username 
+     * @param password 
+     */
+    private async UserAuthenticate (args:{username:string, password:string}) {
+        return new Promise((resolve, reject) => {
+            var req:any = { 
+                body: { 
+                    username: args.username,
+                    password: args.password
+                }
+            };
+            passport.authenticate('local', (error:Error, user?:any) => {
+                if (error) {
+                    reject(error.message);
+                } else {
+                    resolve(user);
+                }
+            })(req, null);
+        });
+    }
+
+    /**
      * Set express response for POST '/register' call.
      */
-    private async ExpressPostRegister () {
+    private async ExpressPostRegister (app:express.Express) {
         console.log(`set express post register...`);
     
-        var self:Core = this;
+        var self:Main = this;
     
-        self.app.post(`${self.baseUrl}/register`, (req:express.Request, res:express.Response) => {
+        app.post(`${self.baseUrl}/register`, (req:express.Request, res:express.Response) => {
             console.log(`<-- request register`);
             // console.log(`req.body.username: ${req.body.username}`);
             // console.log(`req.body.password: ${req.body.password}`);
@@ -180,11 +200,6 @@ class Core {
                 const newUser = new User({ username: req.body.username, password: req.body.password });
                 await newUser.save();
                 return res.send({ success: true, value: newUser });
-                /*
-                User.reg(newUser, req.body.password, (error:any, user?:any) => {
-                    if (error) { return self.SendResponse(res, error); }
-                });
-                */
             });
         });
     }
@@ -192,10 +207,10 @@ class Core {
     /**
      * Set express response for POST '/upload' call.
      */
-    private async ExpressPostUpload () {
+    private async ExpressPostUpload (app:express.Express) {
         console.log(`set express post upload...`);
     
-        var self:Core = this;
+        var self:Main = this;
         
         var storage = multer.diskStorage({ 
             destination: (req, file, callback) => {
@@ -218,7 +233,7 @@ class Core {
 
         var upload = multer({ storage: storage });
     
-        self.app.post(`${self.baseUrl}/upload`, upload.single('fld_file_0'), (req, res) => {
+        app.post(`${self.baseUrl}/upload`, upload.single('fld_file_0'), (req, res) => {
             console.log(`<-- request upload`);
 
             var file:Express.Multer.File | undefined = req.file;
@@ -275,7 +290,7 @@ class Core {
     private async InitDatabase () {
         console.log(`init database...`);
 
-        var self:Core = this;
+        var self:Main = this;
 
         var uri:string = `mongodb+srv://${env.MONGODB_USER}:${env.MONGODB_PASS}@${env.MONGODB_HOST}/${env.MONGODB_DB}`;
         console.log(`connect to: ${uri}`);
@@ -482,7 +497,7 @@ class Core {
     private InitAuthentication () {
         console.log(`init authentication...`);
 
-        var self:Core = this;
+        var self:Main = this;
 
         passport.use(new passportLocal.Strategy({
             passwordField: "password",
@@ -506,7 +521,7 @@ class Core {
     private InitCloudinary () {
         console.log(`init cloudinary...`);
 
-        var self:Core = this;
+        var self:Main = this;
 
         console.log(`set cloudinary config...`);
         cloudinary.v2.config({
@@ -519,12 +534,12 @@ class Core {
     /**
      * Create or modify a custom schema structure.
      */
-    private ExpressPostSchemaStructureSave () {
+    private ExpressPostSchemaStructureSave (app:express.Express) {
         console.log(`set express post schema structure save...`);
     
-        var self:Core = this;
+        var self:Main = this;
 
-        self.app.post(`${self.baseUrl}/schema_structure_save`, async (req:express.Request, res:express.Response) => {
+        app.post(`${self.baseUrl}/schema_structure_save`, async (req:express.Request, res:express.Response) => {
             console.log(`<-- request schema structure save`);
 
             var schemaFields = req.body.schemaFields;
@@ -609,12 +624,12 @@ class Core {
     /**
      * Load one or all custom schema structures.
      */
-    private ExpressPostSchemaStructureLoad () {
+    private ExpressPostSchemaStructureLoad (app:express.Express) {
         console.log(`set express post add custom schema...`);
     
-        var self:Core = this;
+        var self:Main = this;
 
-        self.app.post(`${self.baseUrl}/schema_structure_load`, async (req:express.Request, res:express.Response) => {
+        app.post(`${self.baseUrl}/schema_structure_load`, async (req:express.Request, res:express.Response) => {
             console.log(`<-- request schema structure load`);
 
             try {
@@ -631,12 +646,12 @@ class Core {
     /**
      * Create or modify a custom schema data.
      */
-     private ExpressPostSchemaDataSave () {
+     private ExpressPostSchemaDataSave (app:express.Express) {
         console.log(`set express post schema data save...`);
     
-        var self:Core = this;
+        var self:Main = this;
 
-        self.app.post(`${self.baseUrl}/schema_data_save`, async (req:express.Request, res:express.Response) => {
+        app.post(`${self.baseUrl}/schema_data_save`, async (req:express.Request, res:express.Response) => {
             console.log(`<-- request schema data save`);
 
             var schemaFields = req.body.schemaFields;
@@ -688,12 +703,12 @@ class Core {
     /**
      * Load a custom schema data.
      */
-     private ExpressPostSchemaDataLoad () {
+     private ExpressPostSchemaDataLoad (app:express.Express) {
         console.log(`set express post schema data load...`);
     
-        var self:Core = this;
+        var self:Main = this;
 
-        self.app.post(`${self.baseUrl}/schema_data_load`, async (req:express.Request, res:express.Response) => {
+        app.post(`${self.baseUrl}/schema_data_load`, async (req:express.Request, res:express.Response) => {
             console.log(`<-- request schema data load`);
 
             var schemaFields = req.body.schemaFields;
@@ -725,6 +740,79 @@ class Core {
         });
     }
 
+    /**
+     * Initialize socket feature.
+     */
+    private InitSocket () {
+
+        var self:Main = this;
+
+        var httpServer = createServer();
+        var io:Server = new Server<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>(
+            httpServer,
+            {
+                cors: {
+                    origin: "*"
+                }
+            }
+        );
+
+        io.on("connection", (socket) => {
+            socket.emit("noArg");
+            socket.emit("basicEmit", 1, "2", Buffer.from([3]));
+            socket.emit("withAck", "4", (e:any) => {
+            // e is inferred as number
+                console.log(`e: ${e}`);
+            });
+        
+            // works when broadcast to all
+            io.emit("noArg");
+        
+            // works when broadcasting to a room
+            io.to("room1").emit("basicEmit", 1, "2", Buffer.from([3]));
+
+            socket.on('fromClient', (args:any) => {
+                console.log(`[socket] [client:${socket.id}]: ${JSON.stringify(args)}`); 
+                // send echo
+                socket.emit('fromServer', args);
+                socket.broadcast.emit('fromServer', `[broadcast: ${socket.id}]: ${JSON.stringify(args)}`); // sender does not get the broadcast
+            });
+
+            socket.on('authenticate', (args:any) => {
+                self.UserAuthenticate({username:args.username, password:args.password})
+                .then((user) => {
+                    socket.emit('fromServer', { success: true, value: user });
+                })
+                .catch((error) => {
+                    socket.emit('fromServer', { success: false, error: error.message || error });
+                });
+            });
+
+            socket.on('register', (args:any) => {
+                var req:any = { 
+                    body: { 
+                        username: args.username,
+                        password: args.password
+                    }
+                };
+                User.findOne({ username: req.body.username }, async (error:any, user?:any) => {
+                    if (error) { 
+                        return socket.emit('fromServer', { success: false, error: error.message });
+                    }
+                    if (user) { 
+                        return socket.emit('fromServer', { success: false, error: "user already exists!" });
+                    }
+                    const newUser = new User({ username: req.body.username, password: req.body.password });
+                    await newUser.save();
+                    return socket.emit('fromServer', { success: true, value: newUser });
+                });
+            })
+
+        });
+
+        io.listen(env.SOCKET_PORT);
+    }
+
 }
 
-var c:Core = new Core();
+var c:Main = new Main();

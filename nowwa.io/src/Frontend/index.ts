@@ -16,7 +16,7 @@ async function Init () {
     // await CONQUER.SchemaStructureSave(structure002);
     // console.log('schema structure saved');
     
-    // Case invalid data type
+    // // Case invalid data type
     // var data001 = {
     //     "schemaName"        : "schema002",
     //     "schemaFields"      : {
@@ -95,13 +95,14 @@ async function Init () {
     // await CONQUER.SchemaDataSave(data002);
     // console.log('schema data saved');
 }
-
+ 
 var logs:string[] = [];
 var maxLogs:number = 10;
 var port:number = 9000;
-var host:string = 'localhost';
+var host:string = '127.0.0.1';
 var version:string = '0.0.1';
-var targetURL:string = `https://${host}/webhook/${version}` + ((port == 80) ? `` : `:${port}`);
+var useSSL:boolean = false;
+var targetURL:string = (useSSL ? `https` : `http`) + `://${host}` + ((port == 80) ? `` : `:${port}`) + `/webhook/v${version}`;
 console.log(targetURL);
 
 type Method = "GET" | "POST";

@@ -1,15 +1,29 @@
 //@ts-ignore
+declare var io:any;
+
 module CONQUER {
 
     export var version:string = '0.0.1';
 
-    var host = 'localhost:9000';
-    // var host = 'nowwa.io';
-    var useSSL = false;
-    // var useSSL = true;
+    var mainHost = '127.0.0.1';
+    // var mainHost = 'nowwa.io';
+    var mainPort = 9000;
+    // var mainPort = 80;
+    var mainUseSSL = false;
+    // var mainUseSSL = true;
+    var mainProtocol:string = mainUseSSL ? 'https' : 'http';
+    var port:string = mainPort == 80 ? `` : `:${mainPort.toString()}`;
+    var mainURL:string = `${mainProtocol}://${mainHost}${port}/webhook/v${version}`;
 
-    var protocol:string = useSSL ? 'https' : 'http';
-    var url:string = `${protocol}://${host}/webhook/v${version}`;
+    var socketHost = '127.0.0.1';
+    // var socketHost = 'nowwa.io';
+    var socketPort = 9003;
+    // var socketPort = 80;
+    var socketUseSSL = false;
+    // var socketUseSSL = true;
+    var socketProtocol:string = socketUseSSL ? 'https' : 'http';
+    var port:string = socketPort == 80 ? `` : `:${socketPort.toString()}`;
+    var socketURL:string = `${socketProtocol}://${socketHost}${port}`;
 
     var Types:string[] = [
         'string',
@@ -47,7 +61,7 @@ module CONQUER {
         }
     }
 
-    function BasicCheck (data?:Data) {
+    function SchemaCheck (data?:Data) {
         if (data == undefined) {
             throw new Error(`must have an object to be processed!`);
         }
@@ -62,7 +76,7 @@ module CONQUER {
 
     export async function SchemaStructureSave (structure:Data):Promise<void> {
         try {
-            BasicCheck(structure);
+            SchemaCheck(structure);
             
             // Check possible property 'schemaFields.add' & 'schemaFields.remove' 
             var fieldsToAdd = structure.schemaFields?.add;
@@ -117,7 +131,7 @@ module CONQUER {
             }
 
             // Send schema structure to server
-            var response = await Call("POST", url + '/schema_structure_save', structure);
+            var response = await Call("POST", mainURL + '/schema_structure_save', structure);
             if (response.success) {
                 return Promise.resolve();
             }
@@ -130,7 +144,7 @@ module CONQUER {
 
     export async function SchemaStructureLoad (schemaNames?:string[]):Promise<Data[]> {
         try {
-            var response = await Call("POST", url + '/schema_structure_load', { schemaNames: schemaNames });
+            var response = await Call("POST", mainURL + '/schema_structure_load', { schemaNames: schemaNames });
             if (response.success) {
                 return Promise.resolve(response.value);
             }
@@ -143,7 +157,7 @@ module CONQUER {
 
     export async function SchemaDataSave (data:Data):Promise<void> {
         try {
-            BasicCheck(data);
+            SchemaCheck(data);
 
             // Check necessary property 'schemaFields.value'
             var values = data.schemaFields?.values;
@@ -152,7 +166,7 @@ module CONQUER {
             }
 
             // Send schema data to server
-            var response = await Call("POST", url + '/schema_data_save', data);
+            var response = await Call("POST", mainURL + '/schema_data_save', data);
             if (response.success) {
                 return Promise.resolve(response.value);
             }
@@ -165,7 +179,7 @@ module CONQUER {
 
     export async function SchemaDataLoad (data:Data):Promise<Data> {
         try {
-            BasicCheck(data);
+            SchemaCheck(data);
 
             // Check possible property 'schemaFields.where' 
             var fieldsWhere = data.schemaFields?.where;
@@ -175,7 +189,7 @@ module CONQUER {
             }
 
             // Send schema data request to server
-            var response = await Call("POST", url + '/schema_data_load', data);
+            var response = await Call("POST", mainURL + '/schema_data_load', data);
             if (response.success) {
                 return Promise.resolve(response.value);
             }
@@ -194,7 +208,7 @@ module CONQUER {
             }
 
             // Send schema data request to server
-            var response = await Call("POST", url + '/authenticate', data);
+            var response = await Call("POST", mainURL + '/authenticate', data);
             if (response.success) {
                 return Promise.resolve(response.value);
             }
@@ -213,7 +227,7 @@ module CONQUER {
             }
 
             // Send schema data request to server
-            var response = await Call("POST", url + '/register', data);
+            var response = await Call("POST", mainURL + '/register', data);
             if (response.success) {
                 return Promise.resolve(response.value);
             }
@@ -245,6 +259,49 @@ module CONQUER {
             console.error(error);
             return null;
         }
+    }
+    
+    export var socket:any;
+    var socketListeners:Map<string,any> = new Map<string,any>();
+
+    export function SocketConnect (reconnect:boolean = true) {
+        socket = io(socketURL);
+        socket.on("connect", () => {
+            console.log(`[socket] connect status: ${socket.connected}`); 
+        });
+          
+        socket.on("disconnect", () => {
+            console.log(`[socket] connect status: ${socket.connected}`);
+            // reconnect
+            if (reconnect) {
+                SocketConnect();
+            }
+        });
+
+        socketListeners.forEach((action:any, key:string) => {
+            socket.on(key, (args:any) => {
+                action(args);
+            });
+        });
+    }
+
+    export function SocketSend (key:string, args:any) {
+        socket.emit(key, args);
+    }
+
+    export function SocketDisconnect () {
+        socket.disconnect();
+    }
+
+    export function SocketAddListener (key:string, action:any) {
+        socketListeners.set(key, action);
+        socket.on(key, (args:any) => {
+            action(args);
+        });
+    }
+
+    export function SocketClearListener () {
+        socketListeners.clear();
     }
     
 }

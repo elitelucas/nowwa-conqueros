@@ -11,6 +11,9 @@ var Environment = {
     CLOUDINARY_NAME     : String,
     CLOUDINARY_KEY      : String,
     CLOUDINARY_SECRET   : String,
+
+    MAIN_PORT           : Number,
+    SOCKET_PORT         : Number,
 }
 
 export default Environment;

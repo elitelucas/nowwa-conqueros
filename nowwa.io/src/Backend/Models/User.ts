@@ -62,6 +62,7 @@ UserSchema.pre("save", function save(next) {
 });
 
 UserSchema.methods.verifyPassword = function (this:UserDocument, candidatePassword:string, cb:(error:Error | undefined, isMatch:boolean) => void) {
+    console.log(`this.username: ${this.username} | candidatePassword: ${candidatePassword} | this.password: ${this.password}`);
     bcrypt.compare(candidatePassword, this.password, function (error, isMatch) {
         cb(error, isMatch);
     });
