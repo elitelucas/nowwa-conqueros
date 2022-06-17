@@ -66,12 +66,18 @@ async function archiveBranches(config, branchData) {
     let startTime = Date.now();
     let currentJobCount = 0;
 
+    let nowDate = new Date(startTime);
+    let day = ('0' + nowDate.getDate()).slice(-2);
+    let month = ('0' + nowDate.getMonth()).slice(-2);
+    let year = nowDate.getFullYear();
+    let nowDateString = `${year}-${month}-${day}`;
+
     for (let i = 0; i < branchData.length; i++) {
         let branch = branchData[i];
         console.log("↪️ " + (i+1) + " of " + branchData.length + " branches: " + branch.name);
         await archiveProject(config, branch.name, branch.id, "temp/out");
 
-        let zipName = `${config.playcanvas.name}_Archive_${branch.name}.zip`;
+        let zipName = `${nowDateString}_${config.playcanvas.name}_Archive_${branch.name}.zip`;
         let zipPath = `temp/out/${zipName}`;
         await UploadArchive(zipPath, zipName);
 
