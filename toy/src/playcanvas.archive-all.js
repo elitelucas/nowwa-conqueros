@@ -55,7 +55,7 @@ function processBranches (branches) {
         resolve(branchData);
     });
 }
-
+ 
 async function archiveBranches(config, branchData) {
     console.log("↪️ Start archiving all " + branchData.length + " branches...");
 
