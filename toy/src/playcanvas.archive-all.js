@@ -56,14 +56,13 @@ function processBranches (branches) {
     });
 }
  
-async function archiveBranches(config, branchData) {
+async function archiveBranches(config, branchData, startTime) {
     console.log("↪️ Start archiving all " + branchData.length + " branches...");
 
     // Stict rate limit is 5 requests a miniute so we will keep track of this
     // and wait when need after 5 jobs
     const maxJobs = 5;
     const durationMs = 60 * 1000;
-    let startTime = Date.now();
     let currentJobCount = 0;
 
     let nowDate = new Date(startTime);
@@ -342,8 +341,9 @@ function UploadArchive (inputFilePath, outputFileName) {
 
 const config = readConfig();
 
+let startTime = Date.now();
 getBranches(config)
     .then(processBranches)
-    .then((branchData) => archiveBranches(config, branchData))
+    .then((branchData) => archiveBranches(config, branchData, startTime))
     .then(() => console.log("Success"))
     .catch(err => console.log("Error", err));
