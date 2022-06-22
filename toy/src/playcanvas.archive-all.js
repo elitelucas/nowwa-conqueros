@@ -78,7 +78,7 @@ async function archiveBranches(config, branchData, startTime) {
 
         let zipName = `${config.playcanvas.name}_Archive_${branch.name}.zip`;
         let zipPath = `temp/out/${zipName}`;
-        let newZipName = nowDateString + zipName;
+        let newZipName = nowDateString + '_' + zipName;
         await UploadArchive(zipPath, newZipName);
 
         currentJobCount++;
@@ -342,6 +342,8 @@ function UploadArchive (inputFilePath, outputFileName) {
 const config = readConfig();
 
 let startTime = Date.now();
+let tmpDate = new Date(startTime);
+console.log(tmpDate.getFullYear() + '-' + ('0' + tmpDate.getMonth()).slice(-2) + '-' + ('0' + tmpDate.getDate()).slice(-2));
 getBranches(config)
     .then(processBranches)
     .then((branchData) => archiveBranches(config, branchData, startTime))
