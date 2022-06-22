@@ -97,6 +97,7 @@ async function archiveBranches(config, branchData, startTime) {
         }
     }
 }
+
 function readConfig() {
     const env = dotenv.config().parsed;
     const configStr = fs.readFileSync('./src/playcanvas.json', 'utf-8');
