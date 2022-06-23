@@ -67,7 +67,7 @@ async function archiveBranches(config, branchData, startTime) {
 
     let nowDate = new Date(startTime);
     let day = ('0' + nowDate.getDate()).slice(-2);
-    let month = ('0' + nowDate.getMonth()).slice(-2);
+    let month = ('0' + (nowDate.getMonth() + 1)).slice(-2);
     let year = nowDate.getFullYear();
     let nowDateString = `${year}-${month}-${day}`;
 
