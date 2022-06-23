@@ -249,13 +249,16 @@ function archiveProject(config, branchName, branchId, directory) {
             console.log("✔ Downloading zip", json.url);
             return fetch(json.url, {method: 'GET'})
         })
-        .then(res => res.buffer())
-        .then(buffer => {
+        .then(res => res.arrayBuffer())
+        .then(arrayBuffer => {
+            console.log("✔ Zip downloaded");
+            console.log("  attempting to get zip");
             let output = path.resolve(__dirname, directory + "/" + config.playcanvas.name + '_Archive_' + branchName + '.zip');
+            console.log(`about to write: ${output}`)
             if (!fs.existsSync(path.dirname(output))) {
                 fs.mkdirSync(path.dirname(output), {recursive:true});
             }
-            fs.writeFileSync(output, buffer, 'binary')
+            fs.writeFileSync(output, Buffer.from(arrayBuffer), 'binary')
             resolve(output);
         })
         .catch(reject);
@@ -347,6 +350,16 @@ let tmpDate = new Date(startTime);
 console.log(tmpDate.getFullYear() + '-' + ('0' + tmpDate.getMonth()).slice(-2) + '-' + ('0' + tmpDate.getDate()).slice(-2));
 getBranches(config)
     .then(processBranches)
-    .then((branchData) => archiveBranches(config, branchData, startTime))
+    .then((branchData) => {
+        return archiveBranches(config, branchData, startTime)
+            // for (var i = 0; i < branchData.length; i++) {
+            //     console.log(branchData[i]);
+            //     var branch = branchData[i];
+            //     if (branch.name.indexOf('38') >= 0) {
+            //         return archiveProject(config, branch.name, branch.id, "temp/out");
+            //     }
+            // }
+            // return Promise.reject();
+    })
     .then(() => console.log("Success"))
     .catch(err => console.log("Error", err));
