@@ -177,25 +177,47 @@ class Main {
         console.log(`set express post upload...`);
     
         var self:Main = this;
-        
-        const form:IncomingForm = formidable({ multiples: true });
-        form.parse(req, (err, fields, files) => {
-            if (err) {
-                res.writeHead(err.httpCode || 400, { 'Content-Type': 'text/plain' });
-                res.end(String(err));
-                return;
-            }
-            res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ fields, files }, null, 2));
-            console.log(JSON.stringify({ fields, files }));
-            //@ts-ignore
-            var filename:string = files.file.originalFilename;
-            console.log(`filename: ${filename}`);
-            //@ts-ignore
-            var filepath:string = files.file.filepath;
-            console.log(`filepath: ${filepath}`);
-            fs.renameSync(filepath, path.join(__dirname, '../public', filename));
+
+        var extraHeaders = JSON.parse(req.headers['content-disposition']);
+        var filename = extraHeaders.filename.replace(/ /g,'');
+        console.log(`upload: ${filename}`);
+        var filepath = path.join(__dirname, '../public', filename);
+
+        var writeStream = fs.createWriteStream(filepath);
+            
+        writeStream.on('error', function (err) {
+            console.log(err);
         });
+
+        req.on('data', (chunk:any) => {
+            console.log(`chunk:\n${chunk}`);
+            writeStream.write(chunk);
+        });
+
+        req.on('end', () => {
+            res.status(200).send('file uploaded!');
+        });
+
+        req.pipe(writeStream);
+
+        // const form:IncomingForm = formidable({ multiples: true });
+        // form.parse(req, (err, fields, files) => {
+        //     if (err) {
+        //         res.writeHead(err.httpCode || 400, { 'Content-Type': 'text/plain' });
+        //         res.end(String(err));
+        //         return;
+        //     }
+        //     res.writeHead(200, { 'Content-Type': 'application/json' });
+        //     res.end(JSON.stringify({ fields, files }, null, 2));
+        //     console.log(JSON.stringify({ fields, files }));
+        //     //@ts-ignore
+        //     var filename:string = files.file.originalFilename;
+        //     console.log(`filename: ${filename}`);
+        //     //@ts-ignore
+        //     var filepath:string = files.file.filepath;
+        //     console.log(`filepath: ${filepath}`);
+        //     fs.renameSync(filepath, path.join(__dirname, '../public', filename));
+        // });
     }
 
 }
