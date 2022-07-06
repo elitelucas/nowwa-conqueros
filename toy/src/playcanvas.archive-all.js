@@ -74,12 +74,19 @@ async function archiveBranches(config, branchData, startTime) {
     for (let i = 0; i < branchData.length; i++) {
         let branch = branchData[i];
         console.log("↪️ " + (i+1) + " of " + branchData.length + " branches: " + branch.name);
-        await archiveProject(config, branch.name, branch.id, "temp/out");
+
+        // TODO : remove filter
+        if (branch.name.indexOf('38') >= 0 || branch.name.indexOf('39') >= 0) {
+            await archiveProject(config, branch.name, branch.id, "temp/out");
+        } else {
+            continue;
+        }
+        // await archiveProject(config, branch.name, branch.id, "temp/out");
 
         let zipName = `${config.playcanvas.name}_Archive_${branch.name}.zip`;
         let zipPath = `temp/out/${zipName}`;
         let newZipName = nowDateString + '_' + zipName;
-        await UploadArchive(zipPath, newZipName);
+        // await UploadArchive(zipPath, newZipName);
 
         currentJobCount++;
 
@@ -352,14 +359,6 @@ getBranches(config)
     .then(processBranches)
     .then((branchData) => {
         return archiveBranches(config, branchData, startTime)
-            // for (var i = 0; i < branchData.length; i++) {
-            //     console.log(branchData[i]);
-            //     var branch = branchData[i];
-            //     if (branch.name.indexOf('38') >= 0) {
-            //         return archiveProject(config, branch.name, branch.id, "temp/out");
-            //     }
-            // }
-            // return Promise.reject();
     })
     .then(() => console.log("Success"))
     .catch(err => console.log("Error", err));

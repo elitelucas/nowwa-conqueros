@@ -7,6 +7,7 @@ import Environment from './Environment';
 import crypto from 'crypto';
 import multer from 'multer';
 import fs from 'fs';
+import { PlayCanvas } from './Playcanvas';
 import formidable from 'formidable';
 import IncomingForm from 'formidable/Formidable';
 
@@ -30,6 +31,8 @@ class Main {
     private secret:string = "conqueros";
 
     constructor () {
+        this.isStillArchiving = false;
+        this.currentBranchId = "";
         this.app = express();
         this.Initialize();
     }
@@ -84,6 +87,9 @@ class Main {
         }
     }
 
+    private isStillArchiving:boolean;
+    private currentBranchId:string;
+
     /**
      * Set express response for GET default '/' call.
      */
@@ -98,22 +104,73 @@ class Main {
             if (adjustedUrl.indexOf('//') == 0) {
                 adjustedUrl = adjustedUrl.slice(1);
             } 
-            if (adjustedUrl.indexOf('/explorer') == 0) {
-                console.log(`access explorer`);
-                adjustedUrl = adjustedUrl.slice('/explorer'.length);
-                self.ExecuteExplorer(adjustedUrl, res);
-            } else if (adjustedUrl.indexOf('/upload') == 0) {
-                console.log(`access upload`);
-                adjustedUrl = adjustedUrl.slice('/upload'.length);
-                self.ExecuteUpload(req, res);
+            if (!adjustedUrl.match(/\.[a-zA-Z0-9_\-]+$/g) && (adjustedUrl[adjustedUrl.length - 1] != '/')) {
+                res.redirect(`https://nowwa.io/storage${adjustedUrl}/`);
             } else {
-                console.log(`access file`);
-                try {
-                    fs.createReadStream(path.join(__dirname, '../public', adjustedUrl)).pipe(res);
-                }
-                catch (error)
-                {
-                    res.status(200).send(JSON.stringify(error));
+                if (adjustedUrl.indexOf('/explorer/') == 0) {
+                    console.log(`access explorer`);
+                    adjustedUrl = adjustedUrl.slice('/explorer/'.length);
+                    self.ExecuteExplorer(adjustedUrl, res);
+                } else if (adjustedUrl.indexOf('/upload') == 0) {
+                    console.log(`access upload`);
+                    adjustedUrl = adjustedUrl.slice('/upload'.length);
+                    self.ExecuteUpload(req, res);
+                } else if (adjustedUrl.indexOf('/toyarchive/') == 0) {
+                    if (this.isStillArchiving) {
+                        res.status(200).send(`BUSY - still processing branch ID: ${this.currentBranchId}`);
+                    } else {
+                            
+                        let authToken:string = 'lJHHrNEjN3klG93krjX3CrCa8SLIydWy';
+                        let projectId:number = 873503;
+                        let branchId:string = adjustedUrl.slice('/toyarchive/'.length).slice(0, -1);
+
+                        let startTime = Date.now();
+                        let nowDate = new Date(startTime);
+                        let seconds = ('0' + nowDate.getSeconds()).slice(-2);
+                        let minutes = ('0' + nowDate.getMinutes()).slice(-2);
+                        let hours = ('0' + nowDate.getHours()).slice(-2);
+                        let day = ('0' + nowDate.getDate()).slice(-2);
+                        let month = ('0' + (nowDate.getMonth() + 1)).slice(-2);
+                        let year = nowDate.getFullYear();
+                        let nowDateString = `${year}-${month}-${day}_${hours}_${minutes}_${seconds}`;
+
+                        (async () => {
+                            let branches = await PlayCanvas.GetBranches(authToken, projectId);
+                            let found:boolean = false;
+                            
+                            for (let i = 0; i < branches.result.length; i++) {
+                                let branchData = branches.result[i];
+                                if (branchId == branchData.id) {
+                                    let branchName = branchData.name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+                                    found = true;
+                                    res.status(200).send(`branch ID: ${branchName} is being exported...`);
+                                    this.isStillArchiving = true;
+                                    this.currentBranchId = branchId;
+                                    await PlayCanvas.Archive(authToken, projectId, branchId, branchName, nowDateString, `./public`, true);
+                                    this.isStillArchiving = false;
+                                }
+                            }
+                            if (!found) {
+                                res.status(200).send(`branch ID: ${branchId} is not found`);
+                            }
+                        })();
+                    }
+                } else {
+                    console.log(`access file`);
+                    try {
+                        var filePath:string = path.join(__dirname, '../public', adjustedUrl);
+                        if (fs.existsSync(filePath)) {
+                            fs.createReadStream(filePath).pipe(res);
+                        } 
+                        else 
+                        {
+                            res.status(200).send(JSON.stringify(`file [${adjustedUrl}] does not exsits`));
+                        }
+                    }
+                    catch (error)
+                    {
+                        res.status(200).send(JSON.stringify(error));
+                    }
                 }
             }
         });
@@ -151,7 +208,6 @@ class Main {
             // files object contains all files names
             // log them on console
             files.forEach(file => {
-                console.log(`file: ${file}`);
                 var newPath = path.join(folderPath, file);
                 var isDirectory:boolean = fs.statSync(newPath).isDirectory();
                 var isFile:boolean = fs.statSync(newPath).isFile();

@@ -16,8 +16,6 @@ server {
 	
 	ssl_protocols       TLSv1 TLSv1.1 TLSv1.2 SSLv3;
 	ssl_ciphers         HIGH:!aNULL:!MD5;
-	ssl on;
-	ssl_session_timeout  5m;
 	
 	access_log /var/log/nginx/nowwa.io.access.log;
 	error_log  /var/log/nginx/error.log info;
