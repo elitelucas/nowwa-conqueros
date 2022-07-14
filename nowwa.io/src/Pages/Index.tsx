@@ -1,20 +1,29 @@
-import React, { Component } from 'react';
-import semantic, { IconProps, SemanticICONS, Icon, IconGroup } from 'semantic-ui-react';
+import React from 'react';
+import Top from './Top';
+import Menu from './Menu';
 
-class Index {
+class Index extends React.Component {
 
-    public static getText (text:string):string {
-        return `The Text is: ${text}`;
+    constructor (props:any) {
+        super(props);
     }
 
-    public static render (text:string) {
-        let elm:React.ReactElement = (
-            <div>
-                <Icon name='smile'></Icon>
-                this is the text: {text}
-            </div>
+    public render () {
+        return (
+            <body>
+                <link data-async
+                    rel="stylesheet"
+                    href="https://cdn.jsdelivr.net/npm/semantic-ui@2/dist/semantic.min.css"
+                />
+                <script src="https://cdn.jsdelivr.net/npm/semantic-ui-react/dist/umd/semantic-ui-react.min.js"></script>
+        
+                <div id="root">
+                    <Top />
+                    <Menu />
+                </div>
+                
+            </body>
         );
-        return elm;
     }
 }
 

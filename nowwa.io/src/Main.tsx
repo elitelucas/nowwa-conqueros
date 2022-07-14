@@ -15,6 +15,8 @@ import Database from './Database';
 import Test from './Test';
 import Index from './Pages/Index';
 import ReactDOMServer from 'react-dom/server';
+import React from 'react';
+import ReactDOM from 'react-dom';
 
 
 console.log(`project path: ${__dirname}`);
@@ -84,7 +86,7 @@ class Main {
 
             app.use('/index/', (req,res) => {
                 console.log(`[Express] /index/`);
-                let tmpIndex = Index.render('theText');
+                let tmpIndex = <Index />;
                 var output:string = `${ReactDOMServer.renderToString(tmpIndex)}`;
                 res.status(200).send(output);
             });
