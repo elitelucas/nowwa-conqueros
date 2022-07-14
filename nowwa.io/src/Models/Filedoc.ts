@@ -1,10 +1,12 @@
 import mongoose from 'mongoose';
 
-export type FiledocDocument = mongoose.Document & {
+export type FiledocType = {
     filename        : string,
     fileurl         : string,
     extension       : string
-};
+}
+
+export type FiledocDocument = mongoose.Document & FiledocType;
 
 export const FiledocSchema = new mongoose.Schema<FiledocDocument>({
     filename    : {

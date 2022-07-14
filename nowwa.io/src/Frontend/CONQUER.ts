@@ -13,7 +13,7 @@ module CONQUER {
     // var mainUseSSL = true;
     var mainProtocol:string = mainUseSSL ? 'https' : 'http';
     var port:string = mainPort == 80 ? `` : `:${mainPort.toString()}`;
-    var mainURL:string = `${mainProtocol}://${mainHost}${port}/webhook/v${version}`;
+    var mainURL:string = `${mainProtocol}://${mainHost}${port}`;
 
     var socketHost = '127.0.0.1';
     // var socketHost = 'nowwa.io';
@@ -131,7 +131,7 @@ module CONQUER {
             }
 
             // Send schema structure to server
-            var response = await Call("POST", mainURL + '/schema_structure_save', structure);
+            var response = await Call("POST", mainURL + '/structure/save', structure);
             if (response.success) {
                 return Promise.resolve();
             }
@@ -144,7 +144,7 @@ module CONQUER {
 
     export async function SchemaStructureLoad (schemaNames?:string[]):Promise<Data[]> {
         try {
-            var response = await Call("POST", mainURL + '/schema_structure_load', { schemaNames: schemaNames });
+            var response = await Call("POST", mainURL + '/structure/load', { schemaNames: schemaNames });
             if (response.success) {
                 return Promise.resolve(response.value);
             }
@@ -166,7 +166,7 @@ module CONQUER {
             }
 
             // Send schema data to server
-            var response = await Call("POST", mainURL + '/schema_data_save', data);
+            var response = await Call("POST", mainURL + '/data/save', data);
             if (response.success) {
                 return Promise.resolve(response.value);
             }
@@ -189,7 +189,7 @@ module CONQUER {
             }
 
             // Send schema data request to server
-            var response = await Call("POST", mainURL + '/schema_data_load', data);
+            var response = await Call("POST", mainURL + '/data/load', data);
             if (response.success) {
                 return Promise.resolve(response.value);
             }
@@ -208,7 +208,7 @@ module CONQUER {
             }
 
             // Send schema data request to server
-            var response = await Call("POST", mainURL + '/authenticate', data);
+            var response = await Call("POST", mainURL + '/authentication/login', data);
             if (response.success) {
                 return Promise.resolve(response.value);
             }
@@ -227,7 +227,7 @@ module CONQUER {
             }
 
             // Send schema data request to server
-            var response = await Call("POST", mainURL + '/register', data);
+            var response = await Call("POST", mainURL + '/authentication/register', data);
             if (response.success) {
                 return Promise.resolve(response.value);
             }

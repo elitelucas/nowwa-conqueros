@@ -3,10 +3,15 @@ import { WithRequired } from '../Utils';
 
 export type CustomType = {
     schemaName      : string,
-    schemaFields?   : {[key:string]:string}
+    schemaFields?   : {[key:string]:
+        string |
+        number |
+        boolean | 
+        object
+    }
 };
 
-type CustomDocument = mongoose.Document & WithRequired<CustomType, 'schemaFields'>;
+export type CustomDocument = mongoose.Document & WithRequired<CustomType, 'schemaFields'>;
 
 export enum CustomProperty {
     schemaName      = 'schemaName',
