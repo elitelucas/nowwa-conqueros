@@ -1,6 +1,6 @@
 import Authentication from './Authentication';
 import Database from './Database';
-import { Custom, CustomProperty, CustomType, CustomDocument } from './Models/Custom';
+import { Custom, CustomProperty, CustomType, CustomDocument } from '../Models/Custom';
 
 class Test {
 

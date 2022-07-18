@@ -1,7 +1,7 @@
 import passport from 'passport';
 import express from 'express';
 import passportLocal from 'passport-local';
-import { User, UserDocument } from './Models/User';
+import { User, UserDocument } from '../Models/User';
 import Environment from './Environment';
 import { EnvType } from 'ts-dotenv';
 
@@ -10,9 +10,9 @@ class Authentication {
     private static BaseUrl:string = `/authentication`;
 
     public static async AsyncInit (app:express.Express, env:EnvType<typeof Environment>):Promise<void> {
-        this.InitPassport();
-        this.WebhookLogin(app);
-        this.WebhookRegister(app);
+        Authentication.InitPassport();
+        Authentication.WebhookLogin(app);
+        Authentication.WebhookRegister(app);
         return Promise.resolve();
     }
 

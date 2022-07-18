@@ -2,7 +2,7 @@ import mongoose, { mongo } from 'mongoose';
 import express from 'express';
 import { EnvType } from 'ts-dotenv';
 import Environment from './Environment';
-import { Custom, CustomProperty, CustomType, CustomDocument } from './Models/Custom';
+import { Custom, CustomProperty, CustomType, CustomDocument } from '../Models/Custom';
 
 class Database {
 

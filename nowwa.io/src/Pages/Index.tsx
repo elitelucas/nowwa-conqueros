@@ -1,30 +1,42 @@
 import React from 'react';
+import ReactDOMClient from 'react-dom/client';
 import Top from './Top';
 import Menu from './Menu';
 
-class Index extends React.Component {
+class Index extends React.Component<{}, Index.IndexParams> {
 
     constructor (props:any) {
         super(props);
+        this.state = {
+            var1: "default var1"
+        }
+        this.updateVar1 = this.updateVar1.bind(this);
+    }
+
+    public updateVar1 (value:string) {
+        this.setState({
+            var1: value
+        });
     }
 
     public render () {
         return (
-            <body>
-                <link data-async
-                    rel="stylesheet"
-                    href="https://cdn.jsdelivr.net/npm/semantic-ui@2/dist/semantic.min.css"
-                />
-                <script src="https://cdn.jsdelivr.net/npm/semantic-ui-react/dist/umd/semantic-ui-react.min.js"></script>
-        
-                <div id="root">
-                    <Top />
-                    <Menu />
-                </div>
-                
-            </body>
+            <div>
+                {this.state.var1}
+                <Top />
+                <Menu />
+            </div>
         );
     }
 }
 
-export default Index;
+namespace Index {
+    export type IndexParams = {
+        var1: string;
+    };
+}
+
+let root = ReactDOMClient.createRoot(document.getElementById('root'));
+let index = <Index />;
+
+root.render(index);

@@ -6,17 +6,14 @@ import multer from 'multer';
 import cloudinary from 'cloudinary';
 import path from 'path';
 import { EnvType, load } from 'ts-dotenv';
-import { User, UserDocument } from './Models/User';
+import { User, UserDocument } from '../Models/User';
 import Environment from './Environment';
 import crypto from 'crypto';
 import Socket from './Socket';
 import Authentication from './Authentication';
 import Database from './Database';
+import Storage from './Storage';
 import Test from './Test';
-import Index from './Pages/Index';
-import ReactDOMServer from 'react-dom/server';
-import React from 'react';
-import ReactDOM from 'react-dom';
 
 
 console.log(`project path: ${__dirname}`);
@@ -33,7 +30,7 @@ class Main {
     constructor () {
         this.models = {};
 
-        let envPath:string = path.resolve(__dirname, `../.env`);
+        let envPath:string = path.resolve(__dirname, `../../.env`);
         console.log(`load .env from: ${envPath}`);
         let env:EnvType<typeof Environment> = load(Environment, {
             path: envPath,
@@ -68,7 +65,7 @@ class Main {
                     }
                 }))
                 .use((req, res, next) => {
-                    console.log(`req.url: ${req.url}`);
+                    // console.log(`req.url: ${req.url}`);
                     var adjustedUrl = req.url;
                     if (adjustedUrl.indexOf('//') == 0) {
                         adjustedUrl = adjustedUrl.slice(1);
@@ -80,16 +77,28 @@ class Main {
                 });
     
             // routes: start
+
+            app.all('/', (req, res, next) => {
+                console.log(`[Express] /index/`);
+                // let didError = false;
+                // let stream = ReactDOMServer.renderToPipeableStream(<Index />, {
+                //     onShellReady () {
+                //         res.statusCode = didError ? 500 : 200;
+                //         res.setHeader('Content-type', 'text/html');
+                //         stream.pipe(res);
+                //     }, 
+                //     onError (err) {
+                //         didError = true;
+                //         console.error(err);
+                //     },
+                // });
+                req.url = req.url + 'Index.html'; 
+                next();
+            });
             
             // await Authentication.AsyncInit(app, env);
             // await Database.AsyncInit(app, env);
-
-            app.use('/index/', (req,res) => {
-                console.log(`[Express] /index/`);
-                let tmpIndex = <Index />;
-                var output:string = `${ReactDOMServer.renderToString(tmpIndex)}`;
-                res.status(200).send(output);
-            });
+            await Storage.AsyncInit(app, env);
     
             // routes: end
 
@@ -97,12 +106,16 @@ class Main {
                 console.log(`[Express] /test/`);
                 res.status(200).send('test');
             });
+
+            Storage.WebhookCustomPath(``, `../Pages`, app);
     
-            app.all('/', (req, res) => {
-                console.log(`[Express] /default/`);
-                res.status(200).send('default');
-            });
+            // HACK : not needed anymore
+            // app.all('/', (req, res) => {
+            //     console.log(`[Express] /default/`);
+            //     res.status(200).send('default');
+            // });
     
+            // HACK : not needed anymore
             app.use(`/*`, (req, res) => {
                 console.log(`[Express] undefined path`);
                 res.status(200).send('undefined path');
