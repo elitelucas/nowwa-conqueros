@@ -1,19 +1,18 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Icon, Header, Label, Segment, Button } from 'semantic-ui-react';
+import Explorer from './Explorer';
+import Status from './Status';
 
-class Top extends React.Component {
+const Top = () => {
 
-    public render () {
-        return (
-            <Segment placeholder>
-                <Header icon>
-                    <Icon name='earlybirds' />
-                    Nowwa IO
-                </Header>
-                <Button primary>Add Document</Button>
-            </Segment>
-        );
-    }
+    return (
+        <Segment placeholder>
+            <Header icon>
+                <Icon name='earlybirds' />
+                Nowwa IO
+            </Header>
+        </Segment>
+    );
 
 }
 

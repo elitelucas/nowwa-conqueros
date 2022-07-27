@@ -203,4 +203,13 @@ export class PlayCanvas {
         });
     }
 
+    public static async MockBusy ():Promise<void> {
+        return new Promise((resolve, reject) => {
+            let delay:number = 5000;
+            setTimeout(() => {
+                resolve();
+            }, delay);
+        });
+    }
+
 }

@@ -11,6 +11,7 @@ import Environment from './Environment';
 import crypto from 'crypto';
 import Socket from './Socket';
 import Authentication from './Authentication';
+import { PlayCanvas } from './Playcanvas';
 import Database from './Database';
 import Storage from './Storage';
 import Test from './Test';
@@ -21,14 +22,13 @@ console.log(`project path: ${__dirname}`);
 class Main {
 
     private baseUrl:string;
-
-    private models:{[key:string]:mongoose.Model<any, {}, {}>};
+    public status:Main.Status;
 
     /**
      * Initialize necessary components.
      */
     constructor () {
-        this.models = {};
+        this.status = Main.StatusDefault;
 
         let envPath:string = path.resolve(__dirname, `../../.env`);
         console.log(`load .env from: ${envPath}`);
@@ -79,7 +79,6 @@ class Main {
             // routes: start
 
             app.all('/', (req, res, next) => {
-                console.log(`[Express] /index/`);
                 // let didError = false;
                 // let stream = ReactDOMServer.renderToPipeableStream(<Index />, {
                 //     onShellReady () {
@@ -96,11 +95,26 @@ class Main {
                 next();
             });
             
+            // TODO : enable authentication & database
             // await Authentication.AsyncInit(app, env);
             // await Database.AsyncInit(app, env);
             await Storage.AsyncInit(app, env);
     
             // routes: end
+
+            app.use('/status/', (req,res) => {
+                // console.log(`[Express] /status/`);
+                this.status.requestCount++;
+                if (!this.status.isPlaycanvasBusy) {
+                    this.status.isPlaycanvasBusy = true;
+                    this.status.requestCount = 0;
+                    PlayCanvas.MockBusy()
+                        .then(() => {
+                            this.status.isPlaycanvasBusy = false;
+                        });
+                }
+                res.status(200).send(JSON.stringify(this.status));
+            });
 
             app.use('/test/', (req,res) => {
                 console.log(`[Express] /test/`);
@@ -130,6 +144,12 @@ class Main {
         }
         catch (error) {
             console.error(error);
+        }
+    }
+
+    private GetStatus () {
+        return {
+            
         }
     }
 
@@ -229,6 +249,17 @@ class Main {
     //     });
     // // }
 
+}
+
+namespace Main {
+    export type Status = {
+        isPlaycanvasBusy: boolean;
+        requestCount:number;
+    }
+    export const StatusDefault:Status = {
+        isPlaycanvasBusy: false,
+        requestCount: 0,
+    }
 }
 
 var c:Main = new Main();

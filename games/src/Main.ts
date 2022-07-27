@@ -113,7 +113,7 @@ class Main {
                     let projectId:number = 873503;
                     let branchInfo:string[] = (adjustedUrl.slice('/toybuild/'.length).slice(0, -1)).split('/');
                     let branchId:string = branchInfo[0];
-                    let sceneNumber:number = parseInt(branchInfo[1]);
+                    let sceneNumbers:number[] = (branchInfo[1]).split(',').map(Number);
 
                     let startTime = Date.now();
                     let nowDate = new Date(startTime);
@@ -141,7 +141,7 @@ class Main {
                                     playcanvas: {
                                         project_id: projectId,
                                         name: branchName,
-                                        scenes: [sceneNumber],
+                                        scenes: sceneNumbers,
                                         branch_id: branchId,
                                         description: "",
                                         preload_bundle: true,

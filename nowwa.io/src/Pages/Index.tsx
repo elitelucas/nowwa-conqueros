@@ -1,39 +1,46 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ReactDOMClient from 'react-dom/client';
 import Top from './Top';
 import Menu from './Menu';
+import { Segment } from 'semantic-ui-react';
+import Explorer, { ExplorerPropsDefault } from './Explorer';
 
-class Index extends React.Component<{}, Index.IndexParams> {
+type IndexDisplay = 'None' | 'Explorer' | 'Build' | 'Game';
 
-    constructor (props:any) {
-        super(props);
-        this.state = {
-            var1: "default var1"
-        }
-        this.updateVar1 = this.updateVar1.bind(this);
-    }
+type IndexState = {
+    display: IndexDisplay
+};
 
-    public updateVar1 (value:string) {
-        this.setState({
-            var1: value
-        });
-    }
-
-    public render () {
-        return (
-            <div>
-                {this.state.var1}
-                <Top />
-                <Menu />
-            </div>
-        );
-    }
+export interface IndexProps {
+    SetDisplay: (display:IndexDisplay) => void
 }
 
-namespace Index {
-    export type IndexParams = {
-        var1: string;
+const Index = () => {
+    let initialState:IndexState = {
+        display: 'None'
     };
+
+    const [state, setState] = useState(initialState);
+
+    const SetDisplay = (display:IndexDisplay) => {
+        setState({
+            display: display
+        });
+    };
+
+    let menu = Menu({
+        SetDisplay: SetDisplay
+    });
+
+    let explorer = Explorer(ExplorerPropsDefault);
+
+    return (
+        <Segment placeholder>
+            <Top />
+            {menu}
+            {state.display == 'Explorer' && explorer}
+        </Segment>
+    );
 }
 
 let root = ReactDOMClient.createRoot(document.getElementById('root'));
