@@ -75,8 +75,6 @@ class Main {
                     }
                     next();
                 });
-    
-            // routes: start
 
             app.all('/', (req, res, next) => {
                 // let didError = false;
@@ -94,15 +92,8 @@ class Main {
                 req.url = req.url + 'Index.html'; 
                 next();
             });
-            
-            // TODO : enable authentication & database
-            // await Authentication.AsyncInit(app, env);
-            // await Database.AsyncInit(app, env);
-            await Storage.AsyncInit(app, env);
-    
-            // routes: end
 
-            app.use('/status/', (req,res) => {
+            app.use('/status/', (req, res) => {
                 // console.log(`[Express] /status/`);
                 this.status.requestCount++;
                 if (!this.status.isPlaycanvasBusy) {
@@ -116,24 +107,20 @@ class Main {
                 res.status(200).send(JSON.stringify(this.status));
             });
 
-            app.use('/test/', (req,res) => {
+            app.use('/test/', (req, res) => {
                 console.log(`[Express] /test/`);
                 res.status(200).send('test');
             });
+            
+            // TODO : enable authentication & database
+            // await Authentication.AsyncInit(app, env);
+            // await Database.AsyncInit(app, env);
+    
+            // routes: start
+    
+            // routes: end
 
-            Storage.WebhookCustomPath(``, `../Pages`, app);
-    
-            // HACK : not needed anymore
-            // app.all('/', (req, res) => {
-            //     console.log(`[Express] /default/`);
-            //     res.status(200).send('default');
-            // });
-    
-            // HACK : not needed anymore
-            app.use(`/*`, (req, res) => {
-                console.log(`[Express] undefined path`);
-                res.status(200).send('undefined path');
-            });
+            await Storage.AsyncInit(app, env);
     
             app.listen(env.MAIN_PORT);
             console.log(`[Express] listening on port ${env.MAIN_PORT}`);

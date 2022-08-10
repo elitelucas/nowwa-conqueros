@@ -9,7 +9,6 @@ class Socket {
 
     private static Instance:Socket;
 
-
     /**
      * Initialize socket feature.
      */

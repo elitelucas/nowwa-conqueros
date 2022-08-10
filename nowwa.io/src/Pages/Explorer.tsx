@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Icon, Header, Label, Segment, Button, Card, Image, Item, Breadcrumb, List, SegmentGroup, BreadcrumbSection, BreadcrumbDivider } from 'semantic-ui-react';
-import Storage from '../Core/Storage';
-
-const url:string = `http://127.0.0.1:9000/`;
+import { Icon, Header, Label, Segment, Button, Card, Image, Item, Breadcrumb, List, SegmentGroup, BreadcrumbSection, BreadcrumbDivider, Table, Checkbox } from 'semantic-ui-react';
+import { storageFullUrl } from "../Core/Environment";
 
 export interface ExplorerProps {
     files   : string[],
@@ -13,7 +11,7 @@ export interface ExplorerProps {
 export const ExplorerPropsDefault:ExplorerProps = {
     files   : [],
     folders : [],
-    current : ""
+    current : "home"
 }
 
 const Explorer = (props:ExplorerProps) => {
@@ -24,7 +22,7 @@ const Explorer = (props:ExplorerProps) => {
     const SelectFile = (path:string) => {
         console.log(`select file: ${path}`);
         if (path.length > 0 && path[0] != '/') {
-            path = `/${path}`;
+            path = `/${path}`; 
         }
     };
 
@@ -33,7 +31,8 @@ const Explorer = (props:ExplorerProps) => {
         if (path.length > 0 && path[0] != '/') {
             path = `/${path}`;
         }
-        fetch (`${url}${Storage.ExplorerUrl}${path}`)
+        console.log(`fetch: ${storageFullUrl}${path}`);
+        fetch (`${storageFullUrl}${path}`)
             .then(res => res.json())
             .then((res:any) => {
                 res.current = path;
@@ -45,6 +44,21 @@ const Explorer = (props:ExplorerProps) => {
             });
     };
 
+    const CreatePathByIndex = (path:string, index:number) => {
+        let folders:string[] = path.split('/');
+        if (folders[0].length == 0) {
+            folders.splice(0, 1);
+        }
+        if (index < 0 || index >= folders.length) {
+            return ``;
+        }
+        let output = ``;
+        for (let i:number = 0; i <= index; i++) {
+            output += `/${folders[i]}`;
+        }
+        return output;
+    };
+
     const CreateBreadcrumb = (path:string) => {
         let folders:string[] = path.split('/');
         if (folders[0].length == 0) {
@@ -52,14 +66,14 @@ const Explorer = (props:ExplorerProps) => {
         }
         return (
             <Breadcrumb>
-                <BreadcrumbSection link onClick={(e,p) => { console.log(`p: ${JSON.stringify(p)}`); SelectFolder (``); }}>
-                    Home
-                </BreadcrumbSection>
             {folders.map((folder, index) => {
+                let tmpPath:string = CreatePathByIndex(path, index);
+                console.log(`tmpPath: ${tmpPath}`);
+                console.log(`folder: ${folder} | path: ${path} | `);
                 return (
                     <>
                         <BreadcrumbDivider><Icon name='angle right'/></BreadcrumbDivider>
-                        <BreadcrumbSection key={folder} link onClick={(e,p) => { SelectFolder (path); }}>
+                        <BreadcrumbSection key={folder} link onClick={(e,p) => { SelectFolder (tmpPath); }}>
                             {folder}
                         </BreadcrumbSection>
                     </>
@@ -73,12 +87,21 @@ const Explorer = (props:ExplorerProps) => {
         let paths:string[] = path.split('/');
         let file:string = paths[paths.length - 1];
         return (
-            <Item key={path} onClick={() => { SelectFile(`${path}`); } }>
-                <Label>
+            <Table.Row>
+                <Table.Cell collapsing>
+                    <Checkbox key={path}></Checkbox>
+                </Table.Cell>
+                <Table.Cell key={path} onClick={() => {  SelectFile(`${path}`); } }>
                     <Icon name="file"/>
                     {file}
-                </Label>
-            </Item>
+                </Table.Cell>
+                <Table.Cell collapsing textAlign="center">
+                    <Icon name="download"/>
+                </Table.Cell>
+                <Table.Cell collapsing textAlign="center">
+                    <Icon name="delete"/>
+                </Table.Cell>
+            </Table.Row>
         );
     };
     
@@ -86,12 +109,21 @@ const Explorer = (props:ExplorerProps) => {
         let paths:string[] = path.split('/');
         let folder:string = paths[paths.length - 1];
         return (
-            <Item key={path} onClick={() => { SelectFolder(`${path}`); } }>
-                <Label>
+            <Table.Row>
+                <Table.Cell collapsing>
+                    <Checkbox key={path}></Checkbox>
+                </Table.Cell>
+                <Table.Cell key={path} onClick={() => { SelectFolder(`${path}`); } }>
                     <Icon name="folder"/>
                     {folder}
-                </Label>
-            </Item>
+                </Table.Cell>
+                <Table.Cell collapsing textAlign="center">
+                    <Icon name="download"/>
+                </Table.Cell>
+                <Table.Cell collapsing textAlign="center">
+                    <Icon name="delete"/>
+                </Table.Cell>
+            </Table.Row>
         );
     };
 
@@ -107,14 +139,27 @@ const Explorer = (props:ExplorerProps) => {
                 {CreateBreadcrumb(value.current)}
             </Segment>
             <Segment>
-                <List selection>
-                    {value.files.map(file => {
-                        return EntryFile(`${value.current}/${file}`);
-                    })}
-                    {value.folders.map(folder => {
-                        return EntryFolder(`${value.current}/${folder}`);
-                    })}
-                </List>
+                <Table selectable sortable striped>
+                    <Table.Header>
+                        <Table.Row active>
+                            <Table.Cell></Table.Cell>
+                            <Table.Cell>Name</Table.Cell>
+                            <Table.Cell>Download</Table.Cell>
+                            <Table.Cell>Delete</Table.Cell>
+                        </Table.Row>
+                    </Table.Header>
+                    <Table.Body>
+                        {value.folders.map(folder => {
+                            return EntryFolder(`${value.current}/${folder}`);
+                        })}
+                        {value.files.map(file => {
+                            return EntryFile(`${value.current}/${file}`);
+                        })}
+                    </Table.Body>
+                </Table>
+            </Segment>
+            <Segment>
+
             </Segment>
         </SegmentGroup>
     );

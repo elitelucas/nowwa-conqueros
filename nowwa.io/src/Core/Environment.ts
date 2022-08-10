@@ -19,3 +19,22 @@ var Environment = {
 }
 
 export default Environment;
+
+const useSSL:boolean = false;
+const url:string = `127.0.0.1`;
+const port:number = 9000;
+
+export const baseUrl:string = 
+    (useSSL ? `https` : `http`) +
+    `://` +
+    `${url}` +
+    `:` +
+    `${port}`;
+
+export const authenticationUrl:string = `/authentication`;
+
+export const authenticationFullUrl:string = `${baseUrl}${authenticationUrl}`;
+
+export const storageUrl:string = `/storage`;
+
+export const storageFullUrl:string = `${baseUrl}${storageUrl}`;

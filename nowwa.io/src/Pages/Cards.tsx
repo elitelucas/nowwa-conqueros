@@ -1,6 +1,5 @@
 import React from 'react';
 import { Icon, Header, Label, Segment, Button, Card, Image } from 'semantic-ui-react';
-import Storage from '../Core/Storage';
 
 const TheCard = () => {
     return (
@@ -9,7 +8,7 @@ const TheCard = () => {
                 <Image 
                     floated='right'
                     size='big'
-                    src={`${Storage.FileUrl}/toy/ballblast.png`}
+                    src={`/toy/ballblast.png`}
                 />
                 <Card.Header>TEST CARD</Card.Header>
                 <Card.Meta>25 games available</Card.Meta>
@@ -31,7 +30,7 @@ const Menu = () => {
                     <Image 
                         floated='right'
                         size='mini'
-                        src={`${Storage.FileUrl}/toy/ballblast.png`}
+                        src={`/toy/ballblast.png`}
                     />
                     <Card.Header>TOY Games</Card.Header>
                     <Card.Meta>10 games available</Card.Meta>
@@ -52,7 +51,7 @@ const Menu = () => {
                     <Image 
                         floated='right'
                         size='mini'
-                        src={`${Storage.FileUrl}/toy/dartspvp.png`}
+                        src={`/toy/dartspvp.png`}
                     />
                     <Card.Header>CI/CD</Card.Header>
                     <Card.Meta>3 platforms available</Card.Meta>
