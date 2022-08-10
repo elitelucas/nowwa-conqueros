@@ -14,6 +14,7 @@ import Authentication from './Authentication';
 import { PlayCanvas } from './Playcanvas';
 import Database from './Database';
 import Storage from './Storage';
+import Game from './Game';
 import Test from './Test';
 
 
@@ -121,6 +122,8 @@ class Main {
             // routes: end
 
             await Storage.AsyncInit(app, env);
+
+            await Game.AsyncInit(app, env);
     
             app.listen(env.MAIN_PORT);
             console.log(`[Express] listening on port ${env.MAIN_PORT}`);

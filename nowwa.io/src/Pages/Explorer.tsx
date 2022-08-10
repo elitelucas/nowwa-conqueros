@@ -149,10 +149,10 @@ const Explorer = (props:ExplorerProps) => {
                         </Table.Row>
                     </Table.Header>
                     <Table.Body>
-                        {value.folders.map(folder => {
+                        {value.folders.map((folder:string) => {
                             return EntryFolder(`${value.current}/${folder}`);
                         })}
-                        {value.files.map(file => {
+                        {value.files.map((file:string) => {
                             return EntryFile(`${value.current}/${file}`);
                         })}
                     </Table.Body>

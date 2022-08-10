@@ -38,3 +38,7 @@ export const authenticationFullUrl:string = `${baseUrl}${authenticationUrl}`;
 export const storageUrl:string = `/storage`;
 
 export const storageFullUrl:string = `${baseUrl}${storageUrl}`;
+
+export const toyUrl:string = `/toy`;
+
+export const toyFullUrl:string = `${baseUrl}${toyUrl}`;

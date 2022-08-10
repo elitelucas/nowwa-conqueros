@@ -30,10 +30,11 @@ class Storage {
             // console.log(`<-- storage - files`);
             let folderPath:string = req.url;
             let fullPath:string = path.join(__dirname, `../Pages`, folderPath);
+            fullPath = decodeURI(fullPath);
             if (fs.existsSync(fullPath)) {
                 let stat = fs.statSync(fullPath);
                 if (stat.isDirectory()) {
-                    fs.readdir(fullPath, (err, files) => {
+                    fs.readdir(fullPath, (err, contents) => {
                         if (err) {
                             throw err;
                         }
@@ -41,18 +42,16 @@ class Storage {
                         let filePaths:string[] = [];
                         let folderPaths:string[] = [];
                         
-                        files.forEach(filePath => {
-                            var newPath = path.join(fullPath, filePath);
-                            var isDirectory:boolean = fs.statSync(newPath).isDirectory();
-                            // var isFile:boolean = fs.statSync(newPath).isFile();
+                        contents.forEach(content => {
+                            var contentPath = path.join(fullPath, content);
+                            var isDirectory:boolean = fs.statSync(contentPath).isDirectory();
                             if (!isDirectory) {
-                                let extension = filePath.split('.').pop();
-                                console.log(`extension: ${extension}`);
+                                let extension = content.split('.').pop();
                                 if (extension && Storage.VisibleExtensions.includes(extension.toLowerCase())) {
-                                    filePaths.push(filePath);
+                                    filePaths.push(content);
                                 }
                             } else { 
-                                folderPaths.push(filePath);
+                                folderPaths.push(content);
                             }
                         });
                         
@@ -60,10 +59,10 @@ class Storage {
                         res.status(200).send(`${output}`);
                     });
                 } else {
-                    res.status(200).send(`NOT DIRECTORY | fullPath: ${fullPath}`);
+                    res.status(500).send(`NOT DIRECTORY | fullPath: ${fullPath}`);
                 }
             } else {
-                res.status(200).send(`NOT EXISTS | fullPath: ${fullPath}`);
+                res.status(500).send(`NOT EXISTS | fullPath: ${fullPath}`);
             }
             
         });

@@ -4,6 +4,7 @@ import Top from './Top';
 import Menu from './Menu';
 import { Segment } from 'semantic-ui-react';
 import Explorer, { ExplorerPropsDefault } from './Explorer';
+import Game, { GamePropsDefault } from './Game';
 
 type IndexDisplay = 'None' | 'Explorer' | 'Build' | 'Game';
 
@@ -33,12 +34,14 @@ const Index = () => {
     });
 
     let explorer = Explorer(ExplorerPropsDefault);
+    let game = Game(GamePropsDefault);
 
     return (
         <Segment placeholder>
             <Top />
             {menu}
             {state.display == 'Explorer' && explorer}
+            {state.display == 'Game' && game}
         </Segment>
     );
 }
