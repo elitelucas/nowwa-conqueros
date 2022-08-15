@@ -2,39 +2,45 @@ import React, { useState, useEffect } from "react";
 import { Icon, Header, Label, Segment, Button, Card, Image, Item, Breadcrumb, List, SegmentGroup, BreadcrumbSection, BreadcrumbDivider, Table, Checkbox, CardGroup } from 'semantic-ui-react';
 import { toyFullUrl } from "../Core/Environment";
 
-export interface GameConfig {
+export type GameConfig = {
     Thumbnail   : string,
     AppName     : string
 }
 
-export interface GameProps {
-    configs : GameConfig[],
-    current : string
+export type GameState = {
+    initialized : boolean,   
+    configs     : GameConfig[]
 }
 
-export const GamePropsDefault:GameProps = {
-    configs : [],
-    current : "home"
+export const GameStateDefault:GameState = {
+    initialized : false,
+    configs     : []
 }
 
-const Game = (props:GameProps) => {
-    const [value, setValue] = useState(props);
-
-    const retryInterval:number = 1000;
-
-    const GetGames = () => {
+export const GameLoad = (state:GameState):Promise<GameState> => {
+    return new Promise((resolve, reject) => {
         console.log(`get games`);
         fetch (`${toyFullUrl}`)
             .then(res => res.json())
-            .then((res:any) => {
+            .then((res:GameState) => {
+                res.initialized = true;
                 console.log(`res:  ${JSON.stringify(res)}`);
-                setValue(res);
+                resolve(res);
             })
             .catch((error:any) => {
                 console.error(`error: ${error}`);
+                reject();
             });
-    };
-    
+    }); 
+};
+
+
+const Game = (state:GameState, setState:React.Dispatch<React.SetStateAction<GameState>>) => {
+
+    if (!state.initialized) {
+        GameLoad(state).then(setState);
+    }
+
     const EntryGame = (config:GameConfig) => {
         return (
             <Card>
@@ -50,26 +56,11 @@ const Game = (props:GameProps) => {
         );
     };
 
-    useEffect(() => {
-        // let refresh = setTimeout(() => {
-        //     console.log('retru');
-        //     GetGames();
-        // }, retryInterval);
-
-        // return () => {
-        //     clearTimeout(refresh);
-        // };
-        setTimeout(() => {
-            console.log('retru');
-            GetGames();
-        }, retryInterval);
-    }, []); 
-
     return (
         <SegmentGroup>
             <Segment>
                 <CardGroup>
-                    {value.configs.map(EntryGame)}
+                    {state.configs.map(EntryGame)}
                 </CardGroup>
             </Segment>
         </SegmentGroup>

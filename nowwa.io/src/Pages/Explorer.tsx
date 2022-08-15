@@ -2,22 +2,47 @@ import React, { useState, useEffect } from "react";
 import { Icon, Header, Label, Segment, Button, Card, Image, Item, Breadcrumb, List, SegmentGroup, BreadcrumbSection, BreadcrumbDivider, Table, Checkbox } from 'semantic-ui-react';
 import { storageFullUrl } from "../Core/Environment";
 
-export interface ExplorerProps {
-    files   : string[],
-    folders : string[],
-    current : string
+export type ExplorerState = {
+    initialized : boolean,
+    files       : string[],
+    folders     : string[],
+    current     : string
 }
 
-export const ExplorerPropsDefault:ExplorerProps = {
-    files   : [],
-    folders : [],
-    current : "home"
+export const ExplorerStateDefault:ExplorerState = {
+    initialized : false,
+    files       : [],
+    folders     : [],
+    current     : "/home"
 }
 
-const Explorer = (props:ExplorerProps) => {
-    const [value, setValue] = useState(props);
+export const ExplorerLoad = (state:ExplorerState, path:string):Promise<ExplorerState> => {
+    return new Promise((resolve, reject) => {
+        console.log(`load folder: ${path}`);
+        if (path.length > 0 && path[0] != '/') {
+            path = `/${path}`;
+        }
+        console.log(`fetch: ${storageFullUrl}${path}`);
+        fetch (`${storageFullUrl}${path}`)
+            .then(res => res.json())
+            .then((res:ExplorerState) => {
+                res.current = path;
+                res.initialized = true;
+                console.log(`state:  ${JSON.stringify(res)}`);
+                resolve(res);
+            })
+            .catch((error:any) => {
+                console.error(`error: ${error}`);
+                reject();
+            });
+    });
+};
 
-    const retryInterval:number = 1000;
+const Explorer = (state:ExplorerState, setState:React.Dispatch<React.SetStateAction<ExplorerState>>) => {
+
+    if (!state.initialized) {
+        ExplorerLoad(state, state.current).then(setState);
+    }
 
     const SelectFile = (path:string) => {
         console.log(`select file: ${path}`);
@@ -28,20 +53,7 @@ const Explorer = (props:ExplorerProps) => {
 
     const SelectFolder = (path:string) => {
         console.log(`select folder: ${path}`);
-        if (path.length > 0 && path[0] != '/') {
-            path = `/${path}`;
-        }
-        console.log(`fetch: ${storageFullUrl}${path}`);
-        fetch (`${storageFullUrl}${path}`)
-            .then(res => res.json())
-            .then((res:any) => {
-                res.current = path;
-                console.log(`res:  ${JSON.stringify(res)}`);
-                setValue(res);
-            })
-            .catch((error:any) => {
-                console.error(`error: ${error}`);
-            });
+        ExplorerLoad(state, path).then(setState);
     };
 
     const CreatePathByIndex = (path:string, index:number) => {
@@ -84,6 +96,7 @@ const Explorer = (props:ExplorerProps) => {
     };
     
     const EntryFile = (path:string) => {
+        console.log(`entryFile: ${path}`);
         let paths:string[] = path.split('/');
         let file:string = paths[paths.length - 1];
         return (
@@ -106,6 +119,7 @@ const Explorer = (props:ExplorerProps) => {
     };
     
     const EntryFolder = (path:string) => {
+        console.log(`entryFolder: ${path}`);
         let paths:string[] = path.split('/');
         let folder:string = paths[paths.length - 1];
         return (
@@ -127,16 +141,10 @@ const Explorer = (props:ExplorerProps) => {
         );
     };
 
-    useEffect(() => {
-        setTimeout(() => {
-            SelectFolder(value.current);
-        }, retryInterval);
-    }, []); 
-
     return (
         <SegmentGroup>
             <Segment>
-                {CreateBreadcrumb(value.current)}
+                {CreateBreadcrumb(state.current)}
             </Segment>
             <Segment>
                 <Table selectable sortable striped>
@@ -149,11 +157,13 @@ const Explorer = (props:ExplorerProps) => {
                         </Table.Row>
                     </Table.Header>
                     <Table.Body>
-                        {value.folders.map((folder:string) => {
-                            return EntryFolder(`${value.current}/${folder}`);
+                        {state.folders.map((folder:string) => {
+                            console.log(`folder: ${folder}`);
+                            return EntryFolder(`${state.current}/${folder}`);
                         })}
-                        {value.files.map((file:string) => {
-                            return EntryFile(`${value.current}/${file}`);
+                        {state.files.map((file:string) => {
+                            console.log(`file: ${file}`);
+                            return EntryFile(`${state.current}/${file}`);
                         })}
                     </Table.Body>
                 </Table>

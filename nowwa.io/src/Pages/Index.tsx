@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDOMClient from 'react-dom/client';
 import Top from './Top';
 import Menu from './Menu';
 import { Segment } from 'semantic-ui-react';
-import Explorer, { ExplorerPropsDefault } from './Explorer';
-import Game, { GamePropsDefault } from './Game';
+import Explorer, { ExplorerState, ExplorerStateDefault, ExplorerLoad } from './Explorer';
+import Game, { GameLoad, GameStateDefault } from './Game';
 
 type IndexDisplay = 'None' | 'Explorer' | 'Build' | 'Game';
 
@@ -12,16 +12,17 @@ type IndexState = {
     display: IndexDisplay
 };
 
+const IndexStateDefault:IndexState = {
+    display   : 'None'
+}
+
 export interface IndexProps {
     SetDisplay: (display:IndexDisplay) => void
 }
 
 const Index = () => {
-    let initialState:IndexState = {
-        display: 'None'
-    };
 
-    const [state, setState] = useState(initialState);
+    const [state, setState] = useState(IndexStateDefault);
 
     const SetDisplay = (display:IndexDisplay) => {
         setState({
@@ -33,15 +34,32 @@ const Index = () => {
         SetDisplay: SetDisplay
     });
 
-    let explorer = Explorer(ExplorerPropsDefault);
-    let game = Game(GamePropsDefault);
+    const [explorerState, setExplorerState] = useState(ExplorerStateDefault);
+    let explorer;
+    if (state.display == 'Explorer') {
+        explorer = Explorer(explorerState, setExplorerState);
+        console.log(`explorerState: ${explorerState.initialized}`);
+    }
 
+    const [gameState, setGameState] = useState(GameStateDefault);
+    let game;
+    if (state.display == 'Game') {
+        game = Game(gameState, setGameState);
+        console.log(`gameState: ${gameState.initialized}`);
+    }
+    useEffect(() => {
+        if (state.display == 'Game' && !gameState.initialized) {
+            console.log(`gameState: initialize`);
+            GameLoad(gameState).then(setGameState);
+        }
+    }); 
+    
     return (
         <Segment placeholder>
             <Top />
             {menu}
-            {state.display == 'Explorer' && explorer}
-            {state.display == 'Game' && game}
+            {explorer}
+            {game}
         </Segment>
     );
 }

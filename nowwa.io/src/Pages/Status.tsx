@@ -1,40 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from 'react';
 import { Icon, Header, Label, Segment, Button } from 'semantic-ui-react';
+import Explorer from './Explorer';
+import Status from './Status';
 
-const Status = () => {
-    const [value, setValue] = useState({
-        isPlaycanvasBusy: false,
-        requestCount: 0
-    });
+const Top = () => {
 
-    const retryInterval:number = 1000;
+    return (
+        <Segment placeholder>
+            <Header icon>
+                <Icon name='earlybirds' />
+                Nowwa IO
+            </Header>
+        </Segment>
+    );
 
-    useEffect(() => {
-        setTimeout(() => {
-            fetch ('http://127.0.0.1:9000/status')
-                .then(res => res.json())
-                .then((res:any) => {
-                    // console.log(`res:  ${JSON.stringify(res)}`);
-                    setValue({
-                        isPlaycanvasBusy: res.isPlaycanvasBusy,
-                        requestCount: res.requestCount
-                    });
-                })
-                .catch((error:any) => {
-                    console.error(`error: ${error}`);
-                });
-        }, retryInterval);
-    }, [value]); 
+}
 
-    if (value.isPlaycanvasBusy) {
-        return (
-            <Label>PlayCanvas: Busy {value.requestCount}</Label>
-        );
-    } else {
-        return (
-            <Label>PlayCanvas: Available</Label>
-        );
-    }
-};
-
-export default Status;
+export default Top;
