@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "backend": "copyfiles -u 1 ./src/Pages/*.html ./dist/ && tsc-watch --onSuccess \"node ./dist/Core/Main.js\"",
-    "frontend": "copyfiles -u 1 ./src/Pages/*.html ./dist/ && parcel watch ./src/Pages/Index.tsx --dist-dir ./dist/Pages"
+    "backend": "tsc-watch --onSuccess \"node ./dist/Core/Main.js\"",
+    "frontend": "parcel watch ./src/Pages/Index.tsx --dist-dir ./dist/Storage",
+    "storage": "copyfiles -u 1 ./src/Storage/** ./dist/"
   },
   "author": "",
   "license": "ISC",
