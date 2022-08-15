@@ -9,7 +9,7 @@ class Game {
 
     private static Instance:Game;
 
-    private static RootFolder:string = `Storage/toy`;
+    private static RootFolder:string = `../../toy`;
 
     /**
      * Initialize game module.
@@ -27,7 +27,8 @@ class Game {
     public static WebhookList (app:express.Express):void {
         app.use(`${toyUrl}`, async (req, res) => {
             // console.log(`<-- storage - files`);
-            let fullPath:string = path.join(__dirname, `../${Game.RootFolder}`);
+            let fullPath:string = path.join(__dirname, `${Game.RootFolder}`);
+            console.log(`Game : ${fullPath}`);
             if (fs.existsSync(fullPath)) {
                 let stat = fs.statSync(fullPath);
                 if (stat.isDirectory()) {

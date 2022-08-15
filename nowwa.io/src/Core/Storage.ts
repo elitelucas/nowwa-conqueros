@@ -10,7 +10,7 @@ class Storage {
 
     private static VisibleExtensions:string[] = ['html','png','jpg'];
 
-    private static RootFolder:string = `Storage`;
+    private static RootFolder:string = `../../files`;
 
     /**
      * Initialize storage module.
@@ -31,7 +31,7 @@ class Storage {
         app.use(`${storageUrl}`, async (req, res) => {
             // console.log(`<-- storage - files`);
             let folderPath:string = req.url;
-            let fullPath:string = path.join(__dirname, `../${Storage.RootFolder}`, folderPath);
+            let fullPath:string = path.join(__dirname, `${Storage.RootFolder}`, folderPath);
             fullPath = decodeURI(fullPath);
             if (fs.existsSync(fullPath)) {
                 let stat = fs.statSync(fullPath);
@@ -75,7 +75,7 @@ class Storage {
      * @param app @type {express.Express}
      */
     private static WebhookFiles (app:express.Express):void {
-        let rootPath:string = path.join(__dirname, `../${Storage.RootFolder}`);
+        let rootPath:string = path.join(__dirname, `${Storage.RootFolder}`);
         console.log(`rootPath: ${rootPath}`);
         app.use('/', express.static(rootPath));
     }

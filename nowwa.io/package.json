@@ -4,8 +4,7 @@
   "description": "",
   "scripts": {
     "backend": "tsc-watch --onSuccess \"node ./dist/Core/Main.js\"",
-    "frontend": "parcel watch ./src/Pages/Index.tsx --dist-dir ./dist/Storage",
-    "storage": "copyfiles -u 1 ./src/Storage/** ./dist/"
+    "frontend": "parcel watch ./src/Pages/Index.tsx --dist-dir ./files"
   },
   "author": "",
   "license": "ISC",
