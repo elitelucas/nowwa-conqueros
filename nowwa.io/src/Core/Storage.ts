@@ -8,7 +8,7 @@ class Storage {
 
     private static Instance:Storage;
 
-    private static VisibleExtensions:string[] = ['html','png','jpg'];
+    private static VisibleExtensions:string[] = ['html','png','jpg','txt'];
 
     private static RootFolder:string = `../../files`;
 

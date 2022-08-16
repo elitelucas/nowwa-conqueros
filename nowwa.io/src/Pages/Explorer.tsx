@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Icon, Header, Label, Segment, Button, Card, Image, Item, Breadcrumb, List, SegmentGroup, BreadcrumbSection, BreadcrumbDivider, Table, Checkbox } from 'semantic-ui-react';
+import { Icon, Header, Label, Segment, Button, Card, Image, Item, Breadcrumb, List, SegmentGroup, BreadcrumbSection, BreadcrumbDivider, Table, Checkbox, Embed } from 'semantic-ui-react';
 import { storageFullUrl } from "../Core/Environment";
 
 export type ExplorerState = {
     initialized : boolean,
     files       : string[],
     folders     : string[],
+    focusFile   : string,
     current     : string
 }
 
@@ -13,6 +14,7 @@ export const ExplorerStateDefault:ExplorerState = {
     initialized : false,
     files       : [],
     folders     : [],
+    focusFile   : "",
     current     : "/home"
 }
 
@@ -27,6 +29,7 @@ export const ExplorerLoad = (state:ExplorerState, path:string):Promise<ExplorerS
             .then(res => res.json())
             .then((res:ExplorerState) => {
                 res.current = path;
+                res.focusFile = "";
                 res.initialized = true;
                 console.log(`state:  ${JSON.stringify(res)}`);
                 resolve(res);
@@ -45,15 +48,37 @@ const Explorer = (state:ExplorerState, setState:React.Dispatch<React.SetStateAct
     }
 
     const SelectFile = (path:string) => {
-        console.log(`select file: ${path}`);
-        if (path.length > 0 && path[0] != '/') {
-            path = `/${path}`; 
-        }
+        let newState:ExplorerState = {
+            focusFile   : path,
+            current     : state.current,
+            files       : state.files,
+            folders     : state.folders,
+            initialized : state.initialized
+        };
+        setState(newState);
     };
 
     const SelectFolder = (path:string) => {
         console.log(`select folder: ${path}`);
         ExplorerLoad(state, path).then(setState);
+    };
+
+    const CreateFocusedFile = () => {
+        console.log(`show file: ${state.focusFile}`);
+        if (state.focusFile.length > 0) {
+            let paths:string[] = state.focusFile.split('/');
+            let filename:string = paths[paths.length - 1];
+            return (
+                <>
+                    <Label>{filename}</Label>
+                    <Embed url={state.focusFile} defaultActive></Embed>
+                </>
+            );
+            // }
+        }
+        return (
+            <></>
+        );
     };
 
     const CreatePathByIndex = (path:string, index:number) => {
@@ -169,7 +194,7 @@ const Explorer = (state:ExplorerState, setState:React.Dispatch<React.SetStateAct
                 </Table>
             </Segment>
             <Segment>
-
+                {CreateFocusedFile()}
             </Segment>
         </SegmentGroup>
     );

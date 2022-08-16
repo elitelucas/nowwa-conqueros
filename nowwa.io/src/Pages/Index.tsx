@@ -39,6 +39,7 @@ const Index = () => {
     if (state.display == 'Explorer') {
         explorer = Explorer(explorerState, setExplorerState);
         console.log(`explorerState: ${explorerState.initialized}`);
+        console.log(`explorerState focusFile: ${explorerState.focusFile}`);
     }
 
     const [gameState, setGameState] = useState(GameStateDefault);
