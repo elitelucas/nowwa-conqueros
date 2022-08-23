@@ -102,7 +102,9 @@ class Main {
                 adjustedUrl = adjustedUrl.slice(1);
             } 
             if (!adjustedUrl.match(/\.[a-zA-Z0-9_\-]+$/g) && (adjustedUrl[adjustedUrl.length - 1] != '/')) {
-                res.redirect(`https://nowwa.io/games${adjustedUrl}/`);
+                let baseUrl:string = `http://127.0.0.1:9001`;
+                // let baseUrl:string = `http://127.0.0.1:9001/games`;
+                res.redirect(`${baseUrl}/games${adjustedUrl}/`);
             } else if (adjustedUrl.indexOf('/toybuild/') == 0) {
                 console.log(`adjustedUrl: ${adjustedUrl}`);
                 if (this.isStillArchiving) {
@@ -111,9 +113,11 @@ class Main {
                         
                     let authToken:string = 'lJHHrNEjN3klG93krjX3CrCa8SLIydWy';
                     let projectId:number = 873503;
-                    let branchInfo:string[] = (adjustedUrl.slice('/toybuild/'.length).slice(0, -1)).split('/');
-                    let branchId:string = branchInfo[0];
-                    let sceneNumbers:number[] = (branchInfo[1]).split(',').map(Number);
+                    const url = new URL('http://origin.com/' +
+                        (adjustedUrl.slice('/toybuild/'.length).slice(0, -1)));
+                    let branchId = url.searchParams.get('branch') as string;
+                    let scenes = url.searchParams.get('scenes') as string;
+                    let sceneNumbers = scenes.indexOf(',') >= 0 ? scenes.split(',').map(Number) : [parseInt(scenes)];
 
                     let startTime = Date.now();
                     let nowDate = new Date(startTime);
@@ -135,6 +139,7 @@ class Main {
                                 let branchName = branchData.name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
                                 found = true;
                                 res.status(200).send(`branch ID: [${branchName}] is being exported...`);
+                                console.log(`-------`);
                                 this.isStillArchiving = true;
                                 this.currentBranchId = branchId;
                                 let config:PlayCanvasConfig = {
@@ -153,20 +158,63 @@ class Main {
                                     },
 
                                 }
-                                let zipPath:string = await PlayCanvas.Build(authToken, config, `./public`, true);
+                                // let zipPath:string = await PlayCanvas.Build(authToken, config, `./public`, true);
+                                let zipPath:string = `./public/${branchName}__Build.zip`;
+                                console.log(`zipPath: ${zipPath}`);
                                 let targetPath:string = `./public/${branchName}`;
                                 if (!fs.existsSync(targetPath)) {
                                     fs.mkdirSync(targetPath);
                                 }
+                                console.log(`targetPath: ${targetPath}`);
 
-                                let commandUnzip:string = `unzip -o ${zipPath} -d ${targetPath}`;
+                                // let commandUnzip:string = `unzip -o ${zipPath} -d ${targetPath}`;
+                                let commandUnzip:string = `Expand-Archive -Force ${zipPath} ${targetPath}`;
                                 console.log(`command: ${commandUnzip}`);
-                                exec(commandUnzip);
+                                await (new Promise<void>((resolve, reject) => {
+                                    exec(commandUnzip, {'shell':'powershell.exe'}, (err, stdout, stderr) => {
+                                        if (err) {
+                                            console.log(`err: ${err}`);
+                                            reject();
+                                            return;
+                                        }
+                                        if (stdout) {
+                                            console.log(`stdout: ${stdout}`);
+                                            resolve();
+                                            return;
+                                        }
+                                        if (stderr) {
+                                            console.log(`stdout: ${stderr}`);
+                                            resolve();
+                                            return;
+                                        }
+                                        resolve();
+                                    }); 
+                                }));
+                                console.log(`unzipped`);
+                                
+                                let content = fs.readFileSync(`${targetPath}/index.html`, { encoding: 'utf8', flag: 'r' });
+
+                                let globalPlatform = url.searchParams.get('platform');
+                                if (globalPlatform != null) {
+                                    content = content.replace(/<head>/g, `<head>\n\t<script>platform="${globalPlatform}";</script>`);
+                                }
+                                let globalVersion = url.searchParams.get('version');
+                                if (globalVersion != null) {
+                                    content = content.replace(/<head>/g, `<head>\n\t<script>version="${globalVersion}";</script>`);
+                                }
+                                let globalBackend = url.searchParams.get('backend');
+                                if (globalBackend != null) {
+                                    content = content.replace(/<head>/g, `<head>\n\t<script>backend="${globalBackend}";</script>`);
+                                }
+                                fs.writeFileSync(`${targetPath}/index.html`, content, { encoding: 'utf8', flag: 'w' });
                                 
                                 let commandDelete:string = `rm ${zipPath}`;
                                 console.log(`command: ${commandDelete}`);
-                                exec(commandDelete);
-
+                                await (new Promise((resolve, reject) => {
+                                    exec(commandDelete, {'shell':'powershell.exe'}, resolve); 
+                                }));
+                                console.log(`deleted`);
+                                
                                 this.isStillArchiving = false;
                             }
                         }

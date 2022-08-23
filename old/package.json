@@ -1,6 +1,6 @@
 {
-  "name": "darts-pvp",
-  "version": "0.0.3",
+  "name": "bumper-io",
+  "version": "0.1.8",
   "private": true,
   "scripts": {
     "fbinstant-development": "cross-env NODE_ENV='development' parcel build ./src/Wrapper.ts --no-cache --no-content-hash --no-source-maps --no-optimize --dist-dir dist && node utils/postprocess.js && node utils/playcanvas-download.js && node utils/fbinstant.js",

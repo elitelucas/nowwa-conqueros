@@ -24,7 +24,7 @@ export const GameLoad = (state:GameState):Promise<GameState> => {
             .then(res => res.json())
             .then((res:GameState) => {
                 res.initialized = true;
-                console.log(`res:  ${JSON.stringify(res)}`);
+                console.log(`game:  ${JSON.stringify(res)}`);
                 resolve(res);
             })
             .catch((error:any) => {

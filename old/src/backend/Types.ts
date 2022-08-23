@@ -99,7 +99,7 @@ export type LastEntryUserProperties = {
 }
 
 const tuple = <T extends string[]>(...args: T) => args;
-export const AssetNames = tuple("test");
+export const AssetNames = tuple("snappyjump");
 export type AssetTypes = typeof AssetNames[number];
 export type AssetList = {[A in AssetTypes]:string}
 

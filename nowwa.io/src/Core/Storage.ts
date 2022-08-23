@@ -10,7 +10,7 @@ class Storage {
 
     private static VisibleExtensions:string[] = ['html','png','jpg','txt'];
 
-    private static RootFolder:string = `../../files`;
+    private static RootFolder:string = `../../storage`;
 
     /**
      * Initialize storage module.
@@ -19,7 +19,6 @@ class Storage {
         Storage.Instance = new Storage();
         Storage.WebhookFiles(app);
         Storage.WebhookExplorer(app);
-        // Storage.WebhookDefaultFiles(app);
         return Promise.resolve();
     }
 

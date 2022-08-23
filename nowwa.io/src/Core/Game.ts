@@ -9,7 +9,7 @@ class Game {
 
     private static Instance:Game;
 
-    private static RootFolder:string = `../../toy`;
+    private static RootFolder:string = `../../storage/toy`;
 
     /**
      * Initialize game module.
@@ -39,17 +39,19 @@ class Game {
 
                         // TODO : read config files
 
-                        // TODO : 
-
                         let configFiles:any[] = [];
                         
                         contents.forEach(content => {
-                            let contentPath = path.join(fullPath, content);
-                            var isFile:boolean = fs.statSync(contentPath).isFile();
+                            let contentPath:string = path.join(fullPath, content);
+                            let isFile:boolean = fs.statSync(contentPath).isFile();
                             if (isFile) {
-                                console.log(`config file: ${contentPath}`);
-                                let configFile = JSON.parse(fs.readFileSync(contentPath, { encoding: 'utf8', flag: 'r' }));
-                                configFiles.push(configFile);
+                                let extension:string = contentPath.substring(contentPath.lastIndexOf(`.`));
+                                console.log(`extension: ${extension}`);
+                                if (extension == `.json`) {
+                                    console.log(`config file: ${contentPath}`);
+                                    let configFile = JSON.parse(fs.readFileSync(contentPath, { encoding: 'utf8', flag: 'r' }));
+                                    configFiles.push(configFile);
+                                }
                             }
                         });
                         

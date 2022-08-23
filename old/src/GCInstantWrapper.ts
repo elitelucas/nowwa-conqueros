@@ -8,7 +8,7 @@ class GCInstantWrapper {
 
     public IsInitialized:boolean;
     public IsStarted:boolean;
-    public replicant!: ClientReplicant<ReplicantFromConfig<typeof config>>;
+    public replicant!: ClientReplicant<ReplicantFromConfig<typeof config>> | null;
 
     constructor () {
         this.IsInitialized = false;
@@ -84,6 +84,12 @@ class GCInstantWrapper {
         })
         .then((rep)=>{
             console.log('replicant success');
+            const storageAdapter = createStorageAdapter(() => rep);
+    
+            resolveReplicantClient(this.replicant);
+    
+            // Call `setStorageAdapter` before `GCInstant.startGameAsync` or `GCInstant.loadStorage`:
+            GCInstant.storage.setStorageAdapter(storageAdapter);
             return rep;
         })
         .catch((e) => {
@@ -91,12 +97,6 @@ class GCInstantWrapper {
             console.log(e);
             return null;
         });
-        const storageAdapter = createStorageAdapter(() => this.replicant);
-
-        resolveReplicantClient(this.replicant);
-
-        // Call `setStorageAdapter` before `GCInstant.startGameAsync` or `GCInstant.loadStorage`:
-        GCInstant.storage.setStorageAdapter(storageAdapter);
 
         return Promise.resolve();
     }

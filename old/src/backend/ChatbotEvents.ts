@@ -17,9 +17,9 @@ export default R.createChatbotEvents(stateSchema, {messages: messages, scheduled
               args: {
                   subtitle: "Let's play again!",
                   cta: "Play now!",
-                  title: "Test",
+                  title: "Snappy Jump",
                   url: "https://www.google.com/",
-                  assetName: "test"
+                  assetName: "snappyjump"
               }, 
               payload: {
                 feature: "FIRST_CONTEXT_CHANGED",
@@ -35,9 +35,9 @@ export default R.createChatbotEvents(stateSchema, {messages: messages, scheduled
             recipient: data.playerId,
             subtitle: "New daily reward is available!",
             cta: "Claim now!",
-            title: "Test",
+            title: "Snappy Jump",
             url: "https://www.google.com/",
-            assetName: "test",
+            assetName: "snappyjump",
             feature: "DAY_1_NOTIFICATION"
         }, 
         notificationId: "1DNotification",
@@ -49,9 +49,9 @@ export default R.createChatbotEvents(stateSchema, {messages: messages, scheduled
             recipient: data.playerId,
             subtitle: "It has been 3 days, come back to play again!",
             cta: "Play now!",
-            title: "Test",
+            title: "Snappy Jump",
             url: "https://www.google.com/",
-            assetName: "test",
+            assetName: "snappyjump",
             feature: "DAY_3_NOTIFICATION"
         }, 
         notificationId: "3DNotification",
@@ -61,11 +61,11 @@ export default R.createChatbotEvents(stateSchema, {messages: messages, scheduled
       api.scheduledActions.schedule.sendBotMessage({
         args: {
             recipient: data.playerId,
-            subtitle: "Test",
+            subtitle: "Snappy Jump",
             cta: "Play now!",
-            title: "Test",
+            title: "Snappy Jump",
             url: "https://www.google.com/",
-            assetName: "test",
+            assetName: "snappyjump",
             feature: "DAY_7_NOTIFICATION"
         }, 
         notificationId: "7DNotification",
@@ -75,11 +75,11 @@ export default R.createChatbotEvents(stateSchema, {messages: messages, scheduled
       api.scheduledActions.schedule.sendBotMessage({
         args: {
             recipient: data.playerId,
-            subtitle: "Test",
+            subtitle: "Snappy Jump",
             cta: "Play now!",
-            title: "Test",
+            title: "Snappy Jump",
             url: "https://www.google.com/",
-            assetName: "test",
+            assetName: "snappyjump",
             feature: "DAY_14_NOTIFICATION"
         }, 
         notificationId: "14DNotification",

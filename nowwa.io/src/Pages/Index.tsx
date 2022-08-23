@@ -48,12 +48,6 @@ const Index = () => {
         game = Game(gameState, setGameState);
         console.log(`gameState: ${gameState.initialized}`);
     }
-    useEffect(() => {
-        if (state.display == 'Game' && !gameState.initialized) {
-            console.log(`gameState: initialize`);
-            GameLoad(gameState).then(setGameState);
-        }
-    }); 
     
     return (
         <Segment placeholder>
@@ -65,7 +59,7 @@ const Index = () => {
     );
 }
 
-let root = ReactDOMClient.createRoot(document.getElementById('root'));
+let root = ReactDOMClient.createRoot(document.getElementById('root') as HTMLElement);
 let index = <Index />;
 
 root.render(index);

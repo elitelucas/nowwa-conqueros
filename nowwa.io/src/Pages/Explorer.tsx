@@ -31,7 +31,7 @@ export const ExplorerLoad = (state:ExplorerState, path:string):Promise<ExplorerS
                 res.current = path;
                 res.focusFile = "";
                 res.initialized = true;
-                console.log(`state:  ${JSON.stringify(res)}`);
+                console.log(`explorer:  ${JSON.stringify(res)}`);
                 resolve(res);
             })
             .catch((error:any) => {

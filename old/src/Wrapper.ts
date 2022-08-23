@@ -10,7 +10,7 @@ import { createPayloadEncoder, PayloadEncoder, recoverStorage } from '@play-co/g
 import { createStorageAdapter } from '@play-co/gcinstant-replicant-extensions';
  
 // @ts-ignore
-import mainImage from "data-url:./frontend/test.png";
+import mainImage from "data-url:./frontend/snappyjump.png";
 
 // Replicant sync actions batching timeout.
 const BATCHING_MAX_TIME = 3000;
@@ -501,7 +501,7 @@ class Wrapper {
         await this.check();
         await this.replicant.invoke.sendBotMessage({
             recipient: recipient,
-            assetName: "test",
+            assetName: "snappyjump",
             cta: cta,
             subtitle: subtitle,
             title: title,
