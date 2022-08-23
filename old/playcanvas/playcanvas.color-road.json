@@ -1,0 +1,33 @@
+{
+    "playcanvas": {
+        "project_id": 873503,
+        "name": "Color Road",
+        "scenes" : [1367243],
+        "branch_id": "5d24ecb7-8fe4-423f-a3b3-e3477bdb7d88",
+        "description": "",
+        "preload_bundle": true,
+        "version": "",
+        "release_notes": "",
+        "scripts_concatenate": true,
+        "scripts_sourcemaps": false,
+        "scripts_minify": true,
+        "optimize_scene_format": true
+    },
+    "csp": {
+        "style-src": [
+            "'self'",
+            "'unsafe-inline'"
+        ],
+        "connect-src": [
+            "'self'",
+            "blob:",
+            "data:",
+            "https://www.google-analytics.com"
+        ]
+    },
+    "one_page": {
+        "patch_xhr_out": false,
+        "inline_game_scripts": false,
+        "extern_files": false
+    }
+}

@@ -1,0 +1,11 @@
+.replicant/
+node_modules/
+.cache/
+.parcel-cache/
+dist/
+temp/
+test/
+package-lock.json
+.env
+.replicantrc
+playcanvas.json

@@ -1,0 +1,33 @@
+{
+    "playcanvas": {
+        "project_id": 873503,
+        "name": "Roof Rails",
+        "scenes" : [1324244],
+        "branch_id": "caac7952-b42b-424a-96d0-19ac8d82031c",
+        "description": "",
+        "preload_bundle": true,
+        "version": "",
+        "release_notes": "",
+        "scripts_concatenate": true,
+        "scripts_sourcemaps": false,
+        "scripts_minify": true,
+        "optimize_scene_format": true
+    },
+    "csp": {
+        "style-src": [
+            "'self'",
+            "'unsafe-inline'"
+        ],
+        "connect-src": [
+            "'self'",
+            "blob:",
+            "data:",
+            "https://www.google-analytics.com"
+        ]
+    },
+    "one_page": {
+        "patch_xhr_out": false,
+        "inline_game_scripts": false,
+        "extern_files": false
+    }
+}

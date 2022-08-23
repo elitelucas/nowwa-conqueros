@@ -1,0 +1,39 @@
+{
+    "playcanvas": {
+        "project_id": 873503,
+        "name": "Darts PvP",
+        "scenes" : [1360698],
+        "branch_id": "16b6fa92-e444-4897-9203-29d5d3012bfa",
+        "description": "",
+        "preload_bundle": true,
+        "version": "",
+        "release_notes": "",
+        "scripts_concatenate": true,
+        "scripts_sourcemaps": false,
+        "scripts_minify": true,
+        "optimize_scene_format": true
+    },
+    "csp": {
+        "style-src": [
+            "'self'",
+            "'unsafe-inline'"
+        ],
+        "connect-src": [
+            "'self'",
+            "blob:",
+            "data:",
+            "https://www.google-analytics.com"
+        ]
+    },
+    "one_page": {
+        "patch_xhr_out": false,
+        "inline_game_scripts": false,
+        "extern_files": false
+    },
+    "upload": {
+        "bearer": "4pinpo7pw92b9z8glfpfyfxns933r62i",
+        "asset_id": "66171444",
+        "branch_id": "123854c4-e2bc-4dee-8cf1-ee231a6d8887",
+        "browsers": "> 1%"
+    }
+}

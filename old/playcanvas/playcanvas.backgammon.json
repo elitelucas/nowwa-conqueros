@@ -1,0 +1,33 @@
+{
+    "playcanvas": {
+        "project_id": 873503,
+        "name": "Backgammon",
+        "scenes" : [1357058],
+        "branch_id": "e18f25e0-7366-43f7-84d3-3327344b8387",
+        "description": "",
+        "preload_bundle": true,
+        "version": "",
+        "release_notes": "",
+        "scripts_concatenate": true,
+        "scripts_sourcemaps": false,
+        "scripts_minify": true,
+        "optimize_scene_format": true
+    },
+    "csp": {
+        "style-src": [
+            "'self'",
+            "'unsafe-inline'"
+        ],
+        "connect-src": [
+            "'self'",
+            "blob:",
+            "data:",
+            "https://www.google-analytics.com"
+        ]
+    },
+    "one_page": {
+        "patch_xhr_out": false,
+        "inline_game_scripts": false,
+        "extern_files": false
+    }
+}

@@ -1,0 +1,39 @@
+{
+    "playcanvas": {
+        "project_id": 873503,
+        "name": "Snappy Jump",
+        "scenes" : [1323201],
+        "branch_id": "d66f4b35-015b-4784-bf8c-0128fb2ca2a3",
+        "description": "",
+        "preload_bundle": true,
+        "version": "",
+        "release_notes": "",
+        "scripts_concatenate": true,
+        "scripts_sourcemaps": false,
+        "scripts_minify": true,
+        "optimize_scene_format": true
+    },
+    "csp": {
+        "style-src": [
+            "'self'",
+            "'unsafe-inline'"
+        ],
+        "connect-src": [
+            "'self'",
+            "blob:",
+            "data:",
+            "https://www.google-analytics.com"
+        ]
+    },
+    "one_page": {
+        "patch_xhr_out": false,
+        "inline_game_scripts": false,
+        "extern_files": false
+    },
+    "upload": {
+        "bearer": "4pinpo7pw92b9z8glfpfyfxns933r62i",
+        "asset_id": "83627828",
+        "branch_id": "d66f4b35-015b-4784-bf8c-0128fb2ca2a3",
+        "browsers": "> 1%"
+    }
+}

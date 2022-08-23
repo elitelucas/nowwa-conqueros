@@ -1,0 +1,33 @@
+{
+    "playcanvas": {
+        "project_id": 873503,
+        "name": "Woodturning 3D",
+        "scenes" : [1333566],
+        "branch_id": "6065dec4-aa07-441a-8e26-df8d0b179209",
+        "description": "",
+        "preload_bundle": true,
+        "version": "",
+        "release_notes": "",
+        "scripts_concatenate": true,
+        "scripts_sourcemaps": false,
+        "scripts_minify": true,
+        "optimize_scene_format": true
+    },
+    "csp": {
+        "style-src": [
+            "'self'",
+            "'unsafe-inline'"
+        ],
+        "connect-src": [
+            "'self'",
+            "blob:",
+            "data:",
+            "https://www.google-analytics.com"
+        ]
+    },
+    "one_page": {
+        "patch_xhr_out": false,
+        "inline_game_scripts": false,
+        "extern_files": false
+    }
+}

@@ -1,0 +1,33 @@
+{
+    "playcanvas": {
+        "project_id": 873503,
+        "name": "Draw Joust",
+        "scenes" : [1390261],
+        "branch_id": "85cc2189-2d73-4bc9-9b2b-d904b5f1df1e",
+        "description": "",
+        "preload_bundle": true,
+        "version": "",
+        "release_notes": "",
+        "scripts_concatenate": true,
+        "scripts_sourcemaps": false,
+        "scripts_minify": true,
+        "optimize_scene_format": true
+    },
+    "csp": {
+        "style-src": [
+            "'self'",
+            "'unsafe-inline'"
+        ],
+        "connect-src": [
+            "'self'",
+            "blob:",
+            "data:",
+            "https://www.google-analytics.com"
+        ]
+    },
+    "one_page": {
+        "patch_xhr_out": false,
+        "inline_game_scripts": false,
+        "extern_files": false
+    }
+}
