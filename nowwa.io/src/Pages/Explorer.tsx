@@ -28,11 +28,15 @@ export const ExplorerLoad = (state:ExplorerState, path:string):Promise<ExplorerS
         fetch (`${storageFullUrl}${path}`)
             .then(res => res.json())
             .then((res:ExplorerState) => {
-                res.current = path;
-                res.focusFile = "";
-                res.initialized = true;
+                let explorerState:ExplorerState = {
+                    current     : path,
+                    focusFile   : "",
+                    initialized : true,
+                    files       : res.files,
+                    folders     : res.folders
+                };
                 console.log(`explorer:  ${JSON.stringify(res)}`);
-                resolve(res);
+                resolve(explorerState);
             })
             .catch((error:any) => {
                 console.error(`error: ${error}`);

@@ -7,16 +7,16 @@ import cloudinary from 'cloudinary';
 import path from 'path';
 import { EnvType, load } from 'ts-dotenv';
 import { User, UserDocument } from '../Models/User';
-import Environment from './Environment';
+import Environment, { statusUrl } from './Environment';
 import crypto from 'crypto';
 import Socket from './Socket';
 import Authentication from './Authentication';
-import { PlayCanvas } from './Playcanvas';
+import Config from './Playcanvas';
 import Database from './Database';
 import Storage from './Storage';
 import Game from './Game';
 import Test from './Test';
-
+import PlayCanvas from './Playcanvas';
 
 console.log(`project path: ${__dirname}`);
 
@@ -78,37 +78,17 @@ class Main {
                 });
 
             app.all('/', (req, res, next) => {
-                // let didError = false;
-                // let stream = ReactDOMServer.renderToPipeableStream(<Index />, {
-                //     onShellReady () {
-                //         res.statusCode = didError ? 500 : 200;
-                //         res.setHeader('Content-type', 'text/html');
-                //         stream.pipe(res);
-                //     }, 
-                //     onError (err) {
-                //         didError = true;
-                //         console.error(err);
-                //     },
-                // });
                 req.url = req.url + 'Index.html'; 
                 next();
             });
 
-            app.use('/status/', (req, res) => {
+            app.use(`${statusUrl}`, (req, res) => {
                 // console.log(`[Express] /status/`);
-                this.status.requestCount++;
-                if (!this.status.isPlaycanvasBusy) {
-                    this.status.isPlaycanvasBusy = true;
-                    this.status.requestCount = 0;
-                    PlayCanvas.MockBusy()
-                        .then(() => {
-                            this.status.isPlaycanvasBusy = false;
-                        });
-                }
+                this.status.isPlayCanvasBusy = PlayCanvas.CurrentActivity != 'None';
                 res.status(200).send(JSON.stringify(this.status));
             });
 
-            app.use('/test/', (req, res) => {
+            app.use('/test', (req, res) => {
                 console.log(`[Express] /test/`);
                 res.status(200).send('test');
             });
@@ -129,6 +109,16 @@ class Main {
             console.log(`[Express] listening on port ${env.MAIN_PORT}`);
 
             await Socket.AsyncInit(app, env);
+
+            // TEST : mocking playcanvas status change every 10 seconds
+            // setInterval(() => {
+            //     this.status.isPlaycanvasBusy = true;
+            //     PlayCanvas.MockBusy()
+            //         .then(() => {
+            //             this.status.requestCount = 0;
+            //             this.status.isPlaycanvasBusy = false;
+            //         });
+            // }, 10000);
 
             Test.Run();
         }
@@ -243,13 +233,15 @@ class Main {
 
 namespace Main {
     export type Status = {
-        isPlaycanvasBusy: boolean;
+        isPlayCanvasBusy: boolean;
         requestCount:number;
     }
     export const StatusDefault:Status = {
-        isPlaycanvasBusy: false,
+        isPlayCanvasBusy: false,
         requestCount: 0,
     }
 }
+
+export default Main;
 
 var c:Main = new Main();

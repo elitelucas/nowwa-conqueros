@@ -1,4 +1,4 @@
-var Environment = {
+let Environment = {
     VERSION             : String,
     
     EXPRESS_SECRET      : String, 
@@ -42,3 +42,11 @@ export const storageFullUrl:string = `${baseUrl}${storageUrl}`;
 export const toyUrl:string = `/toy`;
 
 export const toyFullUrl:string = `${baseUrl}${toyUrl}`;
+
+export const statusUrl:string = `/status`;
+
+export const statusFullUrl:string = `${baseUrl}${statusUrl}`;
+
+export const buildUrl:string = `/build`;
+
+export const buildFullUrl:string = `${baseUrl}${buildUrl}`;

@@ -7,7 +7,7 @@ import fs from 'fs';
 import { load } from 'ts-dotenv';
 import Environment from './Environment';
 import crypto from 'crypto';
-import { PlayCanvas, PlayCanvasConfig } from './Playcanvas';
+import PlayCanvas from './Playcanvas';
 import { extractFull } from "node-7z";
 import sevenBin from '7zip-bin';
 import del from 'del';
@@ -142,7 +142,7 @@ class Main {
                                 console.log(`-------`);
                                 this.isStillArchiving = true;
                                 this.currentBranchId = branchId;
-                                let config:PlayCanvasConfig = {
+                                let config:PlayCanvas.Config = {
                                     playcanvas: {
                                         project_id: projectId,
                                         name: branchName,
@@ -156,10 +156,27 @@ class Main {
                                         scripts_minify: true,
                                         scripts_sourcemaps : false,
                                     },
+                                    csp: {
+                                        "style-src": [
+                                            'self',
+                                            'unsafe-inline'
+                                        ],
+                                        "connect-src": [
+                                            'self',
+                                            'blob:',
+                                            'data:',
+                                            'https://www.google-analytics.com'
+                                        ]
+                                    },
+                                    one_page: {
+                                        patch_xhr_out: false,
+                                        inline_game_scripts: false,
+                                        extern_files: false
+                                    }
 
                                 }
-                                // let zipPath:string = await PlayCanvas.Build(authToken, config, `./public`, true);
-                                let zipPath:string = `./public/${branchName}__Build.zip`;
+                                let zipPath:string = await PlayCanvas.Build(authToken, config, `./public`, true);
+                                // let zipPath:string = `./public/${branchName}__Build.zip`;
                                 console.log(`zipPath: ${zipPath}`);
                                 let targetPath:string = `./public/${branchName}`;
                                 if (!fs.existsSync(targetPath)) {
@@ -167,8 +184,8 @@ class Main {
                                 }
                                 console.log(`targetPath: ${targetPath}`);
 
-                                // let commandUnzip:string = `unzip -o ${zipPath} -d ${targetPath}`;
-                                let commandUnzip:string = `Expand-Archive -Force ${zipPath} ${targetPath}`;
+                                // let commandUnzip:string = `unzip -o ${zipPath} -d ${targetPath}`; // for Unix
+                                let commandUnzip:string = `Expand-Archive -Force ${zipPath} ${targetPath}`; // for Windows
                                 console.log(`command: ${commandUnzip}`);
                                 await (new Promise<void>((resolve, reject) => {
                                     exec(commandUnzip, {'shell':'powershell.exe'}, (err, stdout, stderr) => {

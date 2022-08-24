@@ -1,40 +1,10 @@
 import fetch, { Response } from 'node-fetch';
 import fs from 'fs';
 import path from 'path';
-    
-export type PlayCanvasConfig = {
-    playcanvas              :{
-        project_id              :number;
-        name                    :string;
-        scenes                  :number[];
-        branch_id               :string;
-        description?            :string;
-        preload_bundle?         :boolean;
-        version?                :string;
-        release_notes?          :string;
-        scripts_concatenate?    :boolean;
-        scripts_sourcemaps?     :boolean;
-        scripts_minify?         :boolean;
-        optimize_scene_format?  :boolean;
-    };
-    csp?                    :{
-        "style-src"             :string[];
-        "connect-src"           :string[];
-    } & {[key:string]           :string[]};
-    one_page?               :{
-        patch_xhr_out?          :boolean;
-        inline_game_scripts?    :boolean;
-        extern_files?           :boolean;
-    };
-    upload?                 :{
-        bearer                  :string;
-        asset_id                :string;
-        branch_id               :string;
-        browsers                :"> 1%" | "> 10%";
-    };
-}
 
-export class PlayCanvas {
+class PlayCanvas {
+
+    public static CurrentActivity:PlayCanvas.ActivityType = 'None';
 
     private static async Sleep (ms:number) {
         return new Promise(resolve => setTimeout(resolve, ms));
@@ -76,6 +46,11 @@ export class PlayCanvas {
     }
  
     public static async GetBranches (authToken:string, projectId:number) {
+        if (PlayCanvas.CurrentActivity != 'None') {
+            console.log(`PlayCanvas Busy!!!`);
+            return Promise.resolve(``);
+        }
+        PlayCanvas.CurrentActivity = 'Internal';
         return new Promise<any>((resolve, reject) => {
             console.log("✔️ Requested branch list from Playcanvas");
             let url = 'https://playcanvas.com/api/projects/' + projectId + '/branches';
@@ -87,13 +62,14 @@ export class PlayCanvas {
                     'Authorization': 'Bearer ' + authToken
                 }
             })
-            .then(res => {
+            .then((res:Response) => {
                 if (res.status !== 200) {
                     throw new Error("Error: status code " + res.status);
                 }
                 return res.json();
             })
             .then(branches => {
+                PlayCanvas.CurrentActivity = 'None';
                 resolve(branches);
             })
             .catch(reject);
@@ -118,10 +94,16 @@ export class PlayCanvas {
         }
     }
 
-    public static async Archive (authToken:string, projectId:number, branchId:string, branchName:string, projectVersion:string, directory:string, noLog?:boolean) {
+    public static async Archive (authToken:string, projectId:number, branchId:string, branchName:string, projectVersion:string, directory:string, noLog?:boolean):Promise<string> {
+        if (PlayCanvas.CurrentActivity != 'None') {
+            console.log(`PlayCanvas Busy!!!`);
+            return Promise.resolve(``);
+        }
+        PlayCanvas.CurrentActivity = 'Archive';
         return new Promise<string>((resolve, reject) => {
             console.log("✔️ Requested archive from Playcanvas");
-            fetch('https://playcanvas.com/api/projects/' + projectId + '/export', {
+            let url = 'https://playcanvas.com/api/projects/' + projectId + '/export';
+            fetch(url, {
                 method: 'POST',
                 body: JSON.stringify({
                     "branch_id": branchId
@@ -148,17 +130,24 @@ export class PlayCanvas {
                 if (!fs.existsSync(path.dirname(output))) {
                     fs.mkdirSync(path.dirname(output), {recursive:true});
                 }
-                fs.writeFileSync(output, Buffer.from(arrayBuffer), 'binary')
+                fs.writeFileSync(output, Buffer.from(arrayBuffer), 'binary');
+                PlayCanvas.CurrentActivity = 'None';
                 resolve(output);
             })
             .catch(reject);
         });
     }
 
-    public static async Build (authToken:string, config:PlayCanvasConfig, directory:string, noLog?:boolean) {
+    public static async Build (authToken:string, config:PlayCanvas.Config, directory:string, noLog?:boolean):Promise<string> {
+        if (PlayCanvas.CurrentActivity != 'None') {
+            console.log(`PlayCanvas Busy!!!`);
+            return Promise.resolve(``);
+        }
+        PlayCanvas.CurrentActivity = 'Build';
         return new Promise<string>((resolve, reject) => {
             console.log("✔️ Requested build from Playcanvas")
-            fetch('https://playcanvas.com/api/apps/download', {
+            let url = 'https://playcanvas.com/api/apps/download';
+            fetch(url, {
                 method: 'POST',
                 body: JSON.stringify({
                     "project_id": config.playcanvas.project_id,
@@ -196,11 +185,60 @@ export class PlayCanvas {
                 if (!fs.existsSync(path.dirname(output))) {
                     fs.mkdirSync(path.dirname(output), {recursive:true});
                 }
-                fs.writeFileSync(output, Buffer.from(arrayBuffer), 'binary')
+                fs.writeFileSync(output, Buffer.from(arrayBuffer), 'binary');
+                PlayCanvas.CurrentActivity = 'None';
                 resolve(output);
             })
             .catch(reject);
         });
     }
 
+    public static async MockBusy ():Promise<void> {
+        PlayCanvas.CurrentActivity = 'Internal';
+        return new Promise((resolve, reject) => {
+            let delay:number = 5000;
+            setTimeout(() => {
+                PlayCanvas.CurrentActivity = 'None';
+                resolve();
+            }, delay);
+        });
+    }
+
 }
+
+namespace PlayCanvas {
+    export type ActivityType = `None` | `ArchiveAll` | `Archive` | `Build` | `Internal`;
+    export type Config = {
+        playcanvas              :{
+            project_id              :number;
+            name                    :string;
+            scenes                  :number[];
+            branch_id               :string;
+            description?            :string;
+            preload_bundle?         :boolean;
+            version?                :string;
+            release_notes?          :string;
+            scripts_concatenate?    :boolean;
+            scripts_sourcemaps?     :boolean;
+            scripts_minify?         :boolean;
+            optimize_scene_format?  :boolean;
+        };
+        csp                     :{
+            "style-src"             :string[];
+            "connect-src"           :string[];
+        } & {[key:string]           :string[]};
+        one_page?               :{
+            patch_xhr_out?          :boolean;
+            inline_game_scripts?    :boolean;
+            extern_files?           :boolean;
+        };
+        upload?                 :{
+            bearer                  :string;
+            asset_id                :string;
+            branch_id               :string;
+            browsers                :"> 1%" | "> 10%";
+        };
+    }
+}
+
+export default PlayCanvas;

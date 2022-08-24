@@ -43,9 +43,10 @@ const Index = () => {
     }
 
     const [gameState, setGameState] = useState(GameStateDefault);
+    const [gameBusy, setGameBusy] = useState(false);
     let game;
     if (state.display == 'Game') {
-        game = Game(gameState, setGameState);
+        game = Game(gameState, setGameState, gameBusy, setGameBusy);
         console.log(`gameState: ${gameState.initialized}`);
     }
     

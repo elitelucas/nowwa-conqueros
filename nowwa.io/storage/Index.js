@@ -2937,9 +2937,10 @@ const Index = ()=>{
         console.log(`explorerState focusFile: ${explorerState.focusFile}`);
     }
     const [gameState, setGameState] = (0, _react.useState)((0, _game.GameStateDefault));
+    const [gameBusy, setGameBusy] = (0, _react.useState)(false);
     let game;
     if (state.display == "Game") {
-        game = (0, _gameDefault.default)(gameState, setGameState);
+        game = (0, _gameDefault.default)(gameState, setGameState, gameBusy, setGameBusy);
         console.log(`gameState: ${gameState.initialized}`);
     }
     return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Segment), {
@@ -2947,7 +2948,7 @@ const Index = ()=>{
         children: [
             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _topDefault.default), {}, void 0, false, {
                 fileName: "src/Pages/Index.tsx",
-                lineNumber: 54,
+                lineNumber: 55,
                 columnNumber: 13
             }, undefined),
             menu,
@@ -2956,16 +2957,16 @@ const Index = ()=>{
         ]
     }, void 0, true, {
         fileName: "src/Pages/Index.tsx",
-        lineNumber: 53,
+        lineNumber: 54,
         columnNumber: 9
     }, undefined);
 };
-_s(Index, "puGrsKTFbmegfihrBxPeuAEajPg=");
+_s(Index, "T4eKOZqxI+XR4W/UwAxpPlUdscI=");
 _c = Index;
 let root = (0, _clientDefault.default).createRoot(document.getElementById("root"));
 let index = /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)(Index, {}, void 0, false, {
     fileName: "src/Pages/Index.tsx",
-    lineNumber: 63,
+    lineNumber: 64,
     columnNumber: 13
 }, undefined);
 root.render(index);
@@ -61480,11 +61481,15 @@ const ExplorerLoad = (state, path)=>{
         if (path.length > 0 && path[0] != "/") path = `/${path}`;
         console.log(`fetch: ${(0, _environment.storageFullUrl)}${path}`);
         fetch(`${(0, _environment.storageFullUrl)}${path}`).then((res)=>res.json()).then((res)=>{
-            res.current = path;
-            res.focusFile = "";
-            res.initialized = true;
+            let explorerState = {
+                current: path,
+                focusFile: "",
+                initialized: true,
+                files: res.files,
+                folders: res.folders
+            };
             console.log(`explorer:  ${JSON.stringify(res)}`);
-            resolve(res);
+            resolve(explorerState);
         }).catch((error)=>{
             console.error(`error: ${error}`);
             reject();
@@ -61519,7 +61524,7 @@ const Explorer = (state, setState)=>{
                         children: filename
                     }, void 0, false, {
                         fileName: "src/Pages/Explorer.tsx",
-                        lineNumber: 73,
+                        lineNumber: 77,
                         columnNumber: 21
                     }, undefined),
                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Embed), {
@@ -61527,7 +61532,7 @@ const Explorer = (state, setState)=>{
                         defaultActive: true
                     }, void 0, false, {
                         fileName: "src/Pages/Explorer.tsx",
-                        lineNumber: 74,
+                        lineNumber: 78,
                         columnNumber: 21
                     }, undefined)
                 ]
@@ -61559,12 +61564,12 @@ const Explorer = (state, setState)=>{
                                 name: "angle right"
                             }, void 0, false, {
                                 fileName: "src/Pages/Explorer.tsx",
-                                lineNumber: 112,
+                                lineNumber: 116,
                                 columnNumber: 44
                             }, undefined)
                         }, void 0, false, {
                             fileName: "src/Pages/Explorer.tsx",
-                            lineNumber: 112,
+                            lineNumber: 116,
                             columnNumber: 25
                         }, undefined),
                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.BreadcrumbSection), {
@@ -61575,7 +61580,7 @@ const Explorer = (state, setState)=>{
                             children: folder
                         }, folder, false, {
                             fileName: "src/Pages/Explorer.tsx",
-                            lineNumber: 113,
+                            lineNumber: 117,
                             columnNumber: 25
                         }, undefined)
                     ]
@@ -61583,7 +61588,7 @@ const Explorer = (state, setState)=>{
             })
         }, void 0, false, {
             fileName: "src/Pages/Explorer.tsx",
-            lineNumber: 105,
+            lineNumber: 109,
             columnNumber: 13
         }, undefined);
     };
@@ -61597,12 +61602,12 @@ const Explorer = (state, setState)=>{
                     collapsing: true,
                     children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Checkbox), {}, path, false, {
                         fileName: "src/Pages/Explorer.tsx",
-                        lineNumber: 130,
+                        lineNumber: 134,
                         columnNumber: 21
                     }, undefined)
                 }, void 0, false, {
                     fileName: "src/Pages/Explorer.tsx",
-                    lineNumber: 129,
+                    lineNumber: 133,
                     columnNumber: 17
                 }, undefined),
                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Table).Cell, {
@@ -61614,14 +61619,14 @@ const Explorer = (state, setState)=>{
                             name: "file"
                         }, void 0, false, {
                             fileName: "src/Pages/Explorer.tsx",
-                            lineNumber: 133,
+                            lineNumber: 137,
                             columnNumber: 21
                         }, undefined),
                         file
                     ]
                 }, path, true, {
                     fileName: "src/Pages/Explorer.tsx",
-                    lineNumber: 132,
+                    lineNumber: 136,
                     columnNumber: 17
                 }, undefined),
                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Table).Cell, {
@@ -61631,12 +61636,12 @@ const Explorer = (state, setState)=>{
                         name: "download"
                     }, void 0, false, {
                         fileName: "src/Pages/Explorer.tsx",
-                        lineNumber: 137,
+                        lineNumber: 141,
                         columnNumber: 21
                     }, undefined)
                 }, void 0, false, {
                     fileName: "src/Pages/Explorer.tsx",
-                    lineNumber: 136,
+                    lineNumber: 140,
                     columnNumber: 17
                 }, undefined),
                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Table).Cell, {
@@ -61646,18 +61651,18 @@ const Explorer = (state, setState)=>{
                         name: "delete"
                     }, void 0, false, {
                         fileName: "src/Pages/Explorer.tsx",
-                        lineNumber: 140,
+                        lineNumber: 144,
                         columnNumber: 21
                     }, undefined)
                 }, void 0, false, {
                     fileName: "src/Pages/Explorer.tsx",
-                    lineNumber: 139,
+                    lineNumber: 143,
                     columnNumber: 17
                 }, undefined)
             ]
         }, void 0, true, {
             fileName: "src/Pages/Explorer.tsx",
-            lineNumber: 128,
+            lineNumber: 132,
             columnNumber: 13
         }, undefined);
     };
@@ -61671,12 +61676,12 @@ const Explorer = (state, setState)=>{
                     collapsing: true,
                     children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Checkbox), {}, path, false, {
                         fileName: "src/Pages/Explorer.tsx",
-                        lineNumber: 153,
+                        lineNumber: 157,
                         columnNumber: 21
                     }, undefined)
                 }, void 0, false, {
                     fileName: "src/Pages/Explorer.tsx",
-                    lineNumber: 152,
+                    lineNumber: 156,
                     columnNumber: 17
                 }, undefined),
                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Table).Cell, {
@@ -61688,14 +61693,14 @@ const Explorer = (state, setState)=>{
                             name: "folder"
                         }, void 0, false, {
                             fileName: "src/Pages/Explorer.tsx",
-                            lineNumber: 156,
+                            lineNumber: 160,
                             columnNumber: 21
                         }, undefined),
                         folder
                     ]
                 }, path, true, {
                     fileName: "src/Pages/Explorer.tsx",
-                    lineNumber: 155,
+                    lineNumber: 159,
                     columnNumber: 17
                 }, undefined),
                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Table).Cell, {
@@ -61705,12 +61710,12 @@ const Explorer = (state, setState)=>{
                         name: "download"
                     }, void 0, false, {
                         fileName: "src/Pages/Explorer.tsx",
-                        lineNumber: 160,
+                        lineNumber: 164,
                         columnNumber: 21
                     }, undefined)
                 }, void 0, false, {
                     fileName: "src/Pages/Explorer.tsx",
-                    lineNumber: 159,
+                    lineNumber: 163,
                     columnNumber: 17
                 }, undefined),
                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Table).Cell, {
@@ -61720,18 +61725,18 @@ const Explorer = (state, setState)=>{
                         name: "delete"
                     }, void 0, false, {
                         fileName: "src/Pages/Explorer.tsx",
-                        lineNumber: 163,
+                        lineNumber: 167,
                         columnNumber: 21
                     }, undefined)
                 }, void 0, false, {
                     fileName: "src/Pages/Explorer.tsx",
-                    lineNumber: 162,
+                    lineNumber: 166,
                     columnNumber: 17
                 }, undefined)
             ]
         }, void 0, true, {
             fileName: "src/Pages/Explorer.tsx",
-            lineNumber: 151,
+            lineNumber: 155,
             columnNumber: 13
         }, undefined);
     };
@@ -61741,7 +61746,7 @@ const Explorer = (state, setState)=>{
                 children: CreateBreadcrumb(state.current)
             }, void 0, false, {
                 fileName: "src/Pages/Explorer.tsx",
-                lineNumber: 171,
+                lineNumber: 175,
                 columnNumber: 13
             }, undefined),
             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Segment), {
@@ -61756,39 +61761,39 @@ const Explorer = (state, setState)=>{
                                 children: [
                                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Table).Cell, {}, void 0, false, {
                                         fileName: "src/Pages/Explorer.tsx",
-                                        lineNumber: 178,
+                                        lineNumber: 182,
                                         columnNumber: 29
                                     }, undefined),
                                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Table).Cell, {
                                         children: "Name"
                                     }, void 0, false, {
                                         fileName: "src/Pages/Explorer.tsx",
-                                        lineNumber: 179,
+                                        lineNumber: 183,
                                         columnNumber: 29
                                     }, undefined),
                                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Table).Cell, {
                                         children: "Download"
                                     }, void 0, false, {
                                         fileName: "src/Pages/Explorer.tsx",
-                                        lineNumber: 180,
+                                        lineNumber: 184,
                                         columnNumber: 29
                                     }, undefined),
                                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Table).Cell, {
                                         children: "Delete"
                                     }, void 0, false, {
                                         fileName: "src/Pages/Explorer.tsx",
-                                        lineNumber: 181,
+                                        lineNumber: 185,
                                         columnNumber: 29
                                     }, undefined)
                                 ]
                             }, void 0, true, {
                                 fileName: "src/Pages/Explorer.tsx",
-                                lineNumber: 177,
+                                lineNumber: 181,
                                 columnNumber: 25
                             }, undefined)
                         }, void 0, false, {
                             fileName: "src/Pages/Explorer.tsx",
-                            lineNumber: 176,
+                            lineNumber: 180,
                             columnNumber: 21
                         }, undefined),
                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Table).Body, {
@@ -61804,31 +61809,31 @@ const Explorer = (state, setState)=>{
                             ]
                         }, void 0, true, {
                             fileName: "src/Pages/Explorer.tsx",
-                            lineNumber: 184,
+                            lineNumber: 188,
                             columnNumber: 21
                         }, undefined)
                     ]
                 }, void 0, true, {
                     fileName: "src/Pages/Explorer.tsx",
-                    lineNumber: 175,
+                    lineNumber: 179,
                     columnNumber: 17
                 }, undefined)
             }, void 0, false, {
                 fileName: "src/Pages/Explorer.tsx",
-                lineNumber: 174,
+                lineNumber: 178,
                 columnNumber: 13
             }, undefined),
             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Segment), {
                 children: CreateFocusedFile()
             }, void 0, false, {
                 fileName: "src/Pages/Explorer.tsx",
-                lineNumber: 196,
+                lineNumber: 200,
                 columnNumber: 13
             }, undefined)
         ]
     }, void 0, true, {
         fileName: "src/Pages/Explorer.tsx",
-        lineNumber: 170,
+        lineNumber: 174,
         columnNumber: 9
     }, undefined);
 };
@@ -61853,7 +61858,11 @@ parcelHelpers.export(exports, "storageUrl", ()=>storageUrl);
 parcelHelpers.export(exports, "storageFullUrl", ()=>storageFullUrl);
 parcelHelpers.export(exports, "toyUrl", ()=>toyUrl);
 parcelHelpers.export(exports, "toyFullUrl", ()=>toyFullUrl);
-var Environment = {
+parcelHelpers.export(exports, "statusUrl", ()=>statusUrl);
+parcelHelpers.export(exports, "statusFullUrl", ()=>statusFullUrl);
+parcelHelpers.export(exports, "buildUrl", ()=>buildUrl);
+parcelHelpers.export(exports, "buildFullUrl", ()=>buildFullUrl);
+let Environment = {
     VERSION: String,
     EXPRESS_SECRET: String,
     MONGODB_HOST: String,
@@ -61879,6 +61888,10 @@ const storageUrl = `/storage`;
 const storageFullUrl = `${baseUrl}${storageUrl}`;
 const toyUrl = `/toy`;
 const toyFullUrl = `${baseUrl}${toyUrl}`;
+const statusUrl = `/status`;
+const statusFullUrl = `${baseUrl}${statusUrl}`;
+const buildUrl = `/build`;
+const buildFullUrl = `${baseUrl}${buildUrl}`;
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"iPckY":[function(require,module,exports) {
 var $parcel$ReactRefreshHelpers$d68b = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
@@ -61891,6 +61904,7 @@ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "GameStateDefault", ()=>GameStateDefault);
 parcelHelpers.export(exports, "GameLoad", ()=>GameLoad);
+parcelHelpers.export(exports, "GameStatus", ()=>GameStatus);
 var _jsxDevRuntime = require("react/jsx-dev-runtime");
 var _react = require("react");
 var _reactDefault = parcelHelpers.interopDefault(_react);
@@ -61908,10 +61922,13 @@ const GameLoad = (state)=>{
     return new Promise((resolve, reject)=>{
         console.log(`get games`);
         fetch(`${(0, _environment.toyFullUrl)}`).then((res)=>res.json()).then((res)=>{
-            res.initialized = true;
-            res.current = state.current;
-            console.log(`game:  ${JSON.stringify(res)}`);
-            resolve(res);
+            let gameState = {
+                configs: res.configs,
+                current: state.current,
+                initialized: true
+            };
+            console.log(`game:  ${JSON.stringify(gameState)}`);
+            resolve(gameState);
         }).catch((error)=>{
             console.error(`error: ${error}`);
             reject();
@@ -61919,8 +61936,31 @@ const GameLoad = (state)=>{
     });
 };
 _c = GameLoad;
-const Game = (state, setState)=>{
-    if (!state.initialized) GameLoad(state).then(setState);
+const GameStatus = ()=>{
+    return new Promise((resolve, reject)=>{
+        console.log(`get status`);
+        fetch(`${(0, _environment.statusFullUrl)}`).then((res)=>res.json()).then((res)=>{
+            resolve(res.isPlayCanvasBusy);
+        }).catch((error)=>{
+            console.error(`error: ${error}`);
+            reject();
+        });
+    });
+};
+_c1 = GameStatus;
+const Game = (state, setState, busy, setBusy)=>{
+    if (!state.initialized) {
+        let gameState = {
+            configs: state.configs,
+            current: state.current,
+            initialized: state.initialized
+        };
+        GameLoad(gameState).then(setState);
+        setInterval(()=>{
+            console.log(`update status`);
+            GameStatus().then(setBusy);
+        }, 1000);
+    }
     console.log(`state.current.AppName: ${state.current.AppName}`);
     console.log(`state.current.ContentIndex: ${state.current.ContentIndex}`);
     const SelectContent = (config, contentIndex)=>{
@@ -61950,7 +61990,7 @@ const Game = (state, setState)=>{
                 value: 1
             },
             {
-                text: "Snapchat",
+                text: "Snapchat (Development Only)",
                 value: 2
             }
         ];
@@ -61988,7 +62028,7 @@ const Game = (state, setState)=>{
                             children: config.AppName
                         }, void 0, false, {
                             fileName: "src/Pages/Game.tsx",
-                            lineNumber: 95,
+                            lineNumber: 126,
                             columnNumber: 21
                         }, undefined),
                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Image), {
@@ -61996,7 +62036,7 @@ const Game = (state, setState)=>{
                             fluid: true
                         }, void 0, false, {
                             fileName: "src/Pages/Game.tsx",
-                            lineNumber: 96,
+                            lineNumber: 127,
                             columnNumber: 21
                         }, undefined),
                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Button), {
@@ -62006,13 +62046,13 @@ const Game = (state, setState)=>{
                             children: "Web build not available"
                         }, void 0, false, {
                             fileName: "src/Pages/Game.tsx",
-                            lineNumber: 97,
+                            lineNumber: 128,
                             columnNumber: 21
                         }, undefined)
                     ]
                 }, void 0, true, {
                     fileName: "src/Pages/Game.tsx",
-                    lineNumber: 94,
+                    lineNumber: 125,
                     columnNumber: 17
                 }, undefined),
                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Card).Content, {
@@ -62026,14 +62066,14 @@ const Game = (state, setState)=>{
                                         name: "dropdown"
                                     }, void 0, false, {
                                         fileName: "src/Pages/Game.tsx",
-                                        lineNumber: 106,
+                                        lineNumber: 137,
                                         columnNumber: 29
                                     }, undefined),
                                     "Info"
                                 ]
                             }, void 0, true, {
                                 fileName: "src/Pages/Game.tsx",
-                                lineNumber: 102,
+                                lineNumber: 133,
                                 columnNumber: 25
                             }, undefined),
                             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Accordion).Content, {
@@ -62045,7 +62085,7 @@ const Game = (state, setState)=>{
                                         placeholder: "app id"
                                     }, void 0, false, {
                                         fileName: "src/Pages/Game.tsx",
-                                        lineNumber: 113,
+                                        lineNumber: 144,
                                         columnNumber: 29
                                     }, undefined),
                                     "Snapchat App ID",
@@ -62054,14 +62094,14 @@ const Game = (state, setState)=>{
                                         placeholder: "app id"
                                     }, void 0, false, {
                                         fileName: "src/Pages/Game.tsx",
-                                        lineNumber: 115,
+                                        lineNumber: 146,
                                         columnNumber: 29
                                     }, undefined),
                                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Divider), {
                                         hidden: true
                                     }, void 0, false, {
                                         fileName: "src/Pages/Game.tsx",
-                                        lineNumber: 116,
+                                        lineNumber: 147,
                                         columnNumber: 29
                                     }, undefined),
                                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Button), {
@@ -62069,13 +62109,13 @@ const Game = (state, setState)=>{
                                         children: "Update"
                                     }, void 0, false, {
                                         fileName: "src/Pages/Game.tsx",
-                                        lineNumber: 117,
+                                        lineNumber: 148,
                                         columnNumber: 29
                                     }, undefined)
                                 ]
                             }, void 0, true, {
                                 fileName: "src/Pages/Game.tsx",
-                                lineNumber: 109,
+                                lineNumber: 140,
                                 columnNumber: 25
                             }, undefined),
                             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Accordion).Title, {
@@ -62086,14 +62126,14 @@ const Game = (state, setState)=>{
                                         name: "dropdown"
                                     }, void 0, false, {
                                         fileName: "src/Pages/Game.tsx",
-                                        lineNumber: 124,
+                                        lineNumber: 155,
                                         columnNumber: 29
                                     }, undefined),
                                     "Build"
                                 ]
                             }, void 0, true, {
                                 fileName: "src/Pages/Game.tsx",
-                                lineNumber: 120,
+                                lineNumber: 151,
                                 columnNumber: 25
                             }, undefined),
                             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Accordion).Content, {
@@ -62107,7 +62147,7 @@ const Game = (state, setState)=>{
                                         options: dropdownPlatform
                                     }, void 0, false, {
                                         fileName: "src/Pages/Game.tsx",
-                                        lineNumber: 131,
+                                        lineNumber: 162,
                                         columnNumber: 29
                                     }, undefined),
                                     "Backend",
@@ -62118,7 +62158,7 @@ const Game = (state, setState)=>{
                                         options: dropdownBackend
                                     }, void 0, false, {
                                         fileName: "src/Pages/Game.tsx",
-                                        lineNumber: 138,
+                                        lineNumber: 169,
                                         columnNumber: 29
                                     }, undefined),
                                     "Debug",
@@ -62129,14 +62169,14 @@ const Game = (state, setState)=>{
                                         options: dropdownDebug
                                     }, void 0, false, {
                                         fileName: "src/Pages/Game.tsx",
-                                        lineNumber: 145,
+                                        lineNumber: 176,
                                         columnNumber: 29
                                     }, undefined),
                                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Divider), {
                                         hidden: true
                                     }, void 0, false, {
                                         fileName: "src/Pages/Game.tsx",
-                                        lineNumber: 151,
+                                        lineNumber: 182,
                                         columnNumber: 29
                                     }, undefined),
                                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Button), {
@@ -62144,58 +62184,71 @@ const Game = (state, setState)=>{
                                         children: "Build"
                                     }, void 0, false, {
                                         fileName: "src/Pages/Game.tsx",
-                                        lineNumber: 152,
+                                        lineNumber: 183,
                                         columnNumber: 29
                                     }, undefined)
                                 ]
                             }, void 0, true, {
                                 fileName: "src/Pages/Game.tsx",
-                                lineNumber: 127,
+                                lineNumber: 158,
                                 columnNumber: 25
                             }, undefined)
                         ]
                     }, void 0, true, {
                         fileName: "src/Pages/Game.tsx",
-                        lineNumber: 100,
+                        lineNumber: 131,
                         columnNumber: 21
                     }, undefined)
                 }, void 0, false, {
                     fileName: "src/Pages/Game.tsx",
-                    lineNumber: 99,
+                    lineNumber: 130,
                     columnNumber: 17
                 }, undefined)
             ]
         }, void 0, true, {
             fileName: "src/Pages/Game.tsx",
-            lineNumber: 93,
+            lineNumber: 124,
             columnNumber: 13
         }, undefined);
     };
     return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.SegmentGroup), {
-        children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Segment), {
-            children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.CardGroup), {
-                children: state.configs.map(EntryGame)
+        children: [
+            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Segment), {
+                children: [
+                    "PlayCanvas Status: ",
+                    busy ? "Busy" : "Free"
+                ]
+            }, void 0, true, {
+                fileName: "src/Pages/Game.tsx",
+                lineNumber: 194,
+                columnNumber: 13
+            }, undefined),
+            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Segment), {
+                children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.CardGroup), {
+                    children: state.configs.map(EntryGame)
+                }, void 0, false, {
+                    fileName: "src/Pages/Game.tsx",
+                    lineNumber: 198,
+                    columnNumber: 17
+                }, undefined)
             }, void 0, false, {
                 fileName: "src/Pages/Game.tsx",
-                lineNumber: 164,
-                columnNumber: 17
+                lineNumber: 197,
+                columnNumber: 13
             }, undefined)
-        }, void 0, false, {
-            fileName: "src/Pages/Game.tsx",
-            lineNumber: 163,
-            columnNumber: 13
-        }, undefined)
-    }, void 0, false, {
+        ]
+    }, void 0, true, {
         fileName: "src/Pages/Game.tsx",
-        lineNumber: 162,
+        lineNumber: 193,
         columnNumber: 9
     }, undefined);
 };
-_c1 = Game;
+_c2 = Game;
 exports.default = Game;
-var _c, _c1;
+var _c, _c1, _c2;
 $RefreshReg$(_c, "GameLoad");
-$RefreshReg$(_c1, "Game");
+$RefreshReg$(_c1, "GameStatus");
+$RefreshReg$(_c2, "Game");
 
   $parcel$ReactRefreshHelpers$d68b.postlude(module);
 } finally {
