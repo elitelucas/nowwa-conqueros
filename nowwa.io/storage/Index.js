@@ -61378,8 +61378,10 @@ const Menu = (props)=>{
         props.SetDisplay("Game");
     };
     return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.ButtonGroup), {
+        fluid: true,
         children: [
             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Button), {
+                fluid: true,
                 onClick: ShowExplorer,
                 children: [
                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Icon), {
@@ -61397,6 +61399,7 @@ const Menu = (props)=>{
                 columnNumber: 13
             }, undefined),
             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Button), {
+                fluid: true,
                 onClick: ShowBuild,
                 children: [
                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Icon), {
@@ -61414,6 +61417,7 @@ const Menu = (props)=>{
                 columnNumber: 13
             }, undefined),
             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Button), {
+                fluid: true,
                 onClick: ShowGame,
                 children: [
                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Icon), {
@@ -61894,13 +61898,18 @@ var _semanticUiReact = require("semantic-ui-react");
 var _environment = require("../Core/Environment");
 const GameStateDefault = {
     initialized: false,
-    configs: []
+    configs: [],
+    current: {
+        AppName: ``,
+        ContentIndex: `None`
+    }
 };
 const GameLoad = (state)=>{
     return new Promise((resolve, reject)=>{
         console.log(`get games`);
         fetch(`${(0, _environment.toyFullUrl)}`).then((res)=>res.json()).then((res)=>{
             res.initialized = true;
+            res.current = state.current;
             console.log(`game:  ${JSON.stringify(res)}`);
             resolve(res);
         }).catch((error)=>{
@@ -61912,39 +61921,253 @@ const GameLoad = (state)=>{
 _c = GameLoad;
 const Game = (state, setState)=>{
     if (!state.initialized) GameLoad(state).then(setState);
+    console.log(`state.current.AppName: ${state.current.AppName}`);
+    console.log(`state.current.ContentIndex: ${state.current.ContentIndex}`);
+    const SelectContent = (config, contentIndex)=>{
+        let gameState = {
+            configs: state.configs,
+            current: state.current,
+            initialized: state.initialized
+        };
+        if (state.current.AppName == config.AppName && state.current.ContentIndex == contentIndex) {
+            gameState.current.AppName = ``;
+            gameState.current.ContentIndex = "None";
+        } else {
+            gameState.current.AppName = config.AppName;
+            gameState.current.ContentIndex = contentIndex;
+        }
+        console.log(`select: ${gameState.current.AppName} | ${gameState.current.ContentIndex}`);
+        setState(gameState);
+    };
     const EntryGame = (config)=>{
+        let dropdownPlatform = [
+            {
+                text: "Web",
+                value: 0
+            },
+            {
+                text: "Facebook",
+                value: 1
+            },
+            {
+                text: "Snapchat",
+                value: 2
+            }
+        ];
+        let dropdownBackend = [
+            {
+                text: "Cookies",
+                value: 0
+            },
+            {
+                text: "Replicant",
+                value: 1
+            },
+            {
+                text: "Nakama",
+                value: 2
+            }
+        ];
+        let dropdownDebug = [
+            {
+                text: "None",
+                value: 0
+            },
+            {
+                text: "VConsole",
+                value: 1
+            }
+        ];
         return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Card), {
             children: [
                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Card).Header, {
-                    children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Label), {
-                        children: config.AppName
-                    }, void 0, false, {
-                        fileName: "src/Pages/Game.tsx",
-                        lineNumber: 48,
-                        columnNumber: 21
-                    }, undefined)
-                }, void 0, false, {
+                    children: [
+                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Label), {
+                            attached: "top",
+                            size: "large",
+                            children: config.AppName
+                        }, void 0, false, {
+                            fileName: "src/Pages/Game.tsx",
+                            lineNumber: 95,
+                            columnNumber: 21
+                        }, undefined),
+                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Image), {
+                            src: config.Thumbnail,
+                            fluid: true
+                        }, void 0, false, {
+                            fileName: "src/Pages/Game.tsx",
+                            lineNumber: 96,
+                            columnNumber: 21
+                        }, undefined),
+                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Button), {
+                            fluid: true,
+                            primary: true,
+                            disabled: true,
+                            children: "Web build not available"
+                        }, void 0, false, {
+                            fileName: "src/Pages/Game.tsx",
+                            lineNumber: 97,
+                            columnNumber: 21
+                        }, undefined)
+                    ]
+                }, void 0, true, {
                     fileName: "src/Pages/Game.tsx",
-                    lineNumber: 47,
+                    lineNumber: 94,
                     columnNumber: 17
                 }, undefined),
                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Card).Content, {
-                    children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Image), {
-                        src: config.Thumbnail
-                    }, void 0, false, {
+                    children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Accordion), {
+                        children: [
+                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Accordion).Title, {
+                                active: state.current.AppName === config.AppName && state.current.ContentIndex === `Info`,
+                                onClick: ()=>SelectContent(config, `Info`),
+                                children: [
+                                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Icon), {
+                                        name: "dropdown"
+                                    }, void 0, false, {
+                                        fileName: "src/Pages/Game.tsx",
+                                        lineNumber: 106,
+                                        columnNumber: 29
+                                    }, undefined),
+                                    "Info"
+                                ]
+                            }, void 0, true, {
+                                fileName: "src/Pages/Game.tsx",
+                                lineNumber: 102,
+                                columnNumber: 25
+                            }, undefined),
+                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Accordion).Content, {
+                                active: state.current.AppName === config.AppName && state.current.ContentIndex === `Info`,
+                                children: [
+                                    "Facebook App ID",
+                                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Input), {
+                                        fluid: true,
+                                        placeholder: "app id"
+                                    }, void 0, false, {
+                                        fileName: "src/Pages/Game.tsx",
+                                        lineNumber: 113,
+                                        columnNumber: 29
+                                    }, undefined),
+                                    "Snapchat App ID",
+                                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Input), {
+                                        fluid: true,
+                                        placeholder: "app id"
+                                    }, void 0, false, {
+                                        fileName: "src/Pages/Game.tsx",
+                                        lineNumber: 115,
+                                        columnNumber: 29
+                                    }, undefined),
+                                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Divider), {
+                                        hidden: true
+                                    }, void 0, false, {
+                                        fileName: "src/Pages/Game.tsx",
+                                        lineNumber: 116,
+                                        columnNumber: 29
+                                    }, undefined),
+                                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Button), {
+                                        fluid: true,
+                                        children: "Update"
+                                    }, void 0, false, {
+                                        fileName: "src/Pages/Game.tsx",
+                                        lineNumber: 117,
+                                        columnNumber: 29
+                                    }, undefined)
+                                ]
+                            }, void 0, true, {
+                                fileName: "src/Pages/Game.tsx",
+                                lineNumber: 109,
+                                columnNumber: 25
+                            }, undefined),
+                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Accordion).Title, {
+                                active: state.current.AppName === config.AppName && state.current.ContentIndex === `Build`,
+                                onClick: ()=>SelectContent(config, `Build`),
+                                children: [
+                                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Icon), {
+                                        name: "dropdown"
+                                    }, void 0, false, {
+                                        fileName: "src/Pages/Game.tsx",
+                                        lineNumber: 124,
+                                        columnNumber: 29
+                                    }, undefined),
+                                    "Build"
+                                ]
+                            }, void 0, true, {
+                                fileName: "src/Pages/Game.tsx",
+                                lineNumber: 120,
+                                columnNumber: 25
+                            }, undefined),
+                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Accordion).Content, {
+                                active: state.current.AppName === config.AppName && state.current.ContentIndex === `Build`,
+                                children: [
+                                    "Platform",
+                                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Dropdown), {
+                                        placeholder: "Platform",
+                                        fluid: true,
+                                        selection: true,
+                                        options: dropdownPlatform
+                                    }, void 0, false, {
+                                        fileName: "src/Pages/Game.tsx",
+                                        lineNumber: 131,
+                                        columnNumber: 29
+                                    }, undefined),
+                                    "Backend",
+                                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Dropdown), {
+                                        placeholder: "Backend",
+                                        fluid: true,
+                                        selection: true,
+                                        options: dropdownBackend
+                                    }, void 0, false, {
+                                        fileName: "src/Pages/Game.tsx",
+                                        lineNumber: 138,
+                                        columnNumber: 29
+                                    }, undefined),
+                                    "Debug",
+                                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Dropdown), {
+                                        placeholder: "Debug",
+                                        fluid: true,
+                                        selection: true,
+                                        options: dropdownDebug
+                                    }, void 0, false, {
+                                        fileName: "src/Pages/Game.tsx",
+                                        lineNumber: 145,
+                                        columnNumber: 29
+                                    }, undefined),
+                                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Divider), {
+                                        hidden: true
+                                    }, void 0, false, {
+                                        fileName: "src/Pages/Game.tsx",
+                                        lineNumber: 151,
+                                        columnNumber: 29
+                                    }, undefined),
+                                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Button), {
+                                        fluid: true,
+                                        children: "Build"
+                                    }, void 0, false, {
+                                        fileName: "src/Pages/Game.tsx",
+                                        lineNumber: 152,
+                                        columnNumber: 29
+                                    }, undefined)
+                                ]
+                            }, void 0, true, {
+                                fileName: "src/Pages/Game.tsx",
+                                lineNumber: 127,
+                                columnNumber: 25
+                            }, undefined)
+                        ]
+                    }, void 0, true, {
                         fileName: "src/Pages/Game.tsx",
-                        lineNumber: 53,
+                        lineNumber: 100,
                         columnNumber: 21
                     }, undefined)
                 }, void 0, false, {
                     fileName: "src/Pages/Game.tsx",
-                    lineNumber: 52,
+                    lineNumber: 99,
                     columnNumber: 17
                 }, undefined)
             ]
         }, void 0, true, {
             fileName: "src/Pages/Game.tsx",
-            lineNumber: 46,
+            lineNumber: 93,
             columnNumber: 13
         }, undefined);
     };
@@ -61954,17 +62177,17 @@ const Game = (state, setState)=>{
                 children: state.configs.map(EntryGame)
             }, void 0, false, {
                 fileName: "src/Pages/Game.tsx",
-                lineNumber: 62,
+                lineNumber: 164,
                 columnNumber: 17
             }, undefined)
         }, void 0, false, {
             fileName: "src/Pages/Game.tsx",
-            lineNumber: 61,
+            lineNumber: 163,
             columnNumber: 13
         }, undefined)
     }, void 0, false, {
         fileName: "src/Pages/Game.tsx",
-        lineNumber: 60,
+        lineNumber: 162,
         columnNumber: 9
     }, undefined);
 };

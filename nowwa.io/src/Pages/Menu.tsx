@@ -18,16 +18,16 @@ const Menu = (props:IndexProps) => {
     };
 
     return (
-        <ButtonGroup>
-            <Button onClick={ShowExplorer}>
+        <ButtonGroup fluid>
+            <Button fluid onClick={ShowExplorer}>
                     <Icon name="file"></Icon>
                     Explorer
             </Button>
-            <Button onClick={ShowBuild}>
+            <Button fluid onClick={ShowBuild}>
                     <Icon name="cog"></Icon>
                     Build
             </Button>
-            <Button onClick={ShowGame}>
+            <Button fluid onClick={ShowGame}>
                     <Icon name="gamepad"></Icon>
                     Games
             </Button>
