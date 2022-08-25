@@ -7,7 +7,7 @@ import cloudinary from 'cloudinary';
 import path from 'path';
 import { EnvType, load } from 'ts-dotenv';
 import { User, UserDocument } from '../Models/User';
-import Environment, { statusUrl } from './Environment';
+import Environment, { toyStatusUrl } from './Environment';
 import crypto from 'crypto';
 import Socket from './Socket';
 import Authentication from './Authentication';
@@ -82,9 +82,9 @@ class Main {
                 next();
             });
 
-            app.use(`${statusUrl}`, (req, res) => {
+            app.use(`${toyStatusUrl}`, (req, res) => {
                 // console.log(`[Express] /status/`);
-                this.status.isPlayCanvasBusy = PlayCanvas.CurrentActivity != 'None';
+                this.status.PlayCanvas = PlayCanvas.CurrentStatus;
                 res.status(200).send(JSON.stringify(this.status));
             });
 
@@ -233,11 +233,11 @@ class Main {
 
 namespace Main {
     export type Status = {
-        isPlayCanvasBusy: boolean;
-        requestCount:number;
+        PlayCanvas: PlayCanvas.Status,
+        requestCount:number,
     }
     export const StatusDefault:Status = {
-        isPlayCanvasBusy: false,
+        PlayCanvas: PlayCanvas.CurrentStatus,
         requestCount: 0,
     }
 }

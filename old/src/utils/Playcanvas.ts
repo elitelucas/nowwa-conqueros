@@ -5,6 +5,7 @@ import path from 'path';
 class PlayCanvas {
 
     public static CurrentActivity:PlayCanvas.ActivityType = 'None';
+    public static CurrentAppName:string = '';
 
     private static async Sleep (ms:number) {
         return new Promise(resolve => setTimeout(resolve, ms));
@@ -48,7 +49,7 @@ class PlayCanvas {
     public static async GetBranches (authToken:string, projectId:number) {
         if (PlayCanvas.CurrentActivity != 'None') {
             console.log(`PlayCanvas Busy!!!`);
-            return Promise.resolve(``);
+            return Promise.reject();
         }
         PlayCanvas.CurrentActivity = 'Internal';
         return new Promise<any>((resolve, reject) => {
@@ -97,9 +98,10 @@ class PlayCanvas {
     public static async Archive (authToken:string, projectId:number, branchId:string, branchName:string, projectVersion:string, directory:string, noLog?:boolean):Promise<string> {
         if (PlayCanvas.CurrentActivity != 'None') {
             console.log(`PlayCanvas Busy!!!`);
-            return Promise.resolve(``);
+            return Promise.reject();
         }
         PlayCanvas.CurrentActivity = 'Archive';
+        PlayCanvas.CurrentAppName = branchName;
         return new Promise<string>((resolve, reject) => {
             console.log("✔️ Requested archive from Playcanvas");
             let url = 'https://playcanvas.com/api/projects/' + projectId + '/export';
@@ -132,6 +134,7 @@ class PlayCanvas {
                 }
                 fs.writeFileSync(output, Buffer.from(arrayBuffer), 'binary');
                 PlayCanvas.CurrentActivity = 'None';
+                PlayCanvas.CurrentAppName = '';
                 resolve(output);
             })
             .catch(reject);
@@ -141,9 +144,10 @@ class PlayCanvas {
     public static async Build (authToken:string, config:PlayCanvas.Config, directory:string, noLog?:boolean):Promise<string> {
         if (PlayCanvas.CurrentActivity != 'None') {
             console.log(`PlayCanvas Busy!!!`);
-            return Promise.resolve(``);
+            return Promise.reject();
         }
         PlayCanvas.CurrentActivity = 'Build';
+        PlayCanvas.CurrentAppName = config.playcanvas.name;
         return new Promise<string>((resolve, reject) => {
             console.log("✔️ Requested build from Playcanvas")
             let url = 'https://playcanvas.com/api/apps/download';
@@ -187,6 +191,7 @@ class PlayCanvas {
                 }
                 fs.writeFileSync(output, Buffer.from(arrayBuffer), 'binary');
                 PlayCanvas.CurrentActivity = 'None';
+                PlayCanvas.CurrentAppName = '';
                 resolve(output);
             })
             .catch(reject);

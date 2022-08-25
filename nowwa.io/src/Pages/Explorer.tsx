@@ -47,10 +47,6 @@ export const ExplorerLoad = (state:ExplorerState, path:string):Promise<ExplorerS
 
 const Explorer = (state:ExplorerState, setState:React.Dispatch<React.SetStateAction<ExplorerState>>) => {
 
-    if (!state.initialized) {
-        ExplorerLoad(state, state.current).then(setState);
-    }
-
     const SelectFile = (path:string) => {
         let newState:ExplorerState = {
             focusFile   : path,
@@ -169,6 +165,10 @@ const Explorer = (state:ExplorerState, setState:React.Dispatch<React.SetStateAct
             </Table.Row>
         );
     };
+
+    if (!state.initialized) {
+        ExplorerLoad(state, state.current).then(setState);
+    }
 
     return (
         <SegmentGroup>

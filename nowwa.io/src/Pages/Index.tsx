@@ -4,9 +4,10 @@ import Top from './Top';
 import Menu from './Menu';
 import { Segment } from 'semantic-ui-react';
 import Explorer, { ExplorerState, ExplorerStateDefault, ExplorerLoad } from './Explorer';
-import Game, { GameLoad, GameStateDefault } from './Game';
+import Build, { GameLoad, GameStateDefault } from './Build';
+import PlayCanvas from '../Core/Playcanvas';
 
-type IndexDisplay = 'None' | 'Explorer' | 'Build' | 'Game';
+type IndexDisplay = 'None' | 'Explorer' | 'Build';
 
 type IndexState = {
     display: IndexDisplay
@@ -38,16 +39,16 @@ const Index = () => {
     let explorer;
     if (state.display == 'Explorer') {
         explorer = Explorer(explorerState, setExplorerState);
-        console.log(`explorerState: ${explorerState.initialized}`);
-        console.log(`explorerState focusFile: ${explorerState.focusFile}`);
+        // console.log(`explorerState: ${explorerState.initialized}`);
+        // console.log(`explorerState focusFile: ${explorerState.focusFile}`);
     }
 
     const [gameState, setGameState] = useState(GameStateDefault);
-    const [gameBusy, setGameBusy] = useState(false);
+    const [gameBusy, setGameBusy] = useState(PlayCanvas.StatusDefault);
     let game;
-    if (state.display == 'Game') {
-        game = Game(gameState, setGameState, gameBusy, setGameBusy);
-        console.log(`gameState: ${gameState.initialized}`);
+    if (state.display == 'Build') {
+        game = Build(gameState, setGameState, gameBusy, setGameBusy);
+        // console.log(`gameState: ${gameState.initialized}`);
     }
     
     return (

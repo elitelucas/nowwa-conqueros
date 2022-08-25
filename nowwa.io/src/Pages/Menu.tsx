@@ -13,10 +13,6 @@ const Menu = (props:IndexProps) => {
         props.SetDisplay('Build');
     };
 
-    const ShowGame = () => {
-        props.SetDisplay('Game');
-    };
-
     return (
         <ButtonGroup fluid>
             <Button fluid onClick={ShowExplorer}>
@@ -26,10 +22,6 @@ const Menu = (props:IndexProps) => {
             <Button fluid onClick={ShowBuild}>
                     <Icon name="cog"></Icon>
                     Build
-            </Button>
-            <Button fluid onClick={ShowGame}>
-                    <Icon name="gamepad"></Icon>
-                    Games
             </Button>
         </ButtonGroup>
     );

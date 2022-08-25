@@ -39,14 +39,14 @@ export const storageUrl:string = `/storage`;
 
 export const storageFullUrl:string = `${baseUrl}${storageUrl}`;
 
-export const toyUrl:string = `/toy`;
+export const toyListUrl:string = `/toyList`;
 
-export const toyFullUrl:string = `${baseUrl}${toyUrl}`;
+export const toyListFullUrl:string = `${baseUrl}${toyListUrl}`;
 
-export const statusUrl:string = `/status`;
+export const toyBuildUrl:string = `/toyBuild`;
 
-export const statusFullUrl:string = `${baseUrl}${statusUrl}`;
+export const toyBuildFullUrl:string = `${baseUrl}${toyBuildUrl}`;
 
-export const buildUrl:string = `/build`;
+export const toyStatusUrl:string = `/toyStatus`;
 
-export const buildFullUrl:string = `${baseUrl}${buildUrl}`;
+export const toyStatusFullUrl:string = `${baseUrl}${toyStatusUrl}`;

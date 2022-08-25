@@ -4,7 +4,11 @@ import path from 'path';
 
 class PlayCanvas {
 
-    public static CurrentActivity:PlayCanvas.ActivityType = 'None';
+    public static CurrentStatus:PlayCanvas.Status = {
+        Activity : 'None',
+        AppName  : '',
+        Version  : ''
+    }
 
     private static async Sleep (ms:number) {
         return new Promise(resolve => setTimeout(resolve, ms));
@@ -46,11 +50,11 @@ class PlayCanvas {
     }
  
     public static async GetBranches (authToken:string, projectId:number) {
-        if (PlayCanvas.CurrentActivity != 'None') {
+        if (PlayCanvas.CurrentStatus.Activity != 'None') {
             console.log(`PlayCanvas Busy!!!`);
-            return Promise.resolve(``);
+            return Promise.reject();
         }
-        PlayCanvas.CurrentActivity = 'Internal';
+        PlayCanvas.CurrentStatus.Activity = 'Internal';
         return new Promise<any>((resolve, reject) => {
             console.log("✔️ Requested branch list from Playcanvas");
             let url = 'https://playcanvas.com/api/projects/' + projectId + '/branches';
@@ -69,7 +73,7 @@ class PlayCanvas {
                 return res.json();
             })
             .then(branches => {
-                PlayCanvas.CurrentActivity = 'None';
+                PlayCanvas.CurrentStatus.Activity = 'None';
                 resolve(branches);
             })
             .catch(reject);
@@ -88,18 +92,20 @@ class PlayCanvas {
         
         for (let i = 0; i < branches.result.length; i++) {
             let branchData = branches.result[i];
-            let branchName = branchData.name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+            let appName = branchData.name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
             let branchId = branchData.id;
-            await this.Archive(authToken, projectId, branchId, branchName, nowDateString, directory, noLog);
+            await this.Archive(authToken, projectId, branchId, appName, nowDateString, directory, noLog);
         }
     }
 
-    public static async Archive (authToken:string, projectId:number, branchId:string, branchName:string, projectVersion:string, directory:string, noLog?:boolean):Promise<string> {
-        if (PlayCanvas.CurrentActivity != 'None') {
+    public static async Archive (authToken:string, projectId:number, branchId:string, appName:string, projectVersion:string, directory:string, noLog?:boolean):Promise<string> {
+        if (PlayCanvas.CurrentStatus.Activity != 'None') {
             console.log(`PlayCanvas Busy!!!`);
-            return Promise.resolve(``);
+            return Promise.reject();
         }
-        PlayCanvas.CurrentActivity = 'Archive';
+        PlayCanvas.CurrentStatus.Activity = 'Archive';
+        PlayCanvas.CurrentStatus.AppName = appName;
+        PlayCanvas.CurrentStatus.Version = projectVersion;
         return new Promise<string>((resolve, reject) => {
             console.log("✔️ Requested archive from Playcanvas");
             let url = 'https://playcanvas.com/api/projects/' + projectId + '/export';
@@ -126,12 +132,14 @@ class PlayCanvas {
             })
             .then((res:Response) => res.arrayBuffer())
             .then((arrayBuffer:ArrayBuffer) => {
-                let output:string = `${directory}/${branchName}_${projectVersion}_Archive.zip`;
+                let output:string = `${directory}/${appName}_${projectVersion}_Archive.zip`;
                 if (!fs.existsSync(path.dirname(output))) {
                     fs.mkdirSync(path.dirname(output), {recursive:true});
                 }
                 fs.writeFileSync(output, Buffer.from(arrayBuffer), 'binary');
-                PlayCanvas.CurrentActivity = 'None';
+                PlayCanvas.CurrentStatus.Activity = 'None';
+                PlayCanvas.CurrentStatus.AppName = '';
+                PlayCanvas.CurrentStatus.Version = '';
                 resolve(output);
             })
             .catch(reject);
@@ -139,11 +147,13 @@ class PlayCanvas {
     }
 
     public static async Build (authToken:string, config:PlayCanvas.Config, directory:string, noLog?:boolean):Promise<string> {
-        if (PlayCanvas.CurrentActivity != 'None') {
+        if (PlayCanvas.CurrentStatus.Activity != 'None') {
             console.log(`PlayCanvas Busy!!!`);
-            return Promise.resolve(``);
+            return Promise.reject();
         }
-        PlayCanvas.CurrentActivity = 'Build';
+        PlayCanvas.CurrentStatus.Activity = 'Build';
+        PlayCanvas.CurrentStatus.AppName = config.playcanvas.name;
+        PlayCanvas.CurrentStatus.Version = config.playcanvas.version;
         return new Promise<string>((resolve, reject) => {
             console.log("✔️ Requested build from Playcanvas")
             let url = 'https://playcanvas.com/api/apps/download';
@@ -186,7 +196,9 @@ class PlayCanvas {
                     fs.mkdirSync(path.dirname(output), {recursive:true});
                 }
                 fs.writeFileSync(output, Buffer.from(arrayBuffer), 'binary');
-                PlayCanvas.CurrentActivity = 'None';
+                PlayCanvas.CurrentStatus.Activity = 'None';
+                PlayCanvas.CurrentStatus.AppName = '';
+                PlayCanvas.CurrentStatus.Version = '';
                 resolve(output);
             })
             .catch(reject);
@@ -194,11 +206,11 @@ class PlayCanvas {
     }
 
     public static async MockBusy ():Promise<void> {
-        PlayCanvas.CurrentActivity = 'Internal';
+        PlayCanvas.CurrentStatus.Activity = 'Internal';
         return new Promise((resolve, reject) => {
             let delay:number = 5000;
             setTimeout(() => {
-                PlayCanvas.CurrentActivity = 'None';
+                PlayCanvas.CurrentStatus.Activity = 'None';
                 resolve();
             }, delay);
         });
@@ -208,6 +220,16 @@ class PlayCanvas {
 
 namespace PlayCanvas {
     export type ActivityType = `None` | `ArchiveAll` | `Archive` | `Build` | `Internal`;
+    export type Status = {
+        Activity : ActivityType;
+        AppName  : string;
+        Version  : string;
+    }
+    export const StatusDefault:Status = {
+        Activity : 'None',
+        AppName  : '',
+        Version  : ''
+    }
     export type Config = {
         playcanvas              :{
             project_id              :number;
@@ -216,7 +238,7 @@ namespace PlayCanvas {
             branch_id               :string;
             description?            :string;
             preload_bundle?         :boolean;
-            version?                :string;
+            version                 :string;
             release_notes?          :string;
             scripts_concatenate?    :boolean;
             scripts_sourcemaps?     :boolean;

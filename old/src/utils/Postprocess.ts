@@ -29,6 +29,11 @@ let CreateCSPMetadata = (csps:{[key:string]:string[]}) => {
 
     require('dotenv').config();
 
+    let basePath:string = `./temp/extracted`;
+    if (!fs.existsSync(basePath)) {
+        fs.mkdirSync(basePath);
+    }
+
     var appName:string = process.env.APP_NAME as string;
     var version:string = process.env.APP_VERSION as string;
     var assetName:string = process.env.ASSET_NAME as string;
@@ -41,11 +46,6 @@ let CreateCSPMetadata = (csps:{[key:string]:string[]}) => {
     var snapchatNoShareImage:boolean = (process.env.SNAPCHAT_NO_SHARE_IMAGE as string) == 'true';
     var useVConsole:boolean = (process.env.DEBUG_MODE as string) == 'true';
     var backend:string = process.env.BACKEND as string;
-
-    let basePath:string = `./temp/extracted`;
-    if (!fs.existsSync(basePath)) {
-        fs.mkdirSync(basePath);
-    }
 
     let baseZip:string = `./temp/${appName}_${version}_Build.zip`;
     let preloadAndroidZip:string = `${basePath}/preload-android.zip`;
