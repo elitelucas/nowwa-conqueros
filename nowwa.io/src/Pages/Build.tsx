@@ -1,6 +1,6 @@
 import { stat } from "fs";
 import React, { useState, useEffect, SyntheticEvent } from "react";
-import { Icon, Header, Label, Segment, Button, Card, Image, Item, Breadcrumb, List, SegmentGroup, BreadcrumbSection, BreadcrumbDivider, Table, Checkbox, CardGroup, Input, Select, Dropdown, DropdownItemProps, Accordion, LabelProps, Form, Grid, ButtonGroup, Divider, DropdownProps, InputOnChangeData, Loader, Dimmer } from 'semantic-ui-react';
+import { Icon, Header, Label, Segment, Button, Card, Image, Item, Breadcrumb, List, SegmentGroup, BreadcrumbSection, BreadcrumbDivider, Table, Checkbox, CardGroup, Input, Select, Dropdown, DropdownItemProps, Accordion, LabelProps, Form, Grid, ButtonGroup, Divider, DropdownProps, InputOnChangeData, Loader, Dimmer, LabelDetail, Menu } from 'semantic-ui-react';
 import { toyBuildFullUrl, toyStatusFullUrl, toyListFullUrl, baseUrl } from "../Core/Environment";
 import Game from "../Core/Game";
 import Main from "../Core/Main";
@@ -44,7 +44,7 @@ export const GameStateDefault:GameState = {
 
 export const GameLoad = (state:GameState):Promise<GameState> => {
     return new Promise((resolve, reject) => {
-        console.log(`get games`);
+        // console.log(`get games`);
         fetch (`${toyListFullUrl}`)
             .then(res => res.json())
             .then((res:GameState) => {
@@ -66,8 +66,6 @@ export const GameLoad = (state:GameState):Promise<GameState> => {
 
 const Build = (state:GameState, setState:React.Dispatch<React.SetStateAction<GameState>>, status:PlayCanvas.Status, setStatus:React.Dispatch<React.SetStateAction<PlayCanvas.Status>>) => {
 
-    let isBuilderBusy:boolean = status.Activity != 'None';
-
     const StatusLoad = ():Promise<PlayCanvas.Status> => {
         return new Promise((resolve, reject) => {
             // console.log(`get status`);
@@ -84,12 +82,23 @@ const Build = (state:GameState, setState:React.Dispatch<React.SetStateAction<Gam
     };
 
     const StatusDisplay = () => {
+        let isBuilderBusy:boolean = status.Activity != 'None';
         return (
             <>
-            Builder Status: {isBuilderBusy ? "Busy" : "Free"}
-            {isBuilderBusy && <br/>}
-            {isBuilderBusy && "App Name: "}
-            {isBuilderBusy && (`${status.AppName}: ${status.Version}`)}
+                <Label color={isBuilderBusy ? "yellow" : "green"}>
+                    Builder Status
+                    <Label.Detail>
+                        {isBuilderBusy ? "Building" : "Idle"}
+                    </Label.Detail>
+                </Label>
+                {isBuilderBusy && (
+                    <Label>
+                        {status.AppName}
+                        <Label.Detail>
+                            {status.Version}
+                        </Label.Detail>
+                    </Label>
+                )}
             </>
         );
     };
@@ -108,13 +117,12 @@ const Build = (state:GameState, setState:React.Dispatch<React.SetStateAction<Gam
             gameState.current.AppName = config.playcanvas.name;
             gameState.current.ContentIndex = contentIndex;
         }
-        console.log(`select: ${gameState.current.AppName} | ${gameState.current.ContentIndex}`);
+        // console.log(`select: ${gameState.current.AppName} | ${gameState.current.ContentIndex}`);
         setState(gameState);
     };
 
     const EntryGame = (config:Game.Config) => {
         if (typeof(state.buildValues[config.game.Config]) == 'undefined') {
-            console.log('undefined?');
             state.buildValues[config.game.Config] = BuildValueDefault;
             setState(state);
         }
@@ -138,7 +146,7 @@ const Build = (state:GameState, setState:React.Dispatch<React.SetStateAction<Gam
 
         let triggerBuild = () => {
             let tmpBuildValue:BuildValue = state.buildValues[config.game.Config];
-            console.log(`[${config.game.Config}] trigger build: ${JSON.stringify(tmpBuildValue)}`);
+            // console.log(`[${config.game.Config}] trigger build: ${JSON.stringify(tmpBuildValue)}`);
             let url:URL = new URL(`${toyBuildFullUrl}`);
             url.searchParams.set('n', config.game.Config);
             url.searchParams.set('b', tmpBuildValue.backend.toString());
@@ -148,7 +156,7 @@ const Build = (state:GameState, setState:React.Dispatch<React.SetStateAction<Gam
             fetch (url)
                 .then(res => res.json())
                 .then((res:any) => {
-                    console.log(`build response: ${JSON.stringify(res)}`);
+                    // console.log(`build response: ${JSON.stringify(res)}`);
                 })
                 .catch((error:any) => {
                     console.error(`error: ${error}`);
@@ -190,9 +198,11 @@ const Build = (state:GameState, setState:React.Dispatch<React.SetStateAction<Gam
         let openInNewTab = (url:string) => {
             window.open(url, '_blank', 'noopener,noreferrer');
         };
+
+        let isBuilderBusy:boolean = status.Activity != 'None';
         
         return (
-            <Card>
+            <Card key={config.game.Config}>
                 <Card.Header>
                     <Label attached="top" size="large">{config.playcanvas.name}</Label>
                     <Image src={config.game.Thumbnail} fluid />
@@ -291,17 +301,23 @@ const Build = (state:GameState, setState:React.Dispatch<React.SetStateAction<Gam
         }, 1000);
     }
 
+    let refreshList = () => {
+        GameLoad(state).then(setState);
+    };
+
     return (
         <SegmentGroup>
             <Segment>
                 {StatusDisplay()}
             </Segment>
             <Segment>
-                {status.Activity != 'None' && (
-                    <Dimmer active>
-                        <Loader indeterminate>Building {status.AppName} Ver {status.Version}</Loader>
-                    </Dimmer>
-                )}
+                <Menu fluid>
+                    <Menu.Item
+                        name="Refresh Game List"
+                        onClick={refreshList}
+                        icon="refresh"
+                    />
+                </Menu>
                 <CardGroup>
                     {state.configs.map(EntryGame)}
                 </CardGroup>

@@ -1,6 +1,6 @@
 {
-  "name": "bumper-io",
-  "version": "0.2.0",
+  "name": "snappy-jump",
+  "version": "0.4.1.test",
   "private": true,
   "scripts": {
     "fbinstant-development": "cross-env NODE_ENV='development' parcel build ./src/Wrapper.ts --no-cache --no-content-hash --no-source-maps --no-optimize --dist-dir dist && node utils/postprocess.js && node utils/playcanvas-download.js && node utils/fbinstant.js",
@@ -50,7 +50,7 @@
   },
   "dependencies": {
     "@babel/preset-env": "^7.16.8",
-    "@play-co/gcinstant": "^17.4.2",
+    "@play-co/gcinstant": "^18.1.0",
     "@play-co/gcinstant-replicant-extensions": "^2.0.0",
     "@play-co/replicant": "^12.3.0",
     "@sentry/browser": "^7.8.0",

@@ -35,7 +35,7 @@ class Game {
         app.use(`${toyListUrl}`, async (req, res) => {
             // console.log(`<-- storage - files`);
             let fullPath:string = path.join(__dirname, `${Game.RootFolder}`);
-            console.log(`Game : ${fullPath}`);
+            // console.log(`Game : ${fullPath}`);
             if (fs.existsSync(fullPath)) {
                 let stat = fs.statSync(fullPath);
                 if (stat.isDirectory()) {
@@ -53,9 +53,9 @@ class Game {
                             let isFile:boolean = fs.statSync(contentPath).isFile();
                             if (isFile) {
                                 let extension:string = contentPath.substring(contentPath.lastIndexOf(`.`));
-                                console.log(`extension: ${extension}`);
+                                // console.log(`extension: ${extension}`);
                                 if (extension == `.json`) {
-                                    console.log(`config file: ${contentPath}`);
+                                    // console.log(`config file: ${contentPath}`);
                                     let config = JSON.parse(fs.readFileSync(contentPath, { encoding: 'utf8', flag: 'r' })) as Game.Config;
                                     
                                     let platformWeb:Game.Platform = 'Web';

@@ -20,11 +20,11 @@ export const ExplorerStateDefault:ExplorerState = {
 
 export const ExplorerLoad = (state:ExplorerState, path:string):Promise<ExplorerState> => {
     return new Promise((resolve, reject) => {
-        console.log(`load folder: ${path}`);
+        // console.log(`load folder: ${path}`);
         if (path.length > 0 && path[0] != '/') {
             path = `/${path}`;
         }
-        console.log(`fetch: ${storageFullUrl}${path}`);
+        // console.log(`fetch: ${storageFullUrl}${path}`);
         fetch (`${storageFullUrl}${path}`)
             .then(res => res.json())
             .then((res:ExplorerState) => {
@@ -35,7 +35,7 @@ export const ExplorerLoad = (state:ExplorerState, path:string):Promise<ExplorerS
                     files       : res.files,
                     folders     : res.folders
                 };
-                console.log(`explorer:  ${JSON.stringify(res)}`);
+                // console.log(`explorer:  ${JSON.stringify(res)}`);
                 resolve(explorerState);
             })
             .catch((error:any) => {
@@ -59,12 +59,12 @@ const Explorer = (state:ExplorerState, setState:React.Dispatch<React.SetStateAct
     };
 
     const SelectFolder = (path:string) => {
-        console.log(`select folder: ${path}`);
+        // console.log(`select folder: ${path}`);
         ExplorerLoad(state, path).then(setState);
     };
 
     const CreateFocusedFile = () => {
-        console.log(`show file: ${state.focusFile}`);
+        // console.log(`show file: ${state.focusFile}`);
         if (state.focusFile.length > 0) {
             let paths:string[] = state.focusFile.split('/');
             let filename:string = paths[paths.length - 1];
@@ -105,13 +105,13 @@ const Explorer = (state:ExplorerState, setState:React.Dispatch<React.SetStateAct
             <Breadcrumb>
             {folders.map((folder, index) => {
                 let tmpPath:string = CreatePathByIndex(path, index);
-                console.log(`tmpPath: ${tmpPath}`);
-                console.log(`folder: ${folder} | path: ${path} | `);
+                // console.log(`tmpPath: ${tmpPath}`);
+                // console.log(`folder: ${folder} | path: ${path} | `);
                 return (
                     <>
                         <BreadcrumbDivider><Icon name='angle right'/></BreadcrumbDivider>
                         <BreadcrumbSection key={folder} link onClick={(e,p) => { SelectFolder (tmpPath); }}>
-                            {folder}
+                            <Label>{folder}</Label>
                         </BreadcrumbSection>
                     </>
                 );
@@ -121,15 +121,15 @@ const Explorer = (state:ExplorerState, setState:React.Dispatch<React.SetStateAct
     };
     
     const EntryFile = (path:string) => {
-        console.log(`entryFile: ${path}`);
+        // console.log(`entryFile: ${path}`);
         let paths:string[] = path.split('/');
         let file:string = paths[paths.length - 1];
         return (
-            <Table.Row>
+            <Table.Row key={path}>
                 <Table.Cell collapsing>
                     <Checkbox key={path}></Checkbox>
                 </Table.Cell>
-                <Table.Cell key={path} onClick={() => {  SelectFile(`${path}`); } }>
+                <Table.Cell onClick={() => {  SelectFile(`${path}`); } }>
                     <Icon name="file"/>
                     {file}
                 </Table.Cell>
@@ -144,15 +144,15 @@ const Explorer = (state:ExplorerState, setState:React.Dispatch<React.SetStateAct
     };
     
     const EntryFolder = (path:string) => {
-        console.log(`entryFolder: ${path}`);
+        // console.log(`entryFolder: ${path}`);
         let paths:string[] = path.split('/');
         let folder:string = paths[paths.length - 1];
         return (
-            <Table.Row>
+            <Table.Row key={path}>
                 <Table.Cell collapsing>
                     <Checkbox key={path}></Checkbox>
                 </Table.Cell>
-                <Table.Cell key={path} onClick={() => { SelectFolder(`${path}`); } }>
+                <Table.Cell onClick={() => { SelectFolder(`${path}`); } }>
                     <Icon name="folder"/>
                     {folder}
                 </Table.Cell>
@@ -178,7 +178,7 @@ const Explorer = (state:ExplorerState, setState:React.Dispatch<React.SetStateAct
             <Segment>
                 <Table selectable sortable striped>
                     <Table.Header>
-                        <Table.Row active>
+                        <Table.Row key={`0`} active>
                             <Table.Cell></Table.Cell>
                             <Table.Cell>Name</Table.Cell>
                             <Table.Cell>Download</Table.Cell>
@@ -187,11 +187,11 @@ const Explorer = (state:ExplorerState, setState:React.Dispatch<React.SetStateAct
                     </Table.Header>
                     <Table.Body>
                         {state.folders.map((folder:string) => {
-                            console.log(`folder: ${folder}`);
+                            // console.log(`folder: ${folder}`);
                             return EntryFolder(`${state.current}/${folder}`);
                         })}
                         {state.files.map((file:string) => {
-                            console.log(`file: ${file}`);
+                            // console.log(`file: ${file}`);
                             return EntryFile(`${state.current}/${file}`);
                         })}
                     </Table.Body>

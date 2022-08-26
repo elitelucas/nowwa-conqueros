@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOMClient from 'react-dom/client';
 import Top from './Top';
-import Menu from './Menu';
-import { Segment } from 'semantic-ui-react';
+import { Header, Icon, Segment } from 'semantic-ui-react';
 import Explorer, { ExplorerState, ExplorerStateDefault, ExplorerLoad } from './Explorer';
 import Build, { GameLoad, GameStateDefault } from './Build';
 import PlayCanvas from '../Core/Playcanvas';
@@ -31,7 +30,7 @@ const Index = () => {
         });
     };
 
-    let menu = Menu({
+    let top = Top({
         SetDisplay: SetDisplay
     });
 
@@ -53,8 +52,13 @@ const Index = () => {
     
     return (
         <Segment placeholder>
-            <Top />
-            {menu}
+            <Segment placeholder>
+                <Header icon>
+                    <Icon name='earlybirds' />
+                    Nowwa IO
+                </Header>
+            </Segment>
+            {top}
             {explorer}
             {game}
         </Segment>

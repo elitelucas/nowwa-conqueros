@@ -2907,8 +2907,6 @@ var _client = require("react-dom/client");
 var _clientDefault = parcelHelpers.interopDefault(_client);
 var _top = require("./Top");
 var _topDefault = parcelHelpers.interopDefault(_top);
-var _menu = require("./Menu");
-var _menuDefault = parcelHelpers.interopDefault(_menu);
 var _semanticUiReact = require("semantic-ui-react");
 var _explorer = require("./Explorer");
 var _explorerDefault = parcelHelpers.interopDefault(_explorer);
@@ -2928,7 +2926,7 @@ const Index = ()=>{
             display: display
         });
     };
-    let menu = (0, _menuDefault.default)({
+    let top = (0, _topDefault.default)({
         SetDisplay: SetDisplay
     });
     const [explorerState, setExplorerState] = (0, _react.useState)((0, _explorer.ExplorerStateDefault));
@@ -2941,18 +2939,37 @@ const Index = ()=>{
     return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Segment), {
         placeholder: true,
         children: [
-            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _topDefault.default), {}, void 0, false, {
+            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Segment), {
+                placeholder: true,
+                children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Header), {
+                    icon: true,
+                    children: [
+                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Icon), {
+                            name: "earlybirds"
+                        }, void 0, false, {
+                            fileName: "src/Pages/Index.tsx",
+                            lineNumber: 57,
+                            columnNumber: 21
+                        }, undefined),
+                        "Nowwa IO"
+                    ]
+                }, void 0, true, {
+                    fileName: "src/Pages/Index.tsx",
+                    lineNumber: 56,
+                    columnNumber: 17
+                }, undefined)
+            }, void 0, false, {
                 fileName: "src/Pages/Index.tsx",
-                lineNumber: 56,
+                lineNumber: 55,
                 columnNumber: 13
             }, undefined),
-            menu,
+            top,
             explorer,
             game
         ]
     }, void 0, true, {
         fileName: "src/Pages/Index.tsx",
-        lineNumber: 55,
+        lineNumber: 54,
         columnNumber: 9
     }, undefined);
 };
@@ -2961,7 +2978,7 @@ _c = Index;
 let root = (0, _clientDefault.default).createRoot(document.getElementById("root"));
 let index = /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)(Index, {}, void 0, false, {
     fileName: "src/Pages/Index.tsx",
-    lineNumber: 65,
+    lineNumber: 69,
     columnNumber: 13
 }, undefined);
 root.render(index);
@@ -2973,7 +2990,7 @@ $RefreshReg$(_c, "Index");
   window.$RefreshReg$ = prevRefreshReg;
   window.$RefreshSig$ = prevRefreshSig;
 }
-},{"react/jsx-dev-runtime":"iTorj","react":"21dqq","react-dom/client":"lOjBx","./Top":"cqz4c","./Menu":"b035h","semantic-ui-react":"ltMuF","./Explorer":"bhN26","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"km3Ru","../Core/Playcanvas":"22K3c","./Build":"EfM2j"}],"iTorj":[function(require,module,exports) {
+},{"react/jsx-dev-runtime":"iTorj","react":"21dqq","react-dom/client":"lOjBx","./Top":"cqz4c","semantic-ui-react":"ltMuF","./Explorer":"bhN26","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"km3Ru","../Core/Playcanvas":"22K3c","./Build":"EfM2j"}],"iTorj":[function(require,module,exports) {
 "use strict";
 module.exports = require("./cjs/react-jsx-dev-runtime.development.js");
 
@@ -27139,29 +27156,54 @@ var _jsxDevRuntime = require("react/jsx-dev-runtime");
 var _react = require("react");
 var _reactDefault = parcelHelpers.interopDefault(_react);
 var _semanticUiReact = require("semantic-ui-react");
-const Top = ()=>{
-    return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Segment), {
-        placeholder: true,
-        children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Header), {
-            icon: true,
-            children: [
-                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Icon), {
-                    name: "earlybirds"
-                }, void 0, false, {
-                    fileName: "src/Pages/Top.tsx",
-                    lineNumber: 11,
-                    columnNumber: 17
-                }, undefined),
-                "Nowwa IO"
-            ]
-        }, void 0, true, {
-            fileName: "src/Pages/Top.tsx",
-            lineNumber: 10,
-            columnNumber: 13
-        }, undefined)
-    }, void 0, false, {
+const Top = (props)=>{
+    const ShowExplorer = ()=>{
+        props.SetDisplay("Explorer");
+    };
+    const ShowBuild = ()=>{
+        props.SetDisplay("Build");
+    };
+    return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Menu), {
+        fluid: true,
+        children: [
+            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Menu).Item, {
+                onClick: ShowExplorer,
+                children: [
+                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Icon), {
+                        name: "file"
+                    }, void 0, false, {
+                        fileName: "src/Pages/Top.tsx",
+                        lineNumber: 18,
+                        columnNumber: 17
+                    }, undefined),
+                    "Explorer"
+                ]
+            }, void 0, true, {
+                fileName: "src/Pages/Top.tsx",
+                lineNumber: 17,
+                columnNumber: 13
+            }, undefined),
+            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Menu).Item, {
+                onClick: ShowBuild,
+                children: [
+                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Icon), {
+                        name: "cog"
+                    }, void 0, false, {
+                        fileName: "src/Pages/Top.tsx",
+                        lineNumber: 22,
+                        columnNumber: 17
+                    }, undefined),
+                    "Build"
+                ]
+            }, void 0, true, {
+                fileName: "src/Pages/Top.tsx",
+                lineNumber: 21,
+                columnNumber: 13
+            }, undefined)
+        ]
+    }, void 0, true, {
         fileName: "src/Pages/Top.tsx",
-        lineNumber: 9,
+        lineNumber: 16,
         columnNumber: 9
     }, undefined);
 };
@@ -61350,83 +61392,7 @@ function registerExportsForReactRefresh(module) {
     }
 }
 
-},{"react-refresh/runtime":"786KC"}],"b035h":[function(require,module,exports) {
-var $parcel$ReactRefreshHelpers$deb2 = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
-var prevRefreshReg = window.$RefreshReg$;
-var prevRefreshSig = window.$RefreshSig$;
-$parcel$ReactRefreshHelpers$deb2.prelude(module);
-
-try {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-var _jsxDevRuntime = require("react/jsx-dev-runtime");
-var _react = require("react");
-var _reactDefault = parcelHelpers.interopDefault(_react);
-var _semanticUiReact = require("semantic-ui-react");
-const Menu = (props)=>{
-    const ShowExplorer = ()=>{
-        props.SetDisplay("Explorer");
-    };
-    const ShowBuild = ()=>{
-        props.SetDisplay("Build");
-    };
-    return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.ButtonGroup), {
-        fluid: true,
-        children: [
-            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Button), {
-                fluid: true,
-                onClick: ShowExplorer,
-                children: [
-                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Icon), {
-                        name: "file"
-                    }, void 0, false, {
-                        fileName: "src/Pages/Menu.tsx",
-                        lineNumber: 19,
-                        columnNumber: 21
-                    }, undefined),
-                    "Explorer"
-                ]
-            }, void 0, true, {
-                fileName: "src/Pages/Menu.tsx",
-                lineNumber: 18,
-                columnNumber: 13
-            }, undefined),
-            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Button), {
-                fluid: true,
-                onClick: ShowBuild,
-                children: [
-                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Icon), {
-                        name: "cog"
-                    }, void 0, false, {
-                        fileName: "src/Pages/Menu.tsx",
-                        lineNumber: 23,
-                        columnNumber: 21
-                    }, undefined),
-                    "Build"
-                ]
-            }, void 0, true, {
-                fileName: "src/Pages/Menu.tsx",
-                lineNumber: 22,
-                columnNumber: 13
-            }, undefined)
-        ]
-    }, void 0, true, {
-        fileName: "src/Pages/Menu.tsx",
-        lineNumber: 17,
-        columnNumber: 9
-    }, undefined);
-};
-_c = Menu;
-exports.default = Menu;
-var _c;
-$RefreshReg$(_c, "Menu");
-
-  $parcel$ReactRefreshHelpers$deb2.postlude(module);
-} finally {
-  window.$RefreshReg$ = prevRefreshReg;
-  window.$RefreshSig$ = prevRefreshSig;
-}
-},{"react/jsx-dev-runtime":"iTorj","react":"21dqq","semantic-ui-react":"ltMuF","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"km3Ru"}],"bhN26":[function(require,module,exports) {
+},{"react-refresh/runtime":"786KC"}],"bhN26":[function(require,module,exports) {
 var $parcel$ReactRefreshHelpers$6942 = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
 var prevRefreshReg = window.$RefreshReg$;
 var prevRefreshSig = window.$RefreshSig$;
@@ -61451,9 +61417,9 @@ const ExplorerStateDefault = {
 };
 const ExplorerLoad = (state, path)=>{
     return new Promise((resolve, reject)=>{
-        console.log(`load folder: ${path}`);
+        // console.log(`load folder: ${path}`);
         if (path.length > 0 && path[0] != "/") path = `/${path}`;
-        console.log(`fetch: ${(0, _environment.storageFullUrl)}${path}`);
+        // console.log(`fetch: ${storageFullUrl}${path}`);
         fetch(`${(0, _environment.storageFullUrl)}${path}`).then((res)=>res.json()).then((res)=>{
             let explorerState = {
                 current: path,
@@ -61462,7 +61428,7 @@ const ExplorerLoad = (state, path)=>{
                 files: res.files,
                 folders: res.folders
             };
-            console.log(`explorer:  ${JSON.stringify(res)}`);
+            // console.log(`explorer:  ${JSON.stringify(res)}`);
             resolve(explorerState);
         }).catch((error)=>{
             console.error(`error: ${error}`);
@@ -61483,11 +61449,11 @@ const Explorer = (state, setState)=>{
         setState(newState);
     };
     const SelectFolder = (path)=>{
-        console.log(`select folder: ${path}`);
+        // console.log(`select folder: ${path}`);
         ExplorerLoad(state, path).then(setState);
     };
     const CreateFocusedFile = ()=>{
-        console.log(`show file: ${state.focusFile}`);
+        // console.log(`show file: ${state.focusFile}`);
         if (state.focusFile.length > 0) {
             let paths = state.focusFile.split("/");
             let filename = paths[paths.length - 1];
@@ -61528,8 +61494,8 @@ const Explorer = (state, setState)=>{
         return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Breadcrumb), {
             children: folders.map((folder, index)=>{
                 let tmpPath = CreatePathByIndex(path, index);
-                console.log(`tmpPath: ${tmpPath}`);
-                console.log(`folder: ${folder} | path: ${path} | `);
+                // console.log(`tmpPath: ${tmpPath}`);
+                // console.log(`folder: ${folder} | path: ${path} | `);
                 return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _jsxDevRuntime.Fragment), {
                     children: [
                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.BreadcrumbDivider), {
@@ -61550,7 +61516,13 @@ const Explorer = (state, setState)=>{
                             onClick: (e, p)=>{
                                 SelectFolder(tmpPath);
                             },
-                            children: folder
+                            children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Label), {
+                                children: folder
+                            }, void 0, false, {
+                                fileName: "src/Pages/Explorer.tsx",
+                                lineNumber: 114,
+                                columnNumber: 29
+                            }, undefined)
                         }, folder, false, {
                             fileName: "src/Pages/Explorer.tsx",
                             lineNumber: 113,
@@ -61566,7 +61538,7 @@ const Explorer = (state, setState)=>{
         }, undefined);
     };
     const EntryFile = (path)=>{
-        console.log(`entryFile: ${path}`);
+        // console.log(`entryFile: ${path}`);
         let paths = path.split("/");
         let file = paths[paths.length - 1];
         return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Table).Row, {
@@ -61597,7 +61569,7 @@ const Explorer = (state, setState)=>{
                         }, undefined),
                         file
                     ]
-                }, path, true, {
+                }, void 0, true, {
                     fileName: "src/Pages/Explorer.tsx",
                     lineNumber: 132,
                     columnNumber: 17
@@ -61633,14 +61605,14 @@ const Explorer = (state, setState)=>{
                     columnNumber: 17
                 }, undefined)
             ]
-        }, void 0, true, {
+        }, path, true, {
             fileName: "src/Pages/Explorer.tsx",
             lineNumber: 128,
             columnNumber: 13
         }, undefined);
     };
     const EntryFolder = (path)=>{
-        console.log(`entryFolder: ${path}`);
+        // console.log(`entryFolder: ${path}`);
         let paths = path.split("/");
         let folder = paths[paths.length - 1];
         return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Table).Row, {
@@ -61671,7 +61643,7 @@ const Explorer = (state, setState)=>{
                         }, undefined),
                         folder
                     ]
-                }, path, true, {
+                }, void 0, true, {
                     fileName: "src/Pages/Explorer.tsx",
                     lineNumber: 155,
                     columnNumber: 17
@@ -61707,7 +61679,7 @@ const Explorer = (state, setState)=>{
                     columnNumber: 17
                 }, undefined)
             ]
-        }, void 0, true, {
+        }, path, true, {
             fileName: "src/Pages/Explorer.tsx",
             lineNumber: 151,
             columnNumber: 13
@@ -61760,7 +61732,7 @@ const Explorer = (state, setState)=>{
                                         columnNumber: 29
                                     }, undefined)
                                 ]
-                            }, void 0, true, {
+                            }, `0`, true, {
                                 fileName: "src/Pages/Explorer.tsx",
                                 lineNumber: 181,
                                 columnNumber: 25
@@ -61773,11 +61745,11 @@ const Explorer = (state, setState)=>{
                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Table).Body, {
                             children: [
                                 state.folders.map((folder)=>{
-                                    console.log(`folder: ${folder}`);
+                                    // console.log(`folder: ${folder}`);
                                     return EntryFolder(`${state.current}/${folder}`);
                                 }),
                                 state.files.map((file)=>{
-                                    console.log(`file: ${file}`);
+                                    // console.log(`file: ${file}`);
                                     return EntryFile(`${state.current}/${file}`);
                                 })
                             ]
@@ -63948,7 +63920,7 @@ const GameStateDefault = {
 };
 const GameLoad = (state)=>{
     return new Promise((resolve, reject)=>{
-        console.log(`get games`);
+        // console.log(`get games`);
         fetch(`${(0, _environment.toyListFullUrl)}`).then((res)=>res.json()).then((res)=>{
             let gameState = {
                 configs: res.configs,
@@ -63966,7 +63938,6 @@ const GameLoad = (state)=>{
 };
 _c = GameLoad;
 const Build = (state, setState, status, setStatus)=>{
-    let isBuilderBusy = status.Activity != "None";
     const StatusLoad = ()=>{
         return new Promise((resolve, reject)=>{
             // console.log(`get status`);
@@ -63979,17 +63950,42 @@ const Build = (state, setState, status, setStatus)=>{
         });
     };
     const StatusDisplay = ()=>{
+        let isBuilderBusy = status.Activity != "None";
         return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _jsxDevRuntime.Fragment), {
             children: [
-                "Builder Status: ",
-                isBuilderBusy ? "Busy" : "Free",
-                isBuilderBusy && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("br", {}, void 0, false, {
+                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Label), {
+                    color: isBuilderBusy ? "yellow" : "green",
+                    children: [
+                        "Builder Status",
+                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Label).Detail, {
+                            children: isBuilderBusy ? "Building" : "Idle"
+                        }, void 0, false, {
+                            fileName: "src/Pages/Build.tsx",
+                            lineNumber: 90,
+                            columnNumber: 21
+                        }, undefined)
+                    ]
+                }, void 0, true, {
                     fileName: "src/Pages/Build.tsx",
-                    lineNumber: 90,
-                    columnNumber: 31
+                    lineNumber: 88,
+                    columnNumber: 17
                 }, undefined),
-                isBuilderBusy && "App Name: ",
-                isBuilderBusy && `${status.AppName}: ${status.Version}`
+                isBuilderBusy && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Label), {
+                    children: [
+                        status.AppName,
+                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Label).Detail, {
+                            children: status.Version
+                        }, void 0, false, {
+                            fileName: "src/Pages/Build.tsx",
+                            lineNumber: 97,
+                            columnNumber: 25
+                        }, undefined)
+                    ]
+                }, void 0, true, {
+                    fileName: "src/Pages/Build.tsx",
+                    lineNumber: 95,
+                    columnNumber: 21
+                }, undefined)
             ]
         }, void 0, true);
     };
@@ -64007,12 +64003,11 @@ const Build = (state, setState, status, setStatus)=>{
             gameState.current.AppName = config.playcanvas.name;
             gameState.current.ContentIndex = contentIndex;
         }
-        console.log(`select: ${gameState.current.AppName} | ${gameState.current.ContentIndex}`);
+        // console.log(`select: ${gameState.current.AppName} | ${gameState.current.ContentIndex}`);
         setState(gameState);
     };
     const EntryGame = (config)=>{
         if (typeof state.buildValues[config.game.Config] == "undefined") {
-            console.log("undefined?");
             state.buildValues[config.game.Config] = BuildValueDefault;
             setState(state);
         }
@@ -64056,7 +64051,7 @@ const Build = (state, setState, status, setStatus)=>{
         ];
         let triggerBuild = ()=>{
             let tmpBuildValue = state.buildValues[config.game.Config];
-            console.log(`[${config.game.Config}] trigger build: ${JSON.stringify(tmpBuildValue)}`);
+            // console.log(`[${config.game.Config}] trigger build: ${JSON.stringify(tmpBuildValue)}`);
             let url = new URL(`${(0, _environment.toyBuildFullUrl)}`);
             url.searchParams.set("n", config.game.Config);
             url.searchParams.set("b", tmpBuildValue.backend.toString());
@@ -64064,7 +64059,7 @@ const Build = (state, setState, status, setStatus)=>{
             url.searchParams.set("d", tmpBuildValue.debug.toString());
             url.searchParams.set("v", tmpBuildValue.version);
             fetch(url).then((res)=>res.json()).then((res)=>{
-                console.log(`build response: ${JSON.stringify(res)}`);
+            // console.log(`build response: ${JSON.stringify(res)}`);
             }).catch((error)=>{
                 console.error(`error: ${error}`);
             });
@@ -64100,6 +64095,7 @@ const Build = (state, setState, status, setStatus)=>{
         let openInNewTab = (url)=>{
             window.open(url, "_blank", "noopener,noreferrer");
         };
+        let isBuilderBusy = status.Activity != "None";
         return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Card), {
             children: [
                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Card).Header, {
@@ -64110,7 +64106,7 @@ const Build = (state, setState, status, setStatus)=>{
                             children: config.playcanvas.name
                         }, void 0, false, {
                             fileName: "src/Pages/Build.tsx",
-                            lineNumber: 197,
+                            lineNumber: 207,
                             columnNumber: 21
                         }, undefined),
                         /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Image), {
@@ -64118,7 +64114,7 @@ const Build = (state, setState, status, setStatus)=>{
                             fluid: true
                         }, void 0, false, {
                             fileName: "src/Pages/Build.tsx",
-                            lineNumber: 198,
+                            lineNumber: 208,
                             columnNumber: 21
                         }, undefined),
                         config.builds.indexOf("Web") >= 0 ? /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Button), {
@@ -64128,7 +64124,7 @@ const Build = (state, setState, status, setStatus)=>{
                             children: "Play web build"
                         }, void 0, false, {
                             fileName: "src/Pages/Build.tsx",
-                            lineNumber: 200,
+                            lineNumber: 210,
                             columnNumber: 25
                         }, undefined) : /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Button), {
                             fluid: true,
@@ -64137,13 +64133,13 @@ const Build = (state, setState, status, setStatus)=>{
                             children: "Web build not available"
                         }, void 0, false, {
                             fileName: "src/Pages/Build.tsx",
-                            lineNumber: 202,
+                            lineNumber: 212,
                             columnNumber: 25
                         }, undefined)
                     ]
                 }, void 0, true, {
                     fileName: "src/Pages/Build.tsx",
-                    lineNumber: 196,
+                    lineNumber: 206,
                     columnNumber: 17
                 }, undefined),
                 /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Card).Content, {
@@ -64157,14 +64153,14 @@ const Build = (state, setState, status, setStatus)=>{
                                         name: "dropdown"
                                     }, void 0, false, {
                                         fileName: "src/Pages/Build.tsx",
-                                        lineNumber: 212,
+                                        lineNumber: 222,
                                         columnNumber: 29
                                     }, undefined),
                                     "Info"
                                 ]
                             }, void 0, true, {
                                 fileName: "src/Pages/Build.tsx",
-                                lineNumber: 208,
+                                lineNumber: 218,
                                 columnNumber: 25
                             }, undefined),
                             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Accordion).Content, {
@@ -64176,7 +64172,7 @@ const Build = (state, setState, status, setStatus)=>{
                                         placeholder: "app id"
                                     }, void 0, false, {
                                         fileName: "src/Pages/Build.tsx",
-                                        lineNumber: 219,
+                                        lineNumber: 229,
                                         columnNumber: 29
                                     }, undefined),
                                     "Snapchat App ID",
@@ -64185,14 +64181,14 @@ const Build = (state, setState, status, setStatus)=>{
                                         placeholder: "app id"
                                     }, void 0, false, {
                                         fileName: "src/Pages/Build.tsx",
-                                        lineNumber: 221,
+                                        lineNumber: 231,
                                         columnNumber: 29
                                     }, undefined),
                                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Divider), {
                                         hidden: true
                                     }, void 0, false, {
                                         fileName: "src/Pages/Build.tsx",
-                                        lineNumber: 222,
+                                        lineNumber: 232,
                                         columnNumber: 29
                                     }, undefined),
                                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Button), {
@@ -64200,13 +64196,13 @@ const Build = (state, setState, status, setStatus)=>{
                                         children: "Update"
                                     }, void 0, false, {
                                         fileName: "src/Pages/Build.tsx",
-                                        lineNumber: 223,
+                                        lineNumber: 233,
                                         columnNumber: 29
                                     }, undefined)
                                 ]
                             }, void 0, true, {
                                 fileName: "src/Pages/Build.tsx",
-                                lineNumber: 215,
+                                lineNumber: 225,
                                 columnNumber: 25
                             }, undefined),
                             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Accordion).Title, {
@@ -64217,14 +64213,14 @@ const Build = (state, setState, status, setStatus)=>{
                                         name: "dropdown"
                                     }, void 0, false, {
                                         fileName: "src/Pages/Build.tsx",
-                                        lineNumber: 230,
+                                        lineNumber: 240,
                                         columnNumber: 29
                                     }, undefined),
                                     "Build"
                                 ]
                             }, void 0, true, {
                                 fileName: "src/Pages/Build.tsx",
-                                lineNumber: 226,
+                                lineNumber: 236,
                                 columnNumber: 25
                             }, undefined),
                             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Accordion).Content, {
@@ -64237,7 +64233,7 @@ const Build = (state, setState, status, setStatus)=>{
                                         onChange: setVersionValue
                                     }, void 0, false, {
                                         fileName: "src/Pages/Build.tsx",
-                                        lineNumber: 237,
+                                        lineNumber: 247,
                                         columnNumber: 29
                                     }, undefined),
                                     "Platform",
@@ -64249,7 +64245,7 @@ const Build = (state, setState, status, setStatus)=>{
                                         onChange: setPlatformValue
                                     }, `${config.playcanvas.name}-Platform`, false, {
                                         fileName: "src/Pages/Build.tsx",
-                                        lineNumber: 243,
+                                        lineNumber: 253,
                                         columnNumber: 29
                                     }, undefined),
                                     "Backend",
@@ -64261,7 +64257,7 @@ const Build = (state, setState, status, setStatus)=>{
                                         onChange: setBackendValue
                                     }, `${config.playcanvas.name}-Backend`, false, {
                                         fileName: "src/Pages/Build.tsx",
-                                        lineNumber: 252,
+                                        lineNumber: 262,
                                         columnNumber: 29
                                     }, undefined),
                                     "Debug",
@@ -64273,14 +64269,14 @@ const Build = (state, setState, status, setStatus)=>{
                                         onChange: setDebugValue
                                     }, `${config.playcanvas.name}-Debug`, false, {
                                         fileName: "src/Pages/Build.tsx",
-                                        lineNumber: 261,
+                                        lineNumber: 271,
                                         columnNumber: 29
                                     }, undefined),
                                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Divider), {
                                         hidden: true
                                     }, void 0, false, {
                                         fileName: "src/Pages/Build.tsx",
-                                        lineNumber: 269,
+                                        lineNumber: 279,
                                         columnNumber: 29
                                     }, undefined),
                                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Button), {
@@ -64290,30 +64286,30 @@ const Build = (state, setState, status, setStatus)=>{
                                         children: isBuilderBusy ? "Busy..." : "Build"
                                     }, void 0, false, {
                                         fileName: "src/Pages/Build.tsx",
-                                        lineNumber: 270,
+                                        lineNumber: 280,
                                         columnNumber: 29
                                     }, undefined)
                                 ]
                             }, void 0, true, {
                                 fileName: "src/Pages/Build.tsx",
-                                lineNumber: 233,
+                                lineNumber: 243,
                                 columnNumber: 25
                             }, undefined)
                         ]
                     }, void 0, true, {
                         fileName: "src/Pages/Build.tsx",
-                        lineNumber: 206,
+                        lineNumber: 216,
                         columnNumber: 21
                     }, undefined)
                 }, void 0, false, {
                     fileName: "src/Pages/Build.tsx",
-                    lineNumber: 205,
+                    lineNumber: 215,
                     columnNumber: 17
                 }, undefined)
             ]
-        }, void 0, true, {
+        }, config.game.Config, true, {
             fileName: "src/Pages/Build.tsx",
-            lineNumber: 195,
+            lineNumber: 205,
             columnNumber: 13
         }, undefined);
     };
@@ -64330,54 +64326,53 @@ const Build = (state, setState, status, setStatus)=>{
             StatusLoad().then(setStatus);
         }, 1000);
     }
+    let refreshList = ()=>{
+        GameLoad(state).then(setState);
+    };
     return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.SegmentGroup), {
         children: [
             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Segment), {
                 children: StatusDisplay()
             }, void 0, false, {
                 fileName: "src/Pages/Build.tsx",
-                lineNumber: 296,
+                lineNumber: 310,
                 columnNumber: 13
             }, undefined),
             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Segment), {
                 children: [
-                    status.Activity != "None" && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Dimmer), {
-                        active: true,
-                        children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Loader), {
-                            indeterminate: true,
-                            children: [
-                                "Building ",
-                                status.AppName,
-                                " Ver ",
-                                status.Version
-                            ]
-                        }, void 0, true, {
+                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Menu), {
+                        fluid: true,
+                        children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Menu).Item, {
+                            name: "Refresh Game List",
+                            onClick: refreshList,
+                            icon: "refresh"
+                        }, void 0, false, {
                             fileName: "src/Pages/Build.tsx",
-                            lineNumber: 302,
-                            columnNumber: 25
+                            lineNumber: 315,
+                            columnNumber: 21
                         }, undefined)
                     }, void 0, false, {
                         fileName: "src/Pages/Build.tsx",
-                        lineNumber: 301,
-                        columnNumber: 21
+                        lineNumber: 314,
+                        columnNumber: 17
                     }, undefined),
                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.CardGroup), {
                         children: state.configs.map(EntryGame)
                     }, void 0, false, {
                         fileName: "src/Pages/Build.tsx",
-                        lineNumber: 305,
+                        lineNumber: 321,
                         columnNumber: 17
                     }, undefined)
                 ]
             }, void 0, true, {
                 fileName: "src/Pages/Build.tsx",
-                lineNumber: 299,
+                lineNumber: 313,
                 columnNumber: 13
             }, undefined)
         ]
     }, void 0, true, {
         fileName: "src/Pages/Build.tsx",
-        lineNumber: 295,
+        lineNumber: 309,
         columnNumber: 9
     }, undefined);
 };

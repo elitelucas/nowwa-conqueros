@@ -75,7 +75,7 @@ class Storage {
      */
     private static WebhookFiles (app:express.Express):void {
         let rootPath:string = path.join(__dirname, `${Storage.RootFolder}`);
-        console.log(`rootPath: ${rootPath}`);
+        // console.log(`rootPath: ${rootPath}`);
         app.use('/', express.static(rootPath));
     }
 }
