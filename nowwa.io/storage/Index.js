@@ -62117,42 +62117,63 @@ const Build = (state, setState, status, setStatus)=>{
                             }, undefined),
                             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Accordion).Content, {
                                 active: state.current.AppName === config.playcanvas.name && state.current.ContentIndex === `Info`,
-                                children: [
-                                    "Facebook App ID",
-                                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Input), {
-                                        fluid: true,
-                                        placeholder: "app id"
-                                    }, void 0, false, {
-                                        fileName: "src/Pages/Build.tsx",
-                                        lineNumber: 229,
-                                        columnNumber: 29
-                                    }, undefined),
-                                    "Snapchat App ID",
-                                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Input), {
-                                        fluid: true,
-                                        placeholder: "app id"
-                                    }, void 0, false, {
-                                        fileName: "src/Pages/Build.tsx",
-                                        lineNumber: 231,
-                                        columnNumber: 29
-                                    }, undefined),
-                                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Divider), {
-                                        hidden: true
-                                    }, void 0, false, {
-                                        fileName: "src/Pages/Build.tsx",
-                                        lineNumber: 232,
-                                        columnNumber: 29
-                                    }, undefined),
-                                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Button), {
-                                        fluid: true,
-                                        children: "Update"
-                                    }, void 0, false, {
-                                        fileName: "src/Pages/Build.tsx",
-                                        lineNumber: 233,
-                                        columnNumber: 29
-                                    }, undefined)
-                                ]
-                            }, void 0, true, {
+                                children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Segment), {
+                                    basic: true,
+                                    children: [
+                                        "Facebook App ID",
+                                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Input), {
+                                            fluid: true,
+                                            placeholder: "app id"
+                                        }, void 0, false, {
+                                            fileName: "src/Pages/Build.tsx",
+                                            lineNumber: 230,
+                                            columnNumber: 33
+                                        }, undefined),
+                                        "Snapchat App ID",
+                                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Input), {
+                                            fluid: true,
+                                            placeholder: "app id"
+                                        }, void 0, false, {
+                                            fileName: "src/Pages/Build.tsx",
+                                            lineNumber: 232,
+                                            columnNumber: 33
+                                        }, undefined),
+                                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Divider), {
+                                            hidden: true
+                                        }, void 0, false, {
+                                            fileName: "src/Pages/Build.tsx",
+                                            lineNumber: 233,
+                                            columnNumber: 33
+                                        }, undefined),
+                                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Button), {
+                                            fluid: true,
+                                            children: "Update"
+                                        }, void 0, false, {
+                                            fileName: "src/Pages/Build.tsx",
+                                            lineNumber: 234,
+                                            columnNumber: 33
+                                        }, undefined),
+                                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Dimmer), {
+                                            active: true,
+                                            children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Loader), {
+                                                children: "Work In Progress"
+                                            }, void 0, false, {
+                                                fileName: "src/Pages/Build.tsx",
+                                                lineNumber: 236,
+                                                columnNumber: 37
+                                            }, undefined)
+                                        }, void 0, false, {
+                                            fileName: "src/Pages/Build.tsx",
+                                            lineNumber: 235,
+                                            columnNumber: 33
+                                        }, undefined)
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "src/Pages/Build.tsx",
+                                    lineNumber: 228,
+                                    columnNumber: 29
+                                }, undefined)
+                            }, void 0, false, {
                                 fileName: "src/Pages/Build.tsx",
                                 lineNumber: 225,
                                 columnNumber: 25
@@ -62165,14 +62186,14 @@ const Build = (state, setState, status, setStatus)=>{
                                         name: "dropdown"
                                     }, void 0, false, {
                                         fileName: "src/Pages/Build.tsx",
-                                        lineNumber: 240,
+                                        lineNumber: 245,
                                         columnNumber: 29
                                     }, undefined),
                                     "Build"
                                 ]
                             }, void 0, true, {
                                 fileName: "src/Pages/Build.tsx",
-                                lineNumber: 236,
+                                lineNumber: 241,
                                 columnNumber: 25
                             }, undefined),
                             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Accordion).Content, {
@@ -62185,7 +62206,7 @@ const Build = (state, setState, status, setStatus)=>{
                                         onChange: setVersionValue
                                     }, void 0, false, {
                                         fileName: "src/Pages/Build.tsx",
-                                        lineNumber: 247,
+                                        lineNumber: 252,
                                         columnNumber: 29
                                     }, undefined),
                                     "Platform",
@@ -62197,7 +62218,7 @@ const Build = (state, setState, status, setStatus)=>{
                                         onChange: setPlatformValue
                                     }, `${config.playcanvas.name}-Platform`, false, {
                                         fileName: "src/Pages/Build.tsx",
-                                        lineNumber: 253,
+                                        lineNumber: 258,
                                         columnNumber: 29
                                     }, undefined),
                                     "Backend",
@@ -62209,7 +62230,7 @@ const Build = (state, setState, status, setStatus)=>{
                                         onChange: setBackendValue
                                     }, `${config.playcanvas.name}-Backend`, false, {
                                         fileName: "src/Pages/Build.tsx",
-                                        lineNumber: 262,
+                                        lineNumber: 267,
                                         columnNumber: 29
                                     }, undefined),
                                     "Debug",
@@ -62221,14 +62242,14 @@ const Build = (state, setState, status, setStatus)=>{
                                         onChange: setDebugValue
                                     }, `${config.playcanvas.name}-Debug`, false, {
                                         fileName: "src/Pages/Build.tsx",
-                                        lineNumber: 271,
+                                        lineNumber: 276,
                                         columnNumber: 29
                                     }, undefined),
                                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Divider), {
                                         hidden: true
                                     }, void 0, false, {
                                         fileName: "src/Pages/Build.tsx",
-                                        lineNumber: 279,
+                                        lineNumber: 284,
                                         columnNumber: 29
                                     }, undefined),
                                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Button), {
@@ -62238,13 +62259,201 @@ const Build = (state, setState, status, setStatus)=>{
                                         children: isBuilderBusy ? "Busy..." : "Build"
                                     }, void 0, false, {
                                         fileName: "src/Pages/Build.tsx",
-                                        lineNumber: 280,
+                                        lineNumber: 285,
                                         columnNumber: 29
                                     }, undefined)
                                 ]
                             }, void 0, true, {
                                 fileName: "src/Pages/Build.tsx",
-                                lineNumber: 243,
+                                lineNumber: 248,
+                                columnNumber: 25
+                            }, undefined),
+                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Accordion).Title, {
+                                active: state.current.AppName === config.playcanvas.name && state.current.ContentIndex === `Archive`,
+                                onClick: ()=>SelectContent(config, `Archive`),
+                                children: [
+                                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Icon), {
+                                        name: "dropdown"
+                                    }, void 0, false, {
+                                        fileName: "src/Pages/Build.tsx",
+                                        lineNumber: 292,
+                                        columnNumber: 29
+                                    }, undefined),
+                                    "Archive"
+                                ]
+                            }, void 0, true, {
+                                fileName: "src/Pages/Build.tsx",
+                                lineNumber: 288,
+                                columnNumber: 25
+                            }, undefined),
+                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Accordion).Content, {
+                                active: state.current.AppName === config.playcanvas.name && state.current.ContentIndex === `Archive`,
+                                children: [
+                                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Segment), {
+                                        basic: true,
+                                        children: [
+                                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.List), {
+                                                divided: true,
+                                                relaxed: true,
+                                                children: [
+                                                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.List).Item, {
+                                                        children: [
+                                                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.List).Icon, {
+                                                                name: "download",
+                                                                size: "large",
+                                                                verticalAlign: "middle",
+                                                                link: true
+                                                            }, void 0, false, {
+                                                                fileName: "src/Pages/Build.tsx",
+                                                                lineNumber: 301,
+                                                                columnNumber: 41
+                                                            }, undefined),
+                                                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.List).Content, {
+                                                                children: [
+                                                                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.List).Header, {
+                                                                        children: "Version 0.0.1"
+                                                                    }, void 0, false, {
+                                                                        fileName: "src/Pages/Build.tsx",
+                                                                        lineNumber: 303,
+                                                                        columnNumber: 45
+                                                                    }, undefined),
+                                                                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.List).Description, {
+                                                                        children: "Created 2022-08-25 13:40:51"
+                                                                    }, void 0, false, {
+                                                                        fileName: "src/Pages/Build.tsx",
+                                                                        lineNumber: 304,
+                                                                        columnNumber: 45
+                                                                    }, undefined)
+                                                                ]
+                                                            }, void 0, true, {
+                                                                fileName: "src/Pages/Build.tsx",
+                                                                lineNumber: 302,
+                                                                columnNumber: 41
+                                                            }, undefined)
+                                                        ]
+                                                    }, void 0, true, {
+                                                        fileName: "src/Pages/Build.tsx",
+                                                        lineNumber: 300,
+                                                        columnNumber: 37
+                                                    }, undefined),
+                                                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.List).Item, {
+                                                        children: [
+                                                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.List).Icon, {
+                                                                name: "download",
+                                                                size: "large",
+                                                                verticalAlign: "middle",
+                                                                link: true
+                                                            }, void 0, false, {
+                                                                fileName: "src/Pages/Build.tsx",
+                                                                lineNumber: 308,
+                                                                columnNumber: 41
+                                                            }, undefined),
+                                                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.List).Content, {
+                                                                children: [
+                                                                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.List).Header, {
+                                                                        children: "Version 0.0.2"
+                                                                    }, void 0, false, {
+                                                                        fileName: "src/Pages/Build.tsx",
+                                                                        lineNumber: 310,
+                                                                        columnNumber: 45
+                                                                    }, undefined),
+                                                                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.List).Description, {
+                                                                        children: "Created 2022-08-25 13:40:51"
+                                                                    }, void 0, false, {
+                                                                        fileName: "src/Pages/Build.tsx",
+                                                                        lineNumber: 311,
+                                                                        columnNumber: 45
+                                                                    }, undefined)
+                                                                ]
+                                                            }, void 0, true, {
+                                                                fileName: "src/Pages/Build.tsx",
+                                                                lineNumber: 309,
+                                                                columnNumber: 41
+                                                            }, undefined)
+                                                        ]
+                                                    }, void 0, true, {
+                                                        fileName: "src/Pages/Build.tsx",
+                                                        lineNumber: 307,
+                                                        columnNumber: 37
+                                                    }, undefined),
+                                                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.List).Item, {
+                                                        children: [
+                                                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.List).Icon, {
+                                                                name: "download",
+                                                                size: "large",
+                                                                verticalAlign: "middle",
+                                                                link: true
+                                                            }, void 0, false, {
+                                                                fileName: "src/Pages/Build.tsx",
+                                                                lineNumber: 315,
+                                                                columnNumber: 41
+                                                            }, undefined),
+                                                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.List).Content, {
+                                                                children: [
+                                                                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.List).Header, {
+                                                                        children: "Version 0.0.3"
+                                                                    }, void 0, false, {
+                                                                        fileName: "src/Pages/Build.tsx",
+                                                                        lineNumber: 317,
+                                                                        columnNumber: 45
+                                                                    }, undefined),
+                                                                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.List).Description, {
+                                                                        children: "Created 2022-08-25 13:40:51"
+                                                                    }, void 0, false, {
+                                                                        fileName: "src/Pages/Build.tsx",
+                                                                        lineNumber: 318,
+                                                                        columnNumber: 45
+                                                                    }, undefined)
+                                                                ]
+                                                            }, void 0, true, {
+                                                                fileName: "src/Pages/Build.tsx",
+                                                                lineNumber: 316,
+                                                                columnNumber: 41
+                                                            }, undefined)
+                                                        ]
+                                                    }, void 0, true, {
+                                                        fileName: "src/Pages/Build.tsx",
+                                                        lineNumber: 314,
+                                                        columnNumber: 37
+                                                    }, undefined)
+                                                ]
+                                            }, void 0, true, {
+                                                fileName: "src/Pages/Build.tsx",
+                                                lineNumber: 299,
+                                                columnNumber: 33
+                                            }, undefined),
+                                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Dimmer), {
+                                                active: true,
+                                                children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Loader), {
+                                                    children: "Work In Progress"
+                                                }, void 0, false, {
+                                                    fileName: "src/Pages/Build.tsx",
+                                                    lineNumber: 323,
+                                                    columnNumber: 37
+                                                }, undefined)
+                                            }, void 0, false, {
+                                                fileName: "src/Pages/Build.tsx",
+                                                lineNumber: 322,
+                                                columnNumber: 33
+                                            }, undefined)
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "src/Pages/Build.tsx",
+                                        lineNumber: 298,
+                                        columnNumber: 29
+                                    }, undefined),
+                                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Button), {
+                                        fluid: true,
+                                        children: "Archive"
+                                    }, void 0, false, {
+                                        fileName: "src/Pages/Build.tsx",
+                                        lineNumber: 326,
+                                        columnNumber: 29
+                                    }, undefined)
+                                ]
+                            }, void 0, true, {
+                                fileName: "src/Pages/Build.tsx",
+                                lineNumber: 295,
                                 columnNumber: 25
                             }, undefined)
                         ]
@@ -62287,7 +62496,7 @@ const Build = (state, setState, status, setStatus)=>{
                 children: StatusDisplay()
             }, void 0, false, {
                 fileName: "src/Pages/Build.tsx",
-                lineNumber: 310,
+                lineNumber: 356,
                 columnNumber: 13
             }, undefined),
             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Segment), {
@@ -62300,31 +62509,31 @@ const Build = (state, setState, status, setStatus)=>{
                             icon: "refresh"
                         }, void 0, false, {
                             fileName: "src/Pages/Build.tsx",
-                            lineNumber: 315,
+                            lineNumber: 361,
                             columnNumber: 21
                         }, undefined)
                     }, void 0, false, {
                         fileName: "src/Pages/Build.tsx",
-                        lineNumber: 314,
+                        lineNumber: 360,
                         columnNumber: 17
                     }, undefined),
                     /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.CardGroup), {
                         children: state.configs.map(EntryGame)
                     }, void 0, false, {
                         fileName: "src/Pages/Build.tsx",
-                        lineNumber: 321,
+                        lineNumber: 367,
                         columnNumber: 17
                     }, undefined)
                 ]
             }, void 0, true, {
                 fileName: "src/Pages/Build.tsx",
-                lineNumber: 313,
+                lineNumber: 359,
                 columnNumber: 13
             }, undefined)
         ]
     }, void 0, true, {
         fileName: "src/Pages/Build.tsx",
-        lineNumber: 309,
+        lineNumber: 355,
         columnNumber: 9
     }, undefined);
 };

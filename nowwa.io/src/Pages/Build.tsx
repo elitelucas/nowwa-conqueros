@@ -6,7 +6,7 @@ import Game from "../Core/Game";
 import Main from "../Core/Main";
 import PlayCanvas from "../Core/Playcanvas";
 
-type ContentIndexType = `None` | `Info` | `Build`;
+type ContentIndexType = `None` | `Info` | `Build` | `Archive`;
 
 type BuildValue = {
     backend:Game.Backend,
@@ -225,12 +225,17 @@ const Build = (state:GameState, setState:React.Dispatch<React.SetStateAction<Gam
                         <Accordion.Content
                             active={state.current.AppName === config.playcanvas.name && state.current.ContentIndex === `Info`}
                         >
-                            Facebook App ID
-                            <Input fluid placeholder="app id"/>
-                            Snapchat App ID
-                            <Input fluid placeholder="app id"/>
-                            <Divider hidden/>
-                            <Button fluid>Update</Button>
+                            <Segment basic>
+                                Facebook App ID
+                                <Input fluid placeholder="app id"/>
+                                Snapchat App ID
+                                <Input fluid placeholder="app id"/>
+                                <Divider hidden/>
+                                <Button fluid>Update</Button>
+                                <Dimmer active>
+                                    <Loader>Work In Progress</Loader>
+                                </Dimmer>
+                            </Segment>
                         </Accordion.Content>
                         
                         <Accordion.Title
@@ -278,6 +283,47 @@ const Build = (state:GameState, setState:React.Dispatch<React.SetStateAction<Gam
                             />
                             <Divider hidden/>
                             <Button fluid disabled={isBuilderBusy} onClick={triggerBuild}>{isBuilderBusy ? "Busy..." : "Build"}</Button>
+                        </Accordion.Content>
+
+                        <Accordion.Title
+                            active={state.current.AppName === config.playcanvas.name && state.current.ContentIndex === `Archive`}
+                            onClick={() => SelectContent(config, `Archive`)}
+                        >
+                            <Icon name='dropdown' />
+                            Archive
+                        </Accordion.Title>
+                        <Accordion.Content
+                            active={state.current.AppName === config.playcanvas.name && state.current.ContentIndex === `Archive`}
+                        >
+                            <Segment basic>
+                                <List divided relaxed>
+                                    <List.Item>
+                                        <List.Icon name='download' size='large' verticalAlign='middle' link/>
+                                        <List.Content>
+                                            <List.Header>Version 0.0.1</List.Header>
+                                            <List.Description>Created 2022-08-25 13:40:51</List.Description>
+                                        </List.Content>
+                                    </List.Item>
+                                    <List.Item>
+                                        <List.Icon name='download' size='large' verticalAlign='middle' link/>
+                                        <List.Content>
+                                            <List.Header>Version 0.0.2</List.Header>
+                                            <List.Description>Created 2022-08-25 13:40:51</List.Description>
+                                        </List.Content>
+                                    </List.Item>
+                                    <List.Item>
+                                        <List.Icon name='download' size='large' verticalAlign='middle' link/>
+                                        <List.Content>
+                                            <List.Header>Version 0.0.3</List.Header>
+                                            <List.Description>Created 2022-08-25 13:40:51</List.Description>
+                                        </List.Content>
+                                    </List.Item>
+                                </List>
+                                <Dimmer active>
+                                    <Loader>Work In Progress</Loader>
+                                </Dimmer>
+                            </Segment>
+                            <Button fluid>Archive</Button>
                         </Accordion.Content>
 
                     </Accordion>

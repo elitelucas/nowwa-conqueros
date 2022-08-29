@@ -204,18 +204,18 @@ namespace Game {
         builds : Platform[],
     } & PlayCanvas.Config;
 
-    export const PostProcess = async (baseZip:string, basePath:string, config:Config, zipBack:boolean = false) => {
+    export const PostProcess = async (zipPath:string, extractPath:string, config:Config, zipBack:boolean = false) => {
     
-        console.log(`extract path: ${basePath}`);
-        if (!fs.existsSync(basePath)) {
-            fs.mkdirSync(basePath);
+        console.log(`extract path: ${extractPath}`);
+        if (!fs.existsSync(extractPath)) {
+            fs.mkdirSync(extractPath);
         }
     
-        let preloadAndroidZip:string = `${basePath}/preload-android.zip`;
-        let preloadIosZip:string = `${basePath}/preload-ios.zip`;
+        let preloadAndroidZip:string = `${extractPath}/preload-android.zip`;
+        let preloadIosZip:string = `${extractPath}/preload-ios.zip`;
     
-        if (!fs.existsSync(baseZip)) {
-            return Promise.reject(new Error(`file [${baseZip}] does not exists!`));
+        if (!fs.existsSync(zipPath)) {
+            return Promise.reject(new Error(`file [${zipPath}] does not exists!`));
         }
         
         // extract base.zip file
@@ -223,7 +223,7 @@ namespace Game {
     
             console.log(`-- extracting base.zip file --`);
     
-            const zipFile = extractFull(baseZip, basePath, { $bin: pathTo7zip, $progress: true, recursive: true }); 
+            const zipFile = extractFull(zipPath, extractPath, { $bin: pathTo7zip, $progress: true, recursive: true }); 
             zipFile.on('data', function (data) {
                 // doStuffWith(data); //? { status: 'extracted', file: 'extracted/file.txt" }
             });
@@ -243,8 +243,8 @@ namespace Game {
     
         });
     
-        let indexHTML:string = `${basePath}/index.html`;
-        let gamescriptsJS:string = `${basePath}/__game-scripts.js`;
+        let indexHTML:string = `${extractPath}/index.html`;
+        let gamescriptsJS:string = `${extractPath}/__game-scripts.js`;
     
         let filesToUpdate:string[] = [
             indexHTML, 
@@ -254,7 +254,7 @@ namespace Game {
         let renameTargets:string[][] = [];
     
         if (config.game.UseOptimizedConfig) {
-            let configJSON:string = `${basePath}/config.json`;
+            let configJSON:string = `${extractPath}/config.json`;
             filesToUpdate.push(configJSON);
     
             console.log(`-- optimize config.json --`);
@@ -346,7 +346,7 @@ namespace Game {
         if (!config.playcanvas.scripts_minify) {
             let playcanvasJSFilename:string = `playcanvas-stable.min.js`;
             let playcanvasJSSource:string = path.join(__dirname, `../../src/Utils/playcanvas-stable.js`);
-            let playcanvasJSExtracted:string = `${basePath}/${playcanvasJSFilename}`;
+            let playcanvasJSExtracted:string = `${extractPath}/${playcanvasJSFilename}`;
             let playcanvasJSZip:string = `${playcanvasJSFilename}`;
     
             await addFileToZip(playcanvasJSFilename, playcanvasJSSource, playcanvasJSExtracted, playcanvasJSZip);
@@ -362,14 +362,13 @@ namespace Game {
     
     // FACEBOOK ONLY : start
         if (config.game.Platform == 'Facebook') {
-            indexHTMLReplaces.splice(0, 0, { Pattern: /<head>/g, Value: `<head>\n\t<script>platform="Facebook";</script>` });
     
-            let fbappConfigJSON:string = `${basePath}/fbapp-config.json`;
+            let fbappConfigJSON:string = `${extractPath}/fbapp-config.json`;
             filesToUpdate.push(fbappConfigJSON);
             console.log(`-- add fbapp-config.json --`);
             await copyFile( `./utils/fbapp-config.json`, fbappConfigJSON);
     
-            let startScriptJS:string = `${basePath}/__start__.js`;
+            let startScriptJS:string = `${extractPath}/__start__.js`;
             filesToUpdate.push(startScriptJS);
             console.log(`-- add __start__.js --`);
             await copyFile( `./utils/__start__.js`, startScriptJS);
@@ -380,13 +379,12 @@ namespace Game {
     
     // SNAPCHAT ONLY : start
         if (config.game.Platform == 'Snapchat') {
-            indexHTMLReplaces.splice(0, 0, { Pattern: /<head>/g, Value: `<head>\n\t<script>platform="Snapchat";</script>` });
     
             if (!config.game.SnapchatNoShareImage) {
                 
                 let shareImageFilename:string = `share_image.png`;
                 let shareImageSource:string = path.join(__dirname,`..`,`..`,`${config.game.SnapchatShareImage}`);
-                let shareImageExtracted:string = `${basePath}/files/assets/${shareImageFilename}`;
+                let shareImageExtracted:string = `${extractPath}/files/assets/${shareImageFilename}`;
                 let shareImageZip:string = `files/assets/${shareImageFilename}`;
 
                 console.log(`shareImageSource: ${shareImageSource}`);
@@ -394,25 +392,27 @@ namespace Game {
                 await addFileToZip(shareImageFilename, shareImageSource, shareImageExtracted, shareImageZip);
             }
     
+            if (typeof (config.game.SnapchatBackendUrl) != 'undefined') {
+                indexHTMLReplaces.splice(0, 0, { Pattern: /<head>/g, Value: `<head>\n\t<script>snapchatBackendUrl="${config.game.SnapchatBackendUrl}";</script>` });
+            }
+    
             if (config.game.UseGCInstant) {
                 config.csp["connect-src"].push("https://*.amplitude.com");
                 config.csp["connect-src"].push("https://*.sentry.io");
-            }
-    
-            if (typeof (config.game.SnapchatBackendUrl) != 'undefined') {
-                indexHTMLReplaces.splice(0, 0, { Pattern: /<head>/g, Value: `<head>\n\t<script>snapchatBackendUrl="${config.game.SnapchatBackendUrl}";</script>` });
             }
         }
     // SNAPCHAT ONLY : end
 
     // WEB ONLY : start
         if (config.game.Platform == 'Web') {
-            indexHTMLReplaces.splice(0, 0, { Pattern: /<head>/g, Value: `<head>\n\t<script>platform="Web";</script>` });
+            
         }
     // WEB ONLY : end
     
         var cspMetadata = CreateCSPMetadata(config.csp);
         indexHTMLReplaces.splice(0, 0, { Pattern: /<head>/g, Value: `<head>\n\t${cspMetadata}` });
+
+        indexHTMLReplaces.splice(0, 0, { Pattern: /<head>/g, Value: `<head>\n\t<script>platform="${config.game.Platform}";</script>` });
 
         await stringReplace(indexHTML, indexHTML, indexHTMLReplaces);
         
@@ -521,7 +521,7 @@ namespace Game {
         console.log(`-- update base.zip --`);
         await new Promise<void>((resolve, reject) => {
     
-            const zipFile = add(baseZip, [...filesToUpdate, ...preloadBundles], { $bin: pathTo7zip, $progress: true, recursive: true }); 
+            const zipFile = add(zipPath, [...filesToUpdate, ...preloadBundles], { $bin: pathTo7zip, $progress: true, recursive: true }); 
             zipFile.on('data', function (data) {
                 // doStuffWith(data); //? { status: 'extracted', file: 'extracted/file.txt" }
             });
@@ -543,7 +543,7 @@ namespace Game {
         if (renameTargets.length > 0) {
             await new Promise<void>((resolve, reject) => {
     
-                const zipFile = rename(baseZip, renameTargets, { $bin: pathTo7zip, $progress: true, recursive: true }); 
+                const zipFile = rename(zipPath, renameTargets, { $bin: pathTo7zip, $progress: true, recursive: true }); 
                 zipFile.on('data', function (data) {
                     // doStuffWith(data); //? { status: 'extracted', file: 'extracted/file.txt" }
                 });
@@ -565,10 +565,10 @@ namespace Game {
         }
         
         if (config.game.Platform == 'Web' || config.game.Platform == 'Snapchat') {
-            await del([`${baseZip}`]);
+            await del([`${zipPath}`]);
         }
         if (config.game.Platform != 'Web' && config.game.Platform != 'Snapchat') {
-            await del([`${basePath}**`,`${basePath}`]);
+            await del([`${extractPath}**`,`${extractPath}`]);
         }
     
         console.log('done');
