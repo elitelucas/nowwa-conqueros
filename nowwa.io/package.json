@@ -3,8 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "backend": "tsc-watch --onSuccess \"node ./dist/Core/Main.js\"",
-    "frontend": "parcel watch ./src/Pages/Index.tsx --dist-dir ./storage"
+    "dev": "tsc-watch --onSuccess \"node ./dist/Core/Main.js --env=\"development\"\"",
+    "prod": "tsc --onSuccess \"node ./dist/Core/Main.js --env=\"production\"\"",
+    "front": "parcel watch ./src/Pages/Index.tsx --dist-dir ./storage",
+    "test": "tsc-watch --onSuccess \"node ./dist/Core/Test.js --env=\"hehe\"\""
   },
   "author": "",
   "license": "ISC",
@@ -30,6 +32,7 @@
     "@types/react-dom": "^18.0.6",
     "@types/semantic-ui": "^2.2.7",
     "@types/tsc-watch": "^4.2.0",
+    "@types/yargs": "^17.0.10",
     "assert": "^2.0.0",
     "babel-plugin-react-css-modules": "^5.2.6",
     "browserify-zlib": "^0.2.0",
@@ -52,7 +55,8 @@
     "stream-http": "^3.2.0",
     "typescript": "^4.6.2",
     "url": "^0.11.0",
-    "util": "^0.12.4"
+    "util": "^0.12.4",
+    "yargs": "^17.3.1"
   },
   "dependencies": {
     "7zip-bin": "^5.2.0",

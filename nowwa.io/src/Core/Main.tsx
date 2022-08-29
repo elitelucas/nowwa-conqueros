@@ -5,9 +5,8 @@ import session from 'express-session';
 import multer from 'multer';
 import cloudinary from 'cloudinary';
 import path from 'path';
-import { EnvType, load } from 'ts-dotenv';
 import { User, UserDocument } from '../Models/User';
-import Environment, { toyStatusUrl } from './Environment';
+import Environment, { env, toyStatusUrl } from './Environment';
 import crypto from 'crypto';
 import Socket from './Socket';
 import Authentication from './Authentication';
@@ -15,8 +14,8 @@ import Config from './Playcanvas';
 import Database from './Database';
 import Storage from './Storage';
 import Game from './Game';
-import Test from './Test';
 import PlayCanvas from './Playcanvas';
+import { EnvType } from 'ts-dotenv';
 
 console.log(`project path: ${__dirname}`);
 
@@ -30,13 +29,6 @@ class Main {
      */
     constructor () {
         this.status = Main.StatusDefault;
-
-        let envPath:string = path.resolve(__dirname, `../../.env`);
-        console.log(`load .env from: ${envPath}`);
-        let env:EnvType<typeof Environment> = load(Environment, {
-            path: envPath,
-            encoding: 'utf-8',
-        });
 
         this.baseUrl = `/webhook/v${env.VERSION}`;
 
@@ -105,8 +97,8 @@ class Main {
 
             await Game.AsyncInit(app, env);
     
-            app.listen(env.MAIN_PORT);
-            console.log(`[Express] listening on port ${env.MAIN_PORT}`);
+            app.listen(env.CORE_PORT);
+            console.log(`[Express] listening on port ${env.CORE_PORT}`);
 
             await Socket.AsyncInit(app, env);
 
@@ -119,8 +111,6 @@ class Main {
             //             this.status.isPlaycanvasBusy = false;
             //         });
             // }, 10000);
-
-            Test.Run();
         }
         catch (error) {
             console.error(error);
