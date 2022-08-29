@@ -3,5 +3,7 @@ node_modules/
 .parcel-cache/
 dist/
 temp/
+storage/Index.js
+storage/Index.js.map
 .env.development
 .env.production
