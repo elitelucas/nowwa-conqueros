@@ -2990,7 +2990,7 @@ $RefreshReg$(_c, "Index");
   window.$RefreshReg$ = prevRefreshReg;
   window.$RefreshSig$ = prevRefreshSig;
 }
-},{"react/jsx-dev-runtime":"iTorj","react":"21dqq","react-dom/client":"lOjBx","./Top":"cqz4c","semantic-ui-react":"ltMuF","./Explorer":"bhN26","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"km3Ru","../Core/Playcanvas":"22K3c","./Build":"EfM2j"}],"iTorj":[function(require,module,exports) {
+},{"react/jsx-dev-runtime":"iTorj","react":"21dqq","react-dom/client":"lOjBx","./Top":"cqz4c","semantic-ui-react":"ltMuF","./Explorer":"bhN26","./Build":"EfM2j","../Core/Playcanvas":"22K3c","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"km3Ru"}],"iTorj":[function(require,module,exports) {
 "use strict";
 module.exports = require("./cjs/react-jsx-dev-runtime.development.js");
 
@@ -61839,7 +61839,507 @@ const toyBuildFullUrl = `${baseUrl}${toyBuildUrl}`;
 const toyStatusUrl = `/toyStatus`;
 const toyStatusFullUrl = `${baseUrl}${toyStatusUrl}`;
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"22K3c":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"EfM2j":[function(require,module,exports) {
+var $parcel$ReactRefreshHelpers$f547 = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
+var prevRefreshReg = window.$RefreshReg$;
+var prevRefreshSig = window.$RefreshSig$;
+$parcel$ReactRefreshHelpers$f547.prelude(module);
+
+try {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "GameStateDefault", ()=>GameStateDefault);
+parcelHelpers.export(exports, "GameLoad", ()=>GameLoad);
+var _jsxDevRuntime = require("react/jsx-dev-runtime");
+var _react = require("react");
+var _reactDefault = parcelHelpers.interopDefault(_react);
+var _semanticUiReact = require("semantic-ui-react");
+var _environment = require("../Core/Environment");
+const BuildValueDefault = {
+    backend: "Cookies",
+    debug: false,
+    platform: "Web",
+    version: "0.0.0"
+};
+const GameStateDefault = {
+    initialized: false,
+    configs: [],
+    current: {
+        AppName: ``,
+        ContentIndex: `None`
+    },
+    buildValues: {}
+};
+const GameLoad = (state)=>{
+    return new Promise((resolve, reject)=>{
+        // console.log(`get games`);
+        fetch(`${(0, _environment.toyListFullUrl)}`).then((res)=>res.json()).then((res)=>{
+            let gameState = {
+                configs: res.configs,
+                current: state.current,
+                initialized: true,
+                buildValues: state.buildValues
+            };
+            // console.log(`game:  ${JSON.stringify(gameState)}`);
+            resolve(gameState);
+        }).catch((error)=>{
+            console.error(`error: ${error}`);
+            reject();
+        });
+    });
+};
+_c = GameLoad;
+const Build = (state, setState, status, setStatus)=>{
+    const StatusLoad = ()=>{
+        return new Promise((resolve, reject)=>{
+            // console.log(`get status`);
+            fetch(`${(0, _environment.toyStatusFullUrl)}`).then((res)=>res.json()).then((res)=>{
+                resolve(res.PlayCanvas);
+            }).catch((error)=>{
+                console.error(`error: ${error}`);
+                reject();
+            });
+        });
+    };
+    const StatusDisplay = ()=>{
+        let isBuilderBusy = status.Activity != "None";
+        return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _jsxDevRuntime.Fragment), {
+            children: [
+                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Label), {
+                    color: isBuilderBusy ? "yellow" : "green",
+                    children: [
+                        "Builder Status",
+                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Label).Detail, {
+                            children: isBuilderBusy ? "Building" : "Idle"
+                        }, void 0, false, {
+                            fileName: "src/Pages/Build.tsx",
+                            lineNumber: 90,
+                            columnNumber: 21
+                        }, undefined)
+                    ]
+                }, void 0, true, {
+                    fileName: "src/Pages/Build.tsx",
+                    lineNumber: 88,
+                    columnNumber: 17
+                }, undefined),
+                isBuilderBusy && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Label), {
+                    children: [
+                        status.AppName,
+                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Label).Detail, {
+                            children: status.Version
+                        }, void 0, false, {
+                            fileName: "src/Pages/Build.tsx",
+                            lineNumber: 97,
+                            columnNumber: 25
+                        }, undefined)
+                    ]
+                }, void 0, true, {
+                    fileName: "src/Pages/Build.tsx",
+                    lineNumber: 95,
+                    columnNumber: 21
+                }, undefined)
+            ]
+        }, void 0, true);
+    };
+    const SelectContent = (config, contentIndex)=>{
+        let gameState = {
+            configs: state.configs,
+            current: state.current,
+            initialized: state.initialized,
+            buildValues: state.buildValues
+        };
+        if (state.current.AppName == config.playcanvas.name && state.current.ContentIndex == contentIndex) {
+            gameState.current.AppName = ``;
+            gameState.current.ContentIndex = "None";
+        } else {
+            gameState.current.AppName = config.playcanvas.name;
+            gameState.current.ContentIndex = contentIndex;
+        }
+        // console.log(`select: ${gameState.current.AppName} | ${gameState.current.ContentIndex}`);
+        setState(gameState);
+    };
+    const EntryGame = (config)=>{
+        if (typeof state.buildValues[config.game.Config] == "undefined") {
+            state.buildValues[config.game.Config] = BuildValueDefault;
+            setState(state);
+        }
+        let dropdownPlatform = [
+            {
+                text: "Web",
+                value: "Web"
+            },
+            {
+                text: "Facebook",
+                value: "Facebook"
+            },
+            {
+                text: "Snapchat (Development Only)",
+                value: "Snapchat"
+            }
+        ];
+        let dropdownBackend = [
+            {
+                text: "Cookies",
+                value: "Cookies"
+            },
+            {
+                text: "Replicant",
+                value: "Replicant"
+            },
+            {
+                text: "Nakama",
+                value: "Nakama"
+            }
+        ];
+        let dropdownDebug = [
+            {
+                text: "None",
+                value: 0
+            },
+            {
+                text: "VConsole",
+                value: 1
+            }
+        ];
+        let triggerBuild = ()=>{
+            let tmpBuildValue = state.buildValues[config.game.Config];
+            // console.log(`[${config.game.Config}] trigger build: ${JSON.stringify(tmpBuildValue)}`);
+            let url = new URL(`${(0, _environment.toyBuildFullUrl)}`);
+            url.searchParams.set("n", config.game.Config);
+            url.searchParams.set("b", tmpBuildValue.backend.toString());
+            url.searchParams.set("p", tmpBuildValue.platform.toString());
+            url.searchParams.set("d", tmpBuildValue.debug.toString());
+            url.searchParams.set("v", tmpBuildValue.version);
+            fetch(url).then((res)=>res.json()).then((res)=>{
+            // console.log(`build response: ${JSON.stringify(res)}`);
+            }).catch((error)=>{
+                console.error(`error: ${error}`);
+            });
+        };
+        let setPlatformValue = (event, data)=>{
+            let tmpBuildValue = state.buildValues[config.game.Config];
+            tmpBuildValue.platform = data.value;
+            state.buildValues[config.game.Config] = tmpBuildValue;
+            console.log(`[${config.game.Config}] set platform: ${tmpBuildValue.platform}`);
+            setState(state);
+        };
+        let setBackendValue = (event, data)=>{
+            let tmpBuildValue = state.buildValues[config.game.Config];
+            tmpBuildValue.backend = data.value;
+            state.buildValues[config.game.Config] = tmpBuildValue;
+            console.log(`[${config.game.Config}] set backend: ${tmpBuildValue.backend}`);
+            setState(state);
+        };
+        let setDebugValue = (event, data)=>{
+            let tmpBuildValue = state.buildValues[config.game.Config];
+            tmpBuildValue.debug = data.value == 1;
+            state.buildValues[config.game.Config] = tmpBuildValue;
+            console.log(`[${config.game.Config}] set debug: ${tmpBuildValue.debug}`);
+            setState(state);
+        };
+        let setVersionValue = (event, data)=>{
+            let tmpBuildValue = state.buildValues[config.game.Config];
+            tmpBuildValue.version = data.value;
+            state.buildValues[config.game.Config] = tmpBuildValue;
+            console.log(`[${config.game.Config}] set version: ${tmpBuildValue.version}`);
+            setState(state);
+        };
+        let openInNewTab = (url)=>{
+            window.open(url, "_blank", "noopener,noreferrer");
+        };
+        let isBuilderBusy = status.Activity != "None";
+        return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Card), {
+            children: [
+                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Card).Header, {
+                    children: [
+                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Label), {
+                            attached: "top",
+                            size: "large",
+                            children: config.playcanvas.name
+                        }, void 0, false, {
+                            fileName: "src/Pages/Build.tsx",
+                            lineNumber: 207,
+                            columnNumber: 21
+                        }, undefined),
+                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Image), {
+                            src: config.game.Thumbnail,
+                            fluid: true
+                        }, void 0, false, {
+                            fileName: "src/Pages/Build.tsx",
+                            lineNumber: 208,
+                            columnNumber: 21
+                        }, undefined),
+                        config.builds.indexOf("Web") >= 0 ? /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Button), {
+                            fluid: true,
+                            primary: true,
+                            onClick: ()=>openInNewTab(`${(0, _environment.baseUrl)}/toy/${config.playcanvas.name}/Web/`),
+                            children: "Play web build"
+                        }, void 0, false, {
+                            fileName: "src/Pages/Build.tsx",
+                            lineNumber: 210,
+                            columnNumber: 25
+                        }, undefined) : /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Button), {
+                            fluid: true,
+                            primary: true,
+                            disabled: true,
+                            children: "Web build not available"
+                        }, void 0, false, {
+                            fileName: "src/Pages/Build.tsx",
+                            lineNumber: 212,
+                            columnNumber: 25
+                        }, undefined)
+                    ]
+                }, void 0, true, {
+                    fileName: "src/Pages/Build.tsx",
+                    lineNumber: 206,
+                    columnNumber: 17
+                }, undefined),
+                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Card).Content, {
+                    children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Accordion), {
+                        children: [
+                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Accordion).Title, {
+                                active: state.current.AppName === config.playcanvas.name && state.current.ContentIndex === `Info`,
+                                onClick: ()=>SelectContent(config, `Info`),
+                                children: [
+                                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Icon), {
+                                        name: "dropdown"
+                                    }, void 0, false, {
+                                        fileName: "src/Pages/Build.tsx",
+                                        lineNumber: 222,
+                                        columnNumber: 29
+                                    }, undefined),
+                                    "Info"
+                                ]
+                            }, void 0, true, {
+                                fileName: "src/Pages/Build.tsx",
+                                lineNumber: 218,
+                                columnNumber: 25
+                            }, undefined),
+                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Accordion).Content, {
+                                active: state.current.AppName === config.playcanvas.name && state.current.ContentIndex === `Info`,
+                                children: [
+                                    "Facebook App ID",
+                                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Input), {
+                                        fluid: true,
+                                        placeholder: "app id"
+                                    }, void 0, false, {
+                                        fileName: "src/Pages/Build.tsx",
+                                        lineNumber: 229,
+                                        columnNumber: 29
+                                    }, undefined),
+                                    "Snapchat App ID",
+                                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Input), {
+                                        fluid: true,
+                                        placeholder: "app id"
+                                    }, void 0, false, {
+                                        fileName: "src/Pages/Build.tsx",
+                                        lineNumber: 231,
+                                        columnNumber: 29
+                                    }, undefined),
+                                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Divider), {
+                                        hidden: true
+                                    }, void 0, false, {
+                                        fileName: "src/Pages/Build.tsx",
+                                        lineNumber: 232,
+                                        columnNumber: 29
+                                    }, undefined),
+                                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Button), {
+                                        fluid: true,
+                                        children: "Update"
+                                    }, void 0, false, {
+                                        fileName: "src/Pages/Build.tsx",
+                                        lineNumber: 233,
+                                        columnNumber: 29
+                                    }, undefined)
+                                ]
+                            }, void 0, true, {
+                                fileName: "src/Pages/Build.tsx",
+                                lineNumber: 225,
+                                columnNumber: 25
+                            }, undefined),
+                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Accordion).Title, {
+                                active: state.current.AppName === config.playcanvas.name && state.current.ContentIndex === `Build`,
+                                onClick: ()=>SelectContent(config, `Build`),
+                                children: [
+                                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Icon), {
+                                        name: "dropdown"
+                                    }, void 0, false, {
+                                        fileName: "src/Pages/Build.tsx",
+                                        lineNumber: 240,
+                                        columnNumber: 29
+                                    }, undefined),
+                                    "Build"
+                                ]
+                            }, void 0, true, {
+                                fileName: "src/Pages/Build.tsx",
+                                lineNumber: 236,
+                                columnNumber: 25
+                            }, undefined),
+                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Accordion).Content, {
+                                active: state.current.AppName === config.playcanvas.name && state.current.ContentIndex === `Build`,
+                                children: [
+                                    "Version",
+                                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Input), {
+                                        fluid: true,
+                                        placeholder: "Version",
+                                        onChange: setVersionValue
+                                    }, void 0, false, {
+                                        fileName: "src/Pages/Build.tsx",
+                                        lineNumber: 247,
+                                        columnNumber: 29
+                                    }, undefined),
+                                    "Platform",
+                                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Dropdown), {
+                                        placeholder: "Platform",
+                                        fluid: true,
+                                        selection: true,
+                                        options: dropdownPlatform,
+                                        onChange: setPlatformValue
+                                    }, `${config.playcanvas.name}-Platform`, false, {
+                                        fileName: "src/Pages/Build.tsx",
+                                        lineNumber: 253,
+                                        columnNumber: 29
+                                    }, undefined),
+                                    "Backend",
+                                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Dropdown), {
+                                        placeholder: "Backend",
+                                        fluid: true,
+                                        selection: true,
+                                        options: dropdownBackend,
+                                        onChange: setBackendValue
+                                    }, `${config.playcanvas.name}-Backend`, false, {
+                                        fileName: "src/Pages/Build.tsx",
+                                        lineNumber: 262,
+                                        columnNumber: 29
+                                    }, undefined),
+                                    "Debug",
+                                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Dropdown), {
+                                        placeholder: "Debug",
+                                        fluid: true,
+                                        selection: true,
+                                        options: dropdownDebug,
+                                        onChange: setDebugValue
+                                    }, `${config.playcanvas.name}-Debug`, false, {
+                                        fileName: "src/Pages/Build.tsx",
+                                        lineNumber: 271,
+                                        columnNumber: 29
+                                    }, undefined),
+                                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Divider), {
+                                        hidden: true
+                                    }, void 0, false, {
+                                        fileName: "src/Pages/Build.tsx",
+                                        lineNumber: 279,
+                                        columnNumber: 29
+                                    }, undefined),
+                                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Button), {
+                                        fluid: true,
+                                        disabled: isBuilderBusy,
+                                        onClick: triggerBuild,
+                                        children: isBuilderBusy ? "Busy..." : "Build"
+                                    }, void 0, false, {
+                                        fileName: "src/Pages/Build.tsx",
+                                        lineNumber: 280,
+                                        columnNumber: 29
+                                    }, undefined)
+                                ]
+                            }, void 0, true, {
+                                fileName: "src/Pages/Build.tsx",
+                                lineNumber: 243,
+                                columnNumber: 25
+                            }, undefined)
+                        ]
+                    }, void 0, true, {
+                        fileName: "src/Pages/Build.tsx",
+                        lineNumber: 216,
+                        columnNumber: 21
+                    }, undefined)
+                }, void 0, false, {
+                    fileName: "src/Pages/Build.tsx",
+                    lineNumber: 215,
+                    columnNumber: 17
+                }, undefined)
+            ]
+        }, config.game.Config, true, {
+            fileName: "src/Pages/Build.tsx",
+            lineNumber: 205,
+            columnNumber: 13
+        }, undefined);
+    };
+    if (!state.initialized) {
+        let gameState = {
+            configs: state.configs,
+            current: state.current,
+            initialized: state.initialized,
+            buildValues: state.buildValues
+        };
+        GameLoad(gameState).then(setState);
+        setInterval(()=>{
+            // console.log(`update status`);
+            StatusLoad().then(setStatus);
+        }, 1000);
+    }
+    let refreshList = ()=>{
+        GameLoad(state).then(setState);
+    };
+    return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.SegmentGroup), {
+        children: [
+            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Segment), {
+                children: StatusDisplay()
+            }, void 0, false, {
+                fileName: "src/Pages/Build.tsx",
+                lineNumber: 310,
+                columnNumber: 13
+            }, undefined),
+            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Segment), {
+                children: [
+                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Menu), {
+                        fluid: true,
+                        children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Menu).Item, {
+                            name: "Refresh Game List",
+                            onClick: refreshList,
+                            icon: "refresh"
+                        }, void 0, false, {
+                            fileName: "src/Pages/Build.tsx",
+                            lineNumber: 315,
+                            columnNumber: 21
+                        }, undefined)
+                    }, void 0, false, {
+                        fileName: "src/Pages/Build.tsx",
+                        lineNumber: 314,
+                        columnNumber: 17
+                    }, undefined),
+                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.CardGroup), {
+                        children: state.configs.map(EntryGame)
+                    }, void 0, false, {
+                        fileName: "src/Pages/Build.tsx",
+                        lineNumber: 321,
+                        columnNumber: 17
+                    }, undefined)
+                ]
+            }, void 0, true, {
+                fileName: "src/Pages/Build.tsx",
+                lineNumber: 313,
+                columnNumber: 13
+            }, undefined)
+        ]
+    }, void 0, true, {
+        fileName: "src/Pages/Build.tsx",
+        lineNumber: 309,
+        columnNumber: 9
+    }, undefined);
+};
+_c1 = Build;
+exports.default = Build;
+var _c, _c1;
+$RefreshReg$(_c, "GameLoad");
+$RefreshReg$(_c1, "Build");
+
+  $parcel$ReactRefreshHelpers$f547.postlude(module);
+} finally {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+}
+},{"react/jsx-dev-runtime":"iTorj","react":"21dqq","semantic-ui-react":"ltMuF","../Core/Environment":"jdfGh","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"km3Ru"}],"22K3c":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 var _nodeFetch = require("node-fetch");
@@ -63887,506 +64387,6 @@ exports.write = function(buffer, value, offset, isLE, mLen, nBytes) {
     buffer[offset + i - d] |= s * 128;
 };
 
-},{}],"EfM2j":[function(require,module,exports) {
-var $parcel$ReactRefreshHelpers$f547 = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
-var prevRefreshReg = window.$RefreshReg$;
-var prevRefreshSig = window.$RefreshSig$;
-$parcel$ReactRefreshHelpers$f547.prelude(module);
-
-try {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "GameStateDefault", ()=>GameStateDefault);
-parcelHelpers.export(exports, "GameLoad", ()=>GameLoad);
-var _jsxDevRuntime = require("react/jsx-dev-runtime");
-var _react = require("react");
-var _reactDefault = parcelHelpers.interopDefault(_react);
-var _semanticUiReact = require("semantic-ui-react");
-var _environment = require("../Core/Environment");
-const BuildValueDefault = {
-    backend: "Cookies",
-    debug: false,
-    platform: "Web",
-    version: "0.0.0"
-};
-const GameStateDefault = {
-    initialized: false,
-    configs: [],
-    current: {
-        AppName: ``,
-        ContentIndex: `None`
-    },
-    buildValues: {}
-};
-const GameLoad = (state)=>{
-    return new Promise((resolve, reject)=>{
-        // console.log(`get games`);
-        fetch(`${(0, _environment.toyListFullUrl)}`).then((res)=>res.json()).then((res)=>{
-            let gameState = {
-                configs: res.configs,
-                current: state.current,
-                initialized: true,
-                buildValues: state.buildValues
-            };
-            // console.log(`game:  ${JSON.stringify(gameState)}`);
-            resolve(gameState);
-        }).catch((error)=>{
-            console.error(`error: ${error}`);
-            reject();
-        });
-    });
-};
-_c = GameLoad;
-const Build = (state, setState, status, setStatus)=>{
-    const StatusLoad = ()=>{
-        return new Promise((resolve, reject)=>{
-            // console.log(`get status`);
-            fetch(`${(0, _environment.toyStatusFullUrl)}`).then((res)=>res.json()).then((res)=>{
-                resolve(res.PlayCanvas);
-            }).catch((error)=>{
-                console.error(`error: ${error}`);
-                reject();
-            });
-        });
-    };
-    const StatusDisplay = ()=>{
-        let isBuilderBusy = status.Activity != "None";
-        return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _jsxDevRuntime.Fragment), {
-            children: [
-                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Label), {
-                    color: isBuilderBusy ? "yellow" : "green",
-                    children: [
-                        "Builder Status",
-                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Label).Detail, {
-                            children: isBuilderBusy ? "Building" : "Idle"
-                        }, void 0, false, {
-                            fileName: "src/Pages/Build.tsx",
-                            lineNumber: 90,
-                            columnNumber: 21
-                        }, undefined)
-                    ]
-                }, void 0, true, {
-                    fileName: "src/Pages/Build.tsx",
-                    lineNumber: 88,
-                    columnNumber: 17
-                }, undefined),
-                isBuilderBusy && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Label), {
-                    children: [
-                        status.AppName,
-                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Label).Detail, {
-                            children: status.Version
-                        }, void 0, false, {
-                            fileName: "src/Pages/Build.tsx",
-                            lineNumber: 97,
-                            columnNumber: 25
-                        }, undefined)
-                    ]
-                }, void 0, true, {
-                    fileName: "src/Pages/Build.tsx",
-                    lineNumber: 95,
-                    columnNumber: 21
-                }, undefined)
-            ]
-        }, void 0, true);
-    };
-    const SelectContent = (config, contentIndex)=>{
-        let gameState = {
-            configs: state.configs,
-            current: state.current,
-            initialized: state.initialized,
-            buildValues: state.buildValues
-        };
-        if (state.current.AppName == config.playcanvas.name && state.current.ContentIndex == contentIndex) {
-            gameState.current.AppName = ``;
-            gameState.current.ContentIndex = "None";
-        } else {
-            gameState.current.AppName = config.playcanvas.name;
-            gameState.current.ContentIndex = contentIndex;
-        }
-        // console.log(`select: ${gameState.current.AppName} | ${gameState.current.ContentIndex}`);
-        setState(gameState);
-    };
-    const EntryGame = (config)=>{
-        if (typeof state.buildValues[config.game.Config] == "undefined") {
-            state.buildValues[config.game.Config] = BuildValueDefault;
-            setState(state);
-        }
-        let dropdownPlatform = [
-            {
-                text: "Web",
-                value: "Web"
-            },
-            {
-                text: "Facebook",
-                value: "Facebook"
-            },
-            {
-                text: "Snapchat (Development Only)",
-                value: "Snapchat"
-            }
-        ];
-        let dropdownBackend = [
-            {
-                text: "Cookies",
-                value: "Cookies"
-            },
-            {
-                text: "Replicant",
-                value: "Replicant"
-            },
-            {
-                text: "Nakama",
-                value: "Nakama"
-            }
-        ];
-        let dropdownDebug = [
-            {
-                text: "None",
-                value: 0
-            },
-            {
-                text: "VConsole",
-                value: 1
-            }
-        ];
-        let triggerBuild = ()=>{
-            let tmpBuildValue = state.buildValues[config.game.Config];
-            // console.log(`[${config.game.Config}] trigger build: ${JSON.stringify(tmpBuildValue)}`);
-            let url = new URL(`${(0, _environment.toyBuildFullUrl)}`);
-            url.searchParams.set("n", config.game.Config);
-            url.searchParams.set("b", tmpBuildValue.backend.toString());
-            url.searchParams.set("p", tmpBuildValue.platform.toString());
-            url.searchParams.set("d", tmpBuildValue.debug.toString());
-            url.searchParams.set("v", tmpBuildValue.version);
-            fetch(url).then((res)=>res.json()).then((res)=>{
-            // console.log(`build response: ${JSON.stringify(res)}`);
-            }).catch((error)=>{
-                console.error(`error: ${error}`);
-            });
-        };
-        let setPlatformValue = (event, data)=>{
-            let tmpBuildValue = state.buildValues[config.game.Config];
-            tmpBuildValue.platform = data.value;
-            state.buildValues[config.game.Config] = tmpBuildValue;
-            console.log(`[${config.game.Config}] set platform: ${tmpBuildValue.platform}`);
-            setState(state);
-        };
-        let setBackendValue = (event, data)=>{
-            let tmpBuildValue = state.buildValues[config.game.Config];
-            tmpBuildValue.backend = data.value;
-            state.buildValues[config.game.Config] = tmpBuildValue;
-            console.log(`[${config.game.Config}] set backend: ${tmpBuildValue.backend}`);
-            setState(state);
-        };
-        let setDebugValue = (event, data)=>{
-            let tmpBuildValue = state.buildValues[config.game.Config];
-            tmpBuildValue.debug = data.value == 1;
-            state.buildValues[config.game.Config] = tmpBuildValue;
-            console.log(`[${config.game.Config}] set debug: ${tmpBuildValue.debug}`);
-            setState(state);
-        };
-        let setVersionValue = (event, data)=>{
-            let tmpBuildValue = state.buildValues[config.game.Config];
-            tmpBuildValue.version = data.value;
-            state.buildValues[config.game.Config] = tmpBuildValue;
-            console.log(`[${config.game.Config}] set version: ${tmpBuildValue.version}`);
-            setState(state);
-        };
-        let openInNewTab = (url)=>{
-            window.open(url, "_blank", "noopener,noreferrer");
-        };
-        let isBuilderBusy = status.Activity != "None";
-        return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Card), {
-            children: [
-                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Card).Header, {
-                    children: [
-                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Label), {
-                            attached: "top",
-                            size: "large",
-                            children: config.playcanvas.name
-                        }, void 0, false, {
-                            fileName: "src/Pages/Build.tsx",
-                            lineNumber: 207,
-                            columnNumber: 21
-                        }, undefined),
-                        /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Image), {
-                            src: config.game.Thumbnail,
-                            fluid: true
-                        }, void 0, false, {
-                            fileName: "src/Pages/Build.tsx",
-                            lineNumber: 208,
-                            columnNumber: 21
-                        }, undefined),
-                        config.builds.indexOf("Web") >= 0 ? /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Button), {
-                            fluid: true,
-                            primary: true,
-                            onClick: ()=>openInNewTab(`${(0, _environment.baseUrl)}/toy/${config.playcanvas.name}/Web/`),
-                            children: "Play web build"
-                        }, void 0, false, {
-                            fileName: "src/Pages/Build.tsx",
-                            lineNumber: 210,
-                            columnNumber: 25
-                        }, undefined) : /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Button), {
-                            fluid: true,
-                            primary: true,
-                            disabled: true,
-                            children: "Web build not available"
-                        }, void 0, false, {
-                            fileName: "src/Pages/Build.tsx",
-                            lineNumber: 212,
-                            columnNumber: 25
-                        }, undefined)
-                    ]
-                }, void 0, true, {
-                    fileName: "src/Pages/Build.tsx",
-                    lineNumber: 206,
-                    columnNumber: 17
-                }, undefined),
-                /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Card).Content, {
-                    children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Accordion), {
-                        children: [
-                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Accordion).Title, {
-                                active: state.current.AppName === config.playcanvas.name && state.current.ContentIndex === `Info`,
-                                onClick: ()=>SelectContent(config, `Info`),
-                                children: [
-                                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Icon), {
-                                        name: "dropdown"
-                                    }, void 0, false, {
-                                        fileName: "src/Pages/Build.tsx",
-                                        lineNumber: 222,
-                                        columnNumber: 29
-                                    }, undefined),
-                                    "Info"
-                                ]
-                            }, void 0, true, {
-                                fileName: "src/Pages/Build.tsx",
-                                lineNumber: 218,
-                                columnNumber: 25
-                            }, undefined),
-                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Accordion).Content, {
-                                active: state.current.AppName === config.playcanvas.name && state.current.ContentIndex === `Info`,
-                                children: [
-                                    "Facebook App ID",
-                                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Input), {
-                                        fluid: true,
-                                        placeholder: "app id"
-                                    }, void 0, false, {
-                                        fileName: "src/Pages/Build.tsx",
-                                        lineNumber: 229,
-                                        columnNumber: 29
-                                    }, undefined),
-                                    "Snapchat App ID",
-                                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Input), {
-                                        fluid: true,
-                                        placeholder: "app id"
-                                    }, void 0, false, {
-                                        fileName: "src/Pages/Build.tsx",
-                                        lineNumber: 231,
-                                        columnNumber: 29
-                                    }, undefined),
-                                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Divider), {
-                                        hidden: true
-                                    }, void 0, false, {
-                                        fileName: "src/Pages/Build.tsx",
-                                        lineNumber: 232,
-                                        columnNumber: 29
-                                    }, undefined),
-                                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Button), {
-                                        fluid: true,
-                                        children: "Update"
-                                    }, void 0, false, {
-                                        fileName: "src/Pages/Build.tsx",
-                                        lineNumber: 233,
-                                        columnNumber: 29
-                                    }, undefined)
-                                ]
-                            }, void 0, true, {
-                                fileName: "src/Pages/Build.tsx",
-                                lineNumber: 225,
-                                columnNumber: 25
-                            }, undefined),
-                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Accordion).Title, {
-                                active: state.current.AppName === config.playcanvas.name && state.current.ContentIndex === `Build`,
-                                onClick: ()=>SelectContent(config, `Build`),
-                                children: [
-                                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Icon), {
-                                        name: "dropdown"
-                                    }, void 0, false, {
-                                        fileName: "src/Pages/Build.tsx",
-                                        lineNumber: 240,
-                                        columnNumber: 29
-                                    }, undefined),
-                                    "Build"
-                                ]
-                            }, void 0, true, {
-                                fileName: "src/Pages/Build.tsx",
-                                lineNumber: 236,
-                                columnNumber: 25
-                            }, undefined),
-                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Accordion).Content, {
-                                active: state.current.AppName === config.playcanvas.name && state.current.ContentIndex === `Build`,
-                                children: [
-                                    "Version",
-                                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Input), {
-                                        fluid: true,
-                                        placeholder: "Version",
-                                        onChange: setVersionValue
-                                    }, void 0, false, {
-                                        fileName: "src/Pages/Build.tsx",
-                                        lineNumber: 247,
-                                        columnNumber: 29
-                                    }, undefined),
-                                    "Platform",
-                                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Dropdown), {
-                                        placeholder: "Platform",
-                                        fluid: true,
-                                        selection: true,
-                                        options: dropdownPlatform,
-                                        onChange: setPlatformValue
-                                    }, `${config.playcanvas.name}-Platform`, false, {
-                                        fileName: "src/Pages/Build.tsx",
-                                        lineNumber: 253,
-                                        columnNumber: 29
-                                    }, undefined),
-                                    "Backend",
-                                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Dropdown), {
-                                        placeholder: "Backend",
-                                        fluid: true,
-                                        selection: true,
-                                        options: dropdownBackend,
-                                        onChange: setBackendValue
-                                    }, `${config.playcanvas.name}-Backend`, false, {
-                                        fileName: "src/Pages/Build.tsx",
-                                        lineNumber: 262,
-                                        columnNumber: 29
-                                    }, undefined),
-                                    "Debug",
-                                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Dropdown), {
-                                        placeholder: "Debug",
-                                        fluid: true,
-                                        selection: true,
-                                        options: dropdownDebug,
-                                        onChange: setDebugValue
-                                    }, `${config.playcanvas.name}-Debug`, false, {
-                                        fileName: "src/Pages/Build.tsx",
-                                        lineNumber: 271,
-                                        columnNumber: 29
-                                    }, undefined),
-                                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Divider), {
-                                        hidden: true
-                                    }, void 0, false, {
-                                        fileName: "src/Pages/Build.tsx",
-                                        lineNumber: 279,
-                                        columnNumber: 29
-                                    }, undefined),
-                                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Button), {
-                                        fluid: true,
-                                        disabled: isBuilderBusy,
-                                        onClick: triggerBuild,
-                                        children: isBuilderBusy ? "Busy..." : "Build"
-                                    }, void 0, false, {
-                                        fileName: "src/Pages/Build.tsx",
-                                        lineNumber: 280,
-                                        columnNumber: 29
-                                    }, undefined)
-                                ]
-                            }, void 0, true, {
-                                fileName: "src/Pages/Build.tsx",
-                                lineNumber: 243,
-                                columnNumber: 25
-                            }, undefined)
-                        ]
-                    }, void 0, true, {
-                        fileName: "src/Pages/Build.tsx",
-                        lineNumber: 216,
-                        columnNumber: 21
-                    }, undefined)
-                }, void 0, false, {
-                    fileName: "src/Pages/Build.tsx",
-                    lineNumber: 215,
-                    columnNumber: 17
-                }, undefined)
-            ]
-        }, config.game.Config, true, {
-            fileName: "src/Pages/Build.tsx",
-            lineNumber: 205,
-            columnNumber: 13
-        }, undefined);
-    };
-    if (!state.initialized) {
-        let gameState = {
-            configs: state.configs,
-            current: state.current,
-            initialized: state.initialized,
-            buildValues: state.buildValues
-        };
-        GameLoad(gameState).then(setState);
-        setInterval(()=>{
-            // console.log(`update status`);
-            StatusLoad().then(setStatus);
-        }, 1000);
-    }
-    let refreshList = ()=>{
-        GameLoad(state).then(setState);
-    };
-    return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.SegmentGroup), {
-        children: [
-            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Segment), {
-                children: StatusDisplay()
-            }, void 0, false, {
-                fileName: "src/Pages/Build.tsx",
-                lineNumber: 310,
-                columnNumber: 13
-            }, undefined),
-            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Segment), {
-                children: [
-                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Menu), {
-                        fluid: true,
-                        children: /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.Menu).Item, {
-                            name: "Refresh Game List",
-                            onClick: refreshList,
-                            icon: "refresh"
-                        }, void 0, false, {
-                            fileName: "src/Pages/Build.tsx",
-                            lineNumber: 315,
-                            columnNumber: 21
-                        }, undefined)
-                    }, void 0, false, {
-                        fileName: "src/Pages/Build.tsx",
-                        lineNumber: 314,
-                        columnNumber: 17
-                    }, undefined),
-                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)((0, _semanticUiReact.CardGroup), {
-                        children: state.configs.map(EntryGame)
-                    }, void 0, false, {
-                        fileName: "src/Pages/Build.tsx",
-                        lineNumber: 321,
-                        columnNumber: 17
-                    }, undefined)
-                ]
-            }, void 0, true, {
-                fileName: "src/Pages/Build.tsx",
-                lineNumber: 313,
-                columnNumber: 13
-            }, undefined)
-        ]
-    }, void 0, true, {
-        fileName: "src/Pages/Build.tsx",
-        lineNumber: 309,
-        columnNumber: 9
-    }, undefined);
-};
-_c1 = Build;
-exports.default = Build;
-var _c, _c1;
-$RefreshReg$(_c, "GameLoad");
-$RefreshReg$(_c1, "Build");
-
-  $parcel$ReactRefreshHelpers$f547.postlude(module);
-} finally {
-  window.$RefreshReg$ = prevRefreshReg;
-  window.$RefreshSig$ = prevRefreshSig;
-}
-},{"react/jsx-dev-runtime":"iTorj","react":"21dqq","semantic-ui-react":"ltMuF","../Core/Environment":"jdfGh","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"km3Ru"}]},["1xC6H","14hj5","diOwP"], "diOwP", "parcelRequireea85")
+},{}]},["1xC6H","14hj5","diOwP"], "diOwP", "parcelRequireea85")
 
 //# sourceMappingURL=Index.js.map

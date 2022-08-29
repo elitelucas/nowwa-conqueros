@@ -213,9 +213,9 @@ let UploadWrapper = ():Promise<void> => {
         console.log(`-- wrapper process --`);
         await PostProcessWrapper();
 
-        // console.log(`-- wrapper upload --`);
-        // await UploadWrapper();
-        // console.log(`-- wrapper complete --`);
+        console.log(`-- wrapper upload --`);
+        await UploadWrapper();
+        console.log(`-- wrapper complete --`);
     }
 
 })();

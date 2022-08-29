@@ -1,6 +1,6 @@
 {
   "name": "snappy-jump",
-  "version": "0.4.1.test",
+  "version": "0.4.2.test",
   "private": true,
   "scripts": {
     "fbinstant-development": "cross-env NODE_ENV='development' parcel build ./src/Wrapper.ts --no-cache --no-content-hash --no-source-maps --no-optimize --dist-dir dist && node utils/postprocess.js && node utils/playcanvas-download.js && node utils/fbinstant.js",
@@ -15,6 +15,7 @@
     "preprocess": "tsc && node ./dist/utils/Preprocess.js",
     "postprocess": "tsc && node ./dist/utils/Postprocess.js",
     "download": "tsc && node ./dist/utils/Download.js",
+    "upload": "tsc && node ./dist/utils/Upload.js",
     "test": "tsc && node ./dist/utils/Test.js"
   },
   "devDependencies": {
