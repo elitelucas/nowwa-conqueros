@@ -5,8 +5,9 @@ import session from 'express-session';
 import multer from 'multer';
 import cloudinary from 'cloudinary';
 import path from 'path';
+import { EnvType, load } from 'ts-dotenv';
 import { User, UserDocument } from '../Models/User';
-import Environment, { env, toyStatusUrl } from './Environment';
+import Environment, { toyStatusUrl } from './Environment';
 import crypto from 'crypto';
 import Socket from './Socket';
 import Authentication from './Authentication';
@@ -15,7 +16,6 @@ import Database from './Database';
 import Storage from './Storage';
 import Game from './Game';
 import PlayCanvas from './Playcanvas';
-import { EnvType } from 'ts-dotenv';
 
 console.log(`project path: ${__dirname}`);
 
@@ -29,6 +29,13 @@ class Main {
      */
     constructor () {
         this.status = Main.StatusDefault;
+
+        let envPath:string = path.resolve(__dirname, `../../.env`);
+        console.log(`load .env from: ${envPath}`);
+        let env:EnvType<typeof Environment> = load(Environment, {
+            path: envPath,
+            encoding: 'utf-8',
+        });
 
         this.baseUrl = `/webhook/v${env.VERSION}`;
 
@@ -101,16 +108,6 @@ class Main {
             console.log(`[Express] listening on port ${env.CORE_PORT}`);
 
             await Socket.AsyncInit(app, env);
-
-            // TEST : mocking playcanvas status change every 10 seconds
-            // setInterval(() => {
-            //     this.status.isPlaycanvasBusy = true;
-            //     PlayCanvas.MockBusy()
-            //         .then(() => {
-            //             this.status.requestCount = 0;
-            //             this.status.isPlaycanvasBusy = false;
-            //         });
-            // }, 10000);
         }
         catch (error) {
             console.error(error);

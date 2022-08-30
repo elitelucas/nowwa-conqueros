@@ -2,7 +2,7 @@ import passport from 'passport';
 import express from 'express';
 import passportLocal from 'passport-local';
 import { User, UserDocument } from '../Models/User';
-import Environment, { authenticationFullUrl } from './Environment';
+import Environment, { authenticationCoreUrl } from './Environment';
 import { EnvType } from 'ts-dotenv';
 
 class Authentication {
@@ -41,7 +41,7 @@ class Authentication {
      */
     private static WebhookLogin (app:express.Express):void {
         let url:string = `/login`;
-        app.use(`${authenticationFullUrl}${url}`, (req, res) => {
+        app.use(`${authenticationCoreUrl}${url}`, (req, res) => {
             console.log(`<-- authentication - login`);
             let username:string = req.body.username;
             let password:string = req.body.password;
@@ -65,7 +65,7 @@ class Authentication {
      */
     private static WebhookRegister (app:express.Express):void {
         let url:string = `/register`;
-        app.use(`${authenticationFullUrl}${url}`, (req, res) => {
+        app.use(`${authenticationCoreUrl}${url}`, (req, res) => {
             console.log(`<-- authentication - register`);
             let username:string = req.body.username;
             let password:string = req.body.password;

@@ -1,17 +1,6 @@
-import { EnvType, load } from 'ts-dotenv';
-import path from 'path';
-import yargs from 'yargs';
-import { hideBin } from 'yargs/helpers';
-
-const argv = yargs(hideBin(process.argv)).argv;
-
 let Environment = {
     VERSION             : String,
     
-    CORE_URL            : String,
-    CORE_PORT           : Number,
-    CORE_USE_SSL        : Boolean,
-
     EXPRESS_SECRET      : String, 
 
     MONGODB_HOST        : String,
@@ -25,49 +14,68 @@ let Environment = {
     CLOUDINARY_KEY      : String,
     CLOUDINARY_SECRET   : String,
 
+    MAIN_PORT           : Number,
     SOCKET_PORT         : Number,
+
+    PUBLIC_URL          : String,
+    PUBLIC_PORT         : Number,
+    PUBLIC_USE_SSL      : Boolean,
+
+    CORE_URL            : String,
+    CORE_PORT           : Number,
+    CORE_USE_SSL        : Boolean,
 }
 
 export default Environment;
 
-var environment:string = (argv as any).env;
-console.log(`environment: ${environment}`);
+type UrlComponents = {
+    useSSL  : boolean,
+    url     :string,
+    port    :number
+}
 
-let envPath:string = path.resolve(__dirname, `../../.env.${environment}`);
-console.log(`load .env from: ${envPath}`);
+const CoreUrlComponents:UrlComponents = {
+    port    : 9000,
+    url     : "127.0.0.1",
+    useSSL  : false
+};
 
-export const env:EnvType<typeof Environment> = load(Environment, {
-    path: envPath,
-    encoding: 'utf-8',
-});
+const PublicUrlComponents:UrlComponents = {
+    port    : 9000,
+    url     : "127.0.0.1",
+    useSSL  : false
+};
 
-console.log(`env.CORE_USE_SSL: ${env.CORE_USE_SSL}`);
-console.log(`env.CORE_PORT: ${env.CORE_PORT}`);
-console.log(`env.CORE_URL: ${env.CORE_URL}`);
-
-export const baseUrl:string = 
-    (env.CORE_USE_SSL ? `https` : `http`) +
+export const coreUrl:string = 
+    (CoreUrlComponents.useSSL ? `https` : `http`) +
     `://` +
-    `${env.CORE_URL}` +
+    `${CoreUrlComponents.url}` +
     `:` +
-    `${env.CORE_PORT}`;
+    `${CoreUrlComponents.port}`;
+
+export const publicUrl:string = 
+    (PublicUrlComponents.useSSL ? `https` : `http`) +
+    `://` +
+    `${PublicUrlComponents.url}` +
+    `:` +
+    `${PublicUrlComponents.port}`;
 
 export const authenticationUrl:string = `/authentication`;
-
-export const authenticationFullUrl:string = `${baseUrl}${authenticationUrl}`;
+export const authenticationCoreUrl:string = `${coreUrl}${authenticationUrl}`;
+export const authenticationPublicUrl:string = `${publicUrl}${authenticationUrl}`;
 
 export const storageUrl:string = `/storage`;
-
-export const storageFullUrl:string = `${baseUrl}${storageUrl}`;
+export const storageCoreUrl:string = `${coreUrl}${storageUrl}`;
+export const storagePublicUrl:string = `${publicUrl}${storageUrl}`;
 
 export const toyListUrl:string = `/toyList`;
-
-export const toyListFullUrl:string = `${baseUrl}${toyListUrl}`;
+export const toyListCoreUrl:string = `${coreUrl}${toyListUrl}`;
+export const toyListPublicUrl:string = `${publicUrl}${toyListUrl}`;
 
 export const toyBuildUrl:string = `/toyBuild`;
-
-export const toyBuildFullUrl:string = `${baseUrl}${toyBuildUrl}`;
+export const toyBuildCoreUrl:string = `${coreUrl}${toyBuildUrl}`;
+export const toyBuildPublicUrl:string = `${publicUrl}${toyBuildUrl}`;
 
 export const toyStatusUrl:string = `/toyStatus`;
-
-export const toyStatusFullUrl:string = `${baseUrl}${toyStatusUrl}`;
+export const toyStatusCoreUrl:string = `${coreUrl}${toyStatusUrl}`;
+export const toyStatusPublicUrl:string = `${publicUrl}${toyStatusUrl}`;

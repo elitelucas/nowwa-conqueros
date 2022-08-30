@@ -1,6 +1,6 @@
 import express from 'express';
 import { EnvType } from 'ts-dotenv';
-import Environment, { baseUrl, toyBuildUrl, storageFullUrl, storageUrl, toyListUrl as toyListUrl } from './Environment';
+import Environment, { coreUrl, toyBuildUrl, storageCoreUrl, storageUrl, toyListUrl as toyListUrl } from './Environment';
 import path from 'path';
 import fs, { readdirSync } from 'fs';
 import PlayCanvas from './Playcanvas';
@@ -105,7 +105,7 @@ class Game {
                 console.log(`PlayCanvas.CurrentActivity: ${PlayCanvas.CurrentStatus.Activity}`);
                 res.status(500).send(`PLAYCANVAS BUSY | `);
             } else {
-                let url:URL = new URL(`${baseUrl}${req.originalUrl}`);
+                let url:URL = new URL(`${coreUrl}${req.originalUrl}`);
 
                 let configName:string = url.searchParams.get('n') as string;
                 let backend:Game.Backend = url.searchParams.get('b') as Game.Backend;
