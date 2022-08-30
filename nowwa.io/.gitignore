@@ -7,3 +7,4 @@ storage/Index.js
 storage/Index.js.map
 .env.development
 .env.production
+.env
