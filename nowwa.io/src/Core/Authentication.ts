@@ -3,11 +3,10 @@ import express from 'express';
 import passportLocal from 'passport-local';
 import { User, UserDocument } from '../Models/User';
 import Environment, { authenticationCoreUrl } from './Environment';
-import { EnvType } from 'ts-dotenv';
 
 class Authentication {
 
-    public static async AsyncInit (app:express.Express, env:EnvType<typeof Environment>):Promise<void> {
+    public static async AsyncInit (app:express.Express, env:Environment.Config):Promise<void> {
         Authentication.InitPassport();
         Authentication.WebhookLogin(app);
         Authentication.WebhookRegister(app);

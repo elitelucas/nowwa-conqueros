@@ -1,6 +1,5 @@
 import mongoose, { mongo } from 'mongoose';
 import express from 'express';
-import { EnvType } from 'ts-dotenv';
 import Environment from './Environment';
 import { Custom, CustomProperty, CustomType, CustomDocument } from '../Models/Custom';
 
@@ -19,7 +18,7 @@ class Database {
     /**
      * Initialize Database module.
      */
-    public static async AsyncInit (app:express.Express, env:EnvType<typeof Environment>):Promise<void> {
+    public static async AsyncInit (app:express.Express, env:Environment.Config):Promise<void> {
         Database.Instance = new Database();
         await Database.Connect(env);
         Database.WebhookStructureSave(app);
@@ -32,7 +31,7 @@ class Database {
     /**
      * Initialize database connection.
      */
-    private static async Connect (env:EnvType<typeof Environment>) {
+    private static async Connect (env:Environment.Config) {
         console.log(`init database...`);
 
         let uri:string = `mongodb+srv://${env.MONGODB_USER}:${env.MONGODB_PASS}@${env.MONGODB_HOST}/${env.MONGODB_DB}`;

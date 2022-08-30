@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Icon, Header, Label, Segment, Button, Card, Image, Item, Breadcrumb, List, SegmentGroup, BreadcrumbSection, BreadcrumbDivider, Table, Checkbox, Embed } from 'semantic-ui-react';
-import { storageCoreUrl } from "../Core/Environment";
+import { storageCoreUrl, storagePublicUrl } from "../Core/Environment";
 
 export type ExplorerState = {
     initialized : boolean,
@@ -24,8 +24,7 @@ export const ExplorerLoad = (state:ExplorerState, path:string):Promise<ExplorerS
         if (path.length > 0 && path[0] != '/') {
             path = `/${path}`;
         }
-        // console.log(`fetch: ${storageFullUrl}${path}`);
-        fetch (`${storageCoreUrl}${path}`)
+        fetch (`${storagePublicUrl}${path}`)
             .then(res => res.json())
             .then((res:ExplorerState) => {
                 let explorerState:ExplorerState = {

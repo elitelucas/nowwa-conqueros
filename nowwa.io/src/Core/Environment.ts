@@ -1,81 +1,120 @@
-let Environment = {
-    VERSION             : String,
+import yargs from 'yargs';
+import { hideBin } from 'yargs/helpers';
+
+class Environment {
+
+    private static Instance:Environment;
+
+    private static get MainConfig():Environment.Config {
+        return {
+
+            VERSION             : "0.0.1",
+            
+            EXPRESS_SECRET      : "conqueros", 
+        
+            MONGODB_HOST        : "db-mongodb-conqueros-a434f3ba.mongo.ondigitalocean.com",
+            MONGODB_PORT        : 27017,
+            MONGODB_DB          : "admin",
+            MONGODB_USER        : "doadmin",
+            MONGODB_PASS        : "Hi730Rw829Pk4J1q",
+            MONGODB_CERT        : "certificates/db.ca-certificate.crt",
+        
+            CLOUDINARY_NAME     : "gearball",
+            CLOUDINARY_KEY      : "155952797698712",
+            CLOUDINARY_SECRET   : "_qyQf6rr2QpB_-grhKotmrF-twQ",
+        
+            SOCKET_PORT         : 9003,
+            PORT                : 0,
+            URL                 : "0.0.0.0",
+            USE_SSL             : false
+        };
+    }
+
+    public static get PublicConfig():Environment.Config {
+        let config:Environment.Config = this.MainConfig;
+
+        config.URL = "127.0.0.1";
+        config.PORT = 9000;
+        config.USE_SSL = false;
+
+        // config.URL = "nowwa.io";
+        // config.PORT = 443;
+        // config.USE_SSL = true;
+
+        return config;
+    }
+
+    public static get CoreConfig():Environment.Config {
+        let config:Environment.Config = this.MainConfig;
+        config.URL = "127.0.0.1";
+        config.PORT = 9000;
+        config.USE_SSL = false;
+        return config;
+    }
+
+    public static get CoreUrl():string { 
+        let config:Environment.Config = this.CoreConfig;
+        return (config.USE_SSL ? `https` : `http`) +
+        `://` +
+        `${config.URL}` +
+        `:` +
+        `${config.PORT}`;
+    }
+
+    public static get PublicUrl():string { 
+        let config:Environment.Config = this.PublicConfig;
+        return (config.USE_SSL ? `https` : `http`) +
+        `://` +
+        `${config.URL}` +
+        `:` +
+        `${config.PORT}`;
+    }
+
+}
+
+namespace Environment {
+    export type Config = {
+        VERSION             : string,
+        
+        EXPRESS_SECRET      : string, 
     
-    EXPRESS_SECRET      : String, 
-
-    MONGODB_HOST        : String,
-    MONGODB_PORT        : Number,
-    MONGODB_DB          : String,
-    MONGODB_USER        : String,
-    MONGODB_PASS        : String,
-    MONGODB_CERT        : String,
-
-    CLOUDINARY_NAME     : String,
-    CLOUDINARY_KEY      : String,
-    CLOUDINARY_SECRET   : String,
-
-    MAIN_PORT           : Number,
-    SOCKET_PORT         : Number,
-
-    PUBLIC_URL          : String,
-    PUBLIC_PORT         : Number,
-    PUBLIC_USE_SSL      : Boolean,
-
-    CORE_URL            : String,
-    CORE_PORT           : Number,
-    CORE_USE_SSL        : Boolean,
+        MONGODB_HOST        : string,
+        MONGODB_PORT        : number,
+        MONGODB_DB          : string,
+        MONGODB_USER        : string,
+        MONGODB_PASS        : string,
+        MONGODB_CERT        : string,
+    
+        CLOUDINARY_NAME     : string,
+        CLOUDINARY_KEY      : string,
+        CLOUDINARY_SECRET   : string,
+    
+        SOCKET_PORT         : number,
+    
+        URL                 : string,
+        PORT                : number,
+        USE_SSL             : boolean,
+    };
 }
 
 export default Environment;
 
-type UrlComponents = {
-    useSSL  : boolean,
-    url     :string,
-    port    :number
-}
-
-const CoreUrlComponents:UrlComponents = {
-    port    : 9000,
-    url     : "127.0.0.1",
-    useSSL  : false
-};
-
-const PublicUrlComponents:UrlComponents = {
-    port    : 9000,
-    url     : "127.0.0.1",
-    useSSL  : false
-};
-
-export const coreUrl:string = 
-    (CoreUrlComponents.useSSL ? `https` : `http`) +
-    `://` +
-    `${CoreUrlComponents.url}` +
-    `:` +
-    `${CoreUrlComponents.port}`;
-
-export const publicUrl:string = 
-    (PublicUrlComponents.useSSL ? `https` : `http`) +
-    `://` +
-    `${PublicUrlComponents.url}` +
-    `:` +
-    `${PublicUrlComponents.port}`;
-
 export const authenticationUrl:string = `/authentication`;
-export const authenticationCoreUrl:string = `${coreUrl}${authenticationUrl}`;
-export const authenticationPublicUrl:string = `${publicUrl}${authenticationUrl}`;
+export const authenticationCoreUrl:string = `${Environment.CoreUrl}${authenticationUrl}`;
+export const authenticationPublicUrl:string = `${Environment.PublicUrl}${authenticationUrl}`;
 
 export const storageUrl:string = `/storage`;
-export const storageCoreUrl:string = `${coreUrl}${storageUrl}`;
-export const storagePublicUrl:string = `${publicUrl}${storageUrl}`;
+export const storageCoreUrl:string = `${Environment.CoreUrl}${storageUrl}`;
+export const storagePublicUrl:string = `${Environment.PublicUrl}${storageUrl}`;
 
 export const toyListUrl:string = `/toyList`;
-export const toyListCoreUrl:string = `${coreUrl}${toyListUrl}`;
-export const toyListPublicUrl:string = `${publicUrl}${toyListUrl}`;
+export const toyListCoreUrl:string = `${Environment.CoreUrl}${toyListUrl}`;
+export const toyListPublicUrl:string = `${Environment.PublicUrl}${toyListUrl}`;
 
 export const toyBuildUrl:string = `/toyBuild`;
-export const toyBuildCoreUrl:string = `${coreUrl}${toyBuildUrl}`;
-export const toyBuildPublicUrl:string = `${publicUrl}${toyBuildUrl}`;
+export const toyBuildCoreUrl:string = `${Environment.CoreUrl}${toyBuildUrl}`;
+export const toyBuildPublicUrl:string = `${Environment.PublicUrl}${toyBuildUrl}`;
 
 export const toyStatusUrl:string = `/toyStatus`;
-export const toyStatusCoreUrl:string = `${coreUrl}${toyStatusUrl}`;
-export const toyStatusPublicUrl:string = `${publicUrl}${toyStatusUrl}`;
+export const toyStatusCoreUrl:string = `${Environment.CoreUrl}${toyStatusUrl}`;
+export const toyStatusPublicUrl:string = `${Environment.PublicUrl}${toyStatusUrl}`;

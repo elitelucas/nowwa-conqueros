@@ -1,5 +1,4 @@
 import express from 'express';
-import { EnvType } from 'ts-dotenv';
 import Environment, { storageUrl } from './Environment';
 import path from 'path';
 import fs from 'fs';
@@ -15,7 +14,7 @@ class Storage {
     /**
      * Initialize storage module.
      */
-    public static async AsyncInit (app:express.Express, env:EnvType<typeof Environment>):Promise<void> {
+    public static async AsyncInit (app:express.Express, env:Environment.Config):Promise<void> {
         Storage.Instance = new Storage();
         Storage.WebhookFiles(app);
         Storage.WebhookExplorer(app);

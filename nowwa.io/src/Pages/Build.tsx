@@ -1,7 +1,7 @@
 import { stat } from "fs";
 import React, { useState, useEffect, SyntheticEvent } from "react";
 import { Icon, Header, Label, Segment, Button, Card, Image, Item, Breadcrumb, List, SegmentGroup, BreadcrumbSection, BreadcrumbDivider, Table, Checkbox, CardGroup, Input, Select, Dropdown, DropdownItemProps, Accordion, LabelProps, Form, Grid, ButtonGroup, Divider, DropdownProps, InputOnChangeData, Loader, Dimmer, LabelDetail, Menu } from 'semantic-ui-react';
-import { toyBuildCoreUrl, toyStatusCoreUrl, toyListCoreUrl, coreUrl } from "../Core/Environment";
+import Environment, { toyBuildCoreUrl, toyStatusCoreUrl, toyListCoreUrl, toyListPublicUrl, toyStatusPublicUrl, toyBuildPublicUrl } from "../Core/Environment";
 import Game from "../Core/Game";
 import Main from "../Core/Main";
 import PlayCanvas from "../Core/Playcanvas";
@@ -45,7 +45,7 @@ export const GameStateDefault:GameState = {
 export const GameLoad = (state:GameState):Promise<GameState> => {
     return new Promise((resolve, reject) => {
         // console.log(`get games`);
-        fetch (`${toyListCoreUrl}`)
+        fetch (`${toyListPublicUrl}`)
             .then(res => res.json())
             .then((res:GameState) => {
                 let gameState:GameState = {
@@ -69,7 +69,7 @@ const Build = (state:GameState, setState:React.Dispatch<React.SetStateAction<Gam
     const StatusLoad = ():Promise<PlayCanvas.Status> => {
         return new Promise((resolve, reject) => {
             // console.log(`get status`);
-            fetch (`${toyStatusCoreUrl}`)
+            fetch (`${toyStatusPublicUrl}`)
                 .then(res => res.json())
                 .then((res:Main.Status) => {
                     resolve(res.PlayCanvas);
@@ -147,7 +147,7 @@ const Build = (state:GameState, setState:React.Dispatch<React.SetStateAction<Gam
         let triggerBuild = () => {
             let tmpBuildValue:BuildValue = state.buildValues[config.game.Config];
             // console.log(`[${config.game.Config}] trigger build: ${JSON.stringify(tmpBuildValue)}`);
-            let url:URL = new URL(`${toyBuildCoreUrl}`);
+            let url:URL = new URL(`${toyBuildPublicUrl}`);
             url.searchParams.set('n', config.game.Config);
             url.searchParams.set('b', tmpBuildValue.backend.toString());
             url.searchParams.set('p', tmpBuildValue.platform.toString());
@@ -207,7 +207,7 @@ const Build = (state:GameState, setState:React.Dispatch<React.SetStateAction<Gam
                     <Label attached="top" size="large">{config.playcanvas.name}</Label>
                     <Image src={config.game.Thumbnail} fluid />
                     {config.builds.indexOf('Web') >= 0 ? (
-                        <Button fluid primary onClick={() => openInNewTab(`${coreUrl}/toy/${config.playcanvas.name}/Web/`)}>Play web build</Button>
+                        <Button fluid primary onClick={() => openInNewTab(`${Environment.PublicUrl}/toy/${config.playcanvas.name}/Web/`)}>Play web build</Button>
                     ) : (
                         <Button fluid primary disabled>Web build not available</Button>
                     )}

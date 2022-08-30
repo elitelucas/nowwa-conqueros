@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "backend": "tsc-watch --onSuccess \"node ./dist/Core/Main.js\"",
-    "frontend": "parcel watch ./src/Pages/Index.tsx --dist-dir ./storage",
-    "build": "tsc && parcel build --no-source-maps ./src/Core/Contstants.ts --dist-dir ./dist/Core"
+    "core:dev": "tsc-watch --onSuccess \"node ./dist/Core/Main.js --env=\"dev\"\"",
+    "front:dev": "parcel watch ./src/Pages/Index.tsx --dist-dir ./storage",
+    "core:prod": "\"node ./dist/Core/Main.js\""
   },
   "author": "",
   "license": "ISC",

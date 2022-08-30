@@ -1,5 +1,4 @@
 import express from 'express';
-import { EnvType } from 'ts-dotenv';
 import Environment from './Environment';
 import Authentication from './Authentication';
 import SocketIO from "socket.io";
@@ -12,7 +11,7 @@ class Socket {
     /**
      * Initialize socket feature.
      */
-    public static async AsyncInit (app:express.Express, env:EnvType<typeof Environment>):Promise<void> {
+    public static async AsyncInit (app:express.Express, env:Environment.Config):Promise<void> {
 
         var httpServer = createServer();
         var io:SocketIO.Server = new SocketIO.Server<Socket.ClientToServerEvents, Socket.ServerToClientEvents, Socket.InterServerEvents, Socket.SocketData>(

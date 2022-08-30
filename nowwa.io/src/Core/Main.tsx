@@ -5,7 +5,6 @@ import session from 'express-session';
 import multer from 'multer';
 import cloudinary from 'cloudinary';
 import path from 'path';
-import { EnvType, load } from 'ts-dotenv';
 import { User, UserDocument } from '../Models/User';
 import Environment, { toyStatusUrl } from './Environment';
 import crypto from 'crypto';
@@ -29,20 +28,12 @@ class Main {
      */
     constructor () {
         this.status = Main.StatusDefault;
+        this.baseUrl = `/webhook/v${Environment.CoreConfig.VERSION}`;
 
-        let envPath:string = path.resolve(__dirname, `../../.env`);
-        console.log(`load .env from: ${envPath}`);
-        let env:EnvType<typeof Environment> = load(Environment, {
-            path: envPath,
-            encoding: 'utf-8',
-        });
-
-        this.baseUrl = `/webhook/v${env.VERSION}`;
-
-        this.AsyncInit(env);
+        this.AsyncInit(Environment.CoreConfig);
     }
 
-    private async AsyncInit (env:EnvType<typeof Environment>):Promise<void> {
+    private async AsyncInit (env:Environment.Config):Promise<void> {
         try {
             console.log(`init express...`);
     
@@ -104,8 +95,8 @@ class Main {
 
             await Game.AsyncInit(app, env);
     
-            app.listen(env.CORE_PORT);
-            console.log(`[Express] listening on port ${env.CORE_PORT}`);
+            app.listen(env.PORT);
+            console.log(`[Express] listening on port ${env.PORT}`);
 
             await Socket.AsyncInit(app, env);
         }

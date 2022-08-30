@@ -1,6 +1,5 @@
 import express from 'express';
-import { EnvType } from 'ts-dotenv';
-import Environment, { coreUrl, toyBuildUrl, storageCoreUrl, storageUrl, toyListUrl as toyListUrl } from './Environment';
+import Environment, { toyBuildUrl, toyListUrl } from './Environment';
 import path from 'path';
 import fs, { readdirSync } from 'fs';
 import PlayCanvas from './Playcanvas';
@@ -20,7 +19,7 @@ class Game {
     /**
      * Initialize game module.
      */
-    public static async AsyncInit (app:express.Express, env:EnvType<typeof Environment>):Promise<void> {
+    public static async AsyncInit (app:express.Express, env:Environment.Config):Promise<void> {
         Game.Instance = new Game();
         Game.WebhookList(app);
         Game.WebhookBuild(app);
@@ -105,7 +104,7 @@ class Game {
                 console.log(`PlayCanvas.CurrentActivity: ${PlayCanvas.CurrentStatus.Activity}`);
                 res.status(500).send(`PLAYCANVAS BUSY | `);
             } else {
-                let url:URL = new URL(`${coreUrl}${req.originalUrl}`);
+                let url:URL = new URL(`${Environment.CoreUrl}${req.originalUrl}`);
 
                 let configName:string = url.searchParams.get('n') as string;
                 let backend:Game.Backend = url.searchParams.get('b') as Game.Backend;
