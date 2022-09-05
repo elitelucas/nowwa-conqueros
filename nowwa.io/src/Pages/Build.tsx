@@ -213,6 +213,16 @@ const Build = (state:GameState, setState:React.Dispatch<React.SetStateAction<Gam
             window.open(url, '_blank', 'noopener,noreferrer');
         };
 
+        let downloadFile = (filename:string, filepath:string) => {
+            const a = document.createElement('a')
+            a.href = filepath;
+            a.download = filename;
+            console.log(`download: ${filename}`);
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        };
+
         let isBuilderBusy:boolean = status.Activity != 'None';
 
         let isBuildParameterFilled:boolean = 
@@ -220,6 +230,9 @@ const Build = (state:GameState, setState:React.Dispatch<React.SetStateAction<Gam
             (buildValue.debug != undefined) &&
             (buildValue.platform != 'None') &&
             (buildValue.version != '');
+
+        let apkPath:string = `${window.location.origin}/toy/${config.game.Folder}/app-debug.apk`;
+        let apkFileName:string = `${config.playcanvas.name}.apk`;
         
         return (
             <Card key={config.game.Config}>
@@ -227,9 +240,14 @@ const Build = (state:GameState, setState:React.Dispatch<React.SetStateAction<Gam
                     <Label attached='top' size='large'>{config.playcanvas.name}</Label>
                     <Image src={config.game.Thumbnail} fluid />
                     {config.builds.indexOf('Web') >= 0 ? (
-                        <Button fluid primary onClick={() => openInNewTab(`${window.location.origin}/toy/${config.playcanvas.name.replace(/ /g,'')}/Web/`)}>Play web build</Button>
+                        <Button fluid primary onClick={() => openInNewTab(`${window.location.origin}/toy/${config.game.Folder}/Web/`)}>Play Web build</Button>
                     ) : (
-                        <Button fluid primary disabled>Web build not available</Button>
+                        <Button fluid primary disabled>Build web first!</Button>
+                    )}
+                    {config.builds.indexOf('Android') >= 0 ? (
+                        <Button fluid primary onClick={() => downloadFile(`${apkFileName}`,`${apkPath}`)}>Download Android</Button>
+                    ) : (
+                        <Button fluid primary disabled>Build Android first!</Button>
                     )}
                 </Card.Header>
                 <Card.Content>
@@ -274,7 +292,6 @@ const Build = (state:GameState, setState:React.Dispatch<React.SetStateAction<Gam
                                 placeholder='Version'
                                 onChange={setVersionValue}    
                             />
-                            {buildValue.version != '' && <>
                             Platform
                             <Dropdown
                                 key={`${config.playcanvas.name}-Platform`}
@@ -284,8 +301,6 @@ const Build = (state:GameState, setState:React.Dispatch<React.SetStateAction<Gam
                                 options={dropdownPlatform}
                                 onChange={setPlatformValue}
                             />
-                            </>}
-                            {buildValue.platform != 'None' && <>
                             Backend
                             <Dropdown
                                 key={`${config.playcanvas.name}-Backend`}
@@ -295,8 +310,6 @@ const Build = (state:GameState, setState:React.Dispatch<React.SetStateAction<Gam
                                 options={dropdownBackend}
                                 onChange={setBackendValue}
                             />
-                            </>}
-                            {buildValue.backend != 'None' && <>
                             Debug
                             <Dropdown
                                 key={`${config.playcanvas.name}-Debug`}
@@ -306,7 +319,6 @@ const Build = (state:GameState, setState:React.Dispatch<React.SetStateAction<Gam
                                 options={dropdownDebug}
                                 onChange={setDebugValue}
                             />
-                            </>}
                             <Divider hidden/>
                             <Button fluid disabled={isBuilderBusy || !isBuildParameterFilled} onClick={triggerBuild}>{isBuilderBusy ? 'Busy...' : 'Build'}</Button>
                         </Accordion.Content>

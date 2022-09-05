@@ -1,5 +1,6 @@
 {
   "name": "nowwa.io",
+  "displayName": "Nowwa.IO",
   "version": "1.0.0",
   "description": "",
   "scripts": {
@@ -9,6 +10,9 @@
   },
   "author": "",
   "license": "ISC",
+  "keywords": [
+    "ecosystem:cordova"
+  ],
   "devDependencies": {
     "@tsconfig/node16": "^1.0.2",
     "@types/bcrypt": "^5.0.0",
@@ -37,6 +41,7 @@
     "browserify-zlib": "^0.2.0",
     "constants-browserify": "^1.0.0",
     "copyfiles": "^2.4.1",
+    "cordova-android": "^10.1.2",
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
     "crypto-browserify": "^3.12.0",
@@ -81,5 +86,10 @@
     "socket.io": "^4.5.1",
     "ts-dotenv": "^0.8.3",
     "tsc-watch": "^4.6.2"
+  },
+  "cordova": {
+    "platforms": [
+      "android"
+    ]
   }
 }

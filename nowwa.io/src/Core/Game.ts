@@ -77,6 +77,15 @@ class Game {
                                         config.builds.push(platformSnapchat);
                                     }
 
+                                    let platformAndroid:Game.Platform = 'Android';
+                                    let platformAndroidFile:string = path.join(fullPath, `${projectFolder}`, `${Game.DefaultAPKName}`);
+                                    if (fs.existsSync(platformAndroidFile)) {
+                                        if (typeof config.builds == 'undefined') {
+                                            config.builds = [];
+                                        }
+                                        config.builds.push(platformAndroid);
+                                    }
+                                    
                                     configs.push(config);
                                 }
                             }
@@ -133,42 +142,69 @@ class Game {
                         success: true,
                         value:`building: [${config.playcanvas.name}] ver [${version}] for [${platform}]`
                     }));
-                    let projectFolder:string = config.playcanvas.name.replace(/ /g,'');
-                    let directory:string = path.join(__dirname, `${Game.RootFolder}/${projectFolder}`);
-                    console.log(`directory: ${directory}`);
-                    if (!fs.existsSync(directory)) {
-                        fs.mkdirSync(directory);
+                    let projectDirectory:string = path.join(__dirname, `${Game.RootFolder}/${config.game.Folder}`);
+                    console.log(`directory: ${projectDirectory}`);
+                    if (!fs.existsSync(projectDirectory)) {
+                        fs.mkdirSync(projectDirectory);
                     }
                     let authToken = 'lJHHrNEjN3klG93krjX3CrCa8SLIydWy';
 
                     console.log(`config.playcanvas.version: ${config.playcanvas.version}`);
                     console.log(`version: ${version}`);
 
+                    let androidDirectory:string = path.join(__dirname, `..`, `..`, `www`);
+
                     // TODO : uncomment for actual build
-                    PlayCanvas.Build(authToken, config, directory, true)
+                    PlayCanvas.Build(authToken, config, projectDirectory, true)
                     .then((zipPath:string) => {
                         console.log(`zipPath: ${zipPath}`);
                         if (config.game.Platform == 'Android') {
-                            let androidDirectory:string = path.join(__dirname, `..`, `..`, `www`);
                             return Game.PostProcess(zipPath, `${androidDirectory}`, config);
                         } else {
-                            return Game.PostProcess(zipPath, `${directory}/${config.game.Platform}`, config);
+                            return Game.PostProcess(zipPath, `${projectDirectory}/${config.game.Platform}`, config);
                         }
                     }) 
                     .then(() => {
                         if (config.game.Platform == 'Android') {
                             console.log(`build android`);
+                            return new Promise<boolean>((resolve, reject) => {
+                                const { exec }    = require("child_process");
+                                var command:string = `cordova build android`;
+                                console.log(`execute: ${command}`);
+                                exec(command, (error:any, stdout:any, stderr:any) => {
+                                    if (error) {
+                                        console.log(`error: ${error.message}`);
+                                        console.log(`android: building: fail 1`);
+                                        resolve(false);
+                                        return;
+                                    }
+                                    // if (stderr) {
+                                    //     console.log(`stderr: ${stderr}`);
+                                    //     console.log(`android: building: fail 2`);
+                                    //     resolve(false);
+                                    //     return;
+                                    // }
+                                    console.log(`stdout: ${stdout}`);
+                                    console.log(`android: building: success`);
+                                    let apkDirectory:string = path.join(__dirname, `..`, `..`, `platforms/android/app/build/outputs/apk/debug`);
+                                    let apkPath:string = path.join(apkDirectory, Game.DefaultAPKName);
+                                    fs.copyFileSync(apkPath, `${projectDirectory}/${Game.DefaultAPKName}`);
+                                    resolve(true);
+                                });
+                            });
                         } else {
-                            console.log(`post process done`);
+                            return Promise.resolve(true);
+                        }
+                    })
+                    .then((success:boolean) => {
+                        if (config.game.Platform == 'Android') {
+                            let wwwDirectory:string = path.join(__dirname, `..`, `..`, `www`);
+                            del([`${wwwDirectory}**`,`${wwwDirectory}`]);
                         }
                     })
                     .catch((err:Error) => {
                         console.log(`error`, err);
                     });
-
-                    // HACK : bypass download build
-                    // let zipPath = `${directory}/${config.playcanvas.name}_${config.playcanvas.version}_Build.zip`;
-                    // Game.PostProcess(zipPath, `${directory}/${config.game.Platform}`, config);
                 }
             }
         });
@@ -182,6 +218,8 @@ namespace Game {
     export type Platform = `Facebook` | `Snapchat` | `Web` | `Android` | `None`; 
 
     const pathTo7zip:string = sevenBin.path7za;
+
+    export const DefaultAPKName:string = `app-debug.apk`;
     
     const CreateCSPMetadata = (csps:{[key:string]:string[]}) => {
         var tag:string = "<meta http-equiv=\"Content-Security-Policy\" content=\"{0}\" />"
@@ -577,14 +615,14 @@ namespace Game {
             });
         }
         
-        if (config.game.Platform == 'Web' || config.game.Platform == 'Snapchat') {
-            // await del([`${zipPath}`]);
+        if (config.game.Platform == 'Web' || config.game.Platform == 'Snapchat' || config.game.Platform == 'Android') {
+            await del([`${zipPath}`]);
         }
-        if (config.game.Platform != 'Web' && config.game.Platform != 'Snapchat') {
-            // await del([`${extractPath}**`,`${extractPath}`]);
+        if (config.game.Platform == 'Facebook') {
+            await del([`${extractPath}**`,`${extractPath}`]);
         }
     
-        console.log('done');
+        console.log('PostProcess: done');
     
     };
 }
