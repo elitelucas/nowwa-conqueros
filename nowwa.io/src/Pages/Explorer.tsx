@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import { Icon, Header, Label, Segment, Button, Card, Image, Item, Breadcrumb, List, SegmentGroup, BreadcrumbSection, BreadcrumbDivider, Table, Checkbox, Embed } from 'semantic-ui-react';
-import { storageCoreUrl, storagePublicUrl } from "../Core/Environment";
+import { storageUrl } from '../Core/Environment';
 
 export type ExplorerState = {
     initialized : boolean,
@@ -14,8 +14,8 @@ export const ExplorerStateDefault:ExplorerState = {
     initialized : false,
     files       : [],
     folders     : [],
-    focusFile   : "",
-    current     : "/home"
+    focusFile   : '',
+    current     : '/home'
 }
 
 export const ExplorerLoad = (state:ExplorerState, path:string):Promise<ExplorerState> => {
@@ -24,12 +24,12 @@ export const ExplorerLoad = (state:ExplorerState, path:string):Promise<ExplorerS
         if (path.length > 0 && path[0] != '/') {
             path = `/${path}`;
         }
-        fetch (`${storagePublicUrl}${path}`)
+        fetch (`${window.location.origin}${storageUrl}${path}`)
             .then(res => res.json())
             .then((res:ExplorerState) => {
                 let explorerState:ExplorerState = {
                     current     : path,
-                    focusFile   : "",
+                    focusFile   : '',
                     initialized : true,
                     files       : res.files,
                     folders     : res.folders
@@ -128,15 +128,19 @@ const Explorer = (state:ExplorerState, setState:React.Dispatch<React.SetStateAct
                 <Table.Cell collapsing>
                     <Checkbox key={path}></Checkbox>
                 </Table.Cell>
-                <Table.Cell onClick={() => {  SelectFile(`${path}`); } }>
-                    <Icon name="file"/>
+                <Table.Cell onClick={() => {  SelectFile(`${path}`); } } selectable>
+                    <a href='#'>
+                    <Icon color='black' name='file'/>
                     {file}
+                    </a>
                 </Table.Cell>
-                <Table.Cell collapsing textAlign="center">
-                    <Icon name="download"/>
+                <Table.Cell collapsing textAlign='center' selectable>
+                    <a download={file} href={path}>
+                        <Icon name='download' color='black'/>
+                    </a>
                 </Table.Cell>
-                <Table.Cell collapsing textAlign="center">
-                    <Icon name="delete"/>
+                <Table.Cell collapsing textAlign='center'>
+                    <Icon name='delete'/>
                 </Table.Cell>
             </Table.Row>
         );
@@ -151,15 +155,17 @@ const Explorer = (state:ExplorerState, setState:React.Dispatch<React.SetStateAct
                 <Table.Cell collapsing>
                     <Checkbox key={path}></Checkbox>
                 </Table.Cell>
-                <Table.Cell onClick={() => { SelectFolder(`${path}`); } }>
-                    <Icon name="folder"/>
+                <Table.Cell onClick={() => { SelectFolder(`${path}`); } } selectable>
+                    <a href='#'>
+                    <Icon color='black' name='folder'/>
                     {folder}
+                    </a>
                 </Table.Cell>
-                <Table.Cell collapsing textAlign="center">
-                    <Icon name="download"/>
+                <Table.Cell collapsing textAlign='center'>
+                    {/* <Icon name='download'/> */}
                 </Table.Cell>
-                <Table.Cell collapsing textAlign="center">
-                    <Icon name="delete"/>
+                <Table.Cell collapsing textAlign='center'>
+                    <Icon name='delete'/>
                 </Table.Cell>
             </Table.Row>
         );

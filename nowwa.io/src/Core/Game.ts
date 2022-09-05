@@ -57,8 +57,10 @@ class Game {
                                     // console.log(`config file: ${contentPath}`);
                                     let config = JSON.parse(fs.readFileSync(contentPath, { encoding: 'utf8', flag: 'r' })) as Game.Config;
                                     
+                                    let projectFolder:string = config.playcanvas.name.replace(/ /g,'');
+
                                     let platformWeb:Game.Platform = 'Web';
-                                    let platformWebFolder:string = path.join(fullPath, `${config.playcanvas.name}`, `${platformWeb}`);
+                                    let platformWebFolder:string = path.join(fullPath, `${projectFolder}`, `${platformWeb}`);
                                     if (fs.existsSync(platformWebFolder)) {
                                         if (typeof config.builds == 'undefined') {
                                             config.builds = [];
@@ -67,7 +69,7 @@ class Game {
                                     }
                                     
                                     let platformSnapchat:Game.Platform = 'Snapchat';
-                                    let platformSnapchatFolder:string = path.join(fullPath, `${config.playcanvas.name}`, `${platformSnapchat}`);
+                                    let platformSnapchatFolder:string = path.join(fullPath, `${projectFolder}`, `${platformSnapchat}`);
                                     if (fs.existsSync(platformSnapchatFolder)) {
                                         if (typeof config.builds == 'undefined') {
                                             config.builds = [];
@@ -131,7 +133,9 @@ class Game {
                         success: true,
                         value:`building: [${config.playcanvas.name}] ver [${version}] for [${platform}]`
                     }));
-                    let directory:string = path.join(__dirname, `${Game.RootFolder}/${config.playcanvas.name}`);
+                    let projectFolder:string = config.playcanvas.name.replace(/ /g,'');
+                    let directory:string = path.join(__dirname, `${Game.RootFolder}/${projectFolder}`);
+                    console.log(`directory: ${directory}`);
                     if (!fs.existsSync(directory)) {
                         fs.mkdirSync(directory);
                     }
@@ -144,10 +148,19 @@ class Game {
                     PlayCanvas.Build(authToken, config, directory, true)
                     .then((zipPath:string) => {
                         console.log(`zipPath: ${zipPath}`);
-                        return Game.PostProcess(zipPath, `${directory}/${config.game.Platform}`,config);
+                        if (config.game.Platform == 'Android') {
+                            let androidDirectory:string = path.join(__dirname, `www`);
+                            return Game.PostProcess(zipPath, `${androidDirectory}`, config);
+                        } else {
+                            return Game.PostProcess(zipPath, `${directory}/${config.game.Platform}`, config);
+                        }
                     })
                     .then(() => {
-                        console.log(`post process done`);
+                        if (config.game.Platform == 'Android') {
+                            console.log(`build android`);
+                        } else {
+                            console.log(`post process done`);
+                        }
                     })
                     .catch((err:Error) => {
                         console.log(`error`, err);
@@ -165,8 +178,8 @@ class Game {
 
 namespace Game {
 
-    export type Backend = `Replicant` | `Cookies` | `Nakama`; 
-    export type Platform = `Facebook` | `Snapchat` | `Web`; 
+    export type Backend = `Replicant` | `Cookies` | `Nakama` | `None`; 
+    export type Platform = `Facebook` | `Snapchat` | `Web` | `Android` | `None`; 
 
     const pathTo7zip:string = sevenBin.path7za;
     
@@ -190,6 +203,7 @@ namespace Game {
     export type Config = {
         game   : {
             Config                  : string;
+            Folder                  : string;
             Backend                 : Backend;
             Platform                : Platform;
             SnapchatBackendUrl      : string;
@@ -203,7 +217,7 @@ namespace Game {
         builds : Platform[],
     } & PlayCanvas.Config;
 
-    export const PostProcess = async (zipPath:string, extractPath:string, config:Config, zipBack:boolean = false) => {
+    export const PostProcess = async (zipPath:string, extractPath:string, config:Config) => {
     
         console.log(`extract path: ${extractPath}`);
         if (!fs.existsSync(extractPath)) {
@@ -350,7 +364,7 @@ namespace Game {
     
             await addFileToZip(playcanvasJSFilename, playcanvasJSSource, playcanvasJSExtracted, playcanvasJSZip);
         }
-    
+
         if (config.game.UseVConsole) {
             indexHTMLReplaces.splice(0, 0, { Pattern: /<head>/g, Value: `<head>\n\t<script>useVConsole=true;</script>` });
         }
@@ -407,11 +421,11 @@ namespace Game {
             
         }
     // WEB ONLY : end
+
+        indexHTMLReplaces.splice(0, 0, { Pattern: /<head>/g, Value: `<head>\n\t<script>platform="${config.game.Platform}";</script>` });
     
         var cspMetadata = CreateCSPMetadata(config.csp);
         indexHTMLReplaces.splice(0, 0, { Pattern: /<head>/g, Value: `<head>\n\t${cspMetadata}` });
-
-        indexHTMLReplaces.splice(0, 0, { Pattern: /<head>/g, Value: `<head>\n\t<script>platform="${config.game.Platform}";</script>` });
 
         await stringReplace(indexHTML, indexHTML, indexHTMLReplaces);
         
@@ -564,10 +578,10 @@ namespace Game {
         }
         
         if (config.game.Platform == 'Web' || config.game.Platform == 'Snapchat') {
-            await del([`${zipPath}`]);
+            // await del([`${zipPath}`]);
         }
         if (config.game.Platform != 'Web' && config.game.Platform != 'Snapchat') {
-            await del([`${extractPath}**`,`${extractPath}`]);
+            // await del([`${extractPath}**`,`${extractPath}`]);
         }
     
         console.log('done');

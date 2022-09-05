@@ -278,7 +278,7 @@ class Database {
                     if (!structure.schemaFields[finalFieldName]) {
                         model.schema.add({
                             [finalFieldName] : finalFields[finalFieldName]
-                        });
+                        } as any);
                     }
                 }
             }

@@ -15,11 +15,11 @@ const Top = (props:IndexProps) => {
     return (
         <Menu fluid>
             <Menu.Item onClick={ShowExplorer}>
-                <Icon name="file"></Icon>
+                <Icon name='file'></Icon>
                 Explorer
             </Menu.Item>
             <Menu.Item onClick={ShowBuild}>
-                <Icon name="cog"></Icon>
+                <Icon name='cog'></Icon>
                 Build
             </Menu.Item>
         </Menu>

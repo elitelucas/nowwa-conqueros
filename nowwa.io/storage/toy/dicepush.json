@@ -1,20 +1,20 @@
 {
     "game": {
-        "Config": "woodturning",
-        "Folder": "Woodturning3D",
-        "SnapchatBackendUrl":"woodturning",
-        "SnapchatShareImage":"/storage/toy/Woodturning3D/woodturning.png",
+        "Config": "dicepush",
+        "Folder": "DicePush",
+        "SnapchatBackendUrl":"voodoo-10",
+        "SnapchatShareImage":"/storage/toy/DicePush/dicepush.png",
         "SnapchatNoShareImage": false,
-        "Thumbnail": "/toy/Woodturning3D/woodturning.png",
+        "Thumbnail": "/toy/DicePush/dicepush.png",
         "UseGCInstant": false,
         "UseOptimizedConfig": false
     },
     "builds": [],
     "playcanvas": {
         "project_id": 873503,
-        "name": "Woodturning 3D",
-        "scenes" : [1333566],
-        "branch_id": "6065dec4-aa07-441a-8e26-df8d0b179209",
+        "name": "Dice Push",
+        "scenes" : [1319856],
+        "branch_id": "6d7a7f7f-23b9-47a5-8cb4-7ac1b050f770",
         "description": "",
         "preload_bundle": true,
         "version": "",

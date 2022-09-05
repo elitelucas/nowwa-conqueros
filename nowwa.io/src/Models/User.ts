@@ -36,10 +36,6 @@ export const UserSchema = new mongoose.Schema<UserDocument>({
     password        : {
         type        : String
     },
-    dateCreated     : {
-        type        : Date,
-        default     : Date.now
-    },
     files           : {
         type        : [FiledocSchema],
         default     : []

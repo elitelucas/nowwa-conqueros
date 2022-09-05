@@ -1,5 +1,6 @@
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
+import dotenv from 'dotenv';
 
 class Environment {
 
@@ -30,25 +31,15 @@ class Environment {
         };
     }
 
-    public static get PublicConfig():Environment.Config {
-        let config:Environment.Config = this.MainConfig;
-
-        config.URL = "127.0.0.1";
-        config.PORT = 9000;
-        config.USE_SSL = false;
-
-        // config.URL = "nowwa.io";
-        // config.PORT = 443;
-        // config.USE_SSL = true;
-
-        return config;
-    }
-
     public static get CoreConfig():Environment.Config {
         let config:Environment.Config = this.MainConfig;
-        config.URL = "127.0.0.1";
-        config.PORT = 9000;
-        config.USE_SSL = false;
+
+        dotenv.config();
+
+        config.URL = process.env.CORE_URL as string; 
+        config.PORT = parseInt(process.env.CORE_PORT as string);
+        config.USE_SSL = process.env.CORE_USE_SSL as string == 'true';
+
         return config;
     }
 
@@ -60,16 +51,6 @@ class Environment {
         `:` +
         `${config.PORT}`;
     }
-
-    public static get PublicUrl():string { 
-        let config:Environment.Config = this.PublicConfig;
-        return (config.USE_SSL ? `https` : `http`) +
-        `://` +
-        `${config.URL}` +
-        `:` +
-        `${config.PORT}`;
-    }
-
 }
 
 namespace Environment {
@@ -101,20 +82,15 @@ export default Environment;
 
 export const authenticationUrl:string = `/authentication`;
 export const authenticationCoreUrl:string = `${Environment.CoreUrl}${authenticationUrl}`;
-export const authenticationPublicUrl:string = `${Environment.PublicUrl}${authenticationUrl}`;
 
 export const storageUrl:string = `/storage`;
 export const storageCoreUrl:string = `${Environment.CoreUrl}${storageUrl}`;
-export const storagePublicUrl:string = `${Environment.PublicUrl}${storageUrl}`;
 
 export const toyListUrl:string = `/toyList`;
 export const toyListCoreUrl:string = `${Environment.CoreUrl}${toyListUrl}`;
-export const toyListPublicUrl:string = `${Environment.PublicUrl}${toyListUrl}`;
 
 export const toyBuildUrl:string = `/toyBuild`;
 export const toyBuildCoreUrl:string = `${Environment.CoreUrl}${toyBuildUrl}`;
-export const toyBuildPublicUrl:string = `${Environment.PublicUrl}${toyBuildUrl}`;
 
 export const toyStatusUrl:string = `/toyStatus`;
 export const toyStatusCoreUrl:string = `${Environment.CoreUrl}${toyStatusUrl}`;
-export const toyStatusPublicUrl:string = `${Environment.PublicUrl}${toyStatusUrl}`;

@@ -1,25 +1,25 @@
-import { stat } from "fs";
-import React, { useState, useEffect, SyntheticEvent } from "react";
+import { stat } from 'fs';
+import React, { useState, useEffect, SyntheticEvent } from 'react';
 import { Icon, Header, Label, Segment, Button, Card, Image, Item, Breadcrumb, List, SegmentGroup, BreadcrumbSection, BreadcrumbDivider, Table, Checkbox, CardGroup, Input, Select, Dropdown, DropdownItemProps, Accordion, LabelProps, Form, Grid, ButtonGroup, Divider, DropdownProps, InputOnChangeData, Loader, Dimmer, LabelDetail, Menu } from 'semantic-ui-react';
-import Environment, { toyBuildCoreUrl, toyStatusCoreUrl, toyListCoreUrl, toyListPublicUrl, toyStatusPublicUrl, toyBuildPublicUrl } from "../Core/Environment";
-import Game from "../Core/Game";
-import Main from "../Core/Main";
-import PlayCanvas from "../Core/Playcanvas";
+import Environment, { toyBuildUrl, toyStatusUrl, toyListUrl } from '../Core/Environment';
+import Game from '../Core/Game';
+import Main from '../Core/Main';
+import PlayCanvas from '../Core/Playcanvas';
 
 type ContentIndexType = `None` | `Info` | `Build` | `Archive`;
 
 type BuildValue = {
     backend:Game.Backend,
-    debug:boolean,
+    debug:boolean | undefined,
     platform:Game.Platform,
     version:string
 };
 
 const BuildValueDefault:BuildValue = {
-    backend: 'Cookies',
-    debug: false,
-    platform: 'Web',
-    version: "0.0.0",
+    backend: 'None',
+    debug: undefined,
+    platform: 'None',
+    version: '',
 }
 
 export type GameState = {
@@ -45,7 +45,7 @@ export const GameStateDefault:GameState = {
 export const GameLoad = (state:GameState):Promise<GameState> => {
     return new Promise((resolve, reject) => {
         // console.log(`get games`);
-        fetch (`${toyListPublicUrl}`)
+        fetch (`${window.location.origin}${toyListUrl}`)
             .then(res => res.json())
             .then((res:GameState) => {
                 let gameState:GameState = {
@@ -69,7 +69,7 @@ const Build = (state:GameState, setState:React.Dispatch<React.SetStateAction<Gam
     const StatusLoad = ():Promise<PlayCanvas.Status> => {
         return new Promise((resolve, reject) => {
             // console.log(`get status`);
-            fetch (`${toyStatusPublicUrl}`)
+            fetch (`${window.location.origin}${toyStatusUrl}`)
                 .then(res => res.json())
                 .then((res:Main.Status) => {
                     resolve(res.PlayCanvas);
@@ -85,10 +85,10 @@ const Build = (state:GameState, setState:React.Dispatch<React.SetStateAction<Gam
         let isBuilderBusy:boolean = status.Activity != 'None';
         return (
             <>
-                <Label color={isBuilderBusy ? "yellow" : "green"}>
+                <Label color={isBuilderBusy ? 'yellow' : 'green'}>
                     Builder Status
                     <Label.Detail>
-                        {isBuilderBusy ? "Building" : "Idle"}
+                        {isBuilderBusy ? 'Building' : 'Idle'}
                     </Label.Detail>
                 </Label>
                 {isBuilderBusy && (
@@ -112,7 +112,7 @@ const Build = (state:GameState, setState:React.Dispatch<React.SetStateAction<Gam
         };
         if (state.current.AppName == config.playcanvas.name && state.current.ContentIndex == contentIndex) {
             gameState.current.AppName = ``;
-            gameState.current.ContentIndex = "None";
+            gameState.current.ContentIndex = 'None';
         } else {
             gameState.current.AppName = config.playcanvas.name;
             gameState.current.ContentIndex = contentIndex;
@@ -127,31 +127,42 @@ const Build = (state:GameState, setState:React.Dispatch<React.SetStateAction<Gam
             setState(state);
         }
 
+        let buildValue:BuildValue = state.buildValues[config.game.Config];
+
         let dropdownPlatform:DropdownItemProps[] = [
-            { text: "Web", value: "Web" },
-            { text: "Facebook", value: "Facebook" },
-            { text: "Snapchat (Development Only)", value: "Snapchat" }
+            { text: 'Web', value: 'Web' },
+            { text: 'Facebook', value: 'Facebook' },
+            { text: 'Snapchat (Development Only)', value: 'Snapchat' },
+            { text: 'Android', value: 'Snapchat' }
         ];
 
         let dropdownBackend:DropdownItemProps[] = [
-            { text: "Cookies", value: "Cookies" },
-            { text: "Replicant", value: "Replicant" },
-            { text: "Nakama", value: "Nakama" }
+            { text: 'Cookies', value: 'Cookies' },
         ];
+        if (buildValue.platform == 'Snapchat') {
+            dropdownBackend.push({ text: 'Nakama', value: 'Nakama' });
+        }
+        if (buildValue.platform == 'Snapchat' || buildValue.platform == 'Facebook') {
+            dropdownBackend.push({ text: 'Replicant', value: 'Replicant' });
+        }
 
         let dropdownDebug:DropdownItemProps[] = [
-            { text: "None", value: 0 },
-            { text: "VConsole", value: 1 }
+            { text: 'None', value: 0 },
+            { text: 'VConsole', value: 1 }
         ];
 
         let triggerBuild = () => {
             let tmpBuildValue:BuildValue = state.buildValues[config.game.Config];
             // console.log(`[${config.game.Config}] trigger build: ${JSON.stringify(tmpBuildValue)}`);
-            let url:URL = new URL(`${toyBuildPublicUrl}`);
+            let url:URL = new URL(`${window.location.origin}${toyBuildUrl}`);
             url.searchParams.set('n', config.game.Config);
-            url.searchParams.set('b', tmpBuildValue.backend.toString());
             url.searchParams.set('p', tmpBuildValue.platform.toString());
-            url.searchParams.set('d', tmpBuildValue.debug.toString());
+            let tmpBackend:Game.Backend = tmpBuildValue.backend;
+            if (tmpBackend != 'None' && tmpBackend != 'Cookies' && (tmpBuildValue.platform == 'Web' || tmpBuildValue.platform == 'Android')) {
+                tmpBackend = 'Cookies';
+            }
+            url.searchParams.set('b', tmpBackend.toString());
+            url.searchParams.set('d', tmpBuildValue.debug ? `1` : `0`);
             url.searchParams.set('v', tmpBuildValue.version);
             fetch (url)
                 .then(res => res.json())
@@ -200,14 +211,20 @@ const Build = (state:GameState, setState:React.Dispatch<React.SetStateAction<Gam
         };
 
         let isBuilderBusy:boolean = status.Activity != 'None';
+
+        let isBuildParameterFilled:boolean = 
+            (buildValue.backend != 'None') &&
+            (buildValue.debug != undefined) &&
+            (buildValue.platform != 'None') &&
+            (buildValue.version != '');
         
         return (
             <Card key={config.game.Config}>
                 <Card.Header>
-                    <Label attached="top" size="large">{config.playcanvas.name}</Label>
+                    <Label attached='top' size='large'>{config.playcanvas.name}</Label>
                     <Image src={config.game.Thumbnail} fluid />
                     {config.builds.indexOf('Web') >= 0 ? (
-                        <Button fluid primary onClick={() => openInNewTab(`${Environment.PublicUrl}/toy/${config.playcanvas.name}/Web/`)}>Play web build</Button>
+                        <Button fluid primary onClick={() => openInNewTab(`${window.location.origin}/toy/${config.playcanvas.name.replace(/ /g,'')}/Web/`)}>Play web build</Button>
                     ) : (
                         <Button fluid primary disabled>Web build not available</Button>
                     )}
@@ -227,9 +244,9 @@ const Build = (state:GameState, setState:React.Dispatch<React.SetStateAction<Gam
                         >
                             <Segment basic>
                                 Facebook App ID
-                                <Input fluid placeholder="app id"/>
+                                <Input fluid placeholder='app id'/>
                                 Snapchat App ID
-                                <Input fluid placeholder="app id"/>
+                                <Input fluid placeholder='app id'/>
                                 <Divider hidden/>
                                 <Button fluid>Update</Button>
                                 <Dimmer active>
@@ -251,7 +268,7 @@ const Build = (state:GameState, setState:React.Dispatch<React.SetStateAction<Gam
                             Version
                             <Input 
                                 fluid 
-                                placeholder="Version"
+                                placeholder='Version'
                                 onChange={setVersionValue}    
                             />
                             Platform
@@ -263,6 +280,7 @@ const Build = (state:GameState, setState:React.Dispatch<React.SetStateAction<Gam
                                 options={dropdownPlatform}
                                 onChange={setPlatformValue}
                             />
+                            {buildValue.platform != 'None' && <>
                             Backend
                             <Dropdown
                                 key={`${config.playcanvas.name}-Backend`}
@@ -272,6 +290,7 @@ const Build = (state:GameState, setState:React.Dispatch<React.SetStateAction<Gam
                                 options={dropdownBackend}
                                 onChange={setBackendValue}
                             />
+                            </>}
                             Debug
                             <Dropdown
                                 key={`${config.playcanvas.name}-Debug`}
@@ -282,7 +301,7 @@ const Build = (state:GameState, setState:React.Dispatch<React.SetStateAction<Gam
                                 onChange={setDebugValue}
                             />
                             <Divider hidden/>
-                            <Button fluid disabled={isBuilderBusy} onClick={triggerBuild}>{isBuilderBusy ? "Busy..." : "Build"}</Button>
+                            <Button fluid disabled={isBuilderBusy || !isBuildParameterFilled} onClick={triggerBuild}>{isBuilderBusy ? 'Busy...' : 'Build'}</Button>
                         </Accordion.Content>
 
                         <Accordion.Title
@@ -359,9 +378,9 @@ const Build = (state:GameState, setState:React.Dispatch<React.SetStateAction<Gam
             <Segment>
                 <Menu fluid>
                     <Menu.Item
-                        name="Refresh Game List"
+                        name='Refresh Game List'
                         onClick={refreshList}
-                        icon="refresh"
+                        icon='refresh'
                     />
                 </Menu>
                 <CardGroup>

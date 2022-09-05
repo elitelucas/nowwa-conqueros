@@ -1,20 +1,20 @@
 {
     "game": {
-        "Config": "woodturning",
-        "Folder": "Woodturning3D",
-        "SnapchatBackendUrl":"woodturning",
-        "SnapchatShareImage":"/storage/toy/Woodturning3D/woodturning.png",
+        "Config": "drawjoust",
+        "Folder": "DrawJoust",
+        "SnapchatBackendUrl":"draw-joust",
+        "SnapchatShareImage":"/storage/toy/DrawJoust/drawjoust.png",
         "SnapchatNoShareImage": false,
-        "Thumbnail": "/toy/Woodturning3D/woodturning.png",
+        "Thumbnail": "/toy/DrawJoust/drawjoust.png",
         "UseGCInstant": false,
         "UseOptimizedConfig": false
     },
     "builds": [],
     "playcanvas": {
         "project_id": 873503,
-        "name": "Woodturning 3D",
-        "scenes" : [1333566],
-        "branch_id": "6065dec4-aa07-441a-8e26-df8d0b179209",
+        "name": "Draw Joust",
+        "scenes" : [1390261],
+        "branch_id": "85cc2189-2d73-4bc9-9b2b-d904b5f1df1e",
         "description": "",
         "preload_bundle": true,
         "version": "",

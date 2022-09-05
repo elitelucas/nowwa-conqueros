@@ -1,20 +1,20 @@
 {
     "game": {
-        "Config": "woodturning",
-        "Folder": "Woodturning3D",
-        "SnapchatBackendUrl":"woodturning",
-        "SnapchatShareImage":"/storage/toy/Woodturning3D/woodturning.png",
+        "Config": "baseballboy",
+        "Folder": "BaseballBoy",
+        "SnapchatBackendUrl":"voodoo-8",
+        "SnapchatShareImage":"/storage/toy/BaseballBoy/baseballboy.png",
         "SnapchatNoShareImage": false,
-        "Thumbnail": "/toy/Woodturning3D/woodturning.png",
+        "Thumbnail": "/toy/BaseballBoy/baseballboy.png",
         "UseGCInstant": false,
         "UseOptimizedConfig": false
     },
     "builds": [],
     "playcanvas": {
         "project_id": 873503,
-        "name": "Woodturning 3D",
-        "scenes" : [1333566],
-        "branch_id": "6065dec4-aa07-441a-8e26-df8d0b179209",
+        "name": "Baseball Boy",
+        "scenes" : [1318555],
+        "branch_id": "8e6832d3-ff6a-4d68-ac4c-6f6464c6dc82",
         "description": "",
         "preload_bundle": true,
         "version": "",

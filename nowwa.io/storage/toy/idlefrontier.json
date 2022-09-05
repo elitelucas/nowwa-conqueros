@@ -1,10 +1,11 @@
 {
     "game": {
         "Config": "idlefrontier",
+        "Folder": "IdleFrontier",
         "SnapchatBackendUrl":"idlefrontier",
-        "SnapchatShareImage":"/storage/toy/Idle Frontier/idlefrontier.png",
+        "SnapchatShareImage":"/storage/toy/IdleFrontier/idlefrontier.png",
         "SnapchatNoShareImage": false,
-        "Thumbnail": "/toy/Idle Frontier/idlefrontier.png",
+        "Thumbnail": "/toy/IdleFrontier/idlefrontier.png",
         "UseGCInstant": false,
         "UseOptimizedConfig": false
     },
@@ -36,7 +37,8 @@
             "https://snapchat.com",
             "https://*.snapchat.com",
             "wss://*.games.snapchat.com",
-            "https://*.games.snapchat.com"
+            "https://*.games.snapchat.com",
+            "http://127.0.0.1:*"
         ]
     },
     "one_page": {

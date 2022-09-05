@@ -1,20 +1,20 @@
 {
     "game": {
-        "Config": "woodturning",
-        "Folder": "Woodturning3D",
-        "SnapchatBackendUrl":"woodturning",
-        "SnapchatShareImage":"/storage/toy/Woodturning3D/woodturning.png",
+        "Config": "ballblast",
+        "Folder": "BallBlast",
+        "SnapchatBackendUrl":"voodoo-9",
+        "SnapchatShareImage":"/storage/toy/BallBlast/ballblast.png",
         "SnapchatNoShareImage": false,
-        "Thumbnail": "/toy/Woodturning3D/woodturning.png",
+        "Thumbnail": "/toy/BallBlast/ballblast.png",
         "UseGCInstant": false,
         "UseOptimizedConfig": false
     },
     "builds": [],
     "playcanvas": {
         "project_id": 873503,
-        "name": "Woodturning 3D",
-        "scenes" : [1333566],
-        "branch_id": "6065dec4-aa07-441a-8e26-df8d0b179209",
+        "name": "Ball Blast",
+        "scenes" : [1334543],
+        "branch_id": "cd24f9ce-7b7e-4124-a29a-a6e4f3f4d545",
         "description": "",
         "preload_bundle": true,
         "version": "",

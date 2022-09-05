@@ -1,20 +1,20 @@
 {
     "game": {
-        "Config": "woodturning",
-        "Folder": "Woodturning3D",
-        "SnapchatBackendUrl":"woodturning",
-        "SnapchatShareImage":"/storage/toy/Woodturning3D/woodturning.png",
+        "Config": "flappydunk",
+        "Folder": "FlappyDunk",
+        "SnapchatBackendUrl":"voodoo-4",
+        "SnapchatShareImage":"/storage/toy/FlappyDunk/flappydunk.png",
         "SnapchatNoShareImage": false,
-        "Thumbnail": "/toy/Woodturning3D/woodturning.png",
+        "Thumbnail": "/toy/FlappyDunk/flappydunk.png",
         "UseGCInstant": false,
         "UseOptimizedConfig": false
     },
     "builds": [],
     "playcanvas": {
         "project_id": 873503,
-        "name": "Woodturning 3D",
-        "scenes" : [1333566],
-        "branch_id": "6065dec4-aa07-441a-8e26-df8d0b179209",
+        "name": "Flappy Dunk",
+        "scenes" : [1318541],
+        "branch_id": "20b0c66a-027c-4abe-b20b-bd42d1b38f83",
         "description": "",
         "preload_bundle": true,
         "version": "",

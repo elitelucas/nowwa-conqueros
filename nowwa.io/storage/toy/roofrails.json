@@ -1,20 +1,20 @@
 {
     "game": {
-        "Config": "woodturning",
-        "Folder": "Woodturning3D",
-        "SnapchatBackendUrl":"woodturning",
-        "SnapchatShareImage":"/storage/toy/Woodturning3D/woodturning.png",
+        "Config": "roofrails",
+        "Folder": "RoofRails",
+        "SnapchatBackendUrl":"roof-rails",
+        "SnapchatShareImage":"/storage/toy/RoofRails/roofrails.png",
         "SnapchatNoShareImage": false,
-        "Thumbnail": "/toy/Woodturning3D/woodturning.png",
+        "Thumbnail": "/toy/RoofRails/roofrails.png",
         "UseGCInstant": false,
         "UseOptimizedConfig": false
     },
     "builds": [],
     "playcanvas": {
         "project_id": 873503,
-        "name": "Woodturning 3D",
-        "scenes" : [1333566],
-        "branch_id": "6065dec4-aa07-441a-8e26-df8d0b179209",
+        "name": "Roof Rails",
+        "scenes" : [1324244],
+        "branch_id": "caac7952-b42b-424a-96d0-19ac8d82031c",
         "description": "",
         "preload_bundle": true,
         "version": "",

@@ -1,20 +1,20 @@
 {
     "game": {
-        "Config": "woodturning",
-        "Folder": "Woodturning3D",
-        "SnapchatBackendUrl":"woodturning",
-        "SnapchatShareImage":"/storage/toy/Woodturning3D/woodturning.png",
+        "Config": "bumperio",
+        "Folder": "BumperIO",
+        "SnapchatBackendUrl":"voodoo-5",
+        "SnapchatShareImage":"/storage/toy/BumperIO/bumperio.png",
         "SnapchatNoShareImage": false,
-        "Thumbnail": "/toy/Woodturning3D/woodturning.png",
+        "Thumbnail": "/toy/BumperIO/bumperio.png",
         "UseGCInstant": false,
         "UseOptimizedConfig": false
     },
     "builds": [],
     "playcanvas": {
         "project_id": 873503,
-        "name": "Woodturning 3D",
-        "scenes" : [1333566],
-        "branch_id": "6065dec4-aa07-441a-8e26-df8d0b179209",
+        "name": "Bumper IO",
+        "scenes" : [1325322],
+        "branch_id": "13b0edd7-e930-4461-81e7-b8b380f6619d",
         "description": "",
         "preload_bundle": true,
         "version": "",
