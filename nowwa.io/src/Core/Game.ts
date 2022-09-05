@@ -149,12 +149,12 @@ class Game {
                     .then((zipPath:string) => {
                         console.log(`zipPath: ${zipPath}`);
                         if (config.game.Platform == 'Android') {
-                            let androidDirectory:string = path.join(__dirname, `www`);
+                            let androidDirectory:string = path.join(__dirname, `..`, `..`, `www`);
                             return Game.PostProcess(zipPath, `${androidDirectory}`, config);
                         } else {
                             return Game.PostProcess(zipPath, `${directory}/${config.game.Platform}`, config);
                         }
-                    })
+                    }) 
                     .then(() => {
                         if (config.game.Platform == 'Android') {
                             console.log(`build android`);

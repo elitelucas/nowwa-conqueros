@@ -13,7 +13,7 @@ type BuildValue = {
     debug:boolean | undefined,
     platform:Game.Platform,
     version:string
-};
+}; 
 
 const BuildValueDefault:BuildValue = {
     backend: 'None',
@@ -95,7 +95,10 @@ const Build = (state:GameState, setState:React.Dispatch<React.SetStateAction<Gam
                     <Label>
                         {status.AppName}
                         <Label.Detail>
-                            {status.Version}
+                            {status.Platform}
+                        </Label.Detail>
+                        <Label.Detail>
+                            v{status.Version}
                         </Label.Detail>
                     </Label>
                 )}
@@ -133,7 +136,7 @@ const Build = (state:GameState, setState:React.Dispatch<React.SetStateAction<Gam
             { text: 'Web', value: 'Web' },
             { text: 'Facebook', value: 'Facebook' },
             { text: 'Snapchat (Development Only)', value: 'Snapchat' },
-            { text: 'Android', value: 'Snapchat' }
+            { text: 'Android', value: 'Android' }
         ];
 
         let dropdownBackend:DropdownItemProps[] = [
@@ -271,6 +274,7 @@ const Build = (state:GameState, setState:React.Dispatch<React.SetStateAction<Gam
                                 placeholder='Version'
                                 onChange={setVersionValue}    
                             />
+                            {buildValue.version != '' && <>
                             Platform
                             <Dropdown
                                 key={`${config.playcanvas.name}-Platform`}
@@ -280,6 +284,7 @@ const Build = (state:GameState, setState:React.Dispatch<React.SetStateAction<Gam
                                 options={dropdownPlatform}
                                 onChange={setPlatformValue}
                             />
+                            </>}
                             {buildValue.platform != 'None' && <>
                             Backend
                             <Dropdown
@@ -291,6 +296,7 @@ const Build = (state:GameState, setState:React.Dispatch<React.SetStateAction<Gam
                                 onChange={setBackendValue}
                             />
                             </>}
+                            {buildValue.backend != 'None' && <>
                             Debug
                             <Dropdown
                                 key={`${config.playcanvas.name}-Debug`}
@@ -300,6 +306,7 @@ const Build = (state:GameState, setState:React.Dispatch<React.SetStateAction<Gam
                                 options={dropdownDebug}
                                 onChange={setDebugValue}
                             />
+                            </>}
                             <Divider hidden/>
                             <Button fluid disabled={isBuilderBusy || !isBuildParameterFilled} onClick={triggerBuild}>{isBuilderBusy ? 'Busy...' : 'Build'}</Button>
                         </Accordion.Content>

@@ -1,13 +1,15 @@
 import fetch, { Response } from 'node-fetch';
 import fs from 'fs';
 import path from 'path';
+import Game from './Game';
 
 class PlayCanvas {
 
     public static CurrentStatus:PlayCanvas.Status = {
         Activity : 'None',
         AppName  : '',
-        Version  : ''
+        Version  : '',
+        Platform : 'None'
     }
 
     private static async Sleep (ms:number) {
@@ -146,7 +148,7 @@ class PlayCanvas {
         });
     }
 
-    public static async Build (authToken:string, config:PlayCanvas.Config, directory:string, noLog?:boolean):Promise<string> {
+    public static async Build (authToken:string, config:Game.Config, directory:string, noLog?:boolean):Promise<string> {
         if (PlayCanvas.CurrentStatus.Activity != 'None') {
             console.log(`PlayCanvas Busy!!!`);
             return Promise.reject();
@@ -154,6 +156,7 @@ class PlayCanvas {
         PlayCanvas.CurrentStatus.Activity = 'Build';
         PlayCanvas.CurrentStatus.AppName = config.playcanvas.name;
         PlayCanvas.CurrentStatus.Version = config.playcanvas.version;
+        PlayCanvas.CurrentStatus.Platform = config.game.Platform;
         return new Promise<string>((resolve, reject) => {
             console.log("✔️ Requested build from Playcanvas")
             let url = 'https://playcanvas.com/api/apps/download';
@@ -199,6 +202,7 @@ class PlayCanvas {
                 PlayCanvas.CurrentStatus.Activity = 'None';
                 PlayCanvas.CurrentStatus.AppName = '';
                 PlayCanvas.CurrentStatus.Version = '';
+                PlayCanvas.CurrentStatus.Platform = 'None';
                 resolve(output);
             })
             .catch(reject);
@@ -224,11 +228,13 @@ namespace PlayCanvas {
         Activity : ActivityType;
         AppName  : string;
         Version  : string;
+        Platform : Game.Platform;
     }
     export const StatusDefault:Status = {
         Activity : 'None',
         AppName  : '',
-        Version  : ''
+        Version  : '',
+        Platform : 'None'
     }
     export type Config = {
         playcanvas              :{
