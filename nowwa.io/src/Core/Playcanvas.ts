@@ -5,13 +5,6 @@ import Game from './Game';
 
 class PlayCanvas {
 
-    public static CurrentStatus:PlayCanvas.Status = {
-        Activity : 'None',
-        AppName  : '',
-        Version  : '',
-        Platform : 'None'
-    }
-
     private static async Sleep (ms:number) {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
@@ -52,11 +45,6 @@ class PlayCanvas {
     }
  
     public static async GetBranches (authToken:string, projectId:number) {
-        if (PlayCanvas.CurrentStatus.Activity != 'None') {
-            console.log(`PlayCanvas Busy!!!`);
-            return Promise.reject();
-        }
-        PlayCanvas.CurrentStatus.Activity = 'Internal';
         return new Promise<any>((resolve, reject) => {
             console.log("✔️ Requested branch list from Playcanvas");
             let url = 'https://playcanvas.com/api/projects/' + projectId + '/branches';
@@ -75,7 +63,6 @@ class PlayCanvas {
                 return res.json();
             })
             .then(branches => {
-                PlayCanvas.CurrentStatus.Activity = 'None';
                 resolve(branches);
             })
             .catch(reject);
@@ -101,13 +88,6 @@ class PlayCanvas {
     }
 
     public static async Archive (authToken:string, projectId:number, branchId:string, appName:string, projectVersion:string, directory:string, noLog?:boolean):Promise<string> {
-        if (PlayCanvas.CurrentStatus.Activity != 'None') {
-            console.log(`PlayCanvas Busy!!!`);
-            return Promise.reject();
-        }
-        PlayCanvas.CurrentStatus.Activity = 'Archive';
-        PlayCanvas.CurrentStatus.AppName = appName;
-        PlayCanvas.CurrentStatus.Version = projectVersion;
         return new Promise<string>((resolve, reject) => {
             console.log("✔️ Requested archive from Playcanvas");
             let url = 'https://playcanvas.com/api/projects/' + projectId + '/export';
@@ -139,9 +119,6 @@ class PlayCanvas {
                     fs.mkdirSync(path.dirname(output), {recursive:true});
                 }
                 fs.writeFileSync(output, Buffer.from(arrayBuffer), 'binary');
-                PlayCanvas.CurrentStatus.Activity = 'None';
-                PlayCanvas.CurrentStatus.AppName = '';
-                PlayCanvas.CurrentStatus.Version = '';
                 resolve(output);
             })
             .catch(reject);
@@ -149,14 +126,6 @@ class PlayCanvas {
     }
 
     public static async Build (authToken:string, config:Game.Config, directory:string, noLog?:boolean):Promise<string> {
-        if (PlayCanvas.CurrentStatus.Activity != 'None') {
-            console.log(`PlayCanvas Busy!!!`);
-            return Promise.reject();
-        }
-        PlayCanvas.CurrentStatus.Activity = 'Build';
-        PlayCanvas.CurrentStatus.AppName = config.playcanvas.name;
-        PlayCanvas.CurrentStatus.Version = config.playcanvas.version;
-        PlayCanvas.CurrentStatus.Platform = config.game.Platform;
         return new Promise<string>((resolve, reject) => {
             console.log("✔️ Requested build from Playcanvas")
             let url = 'https://playcanvas.com/api/apps/download';
@@ -199,43 +168,15 @@ class PlayCanvas {
                     fs.mkdirSync(path.dirname(output), {recursive:true});
                 }
                 fs.writeFileSync(output, Buffer.from(arrayBuffer), 'binary');
-                PlayCanvas.CurrentStatus.Activity = 'None';
-                PlayCanvas.CurrentStatus.AppName = '';
-                PlayCanvas.CurrentStatus.Version = '';
-                PlayCanvas.CurrentStatus.Platform = 'None';
                 resolve(output);
             })
             .catch(reject);
         });
     }
 
-    public static async MockBusy ():Promise<void> {
-        PlayCanvas.CurrentStatus.Activity = 'Internal';
-        return new Promise((resolve, reject) => {
-            let delay:number = 5000;
-            setTimeout(() => {
-                PlayCanvas.CurrentStatus.Activity = 'None';
-                resolve();
-            }, delay);
-        });
-    }
-
 }
 
 namespace PlayCanvas {
-    export type ActivityType = `None` | `ArchiveAll` | `Archive` | `Build` | `Internal`;
-    export type Status = {
-        Activity : ActivityType;
-        AppName  : string;
-        Version  : string;
-        Platform : Game.Platform;
-    }
-    export const StatusDefault:Status = {
-        Activity : 'None',
-        AppName  : '',
-        Version  : '',
-        Platform : 'None'
-    }
     export type Config = {
         playcanvas              :{
             project_id              :number;

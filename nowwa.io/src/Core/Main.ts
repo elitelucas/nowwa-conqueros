@@ -10,11 +10,10 @@ import Environment, { toyStatusUrl } from './Environment';
 import crypto from 'crypto';
 import Socket from './Socket';
 import Authentication from './Authentication';
-import Config from './Playcanvas';
 import Database from './Database';
 import Storage from './Storage';
 import Game from './Game';
-import PlayCanvas from './Playcanvas';
+import Status from './Status';
 
 console.log(`project path: ${__dirname}`);
 
@@ -74,7 +73,7 @@ class Main {
 
             app.use(`${toyStatusUrl}`, (req, res) => {
                 // console.log(`[Express] /status/`);
-                this.status.PlayCanvas = PlayCanvas.CurrentStatus;
+                this.status.Builder = Status.CurrentStatus;
                 res.status(200).send(JSON.stringify(this.status));
             });
 
@@ -99,6 +98,8 @@ class Main {
             console.log(`[Express] listening on port ${env.PORT}`);
 
             await Socket.AsyncInit(app, env);
+
+            // TEST : test copyfile
         }
         catch (error) {
             console.error(error);
@@ -211,11 +212,11 @@ class Main {
 
 namespace Main {
     export type Status = {
-        PlayCanvas: PlayCanvas.Status,
+        Builder: Status.Detail,
         requestCount:number,
     }
     export const StatusDefault:Status = {
-        PlayCanvas: PlayCanvas.CurrentStatus,
+        Builder: Status.CurrentStatus,
         requestCount: 0,
     }
 }

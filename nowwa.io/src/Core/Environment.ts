@@ -83,6 +83,8 @@ export default Environment;
 export const authenticationUrl:string = `/authentication`;
 export const authenticationCoreUrl:string = `${Environment.CoreUrl}${authenticationUrl}`;
 
+export const toyRoot:string = `/toy`;
+
 export const storageUrl:string = `/storage`;
 export const storageCoreUrl:string = `${Environment.CoreUrl}${storageUrl}`;
 

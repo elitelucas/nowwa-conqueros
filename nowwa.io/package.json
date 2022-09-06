@@ -1,7 +1,7 @@
 {
-  "name": "nowwa.io",
-  "displayName": "Nowwa.IO",
-  "version": "1.0.0",
+  "name": "woodturning",
+  "displayName": "Flappy Dunk",
+  "version": "7.7.7",
   "description": "",
   "scripts": {
     "core:dev": "tsc-watch --onSuccess \"node ./dist/Core/Main.js --env=\"dev\"\"",

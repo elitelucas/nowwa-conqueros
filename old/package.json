@@ -1,6 +1,6 @@
 {
   "name": "wood-turning",
-  "version": "0.2.9",
+  "version": "0.3.0",
   "private": true,
   "scripts": {
     "fbinstant-development": "cross-env NODE_ENV='development' parcel build ./src/Wrapper.ts --no-cache --no-content-hash --no-source-maps --no-optimize --dist-dir dist && node utils/postprocess.js && node utils/playcanvas-download.js && node utils/fbinstant.js",

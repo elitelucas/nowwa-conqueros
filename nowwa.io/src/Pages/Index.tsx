@@ -4,7 +4,7 @@ import Top from './Top';
 import { Header, Icon, Segment } from 'semantic-ui-react';
 import Explorer, { ExplorerState, ExplorerStateDefault, ExplorerLoad } from './Explorer';
 import Build, { GameLoad, GameStateDefault } from './Build';
-import PlayCanvas from '../Core/Playcanvas';
+import Status from '../Core/Status';
 
 type IndexDisplay = 'None' | 'Explorer' | 'Build';
 
@@ -43,10 +43,10 @@ const Index = () => {
     }
 
     const [gameState, setGameState] = useState(GameStateDefault);
-    const [gameBusy, setGameBusy] = useState(PlayCanvas.StatusDefault);
+    const [gameStatus, setGameStatus] = useState(Status.DetailDefault);
     let game;
     if (state.display == 'Build') {
-        game = Build(gameState, setGameState, gameBusy, setGameBusy);
+        game = Build(gameState, setGameState, gameStatus, setGameStatus);
         // console.log(`gameState: ${gameState.initialized}`);
     }
     

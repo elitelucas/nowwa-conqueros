@@ -4,7 +4,7 @@ import { Icon, Header, Label, Segment, Button, Card, Image, Item, Breadcrumb, Li
 import Environment, { toyBuildUrl, toyStatusUrl, toyListUrl } from '../Core/Environment';
 import Game from '../Core/Game';
 import Main from '../Core/Main';
-import PlayCanvas from '../Core/Playcanvas';
+import Status from '../Core/Status';
 
 type ContentIndexType = `None` | `Info` | `Build` | `Archive`;
 
@@ -64,15 +64,15 @@ export const GameLoad = (state:GameState):Promise<GameState> => {
     }); 
 };
 
-const Build = (state:GameState, setState:React.Dispatch<React.SetStateAction<GameState>>, status:PlayCanvas.Status, setStatus:React.Dispatch<React.SetStateAction<PlayCanvas.Status>>) => {
+const Build = (state:GameState, setState:React.Dispatch<React.SetStateAction<GameState>>, status:Status.Detail, setStatus:React.Dispatch<React.SetStateAction<Status.Detail>>) => {
 
-    const StatusLoad = ():Promise<PlayCanvas.Status> => {
+    const StatusLoad = ():Promise<Status.Detail> => {
         return new Promise((resolve, reject) => {
             // console.log(`get status`);
             fetch (`${window.location.origin}${toyStatusUrl}`)
                 .then(res => res.json())
                 .then((res:Main.Status) => {
-                    resolve(res.PlayCanvas);
+                    resolve(res.Builder);
                 })
                 .catch((error:any) => {
                     console.error(`error: ${error}`);
@@ -239,13 +239,13 @@ const Build = (state:GameState, setState:React.Dispatch<React.SetStateAction<Gam
                 <Card.Header>
                     <Label attached='top' size='large'>{config.playcanvas.name}</Label>
                     <Image src={config.game.Thumbnail} fluid />
-                    {config.builds.indexOf('Web') >= 0 ? (
-                        <Button fluid primary onClick={() => openInNewTab(`${window.location.origin}/toy/${config.game.Folder}/Web/`)}>Play Web build</Button>
+                    {typeof config.builds != 'undefined' && typeof config.builds['Web'] != 'undefined' ? (
+                        <Button fluid primary onClick={() => openInNewTab(`${window.location.origin}${config.builds['Web']}`)}>Play Web build</Button>
                     ) : (
                         <Button fluid primary disabled>Build web first!</Button>
                     )}
-                    {config.builds.indexOf('Android') >= 0 ? (
-                        <Button fluid primary onClick={() => downloadFile(`${apkFileName}`,`${apkPath}`)}>Download Android</Button>
+                    {typeof config.builds != 'undefined' && typeof config.builds['Android'] != 'undefined' ? (
+                        <Button fluid primary onClick={() => downloadFile(`${apkFileName}`,`${config.builds['Android']}`)}>Download Android</Button>
                     ) : (
                         <Button fluid primary disabled>Build Android first!</Button>
                     )}

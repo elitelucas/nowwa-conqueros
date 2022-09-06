@@ -9,7 +9,6 @@
         "UseGCInstant": false,
         "UseOptimizedConfig": false
     },
-    "builds": [],
     "playcanvas": {
         "project_id": 873503,
         "name": "Roof Rails",

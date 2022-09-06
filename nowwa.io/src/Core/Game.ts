@@ -1,5 +1,5 @@
 import express from 'express';
-import Environment, { toyBuildUrl, toyListUrl } from './Environment';
+import Environment, { toyRoot, toyBuildUrl, toyListUrl } from './Environment';
 import path from 'path';
 import fs, { readdirSync } from 'fs';
 import PlayCanvas from './Playcanvas';
@@ -9,6 +9,8 @@ import sevenBin from '7zip-bin';
 import del from 'del';
 import { copyFile } from "fs/promises";
 import { type } from "os";
+import { config } from 'yargs';
+import Status from './Status';
 
 class Game {
 
@@ -45,7 +47,7 @@ class Game {
 
                         // TODO : read config files
 
-                        let configs:any[] = [];
+                        let configs:Game.Config[] = [];
                         
                         contents.forEach(content => {
                             let contentPath:string = path.join(fullPath, content);
@@ -57,33 +59,31 @@ class Game {
                                     // console.log(`config file: ${contentPath}`);
                                     let config = JSON.parse(fs.readFileSync(contentPath, { encoding: 'utf8', flag: 'r' })) as Game.Config;
                                     
-                                    let projectFolder:string = config.playcanvas.name.replace(/ /g,'');
-
                                     let platformWeb:Game.Platform = 'Web';
-                                    let platformWebFolder:string = path.join(fullPath, `${projectFolder}`, `${platformWeb}`);
+                                    let platformWebFolder:string = path.join(fullPath, `${config.game.Folder}`, `${platformWeb}`);
                                     if (fs.existsSync(platformWebFolder)) {
                                         if (typeof config.builds == 'undefined') {
-                                            config.builds = [];
+                                            config.builds = {};
                                         }
-                                        config.builds.push(platformWeb);
+                                        config.builds[platformWeb.toString()] = `${toyRoot}/${config.game.Folder}/${platformWeb}`;
                                     }
                                     
                                     let platformSnapchat:Game.Platform = 'Snapchat';
-                                    let platformSnapchatFolder:string = path.join(fullPath, `${projectFolder}`, `${platformSnapchat}`);
+                                    let platformSnapchatFolder:string = path.join(fullPath, `${config.game.Folder}`, `${platformSnapchat}`);
                                     if (fs.existsSync(platformSnapchatFolder)) {
                                         if (typeof config.builds == 'undefined') {
-                                            config.builds = [];
+                                            config.builds = {};
                                         }
-                                        config.builds.push(platformSnapchat);
+                                        config.builds[platformSnapchat.toString()] = `${toyRoot}/${config.game.Folder}/${platformSnapchat}`;
                                     }
 
                                     let platformAndroid:Game.Platform = 'Android';
-                                    let platformAndroidFile:string = path.join(fullPath, `${projectFolder}`, `${Game.DefaultAPKName}`);
-                                    if (fs.existsSync(platformAndroidFile)) {
+                                    let apkPath:string = Game.CheckExistingApk(config);
+                                    if (apkPath != '') {
                                         if (typeof config.builds == 'undefined') {
-                                            config.builds = [];
+                                            config.builds = {};
                                         }
-                                        config.builds.push(platformAndroid);
+                                        config.builds[platformAndroid.toString()] = `${toyRoot}/${config.game.Folder}/${platformAndroid}/${apkPath}`;
                                     }
                                     
                                     configs.push(config);
@@ -105,14 +105,43 @@ class Game {
     }
 
     /**
+     * Check if there is an existing apk
+     */
+    private static CheckExistingApk (config:Game.Config):string {
+        let fullPath:string = path.join(__dirname, `${Game.RootFolder}`);
+
+        let platformAndroid:Game.Platform = 'Android';
+        let platformAndroidFolder:string = path.join(fullPath, `${config.game.Folder}`, `${platformAndroid}`);
+        let output:string = '';
+        if (fs.existsSync(platformAndroidFolder)) {
+            let stat = fs.statSync(platformAndroidFolder);
+            if (stat.isDirectory()) {
+                let contents = fs.readdirSync(platformAndroidFolder);
+                contents.forEach(content => {
+                    var contentPath = path.join(platformAndroidFolder, content);
+                    var isFile:boolean = fs.statSync(contentPath).isFile();
+                    if (isFile) {
+                        let extension = content.split('.').pop();
+                        if (extension == 'apk') {
+                            output = content;
+                        }
+                    }
+                });
+            }
+        }
+        
+        return output;
+    }
+
+    /**
      * Webhook for build toy games. 
      * @param app @type {express.Express}
      */
     public static WebhookBuild (app:express.Express):void {
         app.use(`${toyBuildUrl}`, async (req, res) => {
             // console.log(`<-- storage - files`);
-            if (PlayCanvas.CurrentStatus.Activity != 'None') {
-                console.log(`PlayCanvas.CurrentActivity: ${PlayCanvas.CurrentStatus.Activity}`);
+            if (Status.CurrentStatus.Activity != 'None') {
+                console.log(`Game.CurrentActivity: ${Status.CurrentStatus.Activity}`);
                 res.status(500).send(`PLAYCANVAS BUSY | `);
             } else {
                 let url:URL = new URL(`${Environment.CoreUrl}${req.originalUrl}`);
@@ -124,7 +153,6 @@ class Game {
                 let version:string = url.searchParams.get('v') as string;
 
                 let configPath:string = path.join(__dirname, `${Game.RootFolder}/${configName}.json`);
-                console.log(`configPath: ${configPath}`);
                 if (!fs.existsSync(`${configPath}`)) {
                     res.status(200).send(JSON.stringify({
                         success: false,
@@ -138,43 +166,92 @@ class Game {
                     config.game.UseVConsole = useVConsole;
                     config.playcanvas.version = version;
 
+                    Status.CurrentStatus = {
+                        Activity    : 'Build',
+                        AppName     : config.playcanvas.name,
+                        Platform    : config.game.Platform,
+                        Version     : config.playcanvas.version
+                    };
+
                     res.status(200).send(JSON.stringify({
                         success: true,
                         value:`building: [${config.playcanvas.name}] ver [${version}] for [${platform}]`
                     }));
                     let projectDirectory:string = path.join(__dirname, `${Game.RootFolder}/${config.game.Folder}`);
-                    console.log(`directory: ${projectDirectory}`);
                     if (!fs.existsSync(projectDirectory)) {
                         fs.mkdirSync(projectDirectory);
                     }
                     let authToken = 'lJHHrNEjN3klG93krjX3CrCa8SLIydWy';
 
-                    console.log(`config.playcanvas.version: ${config.playcanvas.version}`);
-                    console.log(`version: ${version}`);
-
                     let androidDirectory:string = path.join(__dirname, `..`, `..`, `www`);
+
+                    // TEST : remove this
+                    // Game.PreProcess(config);
+                    // return Promise.resolve();
 
                     // TODO : uncomment for actual build
                     PlayCanvas.Build(authToken, config, projectDirectory, true)
                     .then((zipPath:string) => {
                         console.log(`zipPath: ${zipPath}`);
                         if (config.game.Platform == 'Android') {
-                            return Game.PostProcess(zipPath, `${androidDirectory}`, config);
+                            return Game.PreProcess(config)
+                                .then(() => {
+                                    return Game.PostProcess(zipPath, `${androidDirectory}`, config);
+                                });
                         } else {
                             return Game.PostProcess(zipPath, `${projectDirectory}/${config.game.Platform}`, config);
                         }
                     }) 
-                    .then(() => {
+                    .then(async () => {
                         if (config.game.Platform == 'Android') {
                             console.log(`build android`);
-                            return new Promise<boolean>((resolve, reject) => {
-                                const { exec }    = require("child_process");
-                                var command:string = `cordova build android`;
+                            let apkPath:string = Game.CheckExistingApk(config);
+                            if (apkPath != '') {
+                                let platformAndroid:Game.Platform = 'Android';
+                                let oldApkPath:string = path.join(__dirname, `${Game.RootFolder}/${config.game.Folder}/${platformAndroid}/${apkPath}`);
+                                del([`${oldApkPath}`]);
+                            }
+                            const { exec }    = require("child_process");
+                            let result:boolean = false;
+                            result = await new Promise<boolean>((resolve, reject) => {
+                                var command:string = `cordova platform rm android`;
                                 console.log(`execute: ${command}`);
                                 exec(command, (error:any, stdout:any, stderr:any) => {
                                     if (error) {
                                         console.log(`error: ${error.message}`);
                                         console.log(`android: building: fail 1`);
+                                        resolve(false);
+                                        return;
+                                    }
+                                    resolve(true);
+                                });
+                            });
+                            if (!result) {
+                                return Promise.resolve(false);
+                            }
+                            result = await new Promise<boolean>((resolve, reject) => {
+                                var command:string = `cordova platform add android`;
+                                console.log(`execute: ${command}`);
+                                exec(command, (error:any, stdout:any, stderr:any) => {
+                                    if (error) {
+                                        console.log(`error: ${error.message}`);
+                                        console.log(`android: building: fail 2`);
+                                        resolve(false);
+                                        return;
+                                    }
+                                    resolve(true);
+                                });
+                            });
+                            if (!result) {
+                                return Promise.resolve(false);
+                            }
+                            result = await new Promise<boolean>((resolve, reject) => {
+                                var command:string = `cordova build android`;
+                                console.log(`execute: ${command}`);
+                                exec(command, (error:any, stdout:any, stderr:any) => {
+                                    if (error) {
+                                        console.log(`error: ${error.message}`);
+                                        console.log(`android: building: fail 3`);
                                         resolve(false);
                                         return;
                                     }
@@ -186,12 +263,18 @@ class Game {
                                     // }
                                     console.log(`stdout: ${stdout}`);
                                     console.log(`android: building: success`);
-                                    let apkDirectory:string = path.join(__dirname, `..`, `..`, `platforms/android/app/build/outputs/apk/debug`);
-                                    let apkPath:string = path.join(apkDirectory, Game.DefaultAPKName);
-                                    fs.copyFileSync(apkPath, `${projectDirectory}/${Game.DefaultAPKName}`);
+                                    let apkSourceFolder:string = path.join(__dirname, `..`, `..`, `platforms/android/app/build/outputs/apk/debug`);
+                                    let apkSource:string = path.join(apkSourceFolder, Game.DefaultAPKName);
+                                    let apkDestinationFolder:string = path.join(`${projectDirectory}`,`${config.game.Platform}`);
+                                    let apkDestination:string = path.join(apkDestinationFolder, `${config.playcanvas.name}_${config.playcanvas.version}_Build.apk`);
+                                    if (!fs.existsSync(apkDestinationFolder)) {
+                                        fs.mkdirSync(apkDestinationFolder);
+                                    }
+                                    fs.copyFileSync(apkSource, apkDestination);
                                     resolve(true);
                                 });
                             });
+                            return Promise.resolve(result);
                         } else {
                             return Promise.resolve(true);
                         }
@@ -199,11 +282,27 @@ class Game {
                     .then((success:boolean) => {
                         if (config.game.Platform == 'Android') {
                             let wwwDirectory:string = path.join(__dirname, `..`, `..`, `www`);
-                            del([`${wwwDirectory}**`,`${wwwDirectory}`]);
+                            del([`${wwwDirectory}**`]);
                         }
+
+                        Status.CurrentStatus = {
+                            Activity    : 'None',
+                            AppName     : '',
+                            Platform    : 'None',
+                            Version     : ''
+                        };
+    
                     })
                     .catch((err:Error) => {
                         console.log(`error`, err);
+
+                        Status.CurrentStatus = {
+                            Activity    : 'None',
+                            AppName     : '',
+                            Platform    : 'None',
+                            Version     : ''
+                        };
+    
                     });
                 }
             }
@@ -252,8 +351,29 @@ namespace Game {
             UseGCInstant            : boolean;
             UseOptimizedConfig      : boolean;
         },
-        builds : Platform[],
+        builds : {[platform:string]:string},
     } & PlayCanvas.Config;
+
+    export const PreProcess = async (config:Config) => {
+        let rootFolder:string = path.join(__dirname, `..`, `..`);
+        let configXMLPath:string = path.join(rootFolder, `config.xml`);
+        let packageJSONPath:string = path.join(rootFolder, `package.json`);
+
+        let configXMLContent:string = fs.readFileSync(configXMLPath, { encoding: 'utf8' });
+        configXMLContent = configXMLContent.replace(/widget[ ]*id=\"[a-zA-Z0-9.\-]*\"/g, `widget id="com.nowwa.${config.game.Config}"`);
+        configXMLContent = configXMLContent.replace(/android-packageName[ ]*=\"[a-zA-Z0-9.\-]*\"/g, `android-packageName="com.nowwa.${config.game.Config}"`);
+        configXMLContent = configXMLContent.replace(/version=\"[a-zA-Z0-9._\-]*\"/g, `version="${config.playcanvas.version}"`);
+        configXMLContent = configXMLContent.replace(/\<name\>[a-zA-Z0-9.\-]*\<\/name\>/g, `<name>${config.playcanvas.name}</name>`);
+        fs.writeFileSync(configXMLPath, configXMLContent, { encoding: 'utf8' });
+
+        let packageJSONContent:string = fs.readFileSync(packageJSONPath, { encoding: 'utf8' });
+        packageJSONContent = packageJSONContent.replace(/\"name\"[ ]*:[ ]*\"[a-zA-Z0-9.\-]*\"/g, `"name": "${config.game.Config}"`);
+        packageJSONContent = packageJSONContent.replace(/\"displayName\"[ ]*:[ ]*\"[a-zA-Z0-9.\-]*\"/g, `"displayName": "${config.playcanvas.name}"`);
+        packageJSONContent = packageJSONContent.replace(/\"version\"[ ]*:[ ]*\"[a-zA-Z0-9.\-]*\"/g, `"version": "${config.playcanvas.version}"`);
+        fs.writeFileSync(packageJSONPath, packageJSONContent, { encoding: 'utf8' });
+
+        return Promise.resolve();
+    };
 
     export const PostProcess = async (zipPath:string, extractPath:string, config:Config) => {
     
