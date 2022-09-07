@@ -12,9 +12,9 @@ import { type } from "os";
 import { config } from 'yargs';
 import Status from './Status';
 
-class Game {
+class Build {
 
-    private static Instance:Game;
+    private static Instance:Build;
 
     private static RootFolder:string = `../../storage/toy`;
 
@@ -22,9 +22,9 @@ class Game {
      * Initialize game module.
      */
     public static async AsyncInit (app:express.Express, env:Environment.Config):Promise<void> {
-        Game.Instance = new Game();
-        Game.WebhookList(app);
-        Game.WebhookBuild(app);
+        Build.Instance = new Build();
+        Build.WebhookList(app);
+        Build.WebhookBuild(app);
         return Promise.resolve();
     }
 
@@ -35,7 +35,7 @@ class Game {
     public static WebhookList (app:express.Express):void {
         app.use(`${toyListUrl}`, async (req, res) => {
             // console.log(`<-- storage - files`);
-            let fullPath:string = path.join(__dirname, `${Game.RootFolder}`);
+            let fullPath:string = path.join(__dirname, `${Build.RootFolder}`);
             // console.log(`Game : ${fullPath}`);
             if (fs.existsSync(fullPath)) {
                 let stat = fs.statSync(fullPath);
@@ -47,7 +47,7 @@ class Game {
 
                         // TODO : read config files
 
-                        let configs:Game.Config[] = [];
+                        let configs:Build.Config[] = [];
                         
                         contents.forEach(content => {
                             let contentPath:string = path.join(fullPath, content);
@@ -57,9 +57,9 @@ class Game {
                                 // console.log(`extension: ${extension}`);
                                 if (extension == `.json`) {
                                     // console.log(`config file: ${contentPath}`);
-                                    let config = JSON.parse(fs.readFileSync(contentPath, { encoding: 'utf8', flag: 'r' })) as Game.Config;
+                                    let config = JSON.parse(fs.readFileSync(contentPath, { encoding: 'utf8', flag: 'r' })) as Build.Config;
                                     
-                                    let platformWeb:Game.Platform = 'Web';
+                                    let platformWeb:Build.Platform = 'Web';
                                     let platformWebFolder:string = path.join(fullPath, `${config.game.Folder}`, `${platformWeb}`);
                                     if (fs.existsSync(platformWebFolder)) {
                                         if (typeof config.builds == 'undefined') {
@@ -68,7 +68,7 @@ class Game {
                                         config.builds[platformWeb.toString()] = `${toyRoot}/${config.game.Folder}/${platformWeb}`;
                                     }
                                     
-                                    let platformSnapchat:Game.Platform = 'Snapchat';
+                                    let platformSnapchat:Build.Platform = 'Snapchat';
                                     let platformSnapchatFolder:string = path.join(fullPath, `${config.game.Folder}`, `${platformSnapchat}`);
                                     if (fs.existsSync(platformSnapchatFolder)) {
                                         if (typeof config.builds == 'undefined') {
@@ -77,8 +77,8 @@ class Game {
                                         config.builds[platformSnapchat.toString()] = `${toyRoot}/${config.game.Folder}/${platformSnapchat}`;
                                     }
 
-                                    let platformAndroid:Game.Platform = 'Android';
-                                    let apkPath:string = Game.CheckExistingApk(config);
+                                    let platformAndroid:Build.Platform = 'Android';
+                                    let apkPath:string = Build.CheckExistingApk(config);
                                     if (apkPath != '') {
                                         if (typeof config.builds == 'undefined') {
                                             config.builds = {};
@@ -107,10 +107,10 @@ class Game {
     /**
      * Check if there is an existing apk
      */
-    private static CheckExistingApk (config:Game.Config):string {
-        let fullPath:string = path.join(__dirname, `${Game.RootFolder}`);
+    private static CheckExistingApk (config:Build.Config):string {
+        let fullPath:string = path.join(__dirname, `${Build.RootFolder}`);
 
-        let platformAndroid:Game.Platform = 'Android';
+        let platformAndroid:Build.Platform = 'Android';
         let platformAndroidFolder:string = path.join(fullPath, `${config.game.Folder}`, `${platformAndroid}`);
         let output:string = '';
         if (fs.existsSync(platformAndroidFolder)) {
@@ -147,19 +147,19 @@ class Game {
                 let url:URL = new URL(`${Environment.CoreUrl}${req.originalUrl}`);
 
                 let configName:string = url.searchParams.get('n') as string;
-                let backend:Game.Backend = url.searchParams.get('b') as Game.Backend;
-                let platform:Game.Platform = url.searchParams.get('p') as Game.Platform;
+                let backend:Build.Backend = url.searchParams.get('b') as Build.Backend;
+                let platform:Build.Platform = url.searchParams.get('p') as Build.Platform;
                 let useVConsole:boolean = (url.searchParams.get('d') as string) == '1';
                 let version:string = url.searchParams.get('v') as string;
 
-                let configPath:string = path.join(__dirname, `${Game.RootFolder}/${configName}.json`);
+                let configPath:string = path.join(__dirname, `${Build.RootFolder}/${configName}.json`);
                 if (!fs.existsSync(`${configPath}`)) {
                     res.status(200).send(JSON.stringify({
                         success: false,
                         value:'config not found'
                     }));
                 } else {
-                    let config:Game.Config = JSON.parse(fs.readFileSync(configPath, { encoding: 'utf8', flag: 'r' })) as Game.Config;
+                    let config:Build.Config = JSON.parse(fs.readFileSync(configPath, { encoding: 'utf8', flag: 'r' })) as Build.Config;
 
                     config.game.Backend = backend;
                     config.game.Platform = platform;
@@ -177,7 +177,7 @@ class Game {
                         success: true,
                         value:`building: [${config.playcanvas.name}] ver [${version}] for [${platform}]`
                     }));
-                    let projectDirectory:string = path.join(__dirname, `${Game.RootFolder}/${config.game.Folder}`);
+                    let projectDirectory:string = path.join(__dirname, `${Build.RootFolder}/${config.game.Folder}`);
                     if (!fs.existsSync(projectDirectory)) {
                         fs.mkdirSync(projectDirectory);
                     }
@@ -194,21 +194,21 @@ class Game {
                     .then((zipPath:string) => {
                         console.log(`zipPath: ${zipPath}`);
                         if (config.game.Platform == 'Android') {
-                            return Game.PreProcess(config)
+                            return Build.PreProcess(config)
                                 .then(() => {
-                                    return Game.PostProcess(zipPath, `${androidDirectory}`, config);
+                                    return Build.PostProcess(zipPath, `${androidDirectory}`, config);
                                 });
                         } else {
-                            return Game.PostProcess(zipPath, `${projectDirectory}/${config.game.Platform}`, config);
+                            return Build.PostProcess(zipPath, `${projectDirectory}/${config.game.Platform}`, config);
                         }
                     }) 
                     .then(async () => {
                         if (config.game.Platform == 'Android') {
                             console.log(`build android`);
-                            let apkPath:string = Game.CheckExistingApk(config);
+                            let apkPath:string = Build.CheckExistingApk(config);
                             if (apkPath != '') {
-                                let platformAndroid:Game.Platform = 'Android';
-                                let oldApkPath:string = path.join(__dirname, `${Game.RootFolder}/${config.game.Folder}/${platformAndroid}/${apkPath}`);
+                                let platformAndroid:Build.Platform = 'Android';
+                                let oldApkPath:string = path.join(__dirname, `${Build.RootFolder}/${config.game.Folder}/${platformAndroid}/${apkPath}`);
                                 del([`${oldApkPath}`]);
                             }
                             const { exec }    = require("child_process");
@@ -264,7 +264,7 @@ class Game {
                                     console.log(`stdout: ${stdout}`);
                                     console.log(`android: building: success`);
                                     let apkSourceFolder:string = path.join(__dirname, `..`, `..`, `platforms/android/app/build/outputs/apk/debug`);
-                                    let apkSource:string = path.join(apkSourceFolder, Game.DefaultAPKName);
+                                    let apkSource:string = path.join(apkSourceFolder, Build.DefaultAPKName);
                                     let apkDestinationFolder:string = path.join(`${projectDirectory}`,`${config.game.Platform}`);
                                     let apkDestination:string = path.join(apkDestinationFolder, `${config.playcanvas.name}_${config.playcanvas.version}_Build.apk`);
                                     if (!fs.existsSync(apkDestinationFolder)) {
@@ -311,7 +311,7 @@ class Game {
 
 }
 
-namespace Game {
+namespace Build {
 
     export type Backend = `Replicant` | `Cookies` | `Nakama` | `None`; 
     export type Platform = `Facebook` | `Snapchat` | `Web` | `Android` | `None`; 
@@ -747,4 +747,4 @@ namespace Game {
     };
 }
 
-export default Game;
+export default Build;

@@ -3,7 +3,7 @@ import ReactDOMClient from 'react-dom/client';
 import Top from './Top';
 import { Header, Icon, Segment } from 'semantic-ui-react';
 import Explorer, { ExplorerState, ExplorerStateDefault, ExplorerLoad } from './Explorer';
-import Build, { GameLoad, GameStateDefault } from './Build';
+import Builds, { BuildStateDefault } from './Builds';
 import Status from '../Core/Status';
 
 type IndexDisplay = 'None' | 'Explorer' | 'Build';
@@ -42,11 +42,11 @@ const Index = () => {
         // console.log(`explorerState focusFile: ${explorerState.focusFile}`);
     }
 
-    const [gameState, setGameState] = useState(GameStateDefault);
+    const [gameState, setGameState] = useState(BuildStateDefault);
     const [gameStatus, setGameStatus] = useState(Status.DetailDefault);
     let game;
     if (state.display == 'Build') {
-        game = Build(gameState, setGameState, gameStatus, setGameStatus);
+        game = Builds(gameState, setGameState, gameStatus, setGameStatus);
         // console.log(`gameState: ${gameState.initialized}`);
     }
     

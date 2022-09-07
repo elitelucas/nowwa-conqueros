@@ -1,7 +1,7 @@
 import fetch, { Response } from 'node-fetch';
 import fs from 'fs';
 import path from 'path';
-import Game from './Game';
+import Build from './Build';
 
 class PlayCanvas {
 
@@ -125,7 +125,7 @@ class PlayCanvas {
         });
     }
 
-    public static async Build (authToken:string, config:Game.Config, directory:string, noLog?:boolean):Promise<string> {
+    public static async Build (authToken:string, config:Build.Config, directory:string, noLog?:boolean):Promise<string> {
         return new Promise<string>((resolve, reject) => {
             console.log("✔️ Requested build from Playcanvas")
             let url = 'https://playcanvas.com/api/apps/download';

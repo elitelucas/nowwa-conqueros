@@ -1,4 +1,4 @@
-import Game from './Game';
+import Build from './Build';
 
 class Status {
 
@@ -17,7 +17,7 @@ namespace Status {
         Activity : ActivityType;
         AppName  : string;
         Version  : string;
-        Platform : Game.Platform;
+        Platform : Build.Platform;
     }
     export const DetailDefault:Detail = {
         Activity : 'None',

@@ -2,16 +2,16 @@ import { stat } from 'fs';
 import React, { useState, useEffect, SyntheticEvent } from 'react';
 import { Icon, Header, Label, Segment, Button, Card, Image, Item, Breadcrumb, List, SegmentGroup, BreadcrumbSection, BreadcrumbDivider, Table, Checkbox, CardGroup, Input, Select, Dropdown, DropdownItemProps, Accordion, LabelProps, Form, Grid, ButtonGroup, Divider, DropdownProps, InputOnChangeData, Loader, Dimmer, LabelDetail, Menu } from 'semantic-ui-react';
 import Environment, { toyBuildUrl, toyStatusUrl, toyListUrl } from '../Core/Environment';
-import Game from '../Core/Game';
+import Build from '../Core/Build';
 import Main from '../Core/Main';
 import Status from '../Core/Status';
 
 type ContentIndexType = `None` | `Info` | `Build` | `Archive`;
 
 type BuildValue = {
-    backend:Game.Backend,
+    backend:Build.Backend,
     debug:boolean | undefined,
-    platform:Game.Platform,
+    platform:Build.Platform,
     version:string
 }; 
 
@@ -22,9 +22,9 @@ const BuildValueDefault:BuildValue = {
     version: '',
 }
 
-export type GameState = {
+export type BuildState = {
     initialized : boolean,   
-    configs     : Game.Config[],
+    configs     : Build.Config[],
     current     : {
         AppName         : string,
         ContentIndex    : ContentIndexType
@@ -32,7 +32,7 @@ export type GameState = {
     buildValues : {[config:string]:BuildValue}
 }
 
-export const GameStateDefault:GameState = {
+export const BuildStateDefault:BuildState = {
     initialized : false,
     configs     : [],
     current     : {
@@ -42,13 +42,13 @@ export const GameStateDefault:GameState = {
     buildValues : {}
 }
 
-export const GameLoad = (state:GameState):Promise<GameState> => {
+export const GameLoad = (state:BuildState):Promise<BuildState> => {
     return new Promise((resolve, reject) => {
         // console.log(`get games`);
         fetch (`${window.location.origin}${toyListUrl}`)
             .then(res => res.json())
-            .then((res:GameState) => {
-                let gameState:GameState = {
+            .then((res:BuildState) => {
+                let gameState:BuildState = {
                     configs     : res.configs,
                     current     : state.current,
                     initialized : true,
@@ -64,7 +64,11 @@ export const GameLoad = (state:GameState):Promise<GameState> => {
     }); 
 };
 
-const Build = (state:GameState, setState:React.Dispatch<React.SetStateAction<GameState>>, status:Status.Detail, setStatus:React.Dispatch<React.SetStateAction<Status.Detail>>) => {
+const Builds = (state:BuildState, setState:React.Dispatch<React.SetStateAction<BuildState>>, status:Status.Detail, setStatus:React.Dispatch<React.SetStateAction<Status.Detail>>) => {
+
+    if (typeof globalThis.extra == 'undefined') {
+        globalThis.extra = {};
+    }
 
     const StatusLoad = ():Promise<Status.Detail> => {
         return new Promise((resolve, reject) => {
@@ -106,8 +110,8 @@ const Build = (state:GameState, setState:React.Dispatch<React.SetStateAction<Gam
         );
     };
 
-    const SelectContent = (config:Game.Config, contentIndex:ContentIndexType) => {
-        let gameState:GameState = {
+    const SelectContent = (config:Build.Config, contentIndex:ContentIndexType) => {
+        let gameState:BuildState = {
             configs     : state.configs,
             current     : state.current,
             initialized : state.initialized,
@@ -124,7 +128,7 @@ const Build = (state:GameState, setState:React.Dispatch<React.SetStateAction<Gam
         setState(gameState);
     };
 
-    const EntryGame = (config:Game.Config) => {
+    const EntryGame = (config:Build.Config) => {
         if (typeof(state.buildValues[config.game.Config]) == 'undefined') {
             state.buildValues[config.game.Config] = BuildValueDefault;
             setState(state);
@@ -160,7 +164,7 @@ const Build = (state:GameState, setState:React.Dispatch<React.SetStateAction<Gam
             let url:URL = new URL(`${window.location.origin}${toyBuildUrl}`);
             url.searchParams.set('n', config.game.Config);
             url.searchParams.set('p', tmpBuildValue.platform.toString());
-            let tmpBackend:Game.Backend = tmpBuildValue.backend;
+            let tmpBackend:Build.Backend = tmpBuildValue.backend;
             if (tmpBackend != 'None' && tmpBackend != 'Cookies' && (tmpBuildValue.platform == 'Web' || tmpBuildValue.platform == 'Android')) {
                 tmpBackend = 'Cookies';
             }
@@ -175,11 +179,12 @@ const Build = (state:GameState, setState:React.Dispatch<React.SetStateAction<Gam
                 .catch((error:any) => {
                     console.error(`error: ${error}`);
                 });
+            globalThis.extra.isBuildTriggered = true;
         };
 
         let setPlatformValue = (event: SyntheticEvent<HTMLElement, Event>, data: DropdownProps) => {
             let tmpBuildValue:BuildValue = state.buildValues[config.game.Config];
-            tmpBuildValue.platform = data.value as Game.Platform;
+            tmpBuildValue.platform = data.value as Build.Platform;
             state.buildValues[config.game.Config] = tmpBuildValue;
             console.log(`[${config.game.Config}] set platform: ${tmpBuildValue.platform}`);
             setState(state);
@@ -187,7 +192,7 @@ const Build = (state:GameState, setState:React.Dispatch<React.SetStateAction<Gam
 
         let setBackendValue = (event: SyntheticEvent<HTMLElement, Event>, data: DropdownProps) => {
             let tmpBuildValue:BuildValue = state.buildValues[config.game.Config];
-            tmpBuildValue.backend = data.value as Game.Backend;
+            tmpBuildValue.backend = data.value as Build.Backend;
             state.buildValues[config.game.Config] = tmpBuildValue;
             console.log(`[${config.game.Config}] set backend: ${tmpBuildValue.backend}`);
             setState(state);
@@ -240,14 +245,14 @@ const Build = (state:GameState, setState:React.Dispatch<React.SetStateAction<Gam
                     <Label attached='top' size='large'>{config.playcanvas.name}</Label>
                     <Image src={config.game.Thumbnail} fluid />
                     {typeof config.builds != 'undefined' && typeof config.builds['Web'] != 'undefined' ? (
-                        <Button fluid primary onClick={() => openInNewTab(`${window.location.origin}${config.builds['Web']}`)}>Play Web build</Button>
+                        <Button fluid primary onClick={() => openInNewTab(`${window.location.origin}${config.builds['Web']}`)}><Icon name='world'></Icon>Play</Button>
                     ) : (
-                        <Button fluid primary disabled>Build web first!</Button>
+                        <Button fluid primary disabled><Icon name='world'></Icon>Build first!</Button>
                     )}
                     {typeof config.builds != 'undefined' && typeof config.builds['Android'] != 'undefined' ? (
-                        <Button fluid primary onClick={() => downloadFile(`${apkFileName}`,`${config.builds['Android']}`)}>Download Android</Button>
+                        <Button fluid primary onClick={() => downloadFile(`${apkFileName}`,`${config.builds['Android']}`)}><Icon name='android'></Icon>Download</Button>
                     ) : (
-                        <Button fluid primary disabled>Build Android first!</Button>
+                        <Button fluid primary disabled><Icon name='android'></Icon>Build first!</Button>
                     )}
                 </Card.Header>
                 <Card.Content>
@@ -370,8 +375,12 @@ const Build = (state:GameState, setState:React.Dispatch<React.SetStateAction<Gam
         );
     };
 
+    let refreshList = () => {
+        GameLoad(state).then(setState);
+    };
+
     if (!state.initialized) {
-        let gameState:GameState = {
+        let gameState:BuildState = {
             configs     : state.configs,
             current     : state.current,
             initialized : state.initialized,
@@ -381,13 +390,19 @@ const Build = (state:GameState, setState:React.Dispatch<React.SetStateAction<Gam
 
         setInterval(() => {
             // console.log(`update status`);
-            StatusLoad().then(setStatus);
+            StatusLoad().then((value:Status.Detail) => {
+                if (value.Activity != 'None' && globalThis.extra.isBuildTriggered && !globalThis.extra.needRefresh) {
+                    globalThis.extra.needRefresh = true;
+                }
+                if (value.Activity == 'None' && globalThis.extra.needRefresh) {
+                    globalThis.extra.needRefresh = false;
+                    globalThis.extra.isBuildTriggered = false;
+                    refreshList();
+                }
+                setStatus(value);
+            });
         }, 1000);
     }
-
-    let refreshList = () => {
-        GameLoad(state).then(setState);
-    };
 
     return (
         <SegmentGroup>
@@ -410,4 +425,4 @@ const Build = (state:GameState, setState:React.Dispatch<React.SetStateAction<Gam
     );
 };
 
-export default Build;
+export default Builds;

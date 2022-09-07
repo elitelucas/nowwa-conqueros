@@ -12,7 +12,7 @@ import Socket from './Socket';
 import Authentication from './Authentication';
 import Database from './Database';
 import Storage from './Storage';
-import Game from './Game';
+import Build from './Build';
 import Status from './Status';
 
 console.log(`project path: ${__dirname}`);
@@ -92,7 +92,7 @@ class Main {
 
             await Storage.AsyncInit(app, env);
 
-            await Game.AsyncInit(app, env);
+            await Build.AsyncInit(app, env);
     
             app.listen(env.PORT);
             console.log(`[Express] listening on port ${env.PORT}`);
