@@ -5,26 +5,28 @@ import { Header, Icon, Segment } from 'semantic-ui-react';
 import Explorer, { ExplorerState, ExplorerStateDefault, ExplorerLoad } from './Explorer';
 import Builds, { BuildStateDefault } from './Builds';
 import Status from '../Core/Status';
+import 'semantic-ui-css/semantic.css';
+import Test, { TestStateDefault } from './Test';
 
-type IndexDisplay = 'None' | 'Explorer' | 'Build';
+type IndexDisplay = 'None' | 'Explorer' | 'Build' | 'Test';
 
 type IndexState = {
     display: IndexDisplay
 };
 
-const IndexStateDefault:IndexState = {
-    display   : 'None'
+const IndexStateDefault: IndexState = {
+    display: 'None'
 }
 
 export interface IndexProps {
-    SetDisplay: (display:IndexDisplay) => void
+    SetDisplay: (display: IndexDisplay) => void
 }
 
 const Index = () => {
 
     const [state, setState] = useState(IndexStateDefault);
 
-    const SetDisplay = (display:IndexDisplay) => {
+    const SetDisplay = (display: IndexDisplay) => {
         setState({
             display: display
         });
@@ -49,7 +51,14 @@ const Index = () => {
         game = Builds(gameState, setGameState, gameStatus, setGameStatus);
         // console.log(`gameState: ${gameState.initialized}`);
     }
-    
+
+    const [testState, setTestState] = useState(TestStateDefault);
+    let test;
+    if (state.display == 'Test') {
+        test = Test(testState, setTestState);
+        // console.log(`gameState: ${gameState.initialized}`);
+    }
+
     return (
         <Segment placeholder>
             <Segment placeholder>
@@ -61,6 +70,7 @@ const Index = () => {
             {top}
             {explorer}
             {game}
+            {test}
         </Segment>
     );
 }

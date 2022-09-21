@@ -1,65 +1,72 @@
 <html>
-    <head>
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <style>
-            select {
-                width: 200px;
-            }
 
-            button {
-                width: 200px;
-            }
+<head>
+    <style>
+        select {
+            width: 200px;
+        }
 
-            button.small {
-                width: 30px;
-            }
+        button {
+            width: 200px;
+        }
 
-            textarea {
-                width: 600px; 
-                height: 200px;
-                resize: none;
-            }
+        button.small {
+            width: 30px;
+        }
 
-            input {
-                width: 200px;
-                height: 20px;
-            }
-            input[type="file"]:-webkit-file-upload-button {
-                visibility: hidden;
-                content: 'Select some files';
-                width: 200px;
-                height: 20px;
-            }
-        </style>
-        <script src="/CONQUER.js"></script>
-        <script src="/index.js"></script>
-        <script src="/socket.io.min.js"></script>
-        <script>
-        </script>
-    </head>
-    <body>
-        <textarea id="output"></textarea>
-        <br/><button onclick="CallGetDefault();">Default</button>
-        <br/><button onclick="CallPostAuthenticate();">Authenticate</button><input placeholder="username" id="fld_username" type="text"><input placeholder="password" id="fld_password" type="password">
-        <br/><button onclick="CallPostRegister();">Register</button><input placeholder="retype password" id="fld_repassword" type="password">
-        <br/><button onclick="CallPostUpload();">Upload</button><input placeholder="select file" id="fld_file" type="file">
-        <br/><p style="margin: 0; padding: 0; height:20px;" >Custom Schema - List</p>
+        textarea {
+            width: 600px;
+            height: 200px;
+            resize: none;
+        }
 
-        <div id="custom_schema_list"></div>
-        <button onclick="SchemaStructureNew()">Add New Schema</button>
-        
-        <p style="margin: 0; padding: 0; height:20px;" >Schema Structure</p>
-        <input placeholder="enter schema name..." id="fld_schema_structure" disabled type="text" style="display: none;">
-        <div id="custom_schema_structure"></div>
-        <button onclick="SchemaStructureSave();" id="btn_schema_structure_save" style="display: none;">Save Structure</button>
+        input {
+            width: 200px;
+            height: 20px;
+        }
 
-        <p style="margin: 0; padding: 0; height:20px;" id="lbl_schema_data">Schema Data</p>
-        <div id="custom_schema_data"></div>
-        <button id="btn_schema_data_save" onclick="SchemaDataSave();" style="display: none;">Save Data</button>
-        <br/>
-        <button onclick="ExampleStructureSave();">JSON Structure Save</button><button onclick="ExampleStructureLoad();">Array Structure Load</button>
-        <textarea id="input"></textarea>
-        <p style="margin: 0; padding: 0; height:20px;" id="lbl_command"></p>
-        <br/><button onclick="RunCommand();">Run Command</button>
-    </body>
+        input[type="file"]:-webkit-file-upload-button {
+            visibility: hidden;
+            content: 'Select some files';
+            width: 200px;
+            height: 20px;
+        }
+    </style>
+    <script type="module" src="/Conquer.ts"></script>
+    <script type="module" src="/index.ts"></script>
+    <script>
+    </script>
+</head>
+
+<body>
+    <textarea id="output"></textarea>
+    <br /><button onclick="CallGetDefault();">Default</button>
+    <br /><button onclick="CallPostAuthenticate();">Authenticate</button><input placeholder="username" id="fld_username"
+        type="text"><input placeholder="password" id="fld_password" type="password">
+    <br /><button onclick="CallPostRegister();">Register</button><input placeholder="retype password"
+        id="fld_repassword" type="password">
+    <br /><button onclick="CallPostUpload();">Upload</button><input placeholder="select file" id="fld_file" type="file">
+    <br />
+    <p style="margin: 0; padding: 0; height:20px;">Custom Schema - List</p>
+
+    <div id="custom_schema_list"></div>
+    <button onclick="SchemaStructureNew()">Add New Schema</button>
+
+    <p style="margin: 0; padding: 0; height:20px;">Schema Structure</p>
+    <input placeholder="enter schema name..." id="fld_schema_structure" disabled type="text" style="display: none;">
+    <div id="custom_schema_structure"></div>
+    <button onclick="SchemaStructureSave();" id="btn_schema_structure_save" style="display: none;">Save
+        Structure</button>
+
+    <p style="margin: 0; padding: 0; height:20px;" id="lbl_schema_data">Schema Data</p>
+    <div id="custom_schema_data"></div>
+    <button id="btn_schema_data_save" onclick="SchemaDataSave();" style="display: none;">Save Data</button>
+    <br />
+    <button onclick="ExampleStructureSave();">JSON Structure Save</button><button
+        onclick="ExampleStructureLoad();">Array Structure Load</button>
+    <textarea id="input"></textarea>
+    <p style="margin: 0; padding: 0; height:20px;" id="lbl_command"></p>
+    <br /><button onclick="RunCommand();">Run Command</button>
+</body>
+
 </html>

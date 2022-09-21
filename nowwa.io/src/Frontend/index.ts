@@ -1,21 +1,24 @@
-//@ts-ignore
-declare var Conquer:any;
+import * as $ from 'jquery';
+import Conquer from '../Core/Conquer';
 
-async function Init () {
+async function Init() {
 
-    // var structure002 = {
-    //     "schemaName"        : "schema002",
-    //     "schemaFields"      : {
-    //         "add"           : {
-    //             "field001"  : "number",
-    //             "field002"  : "string",
-    //             "field003"  : "boolean"
-    //         },
-    //     }
-    // };
-    // await CONQUER.SchemaStructureSave(structure002);
-    // console.log('schema structure saved');
-    
+    await Conquer.TestNakama();
+    console.log($("#fld_schema_structure"));
+
+    var structure002 = {
+        "schemaName": "schema002",
+        "schemaFields": {
+            "add": {
+                "field001": "number",
+                "field002": "string",
+                "field003": "boolean"
+            },
+        }
+    };
+    await Conquer.SchemaStructureSave(structure002);
+    console.log('schema structure saved');
+
     // // Case invalid data type
     // var data001 = {
     //     "schemaName"        : "schema002",
@@ -27,8 +30,8 @@ async function Init () {
     //         },
     //     }
     // };
-    // await CONQUER.SchemaDataSave(data001);
-    
+    // await Conquer.SchemaDataSave(data001);
+
     // Case valid data type
     // var data001 = {
     //     "schemaName"        : "schema002",
@@ -40,9 +43,9 @@ async function Init () {
     //         },
     //     }
     // };
-    // await CONQUER.SchemaDataSave(data001);
+    // await Conquer.SchemaDataSave(data001);
     // console.log('schema data saved');
-    
+
     // Case valid search filter
     // var filter001 = {
     //     "schemaName"        : "schema002",
@@ -54,7 +57,7 @@ async function Init () {
     //         },
     //     }
     // };
-    // var data = await CONQUER.SchemaDataLoad(filter001);
+    // var data = await Conquer.SchemaDataLoad(filter001);
     // console.log('schema data loaded');
     // console.log(data);
 
@@ -66,17 +69,17 @@ async function Init () {
     //         },
     //     }
     // };
-    // await CONQUER.SchemaStructureSave(structure002alter001);
+    // await Conquer.SchemaStructureSave(structure002alter001);
     // console.log('schema structure altered');
-    
-    
+
+
     // var structure002Alter002 = {
     //     "schemaName"        : "schema002",
     //     "schemaFields"      : {
     //         "remove"        : ["field001"]
     //     }
     // };
-    // await CONQUER.SchemaStructureSave(structure002Alter002);
+    // await Conquer.SchemaStructureSave(structure002Alter002);
     // console.log('schema structure altered');
 
     // Case valid data type
@@ -92,22 +95,22 @@ async function Init () {
     //         },
     //     }
     // };
-    // await CONQUER.SchemaDataSave(data002);
+    // await Conquer.SchemaDataSave(data002);
     // console.log('schema data saved');
 }
- 
-var logs:string[] = [];
-var maxLogs:number = 10;
-var port:number = 9000;
-var host:string = '127.0.0.1';
-var version:string = '0.0.1';
-var useSSL:boolean = false;
-var targetURL:string = (useSSL ? `https` : `http`) + `://${host}` + ((port == 80) ? `` : `:${port}`) + `/webhook/v${version}`;
+
+var logs: string[] = [];
+var maxLogs: number = 10;
+var port: number = 9000;
+var host: string = '127.0.0.1';
+var version: string = '0.0.1';
+var useSSL: boolean = false;
+var targetURL: string = (useSSL ? `https` : `http`) + `://${host}` + ((port == 80) ? `` : `:${port}`) + `/webhook/v${version}`;
 console.log(targetURL);
 
 type Method = "GET" | "POST";
 
-function Log(log:any, isError?:boolean):void {
+function Log(log: any, isError?: boolean): void {
     if (typeof log != 'string') {
         logs.push(JSON.stringify(log));
     } else {
@@ -124,7 +127,7 @@ function Log(log:any, isError?:boolean):void {
     } else {
         console.log(log);
     }
-    if (document != null)  {
+    if (document != null) {
         var element = document.getElementById(`output`);
         if (element != null) {
             element.innerHTML = output;
@@ -132,44 +135,44 @@ function Log(log:any, isError?:boolean):void {
     }
 }
 
-async function Call (method:Method, url:string, reqdata?:any, isFile?:boolean):Promise<any> {
+async function Call(method: Method, url: string, reqdata?: any, isFile?: boolean): Promise<any> {
     try {
-        var requestInit:RequestInit = { 
-            method  : method,
-            body    : isFile ? reqdata : JSON.stringify(reqdata),
-            headers : isFile ? undefined : {
-                'Content-Type'  : 'application/json'
+        var requestInit: RequestInit = {
+            method: method,
+            body: isFile ? reqdata : JSON.stringify(reqdata),
+            headers: isFile ? undefined : {
+                'Content-Type': 'application/json'
             }
         };
         console.log(requestInit);
-        var response:Response = await fetch (url, requestInit);
+        var response: Response = await fetch(url, requestInit);
         Log(reqdata);
-        var resdata:any = await response.json();
+        var resdata: any = await response.json();
         Log(resdata);
         return resdata;
     }
-    catch (error:any) {
+    catch (error: any) {
         Log(error, true);
         return null;
     }
 }
 
-async function CallGetDefault ():Promise<void> {
+async function CallGetDefault(): Promise<void> {
     Log('call get default...');
     return Call("GET", targetURL);
 }
 
-async function CallPostAuthenticate ():Promise<void> {
-    var username:string = $(`#fld_username`).val() as string;
-    var password:string = $(`#fld_password`).val() as string;
-    if (username.length == 0) {  
+async function CallPostAuthenticate(): Promise<void> {
+    var username: string = $(`#fld_username`).val() as string;
+    var password: string = $(`#fld_password`).val() as string;
+    if (username.length == 0) {
         return Log('username cannot be empty!');
     }
-    if (password.length == 0) {  
+    if (password.length == 0) {
         return Log('password cannot be empty!');
     }
     try {
-        var user = await CONQUER.UserAuthenticate(username, password);
+        var user = await Conquer.UserAuthenticate(username, password);
         Log(user);
     }
     catch (error) {
@@ -177,24 +180,24 @@ async function CallPostAuthenticate ():Promise<void> {
     }
 }
 
-async function CallPostRegister ():Promise<void> {
-    var username:string = $(`#fld_username`).val() as string;
-    var password:string = $(`#fld_password`).val() as string;
-    var repassword:string = $(`#fld_repassword`).val() as string;
-    if (username.length == 0) {  
+async function CallPostRegister(): Promise<void> {
+    var username: string = $(`#fld_username`).val() as string;
+    var password: string = $(`#fld_password`).val() as string;
+    var repassword: string = $(`#fld_repassword`).val() as string;
+    if (username.length == 0) {
         Log('username cannot be empty!');
         return Promise.resolve();
     }
-    if (password.length == 0) {  
+    if (password.length == 0) {
         Log('password cannot be empty!');
         return Promise.resolve();
-    } 
-    if (repassword != password) {  
+    }
+    if (repassword != password) {
         Log('password mismatch!');
         return Promise.resolve();
     }
     try {
-        var user = await CONQUER.UserRegister(username, password);
+        var user = await Conquer.UserRegister(username, password);
         Log(user);
     }
     catch (error) {
@@ -202,16 +205,16 @@ async function CallPostRegister ():Promise<void> {
     }
 }
 
-async function CallPostUpload ():Promise<void> {
+async function CallPostUpload(): Promise<void> {
     var filename = ($(`#fld_file`).val()) as string;
-    if (filename.length == 0) {  
+    if (filename.length == 0) {
         return Log('file cannot be empty!');
     }
-    var method:Method = "POST";
-    var files:FileList | null = (($(`#fld_file`) as unknown as HTMLInputElement[])[0]).files;
+    var method: Method = "POST";
+    var files: FileList | null = (($(`#fld_file`) as unknown as HTMLInputElement[])[0]).files;
     if (files != null) {
         let formData = new FormData();
-        for (var i:number = 0; i < files.length; i++) {
+        for (var i: number = 0; i < files.length; i++) {
             console.log(files[i]);
             formData.append(`fld_file_${i}`, files[i]);
         }
@@ -220,14 +223,14 @@ async function CallPostUpload ():Promise<void> {
     }
 }
 
-var lastFieldNum:number = 0;
-var fieldNumbers:number[] = [];
-var fieldsToRemove:string[] = [];
-var previousFields:string[] = [];
-var activeSchemaName:string = '';
+var lastFieldNum: number = 0;
+var fieldNumbers: number[] = [];
+var fieldsToRemove: string[] = [];
+var previousFields: string[] = [];
+var activeSchemaName: string = '';
 
-function SchemaStructureAddField (fieldName?:string, fieldType?:string):void {
-        
+function SchemaStructureAddField(fieldName?: string, fieldType?: string): void {
+
     if (activeSchemaName) {
         $("#fld_schema_structure").attr('disabled', 'disabled');
         $("#fld_schema_structure").val(activeSchemaName);
@@ -240,7 +243,7 @@ function SchemaStructureAddField (fieldName?:string, fieldType?:string):void {
     var removeButton = activeSchemaName || lastFieldNum > 0 ?
         `<button class="small" onclick="SchemaStructureRemoveField(${lastFieldNum}, ${fieldNameRaw});">-</button>` :
         ``;
-    var element = 
+    var element =
         `<div id="con_field_structure_${lastFieldNum}">
             <input placeholder="enter field name..." id="fld_field_structure_${lastFieldNum}" type="text" value="${fieldName || ''}"><select id="sel_field_structure_${lastFieldNum}" name="cars">
                 <option value="string" ${fieldType == 'string' ? 'selected' : ''}>string</option>
@@ -249,31 +252,31 @@ function SchemaStructureAddField (fieldName?:string, fieldType?:string):void {
                 <option value="date" ${fieldType == 'date' ? 'selected' : ''}>date</option>
             </select><button class="small" onclick="SchemaStructureAddField();">+</button>${removeButton}
         </div>`;
-    $("#custom_schema_structure").append(element); 
+    $("#custom_schema_structure").append(element);
     fieldNumbers.push(lastFieldNum);
     lastFieldNum++;
-} 
+}
 
-function SchemaStructureRemoveField (fieldNumber:number, schemaName?:string):void {
+function SchemaStructureRemoveField(fieldNumber: number, schemaName?: string): void {
     // TODO : check for removal of a field
     if (schemaName) {
         fieldsToRemove.push(schemaName);
     }
-    for (var i:number = 0; i < fieldNumbers.length; i++) { 
+    for (var i: number = 0; i < fieldNumbers.length; i++) {
         if (fieldNumbers[i] === fieldNumber) {
-            fieldNumbers.splice(i, 1); 
+            fieldNumbers.splice(i, 1);
         }
     }
     console.log(fieldNumbers);
-    $(`#con_field_structure_${fieldNumber}`).remove(); 
-} 
+    $(`#con_field_structure_${fieldNumber}`).remove();
+}
 
-async function SchemaStructureSave ():Promise<void> {
-    var value:{ 
-        schemaName      : string, 
-        schemaFields    : {
-            add?        : {[key:string]:string}
-            remove?     : string[] 
+async function SchemaStructureSave(): Promise<void> {
+    var value: {
+        schemaName: string,
+        schemaFields: {
+            add?: { [key: string]: string }
+            remove?: string[]
         }
     } = {
         schemaName: ($(`#fld_schema_structure`).val()) as string,
@@ -286,10 +289,10 @@ async function SchemaStructureSave ():Promise<void> {
 
     // Prepare data to be sent
     if (fieldNumbers.length > 0) {
-        for (var i:number = 0; i < fieldNumbers.length; i++) {
-            var fieldNumber:number = fieldNumbers[i];
-            var fieldType:string = $(`#sel_field_structure_${fieldNumber}`).find(":selected").text();
-            var fieldName:string = ($(`#fld_field_structure_${fieldNumber}`).val()) as string;
+        for (var i: number = 0; i < fieldNumbers.length; i++) {
+            var fieldNumber: number = fieldNumbers[i];
+            var fieldType: string = $(`#sel_field_structure_${fieldNumber}`).find(":selected").text();
+            var fieldName: string = ($(`#fld_field_structure_${fieldNumber}`).val()) as string;
             if (fieldName.length == 0) {
                 Log('one of the field cannot be empty!');
                 return Promise.reject(new Error('one of the field cannot be empty!'));
@@ -299,9 +302,9 @@ async function SchemaStructureSave ():Promise<void> {
             value.schemaFields.add = add;
         }
         if (value.schemaFields.add) {
-            var fieldsToAdd:string[] = Object.keys(value.schemaFields.add);
-            for (var i:number = 0; i < previousFields.length; i++) {
-                var fieldName:string = previousFields[i];
+            var fieldsToAdd: string[] = Object.keys(value.schemaFields.add);
+            for (var i: number = 0; i < previousFields.length; i++) {
+                var fieldName: string = previousFields[i];
                 if (!fieldsToAdd.includes(fieldName)) {
                     fieldsToRemove.push(fieldName);
                 }
@@ -310,7 +313,7 @@ async function SchemaStructureSave ():Promise<void> {
     }
     if (fieldsToRemove.length > 0) {
         value.schemaFields.remove = [];
-        for (var i:number = 0; i < fieldsToRemove.length; i++) {
+        for (var i: number = 0; i < fieldsToRemove.length; i++) {
             value.schemaFields.remove.push(fieldsToRemove[i]);
         }
     }
@@ -325,32 +328,32 @@ async function SchemaStructureSave ():Promise<void> {
         $("#btn_schema_structure_save").hide();
         $("#fld_schema_structure").hide();
     }
-    catch (error:any) {
+    catch (error: any) {
         console.error(error);
     }
 }
 
-var customSchemas:{[key:string]:any} = {};
+var customSchemas: { [key: string]: any } = {};
 
-async function SchemaStructureLoad (schemaNames?:string[]):Promise<void> {
+async function SchemaStructureLoad(schemaNames?: string[]): Promise<void> {
     Log('load custom schemas...');
     $("#custom_schema_list").empty();
     var structures = await Conquer.SchemaStructureLoad(schemaNames);
     Log(`custom schema loaded!`);
     customSchemas = {};
-    for (var i:number = 0; i < structures.length; i++) {
+    for (var i: number = 0; i < structures.length; i++) {
         var data = structures[i];
         customSchemas[data.schemaName as string] = data;
-        $("#custom_schema_list").append( 
+        $("#custom_schema_list").append(
             `${i > 0 ? '<br/>' : ''}<button onclick="SchemaStructureSelect('${data.schemaName}');">${data.schemaName}</button>`
-        ); 
+        );
     }
     $("#custom_schema_data").empty();
     $("#custom_schema_structure").empty();
     $("#lbl_schema_data").text(`Schema Data`);
 }
 
-function SchemaStructureNew () {
+function SchemaStructureNew() {
     Log(`Schema Structure: NEW`);
     $("#custom_schema_data").empty();
     $("#custom_schema_structure").empty();
@@ -365,7 +368,7 @@ function SchemaStructureNew () {
     SchemaStructureAddField();
 }
 
-function SchemaStructureSelect(schemaName:string) {
+function SchemaStructureSelect(schemaName: string) {
     Log(`Schema Structure: ${schemaName}`);
     activeSchemaName = schemaName;
     fieldsToRemove = [];
@@ -377,42 +380,42 @@ function SchemaStructureSelect(schemaName:string) {
     $("#lbl_schema_data").text(`Schema Data - ${schemaName}`);
     $("#custom_schema_data").empty();
     $("#custom_schema_structure").empty();
-    for (var i:number = 0; i < fieldNames.length; i++) {
+    for (var i: number = 0; i < fieldNames.length; i++) {
         var fieldName = fieldNames[i];
         var fieldType = structure.schemaFields[fieldName];
         SchemaStructureAddField(fieldName, fieldType);
         previousFields.push(fieldName);
-        
-        $("#custom_schema_data").append( 
+
+        $("#custom_schema_data").append(
             `<div id="con_field_data">
                 <input type="text" value="${fieldName} - ${fieldType}" readonly><input placeholder="enter ${fieldType} value..." id="fld_field_data_${fieldName}" type="text">
             </div>`
-        ); 
+        );
     }
     $("#btn_schema_data_save").show();
     $("#btn_schema_structure_save").show();
     $("#fld_schema_structure").show();
 }
 
-async function SchemaDataSave ():Promise<void> {
+async function SchemaDataSave(): Promise<void> {
     try {
-        var data:{
-            schemaName      : string,
-            schemaFields    : {
-                values      : {[key:string]:any}
+        var data: {
+            schemaName: string,
+            schemaFields: {
+                values: { [key: string]: any }
             }
         } = {
-            schemaName      : activeSchemaName,
-            schemaFields    : {
-                values      : {}
+            schemaName: activeSchemaName,
+            schemaFields: {
+                values: {}
             }
         }
         var fieldNames = Object.keys(customSchemas[activeSchemaName].schemaFields);
-        for (var i:number = 0; i < fieldNames.length; i++) {
-            var fieldName:string = fieldNames[i];
-            var fieldType:string = customSchemas[activeSchemaName].schemaFields[fieldName];
-            var rawFieldValue:string = $(`#fld_field_data_${fieldName}`).val() as string;
-            var fieldValue:any = rawFieldValue;
+        for (var i: number = 0; i < fieldNames.length; i++) {
+            var fieldName: string = fieldNames[i];
+            var fieldType: string = customSchemas[activeSchemaName].schemaFields[fieldName];
+            var rawFieldValue: string = $(`#fld_field_data_${fieldName}`).val() as string;
+            var fieldValue: any = rawFieldValue;
             if (fieldType == 'number') {
                 fieldValue = parseFloat(rawFieldValue);
             }
@@ -424,19 +427,19 @@ async function SchemaDataSave ():Promise<void> {
         var document = await Conquer.SchemaDataSave(data);
         console.log(document);
     }
-    catch (error:any) {
+    catch (error: any) {
         console.error(error);
     }
 }
 
-async function SchemaDataLoad ():Promise<void> {
+async function SchemaDataLoad(): Promise<void> {
     try {
         var value = {
-            schemaName      : "schema003",
-            schemaFields    : {
-                where       : {
-                    field007    : {
-                        $gt     : 0,
+            schemaName: "schema003",
+            schemaFields: {
+                where: {
+                    field007: {
+                        $gt: 0,
                     }
                 },
             }
@@ -444,25 +447,25 @@ async function SchemaDataLoad ():Promise<void> {
         var documents = await Conquer.SchemaDataLoad(value);
         console.log(documents);
     }
-    catch (error:any) {
+    catch (error: any) {
         console.error(error);
     }
 }
 
-async function RunCommand ():Promise<void> {
+async function RunCommand(): Promise<void> {
     try {
-        var input:string = $("#input").val() as string;
+        var input: string = $("#input").val() as string;
         console.log(input);
         return Promise.resolve();
     }
-    catch (error:any) {
+    catch (error: any) {
         console.error(error);
     }
 }
 
-function ExampleStructureSave () {
-    var input = 
-`{
+function ExampleStructureSave() {
+    var input =
+        `{
     "schemaName"        : "schema001",
     "schemaFields"      : {
         "add"           : {
@@ -477,9 +480,9 @@ function ExampleStructureSave () {
     $("#lbl_command").text(`call Conquer.SchemaStructureSave(value)`);
 }
 
-function ExampleStructureLoad () {
-    var input = 
-`[
+function ExampleStructureLoad() {
+    var input =
+        `[
     "schema001",
     "schema002"
 ]`;

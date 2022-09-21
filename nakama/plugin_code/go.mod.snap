@@ -1,0 +1,12 @@
+module plugin_code
+
+go 1.13
+
+require (
+    github.com/heroiclabs/nakama-common v1.0.0
+    github.com/golang/protobuf v1.3.2
+)
+
+replace (
+    github.com/golang/protobuf => github.com/golang/protobuf v1.3.2
+)

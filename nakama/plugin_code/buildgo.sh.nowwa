@@ -1,0 +1,4 @@
+cd $HOME/nakama/data/plugin_code
+docker run --rm -w "/builder" -v "${PWD}:/builder" heroiclabs/nakama-pluginbuilder:2.14.0 build -buildmode=plugin -trimpath -o ./plugin.so
+mv plugin.so $HOME/nakama/data/modules/plugin.so
+docker-compose restart

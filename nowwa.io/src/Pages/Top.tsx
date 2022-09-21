@@ -2,7 +2,7 @@ import React from 'react';
 import { Icon, Button, Segment, ButtonGroup, Menu } from 'semantic-ui-react';
 import { IndexProps } from './Index';
 
-const Top = (props:IndexProps) => {
+const Top = (props: IndexProps) => {
 
     const ShowExplorer = () => {
         props.SetDisplay('Explorer');
@@ -10,6 +10,10 @@ const Top = (props:IndexProps) => {
 
     const ShowBuild = () => {
         props.SetDisplay('Build');
+    };
+
+    const ShowTest = () => {
+        props.SetDisplay('Test');
     };
 
     return (
@@ -21,6 +25,10 @@ const Top = (props:IndexProps) => {
             <Menu.Item onClick={ShowBuild}>
                 <Icon name='cog'></Icon>
                 Build
+            </Menu.Item>
+            <Menu.Item onClick={ShowTest}>
+                <Icon name='cog'></Icon>
+                Test
             </Menu.Item>
         </Menu>
     );

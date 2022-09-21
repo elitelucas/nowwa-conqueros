@@ -16,3 +16,5 @@ nowwa.io/storage/toy/Woodturning3D/Android/*.apk
 nowwa.io/node_modules.zip
 nowwa.io/storage/toy/StackJump/Web/
 nowwa.io/storage/toy/Woodturning3D/Web/
+nowwa.io/storage/
+nakama/modules/*.so

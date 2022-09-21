@@ -1,0 +1,2 @@
+cd $HOME/nakama/data/plugin_code
+docker run --rm -w "/builder" -v "${PWD}:/builder" heroiclabs/nakama-pluginbuilder:2.7.0 build -buildmode=plugin -trimpath -o ./plugin_snap.so

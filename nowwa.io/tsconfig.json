@@ -1,15 +1,31 @@
 {
     "extends": "@tsconfig/node16/tsconfig.json",
-    "lib": ["es5", "es6", "dom"],
+    "lib": [
+        "es5",
+        "es6",
+        "dom"
+    ],
     "compilerOptions": {
         "rootDir": "src/",
-        "outDir" : "dist/",
-        "jsx": "react", 
-        "lib": ["es5", "es6", "dom"],
+        "outDir": "dist/",
+        "jsx": "react",
+        "lib": [
+            "es5",
+            "es6",
+            "dom"
+        ],
         "module": "commonjs",
         "esModuleInterop": true,
         "target": "ES6"
     },
-    "include": ["src/Core/", "src/Frontend/", "src/Models/"],
-    "exclude": ["node_modules", "src/Pages"]
-  }
+    "include": [
+        "src/Core/",
+        "src/Models/",
+        "src/Frontend/Conquer.ts"
+    ],
+    "exclude": [
+        "node_modules",
+        "src/Pages",
+        "src/Frontend/"
+    ]
+}
