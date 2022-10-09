@@ -19,10 +19,7 @@
         "target": "ES6"
     },
     "include": [
-        "src/Core/",
-        "src/Models/",
-        "src/Frontend/",
-        "src/Compile.ts",
+        "src"
     ],
     "exclude": [
         "node_modules"

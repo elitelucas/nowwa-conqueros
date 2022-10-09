@@ -1,0 +1,42 @@
+### website ###
+
+server {
+	listen 80;
+	server_name supersnappy.io;
+		
+	location / {
+		proxy_pass http://127.0.0.1:9100/; # redirect to this url, make sure the '/' exists
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+	
+	# return 301 https://supersnappy.io$request_uri;
+}
+
+# server {
+# 	listen 443 ssl default_server;
+# 	server_name supersnappy.io;
+# 	
+# 	ssl_certificate     /etc/letsencrypt/live/supersnappy.io/fullchain.pem;
+# 	ssl_certificate_key /etc/letsencrypt/live/supersnappy.io/privkey.pem;
+# 	
+# 	ssl_protocols       TLSv1 TLSv1.1 TLSv1.2 SSLv3;
+# 	ssl_ciphers         HIGH:!aNULL:!MD5;
+# 	
+# 	access_log /var/log/nginx/nowwa.io.access.log;
+# 	error_log  /var/log/nginx/error.log info;
+# 
+# 	client_max_body_size 200M;
+# 	
+# 	keepalive_timeout 36000;
+# 		
+# 	location / {
+# 		proxy_pass http://127.0.0.1:9100/; # redirect to this url, make sure the '/' exists
+#         proxy_set_header Host $host;
+#         proxy_set_header X-Real-IP $remote_addr;
+#         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+#         proxy_set_header X-Forwarded-Proto $scheme;
+#     }
+# }

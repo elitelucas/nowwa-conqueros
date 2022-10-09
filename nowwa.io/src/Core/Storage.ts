@@ -7,7 +7,7 @@ class Storage {
 
     private static Instance: Storage;
 
-    private static VisibleExtensions: string[] = ['html', 'png', 'jpg', 'txt'];
+    private static VisibleExtensions: string[] = ['html', 'png', 'jpg', 'txt', 'js'];
 
     private static RootFolder: string = `../../storage`;
 

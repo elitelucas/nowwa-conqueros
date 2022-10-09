@@ -1,12 +1,17 @@
 {
-  "name": "idlefrontier",
+  "name": "woodturning",
   "displayName": "Flappy Dunk",
   "version": "1",
   "description": "",
   "scripts": {
     "core:dev": "tsc-watch --onSuccess \"node ./dist/Core/Main.js --env=\"dev\"\"",
-    "front:dev": "parcel watch ./src/Pages/Index.html ./src/Pages/Index.tsx --dist-dir ./storage",
-    "conquer:build": "parcel build ./src/Core/Conquer.ts --dist-dir ./storage/home/lib"
+    "core:build": "tsc",
+    "front:dev": "parcel watch ./src/Pages/Index.html --dist-dir ./storage",
+    "front:build": "parcel build ./src/Pages/Index.html --dist-dir ./storage",
+    "conquer:build": "parcel build ./src/Frontend/Conquer.ts --dist-dir ./storage/home/lib",
+    "dev": "tsc && node ./dist/Compile.js --env=\"dev\"",
+    "prod": "tsc && node ./dist/Compile.js --env=\"prod\"",
+    "local": "http-server ./storage -p 9876"
   },
   "author": "",
   "license": "ISC",
@@ -41,7 +46,7 @@
     "browserify-zlib": "^0.2.0",
     "constants-browserify": "^1.0.0",
     "copyfiles": "^2.4.1",
-    "cordova-android": "^10.1.2",
+    "cordova-android": "^11.0.0",
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
     "crypto-browserify": "^3.12.0",
@@ -67,7 +72,6 @@
   "dependencies": {
     "@heroiclabs/nakama-js": "^2.4.1",
     "7zip-bin": "^5.2.0",
-    "axios": "^0.27.2",
     "bcrypt": "^5.0.1",
     "busboy": "^1.5.0",
     "cloudinary": "^1.29.0",
@@ -76,6 +80,7 @@
     "express-session": "^1.17.2",
     "mongoose": "^6.2.6",
     "multer": "^1.4.4",
+    "onesignal-cordova-plugin": "3.2.0",
     "parcel": "^2.6.2",
     "passport": "^0.5.2",
     "passport-custom": "^1.1.1",
@@ -93,6 +98,9 @@
   "cordova": {
     "platforms": [
       "android"
-    ]
+    ],
+    "plugins": {
+      "onesignal-cordova-plugin": {}
+    }
   }
 }

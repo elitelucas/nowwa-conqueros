@@ -1,7 +1,8 @@
 import { equal } from 'assert';
 import React, { useState, useEffect } from 'react';
 import { Icon, Header, Label, Segment, Button, Card, Image, Item, Breadcrumb, List, SegmentGroup, BreadcrumbSection, BreadcrumbDivider, Table, Checkbox, Embed, ButtonGroup, Divider, Grid, TextArea, Form } from 'semantic-ui-react';
-import Conquer from '../Core/Conquer';
+import Conquer from '../Frontend/Conquer';
+import { Client, RpcResponse, Session } from '@heroiclabs/nakama-js';
 
 export type TestState = {
     initialized: boolean,
@@ -20,28 +21,36 @@ export const TestLoad = (state: TestState): Promise<TestState> => {
     });
 };
 
-export const NakamaConnect = (username: string, password: string): Promise<any> => {
-    return Conquer.NakamaConnect(username, password);
-};
-
 const Test = (state: TestState, setState: React.Dispatch<React.SetStateAction<TestState>>) => {
 
     if (!state.initialized) {
-        TestLoad(state).then(setState);
-        var password = "password002";
-        var username = "username002";
-        // Conquer.NakamaConnect(username, password).then((session) => {
-        //     console.log(session);
-        //     var params2 = {
-        //         game_id: "game001",
-        //         // context_id: "context001",
-        //         username: "username002",
-        //         key: "key002"
-        //     };
-        //     Conquer.NakamaRPC("get_data", params2).then((rpcResponse) => {
-        //         console.log(rpcResponse);
+        var username = "username001";
+        var password = "password001";
+        var gameId = "game001";
+        var contextId = "context001";
+        var value = { key: "value" };
+        let conquer: Conquer = new Conquer();
+        conquer.NakamaConnect(username, password).then(() => {
+            conquer.NakamaSave(gameId, value).then(() => {
+                console.log('done');
+            });
+        });
+        console.log('done');
+        // conquer.NakamaSaveContext(gameId, contextId, value).then((res1) => {
+        //     console.log(`res1: ${JSON.stringify(res1)}`);
+        //     conquer.NakamaLoadContext(gameId, contextId).then((res2) => {
+        //         console.log(`res2: ${JSON.stringify(res2)}`);
         //     });
         // });
+        // Conquer.TestNakama();  
+        // let nakamaServerKey = process.env.NAKAMA_SERVER_KEY;
+        // let nakamaHost = process.env.NAKAMA_HOST;
+        // let nakamaPort = process.env.NAKAMA_PORT;
+        // let nakamaUseSSL = process.env.NAKAMA_USE_SSL;
+        // console.log(`${nakamaServerKey} | ${nakamaUseSSL} | ${nakamaHost} | ${nakamaPort}`);
+        // let nakamaClient = new Client(process.env.NAKAMA_SERVER_KEY, process.env.NAKAMA_HOST, process.env.NAKAMA_PORT, process.env.NAKAMA_USE_SSL as string == "true");
+        // console.log(`deployed: ${username}`)
+        TestLoad(state).then(setState);
     }
 
     return (

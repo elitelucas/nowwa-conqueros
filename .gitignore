@@ -18,3 +18,8 @@ nowwa.io/storage/toy/StackJump/Web/
 nowwa.io/storage/toy/Woodturning3D/Web/
 nowwa.io/storage/
 nakama/modules/*.so
+nakama/data/*.so
+nakama/plugin_code/*.so
+nakama/data/.cookie
+nakama/data/*.log
+nakama/.cookie
