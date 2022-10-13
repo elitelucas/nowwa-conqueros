@@ -23,3 +23,7 @@ nakama/plugin_code/*.so
 nakama/data/.cookie
 nakama/data/*.log
 nakama/.cookie
+nowwa.io/plugins/
+supersnappy.io/node_modules/
+test/
+flutter/

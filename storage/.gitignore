@@ -1,7 +1,0 @@
-node_modules/
-.cache/
-.parcel-cache/
-dist/
-temp/
-.env
-.env.dev
