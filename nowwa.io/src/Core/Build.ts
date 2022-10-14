@@ -512,7 +512,7 @@ namespace Build {
 
         if (!config.playcanvas.scripts_minify) {
             let playcanvasJSFilename: string = `playcanvas-stable.min.js`;
-            let playcanvasJSSource: string = path.join(__dirname, `../../src/Utils/playcanvas-stable.js`);
+            let playcanvasJSSource: string = path.join(__dirname, `../../src/Utils/${playcanvasJSFilename}`);
             let playcanvasJSExtracted: string = `${extractPath}/${playcanvasJSFilename}`;
             let playcanvasJSZip: string = `${playcanvasJSFilename}`;
 
@@ -547,15 +547,16 @@ namespace Build {
         // SNAPCHAT ONLY : start
         if (config.game.Platform == 'Snapchat') {
 
+            var cspMetadata = CreateCSPMetadata(config.csp);
+            indexHTMLReplaces.splice(0, 0, { Pattern: /<head>/g, Value: `<head>\n\t${cspMetadata}` });
+
             if (!config.game.SnapchatNoShareImage) {
 
                 let shareImageFilename: string = `share_image.png`;
                 let shareImageSource: string = path.join(__dirname, `..`, `..`, `${config.game.SnapchatShareImage}`);
                 let shareImageExtracted: string = `${extractPath}/files/assets/${shareImageFilename}`;
                 let shareImageZip: string = `files/assets/${shareImageFilename}`;
-
                 console.log(`shareImageSource: ${shareImageSource}`);
-
                 await addFileToZip(shareImageFilename, shareImageSource, shareImageExtracted, shareImageZip);
             }
 
@@ -573,30 +574,41 @@ namespace Build {
         // WEB ONLY : start
         if (config.game.Platform == 'Web') {
 
+            let onesignalSDKFilename: string = `OneSignalSDK.js`;
+            let onesignalSDKSource: string = path.join(__dirname, `..`, `..`, `/src/Utils/${onesignalSDKFilename}`);
+            let onesignalSDKExtracted: string = `${extractPath}/${onesignalSDKFilename}`;
+
+            await copyFile(`${onesignalSDKSource}`, onesignalSDKExtracted);
+
+            indexHTMLReplaces.splice(0, 0, { Pattern: /<head>/g, Value: `<head>\n\t<script src="${onesignalSDKFilename}" async=""></script>` });
+
+            let onesignalFilename: string = `onesignal-web.js`;
+            let onesignalSource: string = path.join(__dirname, `..`, `..`, `/src/Utils/${onesignalFilename}`);
+            let onesignalExtracted: string = `${extractPath}/${onesignalFilename}`;
+
+            await copyFile(`${onesignalSource}`, onesignalExtracted);
+
+            indexHTMLReplaces.splice(0, 0, { Pattern: /<head>/g, Value: `<head>\n\t<script type="text/javascript" src="${onesignalFilename}"></script>` });
         }
         // WEB ONLY : end
 
         // ANDROID ONLY : start
         if (config.game.Platform == 'Android') {
 
+            indexHTMLReplaces.splice(0, 0, { Pattern: /<head>/g, Value: `<head>\n\t<script type="text/javascript" src="cordova.js"></script>` });
+
             let onesignalFilename: string = `onesignal.js`;
-            let onesignalSource: string = path.join(__dirname, `..`, `..`, `/src/Utils/onesignal.js`);
+            let onesignalSource: string = path.join(__dirname, `..`, `..`, `/src/Utils/${onesignalFilename}.js`);
             let onesignalExtracted: string = `${extractPath}/${onesignalFilename}`;
             let onesignalZip: string = `${onesignalFilename}`;
 
-            console.log(`shareImageSource: ${onesignalSource}`);
-
             await addFileToZip(onesignalFilename, onesignalSource, onesignalExtracted, onesignalZip);
 
-            indexHTMLReplaces.splice(0, 0, { Pattern: /<head>/g, Value: `<head>\n\t<script type="text/javascript" src="cordova.js"></script>` });
-            indexHTMLReplaces.splice(0, 0, { Pattern: /<head>/g, Value: `<head>\n\t<script type="text/javascript" src="onesignal.js"></script>` });
+            indexHTMLReplaces.splice(0, 0, { Pattern: /<head>/g, Value: `<head>\n\t<script type="text/javascript" src="${onesignalFilename}"></script>` });
         }
         // ANDROID ONLY : end
 
         indexHTMLReplaces.splice(0, 0, { Pattern: /<head>/g, Value: `<head>\n\t<script>platform="${config.game.Platform}";</script>` });
-
-        var cspMetadata = CreateCSPMetadata(config.csp);
-        indexHTMLReplaces.splice(0, 0, { Pattern: /<head>/g, Value: `<head>\n\t${cspMetadata}` });
 
         await stringReplace(indexHTML, indexHTML, indexHTMLReplaces);
 
