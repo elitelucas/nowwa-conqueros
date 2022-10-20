@@ -1,12 +1,12 @@
 {
-  "name": "woodturning",
+  "name": "baseballboy",
   "displayName": "Flappy Dunk",
   "version": "1",
   "description": "",
   "scripts": {
-    "core:dev": "tsc-watch --onSuccess \"node ./dist/Core/Main.js --env=\"dev\"\"",
+    "core:dev": "tsc-watch --onSuccess \"node ./dist/Core/Main.js",
     "core:build": "tsc",
-    "front:dev": "parcel watch ./src/Pages/Index.html --dist-dir ./storage",
+    "front:dev": "parcel watch ./src/Pages/Index.html --dist-dir ./storage --no-content-hash",
     "front:build": "parcel build ./src/Pages/Index.html --dist-dir ./storage",
     "conquer:build": "parcel build ./src/Frontend/Conquer.ts --dist-dir ./storage/home/lib",
     "dev": "tsc && node ./dist/Compile.js --env=\"dev\"",

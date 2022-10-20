@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.nowwa.woodturning" android-packageName="com.nowwa.woodturning" version="1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>Woodturning 3D</name>
+<widget id="com.nowwa.baseballboy" android-packageName="com.nowwa.baseballboy" version="1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>Baseball Boy</name>
     <description>Nowwa Games</description>
     <author email="info@nowwa.com" href="https://nowwa.com">
         Nowwa

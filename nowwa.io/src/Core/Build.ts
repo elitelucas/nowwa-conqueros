@@ -1,15 +1,12 @@
 import express from 'express';
 import Environment, { toyRoot, toyBuildUrl, toyListUrl } from './Environment';
 import path from 'path';
-import fs, { readdirSync } from 'fs';
+import fs from 'fs';
 import PlayCanvas from './Playcanvas';
 import { extractFull, add, rename } from "node-7z";
 import { stringReplace, Replace, removeNullAndFalse, removeNull } from "./Utils";
 import sevenBin from '7zip-bin';
 import del from 'del';
-import { copyFile } from "fs/promises";
-import { type } from "os";
-import { config } from 'yargs';
 import Status from './Status';
 
 class Build {
@@ -105,6 +102,114 @@ class Build {
     }
 
     /**
+     * Do Android build process (after post processing).
+     * @param config 
+     * @returns 
+     */
+    private static AndroidProcess = async (config: Build.Config) => {
+        let projectDirectory: string = path.join(__dirname, `${Build.RootFolder}/${config.game.Folder}`);
+        console.log(`build android`);
+        const { spawn } = require("child_process");
+        await new Promise<void>((resolve, reject) => {
+            let apkPath: string = Build.CheckExistingApk(config);
+            if (apkPath != '') {
+                let platformAndroid: Build.Platform = 'Android';
+                let oldApkPath: string = path.join(__dirname, `${Build.RootFolder}/${config.game.Folder}/${platformAndroid}/${apkPath}`);
+                del([`${oldApkPath}`]);
+            }
+            resolve();
+        });
+        let commands: string[] = [
+            `cordova platform rm android`,
+            `cordova platform add android@^11.0.0`,
+            `cordova prepare android`,
+            `cordova build android`
+        ];
+        for (let i = 0; i < commands.length; i++) {
+            var command: string = commands[i];
+            console.log(`execute: ${command}`);
+            await new Promise<void>((resolve, reject) => {
+                let task = spawn(command, { shell: true, windowsHide: false });
+                task.stdout.on('data', (data: any) => {
+                    console.log(`= stdout =`);
+                    console.log(`${data}`);
+                });
+                task.stderr.on('data', (data: any) => {
+                    console.log(`= stderr =`);
+                    console.log(`${data}`);
+                });
+                task.on('error', (err: any) => {
+                    console.log(`error: ${err.message}`);
+                    console.log(`android: building: fail: ${command}`);
+                    reject(err);
+                    return;
+                });
+                task.on('exit', (code: any) => {
+                    console.log(`code: ${code}`);
+                    resolve();
+                });
+            });
+        }
+        await new Promise<void>((resolve, reject) => {
+            let apkSourceFolder: string = path.join(__dirname, `..`, `..`, `platforms/android/app/build/outputs/apk/debug`);
+            let apkSource: string = path.join(apkSourceFolder, Build.DefaultAPKName);
+            let apkDestinationFolder: string = path.join(`${projectDirectory}`, `${config.game.Platform}`);
+            let apkDestination: string = path.join(apkDestinationFolder, `${config.playcanvas.name}_${config.playcanvas.version}_Build.apk`);
+            if (!fs.existsSync(apkDestinationFolder)) {
+                fs.mkdirSync(apkDestinationFolder);
+            }
+            console.log(`android: destination: ${apkDestination}`);
+            fs.copyFileSync(apkSource, apkDestination);
+            resolve();
+        });
+        console.log(`android: building: success`);
+        return Promise.resolve(true);
+    };
+
+    /**
+     * Do iOS build process (after post processing).
+     * @param config 
+     */
+    private static iOSProcess = async (config: Build.Config) => {
+        console.log(`build ios`);
+        const { spawn } = require("child_process");
+        let isSkipping: boolean = false;
+        let actualMessage: string = `auto build ios | project: ${config.playcanvas.name} | version: ${config.playcanvas.version}`;
+        let skipMessage: string = "[skip ci]";
+        let commitMessage: string = isSkipping ? skipMessage : '' + ` | ${actualMessage}`;
+        let commands: string[] = [
+            `cd ../cordova-ios && git pull && git add . && git commit -m "${commitMessage}" && git push`,
+        ];
+        for (let i = 0; i < commands.length; i++) {
+            var command: string = commands[i];
+            console.log(`execute: ${command}`);
+            await new Promise<void>((resolve, reject) => {
+                let task = spawn(command, { shell: true, windowsHide: false });
+                task.stdout.on('data', (data: any) => {
+                    console.log(`= stdout =`);
+                    console.log(`${data}`);
+                });
+                task.stderr.on('data', (data: any) => {
+                    console.log(`= stderr =`);
+                    console.log(`${data}`);
+                });
+                task.on('error', (err: any) => {
+                    console.log(`error: ${err.message}`);
+                    console.log(`ios: building: fail: ${command}`);
+                    reject(err);
+                    return;
+                });
+                task.on('exit', (code: any) => {
+                    console.log(`code: ${code}`);
+                    resolve();
+                });
+            });
+        }
+        console.log(`ios: building: success`);
+        return Promise.resolve(true);
+    };
+
+    /**
      * Check if there is an existing apk
      */
     private static CheckExistingApk(config: Build.Config): string {
@@ -183,10 +288,9 @@ class Build {
                     }
                     let authToken = 'lJHHrNEjN3klG93krjX3CrCa8SLIydWy';
 
-                    let androidDirectory: string = path.join(__dirname, `..`, `..`, `www`);
-
                     // TEST : uncomment this
                     // Build.PreProcess(config);
+                    // console.log(`Platform: ${config.game.Platform}`);
                     // Status.CurrentStatus = Status.DetailDefault;
                     // return Promise.resolve();
 
@@ -221,68 +325,28 @@ class Build {
                         .then((zipPath: string) => {
                             console.log(`zipPath: ${zipPath}`);
                             if (config.game.Platform == 'Android') {
+                                let androidDirectory: string = path.join(__dirname, `..`, `..`, `www`);
+                                del([`${androidDirectory} ** `]);
                                 return Build.PostProcess(zipPath, `${androidDirectory}`, config);
+                            } else if (config.game.Platform == 'iOS') {
+                                let iosDirectory: string = path.join(__dirname, `..`, `..`, `..`, `cordova-ios`, `www`);
+                                del([`${iosDirectory} ** `]);
+                                return Build.PostProcess(zipPath, `${iosDirectory}`, config);
                             } else {
                                 return Build.PostProcess(zipPath, `${projectDirectory}/${config.game.Platform}`, config);
                             }
                         })
                         .then(async () => {
                             if (config.game.Platform == 'Android') {
-                                console.log(`build android`);
-                                const { exec } = require("child_process");
-                                await new Promise<void>((resolve, reject) => {
-                                    let apkPath: string = Build.CheckExistingApk(config);
-                                    if (apkPath != '') {
-                                        let platformAndroid: Build.Platform = 'Android';
-                                        let oldApkPath: string = path.join(__dirname, `${Build.RootFolder}/${config.game.Folder}/${platformAndroid}/${apkPath}`);
-                                        del([`${oldApkPath}`]);
-                                    }
-                                    resolve();
-                                });
-                                let commands: string[] = [
-                                    `cordova platform rm android`,
-                                    `cordova platform add android@^11.0.0`,
-                                    `cordova prepare android`,
-                                    `cordova build android`
-                                ];
-                                for (let i = 0; i < commands.length; i++) {
-                                    var command: string = commands[i];
-                                    console.log(`execute: ${command}`);
-                                    await new Promise<void>((resolve, reject) => {
-                                        exec(command, (error: any, stdout: any, stderr: any) => {
-                                            if (error) {
-                                                console.log(`error: ${error.message}`);
-                                                console.log(`android: building: fail: ${command}`);
-                                                reject(error);
-                                                return;
-                                            }
-                                            console.log(`stdout: ${stdout}`);
-                                            console.log(`stderr: ${stderr}`);
-                                            resolve();
-                                        });
-                                    });
-                                }
-                                await new Promise<void>((resolve, reject) => {
-                                    let apkSourceFolder: string = path.join(__dirname, `..`, `..`, `platforms/android/app/build/outputs/apk/debug`);
-                                    let apkSource: string = path.join(apkSourceFolder, Build.DefaultAPKName);
-                                    let apkDestinationFolder: string = path.join(`${projectDirectory}`, `${config.game.Platform}`);
-                                    let apkDestination: string = path.join(apkDestinationFolder, `${config.playcanvas.name}_${config.playcanvas.version}_Build.apk`);
-                                    if (!fs.existsSync(apkDestinationFolder)) {
-                                        fs.mkdirSync(apkDestinationFolder);
-                                    }
-                                    console.log(`android: destination: ${apkDestination}`);
-                                    fs.copyFileSync(apkSource, apkDestination);
-                                    resolve();
-                                });
-                                console.log(`android: building: success`);
-                                return Promise.resolve(true);
+                                return Build.AndroidProcess(config);
+                            } else if (config.game.Platform == 'iOS') {
+                                return Build.iOSProcess(config);
                             } else {
                                 return Promise.resolve(true);
                             }
                         })
                         .then((success: boolean) => {
-                            if (config.game.Platform == 'Android') {
-                                // let wwwDirectory: string = path.join(__dirname, `..`, `..`, `www`);
+                            if (config.game.Platform == 'Android' || config.game.Platform == 'iOS') {
                                 // del([`${wwwDirectory} ** `]);
                             }
 
@@ -308,7 +372,7 @@ class Build {
 namespace Build {
 
     export type Backend = `Replicant` | `Cookies` | `Nakama` | `None`;
-    export type Platform = `Facebook` | `Snapchat` | `Web` | `Android` | `None`;
+    export type Platform = `Facebook` | `Snapchat` | `Web` | `Android` | `iOS` | `None`;
 
     const pathTo7zip: string = sevenBin.path7za;
 
@@ -349,23 +413,38 @@ namespace Build {
     } & PlayCanvas.Config;
 
     export const PreProcess = async (config: Config) => {
-        if (config.game.Platform == 'Android') {
-            let rootFolder: string = path.join(__dirname, `..`, `..`);
-            let configXMLPath: string = path.join(rootFolder, `config.xml`);
-            let packageJSONPath: string = path.join(rootFolder, `package.json`);
 
+        if (config.game.Platform == 'Android' || config.game.Platform == 'iOS') {
+            let rootFolder: string = path.join(__dirname, `..`, `..`);
+            if (config.game.Platform == 'iOS') {
+                rootFolder = path.join(rootFolder, `..`, `cordova-ios`);
+            }
+
+            let configXMLPath: string = path.join(rootFolder, `config.xml`);
             let configXMLContent: string = fs.readFileSync(configXMLPath, { encoding: 'utf8' });
             configXMLContent = configXMLContent.replace(/widget[ ]*id=\"[a-zA-Z0-9.\-]*\"/g, `widget id="com.nowwa.${config.game.Config}"`);
             configXMLContent = configXMLContent.replace(/android-packageName[ ]*=\"[a-zA-Z0-9.\-]*\"/g, `android-packageName="com.nowwa.${config.game.Config}"`);
             configXMLContent = configXMLContent.replace(/version=\"[a-zA-Z0-9._\-]*\"/g, `version="${config.playcanvas.version}"`);
-            configXMLContent = configXMLContent.replace(/\<name\>[a-zA-Z0-9.\- ]*\<\/name\>/g, `<name>${config.playcanvas.name}</name>`);
+            configXMLContent = configXMLContent.replace(/\<name\>[a-zA-Z0-9._\- ]*\<\/name\>/g, `<name>${config.playcanvas.name}</name>`);
             fs.writeFileSync(configXMLPath, configXMLContent, { encoding: 'utf8' });
 
-            let packageJSONContent: string = fs.readFileSync(packageJSONPath, { encoding: 'utf8' });
-            packageJSONContent = packageJSONContent.replace(/\"name\"[ ]*:[ ]*\"[a-zA-Z0-9.\-]*\"/g, `"name": "${config.game.Config}"`);
-            packageJSONContent = packageJSONContent.replace(/\"displayName\"[ ]*:[ ]*\"[a-zA-Z0-9.\-]*\"/g, `"displayName": "${config.playcanvas.name}"`);
-            packageJSONContent = packageJSONContent.replace(/\"version\"[ ]*:[ ]*\"[a-zA-Z0-9.\-]*\"/g, `"version": "${config.playcanvas.version}"`);
-            fs.writeFileSync(packageJSONPath, packageJSONContent, { encoding: 'utf8' });
+            if (config.game.Platform == 'Android') {
+                let packageJSONPath: string = path.join(rootFolder, `package.json`);
+                let packageJSONContent: string = fs.readFileSync(packageJSONPath, { encoding: 'utf8' });
+                packageJSONContent = packageJSONContent.replace(/\"name\"[ ]*:[ ]*\"[a-zA-Z0-9.\-]*\"/g, `"name": "${config.game.Config}"`);
+                packageJSONContent = packageJSONContent.replace(/\"displayName\"[ ]*:[ ]*\"[a-zA-Z0-9.\-]*\"/g, `"displayName": "${config.playcanvas.name}"`);
+                packageJSONContent = packageJSONContent.replace(/\"version\"[ ]*:[ ]*\"[a-zA-Z0-9.\-]*\"/g, `"version": "${config.playcanvas.version}"`);
+                fs.writeFileSync(packageJSONPath, packageJSONContent, { encoding: 'utf8' });
+            }
+
+            if (config.game.Platform == 'iOS') {
+                let codemagicYAMLPath: string = path.join(rootFolder, `codemagic.yaml`);
+                let codemagicYAMLContent: string = fs.readFileSync(codemagicYAMLPath, { encoding: 'utf8' });
+                codemagicYAMLContent = codemagicYAMLContent.replace(/bundle_identifier: [a-zA-Z0-9.\-]*/g, `bundle_identifier: com.nowwa.${config.game.Config}`);
+                codemagicYAMLContent = codemagicYAMLContent.replace(/XCODE_WORKSPACE: \"platforms\/ios\/[a-zA-Z0-9._\- ]*.xcworkspace\"/g, `XCODE_WORKSPACE: "platforms/ios/${config.playcanvas.name}.xcworkspace"`);
+                codemagicYAMLContent = codemagicYAMLContent.replace(/XCODE_SCHEME: \"[a-zA-Z0-9._\- ]*\"/g, `XCODE_SCHEME: "${config.playcanvas.name}"`);
+                fs.writeFileSync(codemagicYAMLPath, codemagicYAMLContent, { encoding: 'utf8' });
+            }
         }
 
         return Promise.resolve();
@@ -498,7 +577,7 @@ namespace Build {
         async function addFileToZip(fileName: string, sourcePath: string, extractedPath: string, zipPath: string) {
             console.log(`-- add ${fileName} --`);
             filesToUpdate.push(extractedPath);
-            await copyFile(`${sourcePath}`, extractedPath);
+            fs.copyFileSync(sourcePath, extractedPath);
 
             renameTargets.push([fileName, zipPath]);
         }
@@ -533,12 +612,12 @@ namespace Build {
             let fbappConfigJSON: string = `${extractPath}/fbapp-config.json`;
             filesToUpdate.push(fbappConfigJSON);
             console.log(`-- add fbapp-config.json --`);
-            await copyFile(`./utils/fbapp-config.json`, fbappConfigJSON);
+            fs.copyFileSync(`./utils/fbapp-config.json`, fbappConfigJSON);
 
             let startScriptJS: string = `${extractPath}/__start__.js`;
             filesToUpdate.push(startScriptJS);
             console.log(`-- add __start__.js --`);
-            await copyFile(`./utils/__start__.js`, startScriptJS);
+            fs.copyFileSync(`./utils/__start__.js`, startScriptJS);
 
             indexHTMLReplaces.splice(0, 0, { Pattern: /<head>/g, Value: `<head>\n\t<script src="https://connect.facebook.net/en_US/fbinstant.latest.js"></script>` });
         }
@@ -578,7 +657,7 @@ namespace Build {
             let onesignalSDKSource: string = path.join(__dirname, `..`, `..`, `/src/Utils/${onesignalSDKFilename}`);
             let onesignalSDKExtracted: string = `${extractPath}/${onesignalSDKFilename}`;
 
-            await copyFile(`${onesignalSDKSource}`, onesignalSDKExtracted);
+            fs.copyFileSync(onesignalSDKSource, onesignalSDKExtracted);
 
             indexHTMLReplaces.splice(0, 0, { Pattern: /<head>/g, Value: `<head>\n\t<script src="${onesignalSDKFilename}" async=""></script>` });
 
@@ -586,7 +665,7 @@ namespace Build {
             let onesignalSource: string = path.join(__dirname, `..`, `..`, `/src/Utils/${onesignalFilename}`);
             let onesignalExtracted: string = `${extractPath}/${onesignalFilename}`;
 
-            await copyFile(`${onesignalSource}`, onesignalExtracted);
+            fs.copyFileSync(onesignalSource, onesignalExtracted);
 
             indexHTMLReplaces.splice(0, 0, { Pattern: /<head>/g, Value: `<head>\n\t<script type="text/javascript" src="${onesignalFilename}"></script>` });
         }
@@ -598,7 +677,7 @@ namespace Build {
             indexHTMLReplaces.splice(0, 0, { Pattern: /<head>/g, Value: `<head>\n\t<script type="text/javascript" src="cordova.js"></script>` });
 
             let onesignalFilename: string = `onesignal.js`;
-            let onesignalSource: string = path.join(__dirname, `..`, `..`, `/src/Utils/${onesignalFilename}.js`);
+            let onesignalSource: string = path.join(__dirname, `..`, `..`, `/src/Utils/${onesignalFilename}`);
             let onesignalExtracted: string = `${extractPath}/${onesignalFilename}`;
             let onesignalZip: string = `${onesignalFilename}`;
 
@@ -607,6 +686,22 @@ namespace Build {
             indexHTMLReplaces.splice(0, 0, { Pattern: /<head>/g, Value: `<head>\n\t<script type="text/javascript" src="${onesignalFilename}"></script>` });
         }
         // ANDROID ONLY : end
+
+        // IOS ONLY : start
+        if (config.game.Platform == 'iOS') {
+
+            indexHTMLReplaces.splice(0, 0, { Pattern: /<head>/g, Value: `<head>\n\t<script type="text/javascript" src="cordova.js"></script>` });
+
+            let onesignalFilename: string = `onesignal.js`;
+            let onesignalSource: string = path.join(__dirname, `..`, `..`, `/src/Utils/${onesignalFilename}`);
+            let onesignalExtracted: string = `${extractPath}/${onesignalFilename}`;
+            let onesignalZip: string = `${onesignalFilename}`;
+
+            await addFileToZip(onesignalFilename, onesignalSource, onesignalExtracted, onesignalZip);
+
+            indexHTMLReplaces.splice(0, 0, { Pattern: /<head>/g, Value: `<head>\n\t<script type="text/javascript" src="${onesignalFilename}"></script>` });
+        }
+        // IOS ONLY : end
 
         indexHTMLReplaces.splice(0, 0, { Pattern: /<head>/g, Value: `<head>\n\t<script>platform="${config.game.Platform}";</script>` });
 
