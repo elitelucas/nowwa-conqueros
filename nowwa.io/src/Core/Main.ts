@@ -14,6 +14,8 @@ import Database from './Database';
 import Storage from './Storage';
 import Build from './Build';
 import Status from './Status';
+import YOHAMI from './UTILS/YOHAMI';
+import Conquer from '../Frontend/Conquer';
 
 console.log(`project path: ${__dirname}`);
 
@@ -30,6 +32,8 @@ class Main {
         this.baseUrl = `/webhook/v${Environment.CoreConfig.VERSION}`;
 
         this.AsyncInit(Environment.CoreConfig);
+
+        console.log( YOHAMI.myFunction() );
     }
 
     private async AsyncInit(env: Environment.Config): Promise<void> {
@@ -84,8 +88,8 @@ class Main {
 
             // TODO : enable authentication & database
             // await Authentication.AsyncInit(app, env);
-            // await Database.AsyncInit(app, env);
-
+            await Database.AsyncInit(app, env);
+            Conquer.TestDatabase();
             // routes: start
 
             // routes: end
