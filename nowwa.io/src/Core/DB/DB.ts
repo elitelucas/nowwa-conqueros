@@ -6,6 +6,7 @@ import DBMODEL from './DBMODEL';
 import LOG, { log, error } from '../UTILS/LOG';
 
 class DB {
+    private static models: Map<string, any> = new Map<string, any>();
     /*=============== 
 
 
@@ -57,6 +58,20 @@ class DB {
         return Promise.resolve(documents);
     }
 
+    public static async get2(tableName: string, query: DB.Query): Promise<mongoose.Document<any, any, any>> {
+        let model = DB.models.get(tableName);
+        if (!model) {
+            let schema = new mongoose.Schema({}, { strict: false });
+            model = mongoose.model(tableName, schema);
+            DB.models.set(tableName, model);
+        }
+        let document = await model.findOne(query.where);
+        if (document) {
+            return Promise.resolve(document);
+        }
+        return Promise.reject(new Error('entry not found'));
+    }
+
     /*=============== 
 
 
@@ -73,6 +88,16 @@ class DB {
         return Promise.resolve(document);
     }
 
+    public static async set2(tableName: string, query: DB.Query): Promise<mongoose.Document<any, any, any>> {
+        let model = DB.models.get(tableName);
+        if (!model) {
+            let schema = new mongoose.Schema({}, { strict: false });
+            model = mongoose.model(tableName, schema);
+            DB.models.set(tableName, model);
+        }
+        let document = await model.create(query.values);
+        return Promise.resolve(document);
+    }
 
     /*=============== 
 
@@ -103,6 +128,27 @@ class DB {
         return Promise.resolve(document);
     };
 
+    public static async change2(tableName: string, query: DB.Query): Promise<mongoose.Document<any, any, any>> {
+        let model = DB.models.get(tableName);
+        if (!model) {
+            let schema = new mongoose.Schema({}, { strict: false });
+            model = mongoose.model(tableName, schema);
+            DB.models.set(tableName, model);
+        }
+        let document = await model.findOne(query.where);
+        if (document) {
+            let fieldNames = Object.keys(query.values!);
+            for (let i: number = 0; i < fieldNames.length; i++) {
+                let fieldName = fieldNames[i];
+                let fieldValue = query.values![fieldName];
+                (document as any)[fieldName] = fieldValue;
+            }
+            await document.save();
+            return Promise.resolve(document);
+        }
+        return Promise.reject(new Error('entry not found'));
+    }
+
     /*=============== 
 
 
@@ -114,6 +160,21 @@ class DB {
     public static async remove(tableName: string, query: DB.Query): Promise<void> {
         let model = await DBMODEL.get(tableName);
 
+        let myQuery = model.find(query.where as any).limit(1);
+        await model.deleteOne(myQuery);
+        return Promise.resolve();
+    };
+
+    public static async remove2(tableName: string, query: DB.Query): Promise<void> {
+        let model = DB.models.get(tableName);
+        if (!model) {
+            let schema = new mongoose.Schema({}, { strict: false });
+            model = mongoose.model(tableName, schema);
+            DB.models.set(tableName, model);
+        }
+        if (query.where && query.where._id) {
+            (query.where as any)._id = new mongoose.mongo.ObjectId((query.where as any)._id);
+        }
         let myQuery = model.find(query.where as any).limit(1);
         await model.deleteOne(myQuery);
         return Promise.resolve();

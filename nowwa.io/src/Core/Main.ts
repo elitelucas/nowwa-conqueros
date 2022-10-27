@@ -108,6 +108,7 @@ class Main {
             app.listen(env.PORT);
             console.log(`[Express] listening on port ${env.PORT}`);
 
+            // TEST : do various tests
             TEST.test();
 
             // /* Create Dataitem */

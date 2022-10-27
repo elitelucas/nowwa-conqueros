@@ -8,7 +8,7 @@ class TEST {
     public static async test() {
         log('TESTING');
 
-        /* Create Dataitem */
+        /* Get Structure */
         let struct001 = await DBTABLE.get("schema002");
         log(JSON.stringify(struct001));
 
@@ -64,6 +64,50 @@ class TEST {
         };
         await DB.remove("schema002", input004);
         log('done 4');
+
+        /* Create Dataitem Loose */
+        let input005: DB.Query = {
+            "values": {
+                "key01": 5,
+                "key02": "a string"
+            },
+        };
+        let item005 = await DB.set2("schemaLoose", input005);
+        let id005 = item005._id;
+        log(JSON.stringify(item005));
+        log('done 5');
+
+        /* Retrieve Dataitem Loose */
+        let input006: DB.Query = {
+            "where": {
+                "_id": id005
+            },
+        };
+        let item006 = await DB.get2("schemaLoose", input006);
+        log(JSON.stringify(item006));
+        log('done 6');
+
+        /* Change Dataitem Loose */
+        let input007: DB.Query = {
+            "where": {
+                "_id": id005
+            },
+            "values": {
+                "key03": "a string"
+            },
+        };
+        let item007 = await DB.change2("schemaLoose", input007);
+        log(JSON.stringify(item007));
+        log('done 7');
+
+        /* Delete Dataitem Loose*/
+        let input008: DB.Query = {
+            "where": {
+                "_id": id005
+            },
+        };
+        await DB.remove2("schemaLoose", input008);
+        log('done 8');
 
     }
 
