@@ -3,7 +3,7 @@ import express from 'express';
 import passportLocal from 'passport-local';
 import { User, UserDocument } from '../Models/User';
 import Environment, { authenticationCoreUrl, authenticationLoginUrl, authenticationRegisterUrl, authenticationUrl } from './Environment';
-import Database from './Database';
+import Database from './DEPRECATED/Database';
 import bcrypt from "bcrypt";
 import { CustomDocument } from '../Models/Custom';
 

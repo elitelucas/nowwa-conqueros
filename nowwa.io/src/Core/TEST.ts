@@ -19,7 +19,7 @@ class TEST
             }
         };
 
-        var response = DB.set( "USERNAME", query );
+        var response = await DB.set( "USERNAME", query );
 
         log( "Something happened", response );
 
