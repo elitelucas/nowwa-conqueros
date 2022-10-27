@@ -479,9 +479,9 @@ namespace Conquer {
         console.log(response2.payload);
     }
 
-    export async function TestDatabase() {
-
-
+    export async function TestDatabase() 
+    {
+ 
         // // Case invalid data type
         // var data001 = {
         //     "schemaName"        : "schema002",

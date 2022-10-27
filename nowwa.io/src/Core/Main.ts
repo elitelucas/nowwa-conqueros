@@ -8,13 +8,17 @@ import path from 'path';
 import { User, UserDocument } from '../Models/User';
 import Environment, { toyStatusUrl } from './Environment';
 import crypto from 'crypto';
-import Socket from './Socket';
+import Socket from './DEPRECATED/Socket';
 import Authentication from './Authentication';
-import Database from './Database';
+import Database from './DEPRECATED/Database';
 import Storage from './Storage';
 import Build from './Build';
 import Status from './Status';
-import YOHAMI from './UTILS/YOHAMI';
+
+import TEST from './TEST';
+import DB from './DB/DB';
+import SOCKET from './SOCKET/SOCKET';
+
 import Conquer from '../Frontend/Conquer';
 
 console.log(`project path: ${__dirname}`);
@@ -32,8 +36,7 @@ class Main {
         this.baseUrl = `/webhook/v${Environment.CoreConfig.VERSION}`;
 
         this.AsyncInit(Environment.CoreConfig);
-
-        console.log( YOHAMI.myFunction() );
+ 
     }
 
     private async AsyncInit(env: Environment.Config): Promise<void> {
@@ -88,8 +91,12 @@ class Main {
 
             // TODO : enable authentication & database
             // await Authentication.AsyncInit(app, env);
-            await Database.AsyncInit(app, env);
-            Conquer.TestDatabase();
+           // await Database.AsyncInit(app, env);
+           // Conquer.TestDatabase();
+
+            await DB.init( env );
+            await SOCKET.init( env );
+  
             // routes: start
 
             // routes: end
@@ -100,10 +107,8 @@ class Main {
 
             app.listen(env.PORT);
             console.log(`[Express] listening on port ${env.PORT}`);
-
-            await Socket.AsyncInit(app, env);
-
-            // TEST : test 
+ 
+            TEST.test();
         }
         catch (error) {
             console.error(error);
