@@ -42,7 +42,7 @@ export const BuildStateDefault: BuildState = {
     buildValues: {}
 }
 
-export const GameLoad = (state: BuildState): Promise<BuildState> => {
+export const BuildLoad = (state: BuildState): Promise<BuildState> => {
     return new Promise((resolve, reject) => {
         // console.log(`get games`);
         fetch(`${window.location.origin}${toyListUrl}`)
@@ -377,7 +377,7 @@ const Builds = (state: BuildState, setState: React.Dispatch<React.SetStateAction
     };
 
     let refreshList = () => {
-        GameLoad(state).then(setState);
+        BuildLoad(state).then(setState);
     };
 
     if (!state.initialized) {
@@ -387,7 +387,7 @@ const Builds = (state: BuildState, setState: React.Dispatch<React.SetStateAction
             initialized: state.initialized,
             buildValues: state.buildValues,
         };
-        GameLoad(gameState).then(setState);
+        BuildLoad(gameState).then(setState);
 
         setInterval(() => {
             // console.log(`update status`);

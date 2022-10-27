@@ -1,5 +1,5 @@
 import express from 'express';
-import Environment, { toyRoot, toyBuildUrl, toyListUrl } from './Environment';
+import Environment, { toyUrl, toyBuildUrl, toyListUrl } from './Environment';
 import path from 'path';
 import fs from 'fs';
 import PlayCanvas from './Playcanvas';
@@ -62,7 +62,7 @@ class Build {
                                         if (typeof config.builds == 'undefined') {
                                             config.builds = {};
                                         }
-                                        config.builds[platformWeb.toString()] = `${toyRoot}/${config.game.Folder}/${platformWeb}/`;
+                                        config.builds[platformWeb.toString()] = `${toyUrl}/${config.game.Folder}/${platformWeb}/`;
                                     }
 
                                     let platformSnapchat: Build.Platform = 'Snapchat';
@@ -71,7 +71,7 @@ class Build {
                                         if (typeof config.builds == 'undefined') {
                                             config.builds = {};
                                         }
-                                        config.builds[platformSnapchat.toString()] = `${toyRoot}/${config.game.Folder}/${platformSnapchat}/`;
+                                        config.builds[platformSnapchat.toString()] = `${toyUrl}/${config.game.Folder}/${platformSnapchat}/`;
                                     }
 
                                     let platformAndroid: Build.Platform = 'Android';
@@ -80,7 +80,7 @@ class Build {
                                         if (typeof config.builds == 'undefined') {
                                             config.builds = {};
                                         }
-                                        config.builds[platformAndroid.toString()] = `${toyRoot}/${config.game.Folder}/${platformAndroid}/${apkPath}`;
+                                        config.builds[platformAndroid.toString()] = `${toyUrl}/${config.game.Folder}/${platformAndroid}/${apkPath}`;
                                     }
 
                                     configs.push(config);

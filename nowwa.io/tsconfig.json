@@ -16,7 +16,8 @@
         ],
         "module": "commonjs",
         "esModuleInterop": true,
-        "target": "ES6"
+        "target": "ES6",
+        "skipLibCheck": true
     },
     "include": [
         "src/Core/",

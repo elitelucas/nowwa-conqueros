@@ -7,15 +7,17 @@ import Builds, { BuildStateDefault } from './Builds';
 import Status from '../Core/Status';
 import 'semantic-ui-css/semantic.css';
 import Test, { TestStateDefault } from './Test';
+import Login, { LoginStateDefault } from './Login';
+import Register, { RegisterStateDefault } from './Register';
 
-type IndexDisplay = 'None' | 'Explorer' | 'Build' | 'Test';
+type IndexDisplay = 'None' | 'Explorer' | 'Build' | 'Test' | 'Login' | 'Register';
 
 type IndexState = {
     display: IndexDisplay
 };
 
 const IndexStateDefault: IndexState = {
-    display: 'None'
+    display: 'Login'
 }
 
 export interface IndexProps {
@@ -46,9 +48,9 @@ const Index = () => {
 
     const [gameState, setGameState] = useState(BuildStateDefault);
     const [gameStatus, setGameStatus] = useState(Status.DetailDefault);
-    let game;
+    let build;
     if (state.display == 'Build') {
-        game = Builds(gameState, setGameState, gameStatus, setGameStatus);
+        build = Builds(gameState, setGameState, gameStatus, setGameStatus);
         // console.log(`gameState: ${gameState.initialized}`);
     }
 
@@ -59,6 +61,24 @@ const Index = () => {
         // console.log(`gameState: ${gameState.initialized}`);
     }
 
+    const [signinState, setSignInState] = useState(LoginStateDefault);
+    let signin;
+    if (state.display == 'Login') {
+        signin = Login(signinState, setSignInState, {
+            SetDisplay: SetDisplay
+        });
+        // console.log(`signinState: ${signinState.initialized}`);
+    }
+
+    const [signupState, setSignUpState] = useState(RegisterStateDefault);
+    let signup;
+    if (state.display == 'Register') {
+        signup = Register(signupState, setSignUpState, {
+            SetDisplay: SetDisplay
+        });
+        // console.log(`signupState: ${signupState.initialized}`);
+    }
+
     return (
         <Segment placeholder>
             <Segment placeholder>
@@ -67,9 +87,11 @@ const Index = () => {
                     Nowwa IO
                 </Header>
             </Segment>
-            {top}
+            {(state.display != 'Login' && state.display != 'Register' && state.display != 'None') && top}
+            {signin}
+            {signup}
             {explorer}
-            {game}
+            {build}
             {test}
         </Segment>
     );
