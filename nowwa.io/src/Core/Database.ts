@@ -369,6 +369,27 @@ class Database {
         }
         return Promise.reject(new Error(`schema '${schemaName}' not found!`));
     }
+
+    /**
+     * Delete a schema data.
+     */
+    public static async DataDelete(schemaName: string, schemaFields: Database.Query): Promise<void> {
+        let schemas: CustomType[] = await Database.StructureLoad([schemaName]);
+        if (schemas && schemas.length > 0) {
+            if (!Database.Instance.models[schemaName]) {
+                console.log(`register new model: ${schemaName}...`)
+                Database.Instance.models[schemaName] = Database.CreateModel(schemaName, schemas[0].schemaFields);
+            }
+            let model = Database.Instance.models[schemaName];
+            let query = model.find(schemaFields.where || {});
+            if (schemaFields.limit) {
+                query.limit(schemaFields.limit);
+            }
+            await model.deleteOne(query);
+            return Promise.resolve();
+        }
+        return Promise.reject(new Error(`schema '${schemaName}' not found!`));
+    }
 }
 
 namespace Database {
