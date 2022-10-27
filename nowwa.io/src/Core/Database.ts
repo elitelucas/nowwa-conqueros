@@ -336,7 +336,7 @@ class Database {
                     for (let i: number = 0; i < fieldNames.length; i++) {
                         let fieldName = fieldNames[i];
                         let fieldValue = schemaFields.values![fieldName];
-                        document.schemaFields[fieldName] = fieldValue;
+                        document[fieldName] = fieldValue;
                     }
                     await document.save();
                     return Promise.resolve(document);

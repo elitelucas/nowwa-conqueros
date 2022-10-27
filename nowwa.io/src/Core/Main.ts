@@ -89,7 +89,6 @@ class Main {
             // TODO : enable authentication & database
             await Authentication.AsyncInit(app, env);
             await Database.AsyncInit(app, env);
-            // Conquer.TestDatabase();
             // routes: start
 
             // routes: end
@@ -104,6 +103,71 @@ class Main {
             await Socket.AsyncInit(app, env);
 
             // TEST : test 
+
+            // /* Create Dataitem */
+            // let struct001 = await Database.StructureLoad(["schema002"]);
+            // console.log(JSON.stringify(struct001));
+
+            // /* Create Dataitem */
+            // let input001: Database.Query = {
+            //     "add": {
+            //         "field001": 5,
+            //         "field002": "a string",
+            //         "field003": true,
+            //         "field004": {
+            //             "key": "value"
+            //         }
+            //     },
+            // };
+            // let item001 = await Database.DataSave("schema002", input001);
+            // let id001: string = (item001 as any)._id;
+            // console.log(JSON.stringify(item001));
+            // console.log('done 1');
+
+            // /* Retrieve Dataitem */
+            // let input002: Database.Query = {
+            //     "where": {
+            //         "_id": id001
+            //     },
+            // };
+            // let item002 = await Database.DataLoad("schema002", input002);
+            // console.log(JSON.stringify(item002));
+            // console.log('done 2');
+
+            // /* Change Dataitem */
+            // let input003: Database.Query = {
+            //     "where": {
+            //         "_id": id001
+            //     },
+            //     "values": {
+            //         "field001": 10,
+            //         "field002": "not a string",
+            //         "field003": false,
+            //         "field004": {
+            //             "key": "value 2"
+            //         }
+            //     },
+            // };
+            // let item003 = await Database.DataSave("schema002", input003);
+            // console.log(JSON.stringify(item003));
+            // console.log('done 3');
+
+            // /* Delete Dataitem */
+            // let input004: Database.Query = {
+            //     "where": {
+            //         "_id": id001
+            //     },
+            //     "values": {
+            //         "field001": 10,
+            //         "field002": "not a string",
+            //         "field003": false,
+            //         "field004": {
+            //             "key": "value 2"
+            //         }
+            //     },
+            // };
+            // await Database.DataDelete("schema002", input004);
+            // console.log('done 4');
         }
         catch (error) {
             console.error(error);
