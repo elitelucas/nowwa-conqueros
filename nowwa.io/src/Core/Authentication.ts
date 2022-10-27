@@ -1,7 +1,6 @@
 import passport from 'passport';
 import express from 'express';
 import passportLocal from 'passport-local';
-import passportTwitter from 'passport-twitter';
 import { User, UserDocument } from '../Models/User';
 import Environment, { authenticationCoreUrl, authenticationLoginUrl, authenticationRegisterUrl, authenticationUrl } from './Environment';
 import Database from './Database';
@@ -60,6 +59,25 @@ class Authentication {
     }
 
     /**
+     * Check if user is an admin.
+     */
+    public static async Verify(token: string, id: string): Promise<boolean> {
+        return new Promise((resolve, reject) => {
+            let adminId: string = `${id}admin`;
+            bcrypt.compare(adminId, token, (err, isMatch) => {
+                if (err) { reject(err); }
+                if (isMatch) {
+                    resolve(true);
+                }
+                bcrypt.compare(id, token, (err, isMatch) => {
+                    if (err) { reject(err); }
+                    resolve(isMatch);
+                });
+            });
+        });
+    }
+
+    /**
      * Initialize Passport module.
      */
     private static InitPassport(): void {
@@ -103,12 +121,15 @@ class Authentication {
             };
             Authentication.Login(authentication)
                 .then((user) => {
-                    this.Hash(user._id)
+                    let admin = (user as any as Authentication.entityStructure).admin;
+                    let userId = `${user._id}${admin ? 'admin' : ''}`
+                    this.Hash(userId)
                         .then((hash) => {
                             res.send({
                                 success: true, value: {
                                     id: user._id,
-                                    token: hash
+                                    token: hash,
+                                    admin: admin
                                 }
                             });
                         })

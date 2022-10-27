@@ -87,7 +87,7 @@ const Index = () => {
                     Nowwa IO
                 </Header>
             </Segment>
-            {(state.display != 'Login' && state.display != 'Register') && top}
+            {(state.display != 'Login' && state.display != 'Register' && state.display != 'None') && top}
             {signin}
             {signup}
             {explorer}
