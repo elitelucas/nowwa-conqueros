@@ -1,24 +1,24 @@
 import mongoose, { mongo } from 'mongoose';
 import express from 'express';
-import Environment from './Environment';
-import { Custom, CustomProperty, CustomType, CustomDocument } from '../Models/Custom';
+import Environment from '../Environment';
+import { Custom, CustomProperty, CustomType, CustomDocument } from '../../Models/Custom';
 
 class Database {
 
-    private static Instance: Database;
+    private static Instance:Database;
 
-    private static BaseUrl: string = `/database`;
+    private static BaseUrl:string = `/database`;
 
-    private models: { [key: string]: mongoose.Model<any, {}, {}> };
+    private models:{[key:string]:mongoose.Model<any, {}, {}>};
 
-    constructor() {
+    constructor () {
         this.models = {};
     }
 
     /**
      * Initialize Database module.
      */
-    public static async AsyncInit(app: express.Express, env: Environment.Config): Promise<void> {
+    public static async AsyncInit (app:express.Express, env:Environment.Config):Promise<void> {
         Database.Instance = new Database();
         await Database.Connect(env);
         Database.WebhookStructureSave(app);
@@ -31,31 +31,31 @@ class Database {
     /**
      * Initialize database connection.
      */
-    private static async Connect(env: Environment.Config) {
+    private static async Connect (env:Environment.Config) {
         console.log(`init database...`);
 
-        let uri: string = `mongodb+srv://${env.MONGODB_USER}:${env.MONGODB_PASS}@${env.MONGODB_HOST}/${env.MONGODB_DB}`;
+        let uri:string = `mongodb+srv://${env.MONGODB_USER}:${env.MONGODB_PASS}@${env.MONGODB_HOST}/${env.MONGODB_DB}`;
         console.log(`connect to: ${uri}`);
         await mongoose.connect(uri, {
             ssl: true,
             sslValidate: false,
             sslCert: `${env.MONGODB_CERT}`
         })
-            .then((result) => {
-                console.log("Successfully connect to MongoDB.");
-            })
-            .catch((error: Error) => {
-                console.error("Connection error", error);
-                throw error;
-            });
+        .then((result) => {
+            console.log("Successfully connect to MongoDB.");
+        })
+        .catch((error:Error) => {
+            console.error("Connection error", error);
+            throw error;
+        });
     }
 
     /**
      * Create a custom model.
      */
-    private static CreateModel(schemaName: string, fields: any) {
+    private static CreateModel (schemaName:string, fields:any) {
         console.log(`database create custom model...`);
-
+          
         type MapSchema<T extends Record<string, keyof Database.MapSchemaTypes>> = {
             -readonly [K in keyof T]: Database.MapSchemaTypes[T[K]]
         }
@@ -67,56 +67,56 @@ class Database {
         let data = asSchema(fields);
         let structure = {};
         let fieldNames = Object.keys(fields);
-        for (let i: number = 0; i < fieldNames.length; i++) {
+        for (let i:number = 0; i < fieldNames.length; i++) {
             let fieldName = fieldNames[i];
             let fieldType = fields[fieldName];
             if (fieldType == 'string') {
-                structure = {
+                structure = { 
                     ...structure,
-                    [fieldName]: {
-                        type: String
+                    [fieldName] : {
+                        type    : String
                     }
                 };
-            }
+            } 
             else if (fieldType == 'number') {
-                structure = {
+                structure = { 
                     ...structure,
-                    [fieldName]: {
-                        type: Number
+                    [fieldName] : {
+                        type    : Number
                     }
                 };
             }
             else if (fieldType == 'boolean') {
-                structure = {
+                structure = { 
                     ...structure,
-                    [fieldName]: {
-                        type: Boolean
+                    [fieldName] : {
+                        type    : Boolean
                     }
                 };
             }
             else if (fieldType == 'date') {
-                structure = {
+                structure = { 
                     ...structure,
-                    [fieldName]: {
-                        type: Date
+                    [fieldName] : {
+                        type    : Date
                     }
                 };
             }
             else if (fieldType == 'object') {
-                structure = {
+                structure = { 
                     ...structure,
-                    [fieldName]: {
-                        type: mongoose.Schema.Types.Mixed
+                    [fieldName] : {
+                        type    : mongoose.Schema.Types.Mixed
                     }
                 };
             }
         }
         type DataType = MapSchema<typeof data>;
-
+        
         type NewDocument = mongoose.Document & DataType;
 
         const NewSchema = new mongoose.Schema<NewDocument>(structure, {
-            strict: "throw"
+            strict      : "throw"
         });
 
         console.log(`database custom model '${schemaName}' created!`);
@@ -127,22 +127,22 @@ class Database {
      * Webhook to save custom schema structure. 
      * @param app @type {express.Express}
      */
-    private static WebhookStructureSave(app: express.Express): void {
-        let url: string = `/structure/save`;
-        app.post(`${Database.BaseUrl}${url}`, async (req: express.Request, res: express.Response) => {
+    private static WebhookStructureSave (app:express.Express):void {
+        let url:string = `/structure/save`;
+        app.post(`${Database.BaseUrl}${url}`, async (req:express.Request, res:express.Response) => {
             console.log(`<-- request schema structure save`);
 
-            let schemaFields = <{ [key: string]: any }>(req.body.schemaFields);
+            let schemaFields = <{[key:string]:any}>(req.body.schemaFields);
             let schemaName = <string>(req.body.schemaName);
 
             Database.StructureSave(schemaName, schemaFields)
-                .then((structure: CustomType) => {
-                    res.send({
-                        success: true,
-                        value: structure
+                .then((structure:CustomType) => {
+                    res.send({ 
+                        success         : true, 
+                        value           : structure
                     });
                 })
-                .catch((error: Error) => {
+                .catch((error:Error) => {
                     res.send({ success: false, error: error.message });
                 });
         });
@@ -152,14 +152,14 @@ class Database {
      * Webhook to load custom schema structure. 
      * @param app @type {express.Express}
      */
-    private static WebhookStructureLoad(app: express.Express): void {
-        let url: string = `/structure/load`;
-        app.post(`${Database.BaseUrl}${url}`, async (req: express.Request, res: express.Response) => {
+    private static WebhookStructureLoad (app:express.Express):void {
+        let url:string = `/structure/load`;
+        app.post(`${Database.BaseUrl}${url}`, async (req:express.Request, res:express.Response) => {
             console.log(`<-- request schema structure load`);
 
             try {
                 let schemaNames = <string[]>(req.body.schemaNames);
-                let schemas: CustomType[] = await Database.StructureLoad(schemaNames);
+                let schemas:CustomType[] = await Database.StructureLoad(schemaNames);
                 res.send({ success: true, value: schemas });
             }
             catch (error) {
@@ -172,22 +172,22 @@ class Database {
      * Webhook to save custom schema data. 
      * @param app @type {express.Express}
      */
-    private static WebhookDataSave(app: express.Express): void {
-        let url: string = `/data/save`;
-        app.post(`${Database.BaseUrl}${url}`, async (req: express.Request, res: express.Response) => {
+    private static WebhookDataSave (app:express.Express):void {
+        let url:string = `/data/save`;
+        app.post(`${Database.BaseUrl}${url}`, async (req:express.Request, res:express.Response) => {
             console.log(`<-- request schema structure save`);
 
-            let schemaFields = <{ [key: string]: any }>(req.body.schemaFields);
+            let schemaFields = <{[key:string]:any}>(req.body.schemaFields);
             let schemaName = <string>(req.body.schemaName);
 
             Database.DataSave(schemaName, schemaFields)
-                .then((structure: CustomDocument) => {
-                    res.send({
-                        success: true,
-                        value: structure
+                .then((structure:CustomDocument) => {
+                    res.send({ 
+                        success         : true, 
+                        value           : structure
                     });
                 })
-                .catch((error: Error) => {
+                .catch((error:Error) => {
                     res.send({ success: false, error: error.message });
                 });
         });
@@ -197,14 +197,14 @@ class Database {
      * Webhook to load custom schema data. 
      * @param app @type {express.Express}
      */
-    private static WebhookDataLoad(app: express.Express): void {
-        let url: string = `/data/load`;
-        app.post(`${Database.BaseUrl}${url}`, async (req: express.Request, res: express.Response) => {
+    private static WebhookDataLoad (app:express.Express):void {
+        let url:string = `/data/load`;
+        app.post(`${Database.BaseUrl}${url}`, async (req:express.Request, res:express.Response) => {
             console.log(`<-- request schema structure load`);
 
             try {
                 let schemaNames = req.body.schemaNames;
-                let schemas: CustomType[] = await Database.StructureLoad(schemaNames);
+                let schemas:CustomType[] = await Database.StructureLoad(schemaNames);
                 res.send({ success: true, value: schemas });
             }
             catch (error) {
@@ -216,28 +216,32 @@ class Database {
     /**
      * Load custom schema structures.
      */
-    public static async StructureLoad(schemaNames?: string[]): Promise<CustomType[]> {
+    public static async StructureLoad (schemaNames?:string[]):Promise<CustomType[]> {
         let query;
         if (schemaNames) {
-            let $or: { [key: string]: any }[] = [];
+            let $or:{[key:string]:any}[] = [];
             for (let i = 0; i < schemaNames.length; i++) {
                 $or.push({
-                    [`${CustomProperty.schemaName}`]: schemaNames[i]
+                    [`${CustomProperty.schemaName}`]  : schemaNames[i]
                 });
             }
             query = Custom.find({
-                $or: $or
+                $or: $or 
             });
         } else {
-            query = Custom.find({});
+            query = Custom.find({ });
         }
         query.select(`${CustomProperty.schemaName} ${CustomProperty.schemaFields}`);
+
+        
         let data = await query.exec();
-        let output: CustomType[] = [];
+
+        let output:CustomType[] = [];
+
         for (let i = 0; i < data.length; i++) {
             output.push({
-                schemaName: data[i].schemaName,
-                schemaFields: data[i].schemaFields
+                schemaName      : data[i].schemaName,
+                schemaFields    : data[i].schemaFields
             });
         }
         return Promise.resolve(output);
@@ -246,38 +250,38 @@ class Database {
     /**
      * Save custom schema structures.
      */
-    public static async StructureSave(schemaName: string, schemaFields: Database.Query): Promise<CustomType> {
+    public static async StructureSave (schemaName:string, schemaFields:Database.Query):Promise<CustomType> {
 
         if (Database.ReservedSchemaName.includes(schemaName)) {
             throw new Error(`schema name '${schemaName}' is not allowed!`);
         }
 
-        let finalFields: Database.Fields = { ...schemaFields.add };
-        let finalFieldNames: string[] = Object.keys(finalFields);
-        for (let i: number = 0; i < finalFieldNames.length; i++) {
-            let finalFieldName: string = finalFieldNames[i];
-            let finalFieldType: Database.FieldType = finalFields[finalFieldName];
+        let finalFields:Database.Fields = {...schemaFields.add};
+        let finalFieldNames:string[] = Object.keys(finalFields);
+        for (let i:number = 0; i < finalFieldNames.length; i++) {
+            let finalFieldName:string = finalFieldNames[i];
+            let finalFieldType:Database.FieldType = finalFields[finalFieldName];
             if (Database.FieldTypeList.indexOf(finalFieldType) < 0) {
                 throw new Error(`field '${finalFieldName}' has an invalid type of '${finalFieldType}'!`);
             }
         }
 
         // Check if old schema exists
-        let originalFilter: CustomType = {
-            schemaName: schemaName
+        let originalFilter:CustomType = {
+            schemaName      : schemaName
         };
         let query = Custom.findOne(originalFilter);
         let structure = await query.exec();
         if (structure) {
-
+            
             // Check loaded models
             let model = Database.Instance.models[schemaName];
             if (model) {
-                for (let i: number = 0; i < finalFieldNames.length; i++) {
-                    let finalFieldName: string = finalFieldNames[i];
+                for (let i:number = 0; i < finalFieldNames.length; i++) {
+                    let finalFieldName:string = finalFieldNames[i];
                     if (!structure.schemaFields[finalFieldName]) {
                         model.schema.add({
-                            [finalFieldName]: finalFields[finalFieldName]
+                            [finalFieldName] : finalFields[finalFieldName]
                         } as any);
                     }
                 }
@@ -304,9 +308,9 @@ class Database {
             structure.markModified(CustomProperty.schemaFields);
             structure = await structure.save();
         } else {
-            let newStructure: CustomType = {
-                schemaName: schemaName,
-                schemaFields: finalFields
+            let newStructure:CustomType = {
+                schemaName      : schemaName,
+                schemaFields    : finalFields 
             }
             structure = await Custom.create(newStructure);
         }
@@ -319,21 +323,25 @@ class Database {
     /**
      * Create or update a schema data.
      */
-    public static async DataSave(schemaName: string, schemaFields: Database.Query): Promise<CustomDocument> {
-        let schemas: CustomType[] = await Database.StructureLoad([schemaName]);
-        if (schemas) {
-            if (!Database.Instance.models[schemaName]) {
+     public static async DataSave (schemaName:string, schemaFields:Database.Query):Promise<CustomDocument> {
+        let schemas:CustomType[] = await Database.StructureLoad([schemaName]);
+        
+        if (schemas) 
+        {
+            if (!Database.Instance.models[schemaName]) 
+            {
                 Database.Instance.models[schemaName] = Database.CreateModel(schemaName, schemas[0].schemaFields);
             }
             let model = Database.Instance.models[schemaName];
 
-            if (schemaFields.where) {
+            if (schemaFields.where) 
+            {
                 let query = model.find(schemaFields.where).limit(1);
                 let documents = await query.exec();
                 if (documents && documents.length == 1) {
                     let document = documents[0];
                     let fieldNames = Object.keys(schemaFields.values!);
-                    for (let i: number = 0; i < fieldNames.length; i++) {
+                    for (let i:number = 0; i < fieldNames.length; i++) {
                         let fieldName = fieldNames[i];
                         let fieldValue = schemaFields.values![fieldName];
                         document[fieldName] = fieldValue;
@@ -352,8 +360,8 @@ class Database {
     /**
      * Load a schema data.
      */
-    public static async DataLoad(schemaName: string, schemaFields: Database.Query): Promise<CustomDocument[]> {
-        let schemas: CustomType[] = await Database.StructureLoad([schemaName]);
+    public static async DataLoad (schemaName:string, schemaFields:Database.Query):Promise<CustomDocument[]> {
+        let schemas:CustomType[] = await Database.StructureLoad([schemaName]);
         if (schemas && schemas.length > 0) {
             if (!Database.Instance.models[schemaName]) {
                 console.log(`register new model: ${schemaName}...`)
@@ -394,55 +402,54 @@ class Database {
 
 namespace Database {
 
-    export const ReservedSchemaName: string[] = [
+    export const ReservedSchemaName:string[] = [
         'User',
         'Custom',
         'File'
     ];
-
-    export const FieldTypeList: FieldType[] = [
+    
+    export const FieldTypeList:FieldType[] = [
         'string',
         'number',
         'boolean',
         'object',
         'date'
     ];
-
+        
     export type MapSchemaTypes = {
-        string: string;
-        number: number;
-        boolean: boolean;
-        object: object;
-        date: Date;
+        string      : string;
+        number      : number;
+        boolean     : boolean;
+        object      : object;
+        date        : Date;
     }
 
     export type FieldType = string | number | boolean | object | Date;
 
-    export type Fields = { [key: string]: FieldType }
+    export type Fields = {[key:string]: FieldType }
 
     export type Query = {
-        remove?: string[],
-        add?: { [key: string]: FieldType }
-        values?: { [key: string]: any },
-        types?: { [key: string]: string },
-        where?: {
-            [key: string]:
-            string |
-            number |
+        remove? : string[],
+        add?    : {[key:string]:string}
+        values? : {[key:string]:any},
+        types?  : {[key:string]:string},
+        where?  : {[key:string]:
+            string | 
+            number | 
             boolean |
             {
-                $lt?: number, // less than
-                $lte?: number, // less than equal to
-                $gt?: number, // greater than
-                $gte?: number, // greater than equal to
-                $ne?: number, // not equal to
-                $in?: number[] | string[], // in an array of
-                $nin?: number[] | string[], // not in an array of 
-                $regex?: string | RegExp, // match regex
-                $size?: number, // is an array with size of   
+                $lt?    : number, // less than
+                $lte?   : number, // less than equal to
+                $gt?    : number, // greater than
+                $gte?   : number, // greater than equal to
+                $ne?    : number, // not equal to
+                $in?    : number[] | string[], // in an array of
+                $nin?   : number[] | string[], // not in an array of 
+                $regex? : string | RegExp, // match regex
+                $size?  : number, // is an array with size of   
             }
         },
-        limit?: number,
+        limit?  : number,
     }
 }
 

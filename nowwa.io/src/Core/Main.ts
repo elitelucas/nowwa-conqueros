@@ -8,13 +8,17 @@ import path from 'path';
 import { User, UserDocument } from '../Models/User';
 import Environment, { toyStatusUrl } from './Environment';
 import crypto from 'crypto';
-import Socket from './Socket';
+import Socket from './DEPRECATED/Socket';
 import Authentication from './Authentication';
-import Database from './Database';
+import Database from './DEPRECATED/Database';
 import Storage from './Storage';
 import Build from './Build';
 import Status from './Status';
-import YOHAMI from './UTILS/YOHAMI';
+
+import TEST from './TEST';
+import DB from './DB/DB';
+import SOCKET from './SOCKET/SOCKET';
+
 import Conquer from '../Frontend/Conquer';
 
 console.log(`project path: ${__dirname}`);
@@ -32,8 +36,7 @@ class Main {
         this.baseUrl = `/webhook/v${Environment.CoreConfig.VERSION}`;
 
         this.AsyncInit(Environment.CoreConfig);
-
-        console.log(YOHAMI.myFunction());
+ 
     }
 
     private async AsyncInit(env: Environment.Config): Promise<void> {
@@ -87,8 +90,13 @@ class Main {
             });
 
             // TODO : enable authentication & database
-            await Authentication.AsyncInit(app, env);
-            await Database.AsyncInit(app, env);
+            // await Authentication.AsyncInit(app, env);
+           // await Database.AsyncInit(app, env);
+           // Conquer.TestDatabase();
+
+            await DB.init( env );
+            await SOCKET.init( env );
+  
             // routes: start
 
             // routes: end
@@ -99,75 +107,8 @@ class Main {
 
             app.listen(env.PORT);
             console.log(`[Express] listening on port ${env.PORT}`);
-
-            await Socket.AsyncInit(app, env);
-
-            // TEST : test 
-
-            // /* Create Dataitem */
-            // let struct001 = await Database.StructureLoad(["schema002"]);
-            // console.log(JSON.stringify(struct001));
-
-            // /* Create Dataitem */
-            // let input001: Database.Query = {
-            //     "add": {
-            //         "field001": 5,
-            //         "field002": "a string",
-            //         "field003": true,
-            //         "field004": {
-            //             "key": "value"
-            //         }
-            //     },
-            // };
-            // let item001 = await Database.DataSave("schema002", input001);
-            // let id001: string = (item001 as any)._id;
-            // console.log(JSON.stringify(item001));
-            // console.log('done 1');
-
-            // /* Retrieve Dataitem */
-            // let input002: Database.Query = {
-            //     "where": {
-            //         "_id": id001
-            //     },
-            // };
-            // let item002 = await Database.DataLoad("schema002", input002);
-            // console.log(JSON.stringify(item002));
-            // console.log('done 2');
-
-            // /* Change Dataitem */
-            // let input003: Database.Query = {
-            //     "where": {
-            //         "_id": id001
-            //     },
-            //     "values": {
-            //         "field001": 10,
-            //         "field002": "not a string",
-            //         "field003": false,
-            //         "field004": {
-            //             "key": "value 2"
-            //         }
-            //     },
-            // };
-            // let item003 = await Database.DataSave("schema002", input003);
-            // console.log(JSON.stringify(item003));
-            // console.log('done 3');
-
-            // /* Delete Dataitem */
-            // let input004: Database.Query = {
-            //     "where": {
-            //         "_id": id001
-            //     },
-            //     "values": {
-            //         "field001": 10,
-            //         "field002": "not a string",
-            //         "field003": false,
-            //         "field004": {
-            //             "key": "value 2"
-            //         }
-            //     },
-            // };
-            // await Database.DataDelete("schema002", input004);
-            // console.log('done 4');
+ 
+            TEST.test();
         }
         catch (error) {
             console.error(error);

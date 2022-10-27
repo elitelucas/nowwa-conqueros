@@ -1,0 +1,4 @@
+npm run conquer:build
+npm run front:dev
+
+npm run core:dev

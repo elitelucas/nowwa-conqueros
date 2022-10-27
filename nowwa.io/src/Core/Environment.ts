@@ -3,9 +3,7 @@ import { hideBin } from 'yargs/helpers';
 import dotenv from 'dotenv';
 
 class Environment {
-
-    private static Instance: Environment;
-
+ 
     private static get MainConfig(): Environment.Config {
         return {
 
