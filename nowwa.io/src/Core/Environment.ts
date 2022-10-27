@@ -95,16 +95,13 @@ export default Environment;
 export const authenticationUrl: string = `/authentication`;
 export const authenticationCoreUrl: string = `${Environment.CoreUrl}${authenticationUrl}`;
 
-export const toyRoot: string = `/toy`;
+export const authenticationRegisterUrl: string = `/authRegister`;
+export const authenticationLoginUrl: string = `/authLogin`;
 
 export const storageUrl: string = `/storage`;
-export const storageCoreUrl: string = `${Environment.CoreUrl}${storageUrl}`;
+
+export const toyUrl: string = `/toy`;
 
 export const toyListUrl: string = `/toyList`;
-export const toyListCoreUrl: string = `${Environment.CoreUrl}${toyListUrl}`;
-
 export const toyBuildUrl: string = `/toyBuild`;
-export const toyBuildCoreUrl: string = `${Environment.CoreUrl}${toyBuildUrl}`;
-
 export const toyStatusUrl: string = `/toyStatus`;
-export const toyStatusCoreUrl: string = `${Environment.CoreUrl}${toyStatusUrl}`;

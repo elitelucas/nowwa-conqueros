@@ -33,7 +33,7 @@ class Main {
 
         this.AsyncInit(Environment.CoreConfig);
 
-        console.log( YOHAMI.myFunction() );
+        console.log(YOHAMI.myFunction());
     }
 
     private async AsyncInit(env: Environment.Config): Promise<void> {
@@ -87,9 +87,9 @@ class Main {
             });
 
             // TODO : enable authentication & database
-            // await Authentication.AsyncInit(app, env);
+            await Authentication.AsyncInit(app, env);
             await Database.AsyncInit(app, env);
-            Conquer.TestDatabase();
+            // Conquer.TestDatabase();
             // routes: start
 
             // routes: end
