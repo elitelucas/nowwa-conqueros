@@ -39,7 +39,7 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
         LoginInit(state).then(setState);
     }
 
-    let setEmailValue = (event: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
+    let setEmail = (event: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
         setState({
             initialized: state.initialized,
             isBusy: state.isBusy,
@@ -49,7 +49,7 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
         });
     };
 
-    let setPasswordValue = (event: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
+    let setPassword = (event: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
         setState({
             initialized: state.initialized,
             isBusy: state.isBusy,
@@ -59,7 +59,7 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
         });
     };
 
-    let setWarningValue = (warning: string) => {
+    let setWarning = (warning: string) => {
         setState({
             initialized: state.initialized,
             isBusy: state.isBusy,
@@ -80,24 +80,31 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
     };
 
     let goToRegister = () => {
+        window.history.pushState("", "", `${window.location.origin}`);
         setState(LoginStateDefault);
         indexProps.SetDisplay('Register');
     };
 
     let doLogin = () => {
         if (state.email.length == 0) {
-            setWarningValue('email cannot be empty!');
+            setWarning('email cannot be empty!');
         } else if (state.password.length == 0) {
-            setWarningValue('password cannot be empty!');
+            setWarning('password cannot be empty!');
         } else {
-            setWarningValue('');
-            setIsBusy(true);
+            window.history.pushState("", "", `${window.location.origin}`);
+            setState({
+                email: state.email,
+                initialized: state.initialized,
+                isBusy: true,
+                password: state.password,
+                warning: ''
+            });
             let url: URL = new URL(`${window.location.origin}${authenticationLoginUrl}`);
             let init: RequestInit = {
                 method: "POST",
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    username: state.email,
+                    email: state.email,
                     password: state.password
                 })
             };
@@ -112,8 +119,13 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
                             indexProps.SetDisplay('None');
                         }
                     } else {
-                        setIsBusy(false);
-                        setWarningValue(res.error);
+                        setState({
+                            email: state.email,
+                            initialized: state.initialized,
+                            isBusy: false,
+                            password: state.password,
+                            warning: res.error
+                        });
                     }
                 })
                 .catch((error: any) => {
@@ -139,7 +151,7 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
                             <Form.Input
                                 type='email'
                                 placeholder='email'
-                                onChange={setEmailValue}
+                                onChange={setEmail}
                             />
                         </Grid.Column>
                     </Grid.Row>
@@ -151,7 +163,7 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
                             <Form.Input
                                 type='password'
                                 placeholder='password'
-                                onChange={setPasswordValue}
+                                onChange={setPassword}
                             />
                         </Grid.Column>
                     </Grid.Row>
@@ -165,10 +177,10 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
                     </Grid.Row>
                     <Grid.Row>
                         <Grid.Column>
-                            <Button fluid primary onClick={doLogin}><Icon name='sign in'></Icon>Login</Button>
+                            <Button fluid primary onClick={doLogin} disabled={state.isBusy}><Icon name='sign in'></Icon>Login</Button>
                         </Grid.Column>
                         <Grid.Column>
-                            <Button fluid primary onClick={goToRegister}><Icon name='signup'></Icon>Register</Button>
+                            <Button fluid primary onClick={goToRegister} disabled={state.isBusy}><Icon name='signup'></Icon>Register</Button>
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>

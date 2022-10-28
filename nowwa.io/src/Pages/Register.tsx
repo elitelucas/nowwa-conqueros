@@ -9,7 +9,8 @@ export type RegisterState = {
     email: string,
     password: string,
     repassword: string,
-    warning: string
+    warning: string,
+    shouldReset: boolean
 }
 
 export const RegisterStateDefault: RegisterState = {
@@ -19,6 +20,7 @@ export const RegisterStateDefault: RegisterState = {
     password: '',
     repassword: '',
     warning: '',
+    shouldReset: false
 }
 
 export const RegisterLoad = (state: RegisterState): Promise<RegisterState> => {
@@ -29,7 +31,8 @@ export const RegisterLoad = (state: RegisterState): Promise<RegisterState> => {
             email: '',
             password: '',
             repassword: '',
-            warning: ''
+            warning: '',
+            shouldReset: false
         };
         resolve(registerState);
     });
@@ -41,18 +44,19 @@ const Register = (state: RegisterState, setState: React.Dispatch<React.SetStateA
         RegisterLoad(state).then(setState);
     }
 
-    let setEmailValue = (event: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
+    let setEmail = (event: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
         setState({
             initialized: state.initialized,
             isBusy: state.isBusy,
             email: data.value,
             password: state.password,
             repassword: state.repassword,
-            warning: state.warning
+            warning: state.warning,
+            shouldReset: false
         });
     };
 
-    let setPasswordValue = (event: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
+    let setPassword = (event: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
         setState({
             initialized: state.initialized,
             isBusy: state.isBusy,
@@ -60,10 +64,11 @@ const Register = (state: RegisterState, setState: React.Dispatch<React.SetStateA
             password: data.value,
             repassword: state.repassword,
             warning: state.warning,
+            shouldReset: false
         });
     };
 
-    let setRePasswordValue = (event: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
+    let setRePassword = (event: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
         setState({
             initialized: state.initialized,
             isBusy: state.isBusy,
@@ -71,10 +76,11 @@ const Register = (state: RegisterState, setState: React.Dispatch<React.SetStateA
             password: state.password,
             repassword: data.value,
             warning: state.warning,
+            shouldReset: false
         });
     };
 
-    let setWarningValue = (warning: string) => {
+    let setWarning = (warning: string) => {
         setState({
             initialized: state.initialized,
             isBusy: state.isBusy,
@@ -82,6 +88,7 @@ const Register = (state: RegisterState, setState: React.Dispatch<React.SetStateA
             password: state.password,
             repassword: state.repassword,
             warning: warning,
+            shouldReset: false
         });
     };
 
@@ -93,6 +100,19 @@ const Register = (state: RegisterState, setState: React.Dispatch<React.SetStateA
             password: state.password,
             repassword: state.repassword,
             warning: state.warning,
+            shouldReset: false
+        });
+    };
+
+    let setShouldReset = (shouldReset: boolean) => {
+        setState({
+            initialized: state.initialized,
+            isBusy: state.isBusy,
+            email: state.email,
+            password: state.password,
+            repassword: state.repassword,
+            warning: state.warning,
+            shouldReset: shouldReset
         });
     };
 
@@ -103,32 +123,54 @@ const Register = (state: RegisterState, setState: React.Dispatch<React.SetStateA
 
     let doRegister = () => {
         if (state.email.length == 0) {
-            setWarningValue('email cannot be empty!');
+            setWarning('email cannot be empty!');
         } else if (state.password.length == 0) {
-            setWarningValue('password cannot be empty!');
+            setWarning('password cannot be empty!');
         } else if (state.password != state.repassword) {
-            setWarningValue('password mismatch!');
+            setWarning('password mismatch!');
         } else {
-            setWarningValue('');
-            setIsBusy(true);
+            setState({
+                email: state.email,
+                initialized: state.initialized,
+                isBusy: true,
+                password: state.password,
+                repassword: state.repassword,
+                shouldReset: true,
+                warning: ''
+            });
             let url: URL = new URL(`${window.location.origin}${authenticationRegisterUrl}`);
             let init: RequestInit = {
                 method: "POST",
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    username: state.email,
+                    email: state.email,
                     password: state.password
                 })
             };
             fetch(url, init)
                 .then(res => res.json())
                 .then((res: any) => {
-                    // console.log(`register response: ${JSON.stringify(res)}`);
+                    console.log(`register response: ${JSON.stringify(res)}`);
                     if (res.success) {
-                        goToLogin();
+                        setState({
+                            email: state.email,
+                            initialized: state.initialized,
+                            isBusy: state.isBusy,
+                            password: state.password,
+                            repassword: state.repassword,
+                            shouldReset: true,
+                            warning: 'check your email to verify your account'
+                        });
                     } else {
-                        setIsBusy(false);
-                        setWarningValue(res.error);
+                        setState({
+                            email: state.email,
+                            initialized: state.initialized,
+                            isBusy: false,
+                            password: state.password,
+                            repassword: state.repassword,
+                            shouldReset: true,
+                            warning: res.error
+                        });
                     }
                 })
                 .catch((error: any) => {
@@ -152,9 +194,10 @@ const Register = (state: RegisterState, setState: React.Dispatch<React.SetStateA
                         </Grid.Column>
                         <Grid.Column width='4'>
                             <Form.Input
+                                value={state.shouldReset ? '' : state.email}
                                 type='email'
                                 placeholder='email'
-                                onChange={setEmailValue}
+                                onChange={setEmail}
                             />
                         </Grid.Column>
                     </Grid.Row>
@@ -164,9 +207,10 @@ const Register = (state: RegisterState, setState: React.Dispatch<React.SetStateA
                         </Grid.Column>
                         <Grid.Column width='4'>
                             <Form.Input
+                                value={state.shouldReset ? '' : state.password}
                                 type='password'
                                 placeholder='password'
-                                onChange={setPasswordValue}
+                                onChange={setPassword}
                             />
                         </Grid.Column>
                     </Grid.Row>
@@ -176,9 +220,10 @@ const Register = (state: RegisterState, setState: React.Dispatch<React.SetStateA
                         </Grid.Column>
                         <Grid.Column width='4'>
                             <Form.Input
+                                value={state.shouldReset ? '' : state.repassword}
                                 type='password'
                                 placeholder='password'
-                                onChange={setRePasswordValue}
+                                onChange={setRePassword}
                             />
                         </Grid.Column>
                     </Grid.Row>

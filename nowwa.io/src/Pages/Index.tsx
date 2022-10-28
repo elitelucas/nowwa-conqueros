@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOMClient from 'react-dom/client';
 import Top from './Top';
-import { Header, Icon, Segment } from 'semantic-ui-react';
+import { Header, Icon, Message, Segment } from 'semantic-ui-react';
 import Explorer, { ExplorerState, ExplorerStateDefault, ExplorerLoad } from './Explorer';
 import Builds, { BuildStateDefault } from './Builds';
 import Status from '../Core/Status';
@@ -25,6 +25,18 @@ export interface IndexProps {
 }
 
 const Index = () => {
+
+    let url: URL = new URL(`${window.location.href}`);
+    let message: string = '';
+    let info: string = url.searchParams.get('info') as string;
+    let error: string = url.searchParams.get('error') as string;
+    if (info == 'verified') {
+        message = 'email successfully verified!';
+    } else if (info == 'notverified') {
+        message = 'failed to verify email';
+    } else if (error) {
+        message = error;
+    }
 
     const [state, setState] = useState(IndexStateDefault);
 
@@ -86,6 +98,7 @@ const Index = () => {
                     <Icon name='earlybirds' />
                     Nowwa IO
                 </Header>
+                {message.length > 0 && <Message>{message}</Message>}
             </Segment>
             {(state.display != 'Login' && state.display != 'Register' && state.display != 'None') && top}
             {signin}

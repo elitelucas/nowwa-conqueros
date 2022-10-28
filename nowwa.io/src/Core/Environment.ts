@@ -3,7 +3,7 @@ import { hideBin } from 'yargs/helpers';
 import dotenv from 'dotenv';
 
 class Environment {
- 
+
     private static get MainConfig(): Environment.Config {
         return {
 
@@ -48,8 +48,29 @@ class Environment {
         return config;
     }
 
+    public static get PublicConfig(): Environment.Config {
+        let config: Environment.Config = this.MainConfig;
+
+        dotenv.config();
+
+        config.URL = process.env.PUBLIC_URL as string;
+        config.PORT = parseInt(process.env.PUBLIC_PORT as string);
+        config.USE_SSL = process.env.PUBLIC_USE_SSL as string == 'true';
+
+        return config;
+    }
+
     public static get CoreUrl(): string {
         let config: Environment.Config = this.CoreConfig;
+        return (config.USE_SSL ? `https` : `http`) +
+            `://` +
+            `${config.URL}` +
+            `:` +
+            `${config.PORT}`;
+    }
+
+    public static get PublicUrl(): string {
+        let config: Environment.Config = this.PublicConfig;
         return (config.USE_SSL ? `https` : `http`) +
             `://` +
             `${config.URL}` +
@@ -95,6 +116,7 @@ export const authenticationCoreUrl: string = `${Environment.CoreUrl}${authentica
 
 export const authenticationRegisterUrl: string = `/authRegister`;
 export const authenticationLoginUrl: string = `/authLogin`;
+export const authenticationVerifyUrl: string = `/authVerify`;
 
 export const storageUrl: string = `/storage`;
 

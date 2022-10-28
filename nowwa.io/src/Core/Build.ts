@@ -249,7 +249,7 @@ class Build {
                 console.log(`Game.CurrentActivity: ${Status.CurrentStatus.Activity}`);
                 res.status(500).send(`PLAYCANVAS BUSY | `);
             } else {
-                let url: URL = new URL(`${Environment.CoreUrl}${req.originalUrl}`);
+                let url: URL = new URL(`${Environment.PublicUrl}${req.originalUrl}`);
 
                 let configName: string = url.searchParams.get('n') as string;
                 let backend: Build.Backend = url.searchParams.get('b') as Build.Backend;
