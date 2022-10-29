@@ -1,7 +1,7 @@
 import React from 'react';
 import { Icon, Button, Segment, ButtonGroup, Menu, Header, Input, InputOnChangeData, Card, Grid, Divider, Label, Image, Message, Form } from 'semantic-ui-react';
-import { authenticationLoginUrl, authenticationRegisterUrl } from '../Core/Environment';
-import { IndexProps } from './Index';
+import { authenticationLoginUrl, authenticationRegisterUrl, twitterAuthUrl } from '../Core/Environment';
+import { IndexProps, IndexState, } from './Index';
 import fetch, { RequestInit, Request } from 'node-fetch';
 
 export type LoginState = {
@@ -10,6 +10,7 @@ export type LoginState = {
     email: string,
     password: string,
     warning: string,
+    twitter: string
 }
 
 export const LoginStateDefault: LoginState = {
@@ -17,23 +18,40 @@ export const LoginStateDefault: LoginState = {
     isBusy: false,
     email: '',
     password: '',
-    warning: ''
+    warning: '',
+    twitter: ''
 }
 
 export const LoginInit = (state: LoginState): Promise<LoginState> => {
     return new Promise((resolve, reject) => {
-        let loginState: LoginState = {
-            initialized: true,
-            isBusy: false,
-            email: '',
-            password: '',
-            warning: '',
+        let url: URL = new URL(`${window.location.origin}${twitterAuthUrl}`);
+        let init: RequestInit = {
+            method: "POST",
+            headers: { 'Content-Type': 'application/json' },
+            body: '{}'
         };
-        resolve(loginState);
+        fetch(url, init)
+            .then(res => res.json())
+            .then((res: any) => {
+                if (res.success) {
+                    resolve({
+                        email: state.email,
+                        initialized: true,
+                        isBusy: false,
+                        password: '',
+                        warning: '',
+                        twitter: res.link
+                    });
+                }
+            })
+            .catch((error: any) => {
+                console.error(`error: ${error}`);
+                reject(error);
+            });
     });
 };
 
-const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<LoginState>>, indexProps: IndexProps) => {
+const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<LoginState>>, setIndexState: React.Dispatch<React.SetStateAction<IndexState>>) => {
 
     if (!state.initialized) {
         LoginInit(state).then(setState);
@@ -45,7 +63,8 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
             isBusy: state.isBusy,
             email: data.value,
             password: state.password,
-            warning: state.warning
+            warning: state.warning,
+            twitter: state.twitter
         });
     };
 
@@ -55,7 +74,8 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
             isBusy: state.isBusy,
             email: state.email,
             password: data.value,
-            warning: state.warning
+            warning: state.warning,
+            twitter: state.twitter
         });
     };
 
@@ -66,6 +86,7 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
             email: state.email,
             password: state.password,
             warning: warning,
+            twitter: state.twitter
         });
     };
 
@@ -76,13 +97,16 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
             email: state.email,
             password: state.password,
             warning: state.warning,
+            twitter: state.twitter
         });
     };
 
     let goToRegister = () => {
         window.history.pushState("", "", `${window.location.origin}`);
         setState(LoginStateDefault);
-        indexProps.SetDisplay('Register');
+        setIndexState({
+            display: 'Register'
+        });
     };
 
     let doLogin = () => {
@@ -97,7 +121,8 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
                 initialized: state.initialized,
                 isBusy: true,
                 password: state.password,
-                warning: ''
+                warning: '',
+                twitter: state.twitter
             });
             let url: URL = new URL(`${window.location.origin}${authenticationLoginUrl}`);
             let init: RequestInit = {
@@ -113,10 +138,17 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
                 .then((res: any) => {
                     // console.log(`login response: ${JSON.stringify(res)}`);
                     if (res.success) {
+                        console.log(res.value);
                         if (res.value.admin) {
-                            indexProps.SetDisplay('Build');
+                            setIndexState({
+                                display: 'Build',
+                                account: res.value
+                            });
                         } else {
-                            indexProps.SetDisplay('None');
+                            setIndexState({
+                                display: 'Home',
+                                account: res.value
+                            });
                         }
                     } else {
                         setState({
@@ -124,7 +156,8 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
                             initialized: state.initialized,
                             isBusy: false,
                             password: state.password,
-                            warning: res.error
+                            warning: res.error,
+                            twitter: state.twitter
                         });
                     }
                 })
@@ -132,6 +165,10 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
                     console.error(`error: ${error}`);
                 });
         }
+    };
+
+    let doTwitter = async () => {
+        window.open(state.twitter);
     };
 
     return (
@@ -193,7 +230,7 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
                             <Button fluid primary disabled><Icon name='facebook'></Icon>Facebook</Button>
                         </Grid.Column>
                         <Grid.Column>
-                            <Button fluid primary disabled><Icon name='twitter'></Icon>Twitter</Button>
+                            <Button fluid primary onClick={doTwitter}><Icon name='twitter'></Icon>Twitter</Button>
                         </Grid.Column>
                         <Grid.Column>
                             <Button fluid primary disabled><Icon name='google'></Icon>Google</Button>

@@ -9,36 +9,59 @@ import 'semantic-ui-css/semantic.css';
 import Test, { TestStateDefault } from './Test';
 import Login, { LoginStateDefault } from './Login';
 import Register, { RegisterStateDefault } from './Register';
+import Home, { HomeStateDefault } from './Home';
 
-type IndexDisplay = 'None' | 'Explorer' | 'Build' | 'Test' | 'Login' | 'Register';
+type IndexDisplay = 'None' | 'Explorer' | 'Build' | 'Test' | 'Login' | 'Register' | 'Home';
 
-type IndexState = {
-    display: IndexDisplay
+type Account = {
+    id: string,
+    token: string,
+    name: string,
+    admin: boolean
+}
+
+export type IndexState = {
+    display: IndexDisplay,
+    account?: Account
 };
 
-const IndexStateDefault: IndexState = {
+export const IndexStateDefault: IndexState = {
     display: 'Login'
 }
 
 export interface IndexProps {
-    SetDisplay: (display: IndexDisplay) => void
+    SetDisplay: (display: IndexDisplay) => void,
+    SetAccount?: (account: Account) => void
 }
 
 const Index = () => {
+
+    const [state, setState] = useState(IndexStateDefault);
 
     let url: URL = new URL(`${window.location.href}`);
     let message: string = '';
     let info: string = url.searchParams.get('info') as string;
     let error: string = url.searchParams.get('error') as string;
+    let id: string = url.searchParams.get('id') as string;
+    let token: string = url.searchParams.get('token') as string;
+    let name: string = url.searchParams.get('name') as string;
+    let admin: boolean = url.searchParams.get('admin') as string == "true";
     if (info == 'verified') {
         message = 'email successfully verified!';
     } else if (info == 'notverified') {
         message = 'failed to verify email';
+    } else if (info == 'loggedin') {
+        window.history.pushState("", "", `${window.location.origin}`);
+        state.display = 'Home';
+        state.account = {
+            admin: admin,
+            id: id,
+            name: name,
+            token: token
+        };
     } else if (error) {
         message = error;
     }
-
-    const [state, setState] = useState(IndexStateDefault);
 
     const SetDisplay = (display: IndexDisplay) => {
         setState({
@@ -46,10 +69,12 @@ const Index = () => {
         });
     };
 
-    let top = Top({
-        SetDisplay: SetDisplay
-    });
-
+    let top;
+    if (state.account && state.account.admin) {
+        top = Top({
+            SetDisplay: SetDisplay
+        });
+    }
     const [explorerState, setExplorerState] = useState(ExplorerStateDefault);
     let explorer;
     if (state.display == 'Explorer') {
@@ -73,22 +98,27 @@ const Index = () => {
         // console.log(`gameState: ${gameState.initialized}`);
     }
 
-    const [signinState, setSignInState] = useState(LoginStateDefault);
-    let signin;
+    const [loginState, setLoginState] = useState(LoginStateDefault);
+    let login;
     if (state.display == 'Login') {
-        signin = Login(signinState, setSignInState, {
-            SetDisplay: SetDisplay
-        });
+        login = Login(loginState, setLoginState, setState);
         // console.log(`signinState: ${signinState.initialized}`);
     }
 
-    const [signupState, setSignUpState] = useState(RegisterStateDefault);
-    let signup;
+    const [registerState, setRegisterState] = useState(RegisterStateDefault);
+    let register;
     if (state.display == 'Register') {
-        signup = Register(signupState, setSignUpState, {
+        register = Register(registerState, setRegisterState, {
             SetDisplay: SetDisplay
         });
         // console.log(`signupState: ${signupState.initialized}`);
+    }
+
+    const [homeState, setHomeState] = useState(HomeStateDefault);
+    let home;
+    if (state.account) {
+        home = Home(homeState, setHomeState, state.account.name);
+        // console.log(`homeState: ${homeState.initialized}`);
     }
 
     return (
@@ -100,9 +130,10 @@ const Index = () => {
                 </Header>
                 {message.length > 0 && <Message>{message}</Message>}
             </Segment>
-            {(state.display != 'Login' && state.display != 'Register' && state.display != 'None') && top}
-            {signin}
-            {signup}
+            {home}
+            {top}
+            {login}
+            {register}
             {explorer}
             {build}
             {test}

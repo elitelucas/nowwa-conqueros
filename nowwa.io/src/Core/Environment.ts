@@ -31,7 +31,12 @@ class Environment {
             NAKAMA_HOST: "127.0.0.1",
             NAKAMA_HTTP_KEY: "server-N0ww@",
             NAKAMA_SERVER_KEY: "server-N0ww@",
-            NAKAMA_USE_SSL: false
+            NAKAMA_USE_SSL: false,
+
+            TWITTER_CLIENT_ID: "Y0hRYi1qaC1mU0ZYdTgtbGZXNVA6MTpjaQ",
+            TWITTER_CALLBACK_URL: `https://nowwa.io/twitterCallback`,
+            TWITTER_REDIRECT_URL: `https://nowwa.io/twitterRedirect`,
+            TWITTER_CLIENT_SECRET: `tWeyCLNxn1XKcSzarGw4H5t3RdVBu2u0W5Yrux9MRMRzFvSpqM`
 
         };
     }
@@ -105,7 +110,12 @@ namespace Environment {
         NAKAMA_PORT: number,
         NAKAMA_SERVER_KEY: string,
         NAKAMA_HTTP_KEY: string,
-        NAKAMA_USE_SSL: boolean
+        NAKAMA_USE_SSL: boolean,
+
+        TWITTER_CLIENT_ID: string,
+        TWITTER_CALLBACK_URL: string,
+        TWITTER_REDIRECT_URL: string,
+        TWITTER_CLIENT_SECRET: string
     };
 }
 
@@ -117,6 +127,10 @@ export const authenticationCoreUrl: string = `${Environment.CoreUrl}${authentica
 export const authenticationRegisterUrl: string = `/authRegister`;
 export const authenticationLoginUrl: string = `/authLogin`;
 export const authenticationVerifyUrl: string = `/authVerify`;
+
+export const twitterAuthUrl: string = `/twitterAuth`;
+export const twitterCallbackUrl: string = `/twitterCallback`;
+export const twitterRedirectUrl: string = `/twitterRedirect`;
 
 export const storageUrl: string = `/storage`;
 

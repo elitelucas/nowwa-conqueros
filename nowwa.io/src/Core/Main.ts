@@ -14,6 +14,8 @@ import Build from './Build';
 import Status from './Status';
 
 import Email from './Email';
+import TEST from './TEST';
+import Twitter from './Twitter';
 
 console.log(`project path: ${__dirname}`);
 
@@ -86,6 +88,8 @@ class Main {
             // TODO : enable authentication & database
             await Authentication.AsyncInit(app, env);
             await Database.AsyncInit(app, env);
+            await Email.AsyncInit(app, env);
+            await Twitter.AsyncInit(app, env);
             // await DB.init(env);
             // await SOCKET.init(env);
 
@@ -101,9 +105,8 @@ class Main {
             console.log(`[Express] listening on port ${env.PORT}`);
 
             // TEST : do various tests
-            // TEST.test();
+            TEST.test();
 
-            await Email.AsyncInit(app, env);
             // await Email.Send('garibaldy.mukti@gmail.com', 'The Subject of This Email', 'The content of this email');
         }
         catch (error) {

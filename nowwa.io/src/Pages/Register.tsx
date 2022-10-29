@@ -247,18 +247,6 @@ const Register = (state: RegisterState, setState: React.Dispatch<React.SetStateA
                 <Grid centered columns='8'>
                     <Grid.Row>
                         <Grid.Column>
-                            <Button fluid primary disabled><Icon name='facebook'></Icon>Facebook</Button>
-                        </Grid.Column>
-                        <Grid.Column>
-                            <Button fluid primary disabled><Icon name='twitter'></Icon>Twitter</Button>
-                        </Grid.Column>
-                        <Grid.Column>
-                            <Button fluid primary disabled><Icon name='google'></Icon>Google</Button>
-                        </Grid.Column>
-                        <Grid.Column>
-                            <Button fluid primary disabled><Icon className='metamask'></Icon>Metamask</Button>
-                        </Grid.Column>
-                        <Grid.Column>
                             <Button fluid primary onClick={goToLogin}><Icon name='sign in'></Icon>Login</Button>
                         </Grid.Column>
                     </Grid.Row>

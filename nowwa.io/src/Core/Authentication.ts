@@ -127,9 +127,11 @@ class Authentication {
                     let userId = `${user._id}${admin ? 'admin' : ''}`
                     this.Hash(userId)
                         .then((hash) => {
+                            console.log('name:' + email);
                             res.send({
                                 success: true, value: {
                                     id: user._id,
+                                    name: email,
                                     token: hash,
                                     admin: admin
                                 }
