@@ -51,7 +51,7 @@ export const LoginInit = (state: LoginState): Promise<LoginState> => {
     });
 };
 
-const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<LoginState>>, setIndexState: React.Dispatch<React.SetStateAction<IndexState>>) => {
+const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<LoginState>>, setIndexState: (updates: Partial<IndexState>) => void) => {
 
     if (!state.initialized) {
         LoginInit(state).then(setState);

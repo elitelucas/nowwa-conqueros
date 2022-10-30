@@ -91,7 +91,7 @@ class DB {
     public static async set2(tableName: string, query: DB.Query): Promise<mongoose.Document<any, any, any>> {
         let model = DB.models.get(tableName);
         if (!model) {
-            let schema = new mongoose.Schema({}, { strict: false });
+            let schema = new mongoose.Schema({}, { strict: false, collection: tableName });
             model = mongoose.model(tableName, schema);
             DB.models.set(tableName, model);
         }

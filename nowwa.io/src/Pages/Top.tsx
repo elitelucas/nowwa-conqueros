@@ -1,19 +1,19 @@
 import React from 'react';
 import { Icon, Button, Segment, ButtonGroup, Menu } from 'semantic-ui-react';
-import { IndexProps } from './Index';
+import { IndexProps, IndexState } from './Index';
 
-const Top = (props: IndexProps) => {
+const Top = (setIndexState: (updates: Partial<IndexState>) => void) => {
 
     const ShowExplorer = () => {
-        props.SetDisplay('Explorer');
+        setIndexState({
+            display: 'Explorer'
+        });
     };
 
     const ShowBuild = () => {
-        props.SetDisplay('Build');
-    };
-
-    const ShowTest = () => {
-        props.SetDisplay('Test');
+        setIndexState({
+            display: 'Build'
+        });
     };
 
     return (
@@ -25,10 +25,6 @@ const Top = (props: IndexProps) => {
             <Menu.Item onClick={ShowBuild}>
                 <Icon name='cog'></Icon>
                 Build
-            </Menu.Item>
-            <Menu.Item onClick={ShowTest}>
-                <Icon name='cog'></Icon>
-                Test
             </Menu.Item>
         </Menu>
     );
