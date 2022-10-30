@@ -3,6 +3,7 @@ import { Icon, Button, Segment, ButtonGroup, Menu, Header, Input, InputOnChangeD
 import { authenticationLoginUrl, authenticationRegisterUrl, twitterAuthUrl } from '../Core/Environment';
 import { IndexProps, IndexState, } from './Index';
 import fetch, { RequestInit, Request } from 'node-fetch';
+import { UpdateComponentState } from './Utils';
 
 export type LoginState = {
     initialized: boolean,
@@ -57,55 +58,35 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
         LoginInit(state).then(setState);
     }
 
+    let updateState = (updates: Partial<LoginState>) => {
+        let newState = UpdateComponentState<LoginState>(state, updates);
+        setState(newState);
+    };
+
     let setEmail = (event: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
-        setState({
-            initialized: state.initialized,
-            isBusy: state.isBusy,
-            email: data.value,
-            password: state.password,
-            warning: state.warning,
-            twitter: state.twitter
+        updateState({
+            email: data.value
         });
     };
 
     let setPassword = (event: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
-        setState({
-            initialized: state.initialized,
-            isBusy: state.isBusy,
-            email: state.email,
-            password: data.value,
-            warning: state.warning,
-            twitter: state.twitter
+        updateState({
+            password: data.value
         });
     };
 
     let setWarning = (warning: string) => {
-        setState({
-            initialized: state.initialized,
-            isBusy: state.isBusy,
-            email: state.email,
-            password: state.password,
-            warning: warning,
-            twitter: state.twitter
-        });
-    };
-
-    let setIsBusy = (isBusy: boolean) => {
-        setState({
-            initialized: state.initialized,
-            isBusy: isBusy,
-            email: state.email,
-            password: state.password,
-            warning: state.warning,
-            twitter: state.twitter
+        updateState({
+            warning: warning
         });
     };
 
     let goToRegister = () => {
         window.history.pushState("", "", `${window.location.origin}`);
-        setState(LoginStateDefault);
+        updateState(LoginStateDefault);
         setIndexState({
-            display: 'Register'
+            display: 'Register',
+            message: ''
         });
     };
 
@@ -115,14 +96,10 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
         } else if (state.password.length == 0) {
             setWarning('password cannot be empty!');
         } else {
-            window.history.pushState("", "", `${window.location.origin}`);
-            setState({
-                email: state.email,
-                initialized: state.initialized,
+            // window.history.pushState("", "", `${window.location.origin}`);
+            updateState({
                 isBusy: true,
-                password: state.password,
                 warning: '',
-                twitter: state.twitter
             });
             let url: URL = new URL(`${window.location.origin}${authenticationLoginUrl}`);
             let init: RequestInit = {
@@ -151,13 +128,9 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
                             });
                         }
                     } else {
-                        setState({
-                            email: state.email,
-                            initialized: state.initialized,
+                        updateState({
                             isBusy: false,
-                            password: state.password,
                             warning: res.error,
-                            twitter: state.twitter
                         });
                     }
                 })
@@ -168,6 +141,9 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
     };
 
     let doTwitter = async () => {
+        setIndexState({
+            message: ''
+        });
         window.open(state.twitter);
     };
 

@@ -21,13 +21,17 @@ type Account = {
     admin: boolean
 }
 
-export type IndexState = {
+export type IndexState = ComponentState & {
     display: IndexDisplay,
-    account?: Account
+    account?: Account,
+    message: string
 };
 
 export const IndexStateDefault: IndexState = {
     display: 'Login',
+    initialized: false,
+    busy: false,
+    message: ``
 }
 
 export interface IndexProps {
@@ -67,29 +71,38 @@ const Index = () => {
 
     const [state, setState] = useState(IndexStateDefault);
 
-    let params: { [key: string]: any } = GetUrlSearchParams(window.location.href);
-    let message: string = '';
-    if (params.info == 'verified') {
-        message = 'email successfully verified!';
-    } else if (params.info == 'notverified') {
-        message = 'failed to verify email';
-    } else if (params.info == 'loggedin') {
-        window.history.pushState("", "", `${window.location.origin}`);
-        state.display = 'Home';
-        state.account = {
-            admin: params.admin as string == 'true',
-            id: params.id,
-            name: params.name,
-            token: params.token
-        };
-    } else if (params.error) {
-        message = params.error;
-    }
-
     const updateState = (updates: Partial<IndexState>) => {
         let newState = UpdateComponentState<IndexState>(state, updates);
         setState(newState);
     };
+
+    if (!state.initialized) {
+        let params: { [key: string]: any } = GetUrlSearchParams(window.location.href);
+        window.history.pushState("", "", `${window.location.origin}`);
+        if (params.info == 'verified') {
+            updateState({
+                message: `email successfully verified!`
+            });
+        } else if (params.info == 'notverified') {
+            updateState({
+                message: `failed to verify email`
+            });
+        } else if (params.info == 'loggedin') {
+            updateState({
+                display: 'Home',
+                account: {
+                    admin: params.admin as string == 'true',
+                    id: params.id,
+                    name: params.name,
+                    token: params.token
+                }
+            });
+        } else if (params.error) {
+            updateState({
+                message: `${params.error}`
+            });
+        }
+    }
 
     let top;
     if (state.account && state.account.admin) {
@@ -133,7 +146,7 @@ const Index = () => {
                     <Icon name='earlybirds' />
                     Nowwa IO
                 </Header>
-                {message.length > 0 && <Message>{message}</Message>}
+                {state.message.length > 0 && <Message>{state.message}</Message>}
             </Segment>
             {home}
             {top}
