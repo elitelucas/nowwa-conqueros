@@ -67,16 +67,20 @@ class TEST {
         // log('done 4');
 
         // /* Create Dataitem Loose */
-        // let input005: DB.Query = {
-        //     "values": {
-        //         "key01": 5,
-        //         "key02": "a string"
-        //     },
-        // };
-        // let item005 = await DB.set2("schemaLoose", input005);
-        // let id005 = item005._id;
-        // log(JSON.stringify(item005));
-        // log('done 5');
+
+        let input005: DB.Query = 
+        {
+            "values": {
+                "key01": 5,
+                "key02": "save to usernames?"
+            },
+        };
+
+      //  let item = await DB.set2("schemaLoose", input005); 
+        let item = await DB.set( "usernames", input005);
+        let id = item._id;
+        log( 'done', JSON.stringify(item), id );
+
 
         // /* Retrieve Dataitem Loose */
         // let input006: DB.Query = {

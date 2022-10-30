@@ -6,7 +6,7 @@ import DBMODEL from './DBMODEL';
 import LOG, { log, error } from '../UTILS/LOG';
 
 class DB {
-    private static models: Map<string, any> = new Map<string, any>();
+ 
     /*=============== 
 
 
@@ -15,7 +15,8 @@ class DB {
 
     ================*/
 
-    public static async init(env: Environment.Config): Promise<void> {
+    public static async init(env: Environment.Config): Promise<void> 
+    {
         log(`init database...`);
 
         let uri: string = `mongodb+srv://${env.MONGODB_USER}:${env.MONGODB_PASS}@${env.MONGODB_HOST}/${env.MONGODB_DB}`;
@@ -47,30 +48,20 @@ class DB {
 
     ================*/
 
-    public static async get(tableName: string, query: DB.Query): Promise<CustomDocument[]> {
+    public static async get(tableName: string, query: DB.Query): Promise<mongoose.Document<any, any, any>[]> 
+    {
         let model = await DBMODEL.get(tableName);
         let myQuery = model.find(query.where || {});
 
-        if (query.limit) myQuery.limit(query.limit);
+        if( query.limit ) myQuery.limit(query.limit);
 
         let documents = await myQuery.exec();
 
-        return Promise.resolve(documents);
-    }
-
-    public static async get2(tableName: string, query: DB.Query): Promise<mongoose.Document<any, any, any>> {
-        let model = DB.models.get(tableName);
-        if (!model) {
-            let schema = new mongoose.Schema({}, { strict: false });
-            model = mongoose.model(tableName, schema);
-            DB.models.set(tableName, model);
-        }
-        let document = await model.findOne(query.where);
-        if (document) {
-            return Promise.resolve(document);
-        }
+        if (documents) return Promise.resolve(documents);
         return Promise.reject(new Error('entry not found'));
     }
+
+ 
 
     /*=============== 
 
@@ -80,23 +71,14 @@ class DB {
 
     ================*/
 
-    public static async set(tableName: string, query: DB.Query): Promise<CustomDocument> {
-        if (query.where) return DB.change(tableName, query);
+    public static async set( tableName: string, query: DB.Query): Promise<mongoose.Document<any, any, any>> 
+    {
+        if( query.where) return DB.change( tableName, query );
 
-        let model = await DBMODEL.get(tableName);
-        let document = await model.create(query.values);
-        return Promise.resolve(document);
-    }
+        let model       = await DBMODEL.get( tableName );
+        let document    = await model.create( query.values );
 
-    public static async set2(tableName: string, query: DB.Query): Promise<mongoose.Document<any, any, any>> {
-        let model = DB.models.get(tableName);
-        if (!model) {
-            let schema = new mongoose.Schema({}, { strict: false });
-            model = mongoose.model(tableName, schema);
-            DB.models.set(tableName, model);
-        }
-        let document = await model.create(query.values);
-        return Promise.resolve(document);
+        return Promise.resolve( document );
     }
 
     /*=============== 
@@ -107,16 +89,17 @@ class DB {
 
     ================*/
 
-    public static async change(tableName: string, query: DB.Query): Promise<CustomDocument> {
+    public static async change( tableName: string, query: DB.Query): Promise<mongoose.Document<any, any, any>> 
+    {
         let model = await DBMODEL.get(tableName);
 
         let myQuery = model.find(query.where as any).limit(1);
         let documents = await myQuery.exec();
 
-        if (!documents || documents.length != 1) return Promise.reject(new Error(`matching entry not found!`));
+        if ( !documents || documents.length != 1) return Promise.reject(new Error(`matching entry not found!`));
 
-        let document = documents[0];
-        let fieldNames = Object.keys(query.values!);
+        let document    = documents[0];
+        let fieldNames  = Object.keys(query.values!);
 
         for (let i: number = 0; i < fieldNames.length; i++) {
             let fieldName = fieldNames[i];
@@ -125,30 +108,9 @@ class DB {
             document[fieldName] = fieldValue;
         }
         await document.save();
-        return Promise.resolve(document);
+        return Promise.resolve( document );
     };
-
-    public static async change2(tableName: string, query: DB.Query): Promise<mongoose.Document<any, any, any>> {
-        let model = DB.models.get(tableName);
-        if (!model) {
-            let schema = new mongoose.Schema({}, { strict: false });
-            model = mongoose.model(tableName, schema);
-            DB.models.set(tableName, model);
-        }
-        let document = await model.findOne(query.where);
-        if (document) {
-            let fieldNames = Object.keys(query.values!);
-            for (let i: number = 0; i < fieldNames.length; i++) {
-                let fieldName = fieldNames[i];
-                let fieldValue = query.values![fieldName];
-                (document as any)[fieldName] = fieldValue;
-            }
-            await document.save();
-            return Promise.resolve(document);
-        }
-        return Promise.reject(new Error('entry not found'));
-    }
-
+ 
     /*=============== 
 
 
@@ -157,31 +119,16 @@ class DB {
 
     ================*/
 
-    public static async remove(tableName: string, query: DB.Query): Promise<void> {
+    public static async remove(tableName: string, query: DB.Query): Promise<void> 
+    {
         let model = await DBMODEL.get(tableName);
 
+        if (query.where && query.where._id) (query.where as any)._id = new mongoose.mongo.ObjectId((query.where as any)._id);
+        
         let myQuery = model.find(query.where as any).limit(1);
         await model.deleteOne(myQuery);
         return Promise.resolve();
     };
-
-    public static async remove2(tableName: string, query: DB.Query): Promise<void> {
-        let model = DB.models.get(tableName);
-        if (!model) {
-            let schema = new mongoose.Schema({}, { strict: false });
-            model = mongoose.model(tableName, schema);
-            DB.models.set(tableName, model);
-        }
-        if (query.where && query.where._id) {
-            (query.where as any)._id = new mongoose.mongo.ObjectId((query.where as any)._id);
-        }
-        let myQuery = model.find(query.where as any).limit(1);
-        await model.deleteOne(myQuery);
-        return Promise.resolve();
-    };
-
-
-
 
 }
 

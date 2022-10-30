@@ -6,7 +6,7 @@ import LOG, { log, error } from '../UTILS/LOG';
  
 class DBMODEL
 {
-    private static pool:{[key:string]:mongoose.Model<any, {}, {}>} = {};
+    private static pool: Map<string, any> = new Map<string, any>();
 
     /*=============== 
 
@@ -16,13 +16,17 @@ class DBMODEL
 
     ================*/
 
-    public static async get( name:string ):Promise<mongoose.Model<any, {}, {}>> 
+    public static async get( tableName:string ):Promise<any> 
     {
-        if( DBMODEL.pool[ name ] ) return DBMODEL.pool[ name ];
+        let schema = new mongoose.Schema({}, { strict: false });
+        let model = mongoose.model(tableName, schema);
+        DBMODEL.pool.set(tableName, model);
 
-        let schema = await DBTABLE.get( name );
-        
-        return DBMODEL.set( name, schema.schemaFields );
+        return Promise.resolve( model );
+
+       // if( DBMODEL.pool[ name ] ) return DBMODEL.pool[ name ];
+       // let schema = await DBTABLE.get( name );
+       // return DBMODEL.set( name, schema.schemaFields );
     };
 
 
@@ -34,6 +38,7 @@ class DBMODEL
 
     ================*/
  
+    /*
     private static set( name:string, fields:any ) 
     {
         log( `DBMODEL new: ${name}...` )
@@ -124,6 +129,7 @@ class DBMODEL
  
         return model;
     }
+    */
  
  
 }
