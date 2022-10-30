@@ -3,10 +3,9 @@ import { Custom, CustomProperty, CustomType, CustomDocument } from '../../Models
 import DB from './DB';
 import DBTABLE from './DBTABLE';
 import LOG, { log, error } from '../UTILS/LOG';
- 
-class DBMODEL
-{
-    private static pool:{[key:string]:mongoose.Model<any, {}, {}>} = {};
+
+class DBMODEL {
+    private static pool: Map<string, any> = new Map<string, any>();
 
     /*=============== 
 
@@ -16,13 +15,16 @@ class DBMODEL
 
     ================*/
 
-    public static async get( name:string ):Promise<mongoose.Model<any, {}, {}>> 
-    {
-        if( DBMODEL.pool[ name ] ) return DBMODEL.pool[ name ];
+    public static async get(tableName: string): Promise<any> {
+        let schema = new mongoose.Schema({}, { strict: false, collection: tableName });
+        let model = mongoose.model(tableName, schema);
+        DBMODEL.pool.set(tableName, model);
 
-        let schema = await DBTABLE.get( name );
-        
-        return DBMODEL.set( name, schema.schemaFields );
+        return Promise.resolve(model);
+
+        // if( DBMODEL.pool[ name ] ) return DBMODEL.pool[ name ];
+        // let schema = await DBTABLE.get( name );
+        // return DBMODEL.set( name, schema.schemaFields );
     };
 
 
@@ -33,7 +35,8 @@ class DBMODEL
     
 
     ================*/
- 
+
+    /*
     private static set( name:string, fields:any ) 
     {
         log( `DBMODEL new: ${name}...` )
@@ -124,11 +127,12 @@ class DBMODEL
  
         return model;
     }
- 
- 
+    */
+
+
 }
 
 
- 
+
 
 export default DBMODEL;
