@@ -18,8 +18,12 @@ class DBMODEL
 
     public static async get( tableName:string ):Promise<any> 
     {
-        let schema = new mongoose.Schema({}, { strict: false });
-        let model = mongoose.model(tableName, schema);
+        let model = DBMODEL.pool.get( tableName );
+        if( model ) return Promise.resolve( model );
+
+        let schema  = new mongoose.Schema({}, { strict: false });
+        model       = mongoose.model(tableName, schema);
+
         DBMODEL.pool.set(tableName, model);
 
         return Promise.resolve( model );
