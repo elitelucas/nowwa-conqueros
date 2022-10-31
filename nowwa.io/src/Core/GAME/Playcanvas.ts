@@ -1,7 +1,7 @@
 import fetch, { Response } from 'node-fetch';
 import fs from 'fs';
 import path from 'path';
-import Build from './Build';
+import Build from '../Build';
 
 class PlayCanvas {
 

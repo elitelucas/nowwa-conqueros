@@ -1,5 +1,5 @@
 import express from 'express';
-import Environment, { storageUrl } from './Environment';
+import Environment, { storageUrl } from '../Environment';
 import path from 'path';
 import fs from 'fs';
 

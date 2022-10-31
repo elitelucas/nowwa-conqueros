@@ -21,14 +21,8 @@ class DBMODEL
         let model = DBMODEL.pool.get( tableName );
         if( model ) return Promise.resolve( model );
 
-        let schema  = new mongoose.Schema({}, { strict: false, collection: tableName } });
-        model       = mongoose.model(tableName, schema);
-
-        DBMODEL.pool.set(tableName, model);
-
-        return Promise.resolve(model);
-
-        // if( DBMODEL.pool[ name ] ) return DBMODEL.pool[ name ];
+        return DBMODEL.set( tableName, {} );
+ 
         // let schema = await DBTABLE.get( name );
         // return DBMODEL.set( name, schema.schemaFields );
     };
@@ -41,6 +35,16 @@ class DBMODEL
     
 
     ================*/
+
+    private static async set( tableName:string, fields:any ):Promise<any> 
+    {
+        let schema  = new mongoose.Schema( fields || {}, { strict: false, collection: tableName } );
+        let model   = mongoose.model( tableName, schema );
+
+        DBMODEL.pool.set( tableName, model );
+
+        return Promise.resolve( model );
+    }
 
     /*
     private static set( name:string, fields:any ) 

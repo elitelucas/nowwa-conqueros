@@ -7,15 +7,15 @@ import path from 'path';
 import { UserDocument } from '../Models/User';
 import Environment, { toyStatusUrl } from './Environment';
 import crypto from 'crypto';
-import Authentication from './Authentication';
+import Authentication from './DEPRECATED/Authentication';
 import Database from './DEPRECATED/Database';
-import Storage from './Storage';
+import Storage from './CMS/Storage';
 import Build from './Build';
-import Status from './Status';
+import Status from './GAME/Status';
 
-import Email from './Email';
+import Email from './DEPRECATED/Email';
 import TEST from './TEST';
-import Twitter from './Twitter';
+import Twitter from './USER/AUTH/Twitter';
 
 console.log(`project path: ${__dirname}`);
 

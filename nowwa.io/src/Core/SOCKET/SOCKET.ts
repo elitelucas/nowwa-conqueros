@@ -1,6 +1,6 @@
 import express from 'express';
 import Environment from '../Environment';
-import Authentication from '../Authentication';
+import Authentication from '../DEPRECATED/Authentication';
 import SocketIO from "socket.io";
 import { createServer } from "http";
 import LOG, { log, error } from '../UTILS/LOG';

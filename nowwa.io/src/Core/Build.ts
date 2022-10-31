@@ -2,12 +2,12 @@ import express from 'express';
 import Environment, { toyUrl, toyBuildUrl, toyListUrl } from './Environment';
 import path from 'path';
 import fs from 'fs';
-import PlayCanvas from './Playcanvas';
+import PlayCanvas from './GAME/Playcanvas';
 import { extractFull, add, rename } from "node-7z";
-import { stringReplace, Replace, removeNullAndFalse, removeNull } from "./Utils";
+import { stringReplace, Replace, removeNullAndFalse, removeNull } from "./UTILS/Utils";
 import sevenBin from '7zip-bin';
 import del from 'del';
-import Status from './Status';
+import Status from './GAME/Status';
 
 class Build {
 
