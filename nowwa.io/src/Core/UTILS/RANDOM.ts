@@ -51,3 +51,5 @@ class RANDOM
         return 0;
     };
 };
+
+export default RANDOM;

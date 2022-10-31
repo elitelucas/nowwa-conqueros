@@ -6,9 +6,7 @@ class TEST {
 
     public static async test() 
     {
-    
-        log('TESTING');
-
+ 
         new ConquerOS();
 
         return;

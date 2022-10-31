@@ -1,6 +1,5 @@
 import mongoose, { mongo } from 'mongoose';
 import Environment from '../CONFIG/Environment';
-
 import { Custom, CustomProperty, CustomType, CustomDocument } from '../../Models/Custom';
 import DBMODEL from './DBMODEL';
 import LOG, { log, error } from '../UTILS/LOG';

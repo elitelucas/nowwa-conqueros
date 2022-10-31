@@ -14,8 +14,11 @@ import Build from './GAME/Build';
 import Status from './GAME/Status';
 
 import Email from './DEPRECATED/Email';
-import TEST from '../Frontend/TEST';
 import Twitter from './USER/AUTH/Twitter';
+import SOCKET from './SOCKET/SOCKET';
+import ConquerOS from '../Frontend/ConquerOS';
+
+
  
 
 console.log(`project path: ${__dirname}`);
@@ -92,7 +95,8 @@ class Main {
             await Email.AsyncInit(app, env);
             await Twitter.AsyncInit(app, env);
             // await DB.init(env);
-            // await SOCKET.init(env);
+
+            await SOCKET.init(env);
 
             // routes: start
 
@@ -105,10 +109,9 @@ class Main {
             app.listen(env.PORT);
             console.log(`[Express] listening on port ${env.PORT}`);
 
-            // TEST : do various tests
-            TEST.test();
-
-
+            // HACKIN
+            new ConquerOS();
+ 
             // await Email.Send('garibaldy.mukti@gmail.com', 'The Subject of This Email', 'The content of this email');
         }
         catch (error) {

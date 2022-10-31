@@ -18,23 +18,34 @@ class SocketClient
     private socket?: any;
     private socketListeners: Map<string, any> = new Map<string, any>();
 
-    constructor()
+    private onInitializedCallback : any;
+
+    constructor( callback:Function )
     {
-        log( "New Socket Client");
+        this.onInitializedCallback = callback;
+
+        log( "New Socket Client" );
+
+        this.connect();
     }
  
-    public connect()
+    private connect()  
     {
         log("Socket Connect");
+        
         this.socket = io( this.socketURL );
  
         this.socket.on( "connect", () => 
         {
             log("Socket Connected");
             console.log(`[socket] connect status: ${this.socket.connected}`);
+
+            this.onInitializedCallback();
+
+           // return Promise.resolve();
         });
 
-        this.socket.on("disconnect", () => 
+        this.socket.on( "disconnect", () => 
         {
             console.log(`[socket] connect status: ${this.socket.connected}`);
             this.connect();
@@ -45,26 +56,26 @@ class SocketClient
                 action(args);
             });
         });
-
-        this.socket.connect();
+ 
     }
 
-    private SocketSend(key: string, args: any) {
+    public send(key: string, args: any) 
+    {
         this.socket.emit(key, args);
     }
 
-    private SocketDisconnect() {
-        this.socket.disconnect();
+    public disconnect() 
+    {
+        this.socket.disconnect(); 
     }
 
-    private SocketAddListener( key: string, action: any) 
+    public addListener( key: string, action: any) 
     {
         this.socketListeners.set(key, action);
         this.socket.on(key, (args: any) => {
             action(args);
         });
     }
- 
 
 };
 

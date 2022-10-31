@@ -17,6 +17,8 @@ class SOCKET
 
         io.on( "connection", (socket) => 
         {
+            log("SOCKET onConnection" );
+
             socket.emit("noArg");
             socket.emit("basicEmit", 1, "2", Buffer.from([3]));
 
@@ -39,7 +41,7 @@ class SOCKET
                 socket.broadcast.emit('fromServer', `[broadcast: ${socket.id}]: ${JSON.stringify(args)}`); // sender does not get the broadcast
             });
 
-            socket.on('login', (args:Authentication.Input) => 
+            socket.on( 'login', (args:Authentication.Input) => 
             {
                 Authentication.Login(args).then((user) => 
                 {
@@ -51,7 +53,7 @@ class SOCKET
                 });
             });
 
-            socket.on('register', (args:Authentication.Input) => 
+            socket.on( 'register', (args:Authentication.Input) => 
             {
                 Authentication.Register(args).then((user) => 
                 {
