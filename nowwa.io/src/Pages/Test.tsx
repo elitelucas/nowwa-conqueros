@@ -1,7 +1,7 @@
 import { equal } from 'assert';
 import React, { useState, useEffect } from 'react';
 import { Icon, Header, Label, Segment, Button, Card, Image, Item, Breadcrumb, List, SegmentGroup, BreadcrumbSection, BreadcrumbDivider, Table, Checkbox, Embed, ButtonGroup, Divider, Grid, TextArea, Form } from 'semantic-ui-react';
-import Conquer from '../Frontend/Conquer';
+import Conquer from '../Frontend/_DEPRECATED/Conquer';
 import { Client, RpcResponse, Session } from '@heroiclabs/nakama-js';
 
 export type TestState = {
@@ -24,18 +24,18 @@ export const TestLoad = (state: TestState): Promise<TestState> => {
 const Test = (state: TestState, setState: React.Dispatch<React.SetStateAction<TestState>>) => {
 
     if (!state.initialized) {
-        var username = "username001";
-        var password = "password001";
-        var gameId = "game001";
-        var contextId = "context001";
-        var value = { key: "value" };
-        let conquer: Conquer = new Conquer();
-        conquer.NakamaConnect(username, password).then(() => {
-            conquer.NakamaSave(gameId, value).then(() => {
-                console.log('done');
-            });
-        });
-        console.log('done');
+        // var username = "username001";
+        // var password = "password001";
+        // var gameId = "game001";
+        // var contextId = "context001";
+        // var value = { key: "value" };
+        // let conquer: Conquer = new Conquer();
+        // conquer.NakamaConnect(username, password).then(() => {
+        //     conquer.NakamaSave(gameId, value).then(() => {
+        //         console.log('done');
+        //     });
+        // });
+        // console.log('done');
         // conquer.NakamaSaveContext(gameId, contextId, value).then((res1) => {
         //     console.log(`res1: ${JSON.stringify(res1)}`);
         //     conquer.NakamaLoadContext(gameId, contextId).then((res2) => {

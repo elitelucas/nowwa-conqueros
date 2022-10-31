@@ -4,13 +4,12 @@ import Top from './Top';
 import { Header, Icon, Message, Segment } from 'semantic-ui-react';
 import Explorer, { ExplorerState, ExplorerStateDefault, ExplorerLoad } from './Explorer';
 import Builds, { BuildStateDefault } from './Builds';
-import Status from '../Core/Status';
 import 'semantic-ui-css/semantic.css';
-import Test, { TestStateDefault } from './Test';
 import Login, { LoginStateDefault } from './Login';
 import Register, { RegisterStateDefault } from './Register';
 import Home, { HomeStateDefault } from './Home';
 import { ComponentState, UpdateComponentState } from './Utils';
+import Status from '../Core/GAME/Status';
 
 type IndexDisplay = 'None' | 'Explorer' | 'Build' | 'Test' | 'Login' | 'Register' | 'Home';
 
@@ -130,7 +129,7 @@ const Index = () => {
     const [registerState, setRegisterState] = useState(RegisterStateDefault);
     let register;
     if (state.display == 'Register') {
-        register = Register(registerState, setRegisterState, updateState);
+        register = Register(registerState, setRegisterState, state, updateState);
     }
 
     const [homeState, setHomeState] = useState(HomeStateDefault);

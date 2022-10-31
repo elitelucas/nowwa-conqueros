@@ -1,6 +1,6 @@
 import React from 'react';
 import { Icon, Button, Segment, ButtonGroup, Menu, Header, Input, InputOnChangeData, Card, Grid, Divider, Form, Message } from 'semantic-ui-react';
-import { authenticationRegisterUrl } from '../Core/Environment';
+import { authenticationRegisterUrl } from '../Core/CONFIG/Environment';
 import { IndexProps, IndexState } from './Index';
 import { UpdateComponentState } from './Utils';
 
@@ -39,7 +39,7 @@ export const RegisterLoad = (state: RegisterState): Promise<RegisterState> => {
     });
 };
 
-const Register = (state: RegisterState, setState: React.Dispatch<React.SetStateAction<RegisterState>>, setIndexState: (updates: Partial<IndexState>) => void) => {
+const Register = (state: RegisterState, setState: React.Dispatch<React.SetStateAction<RegisterState>>, indexState: IndexState, setIndexState: (updates: Partial<IndexState>) => void) => {
 
     if (!state.initialized) {
         RegisterLoad(state).then(setState);
