@@ -14,8 +14,9 @@ import Build from './GAME/Build';
 import Status from './GAME/Status';
 
 import Email from './DEPRECATED/Email';
-import TEST from './TEST';
+import TEST from '../Frontend/TEST';
 import Twitter from './USER/AUTH/Twitter';
+ 
 
 console.log(`project path: ${__dirname}`);
 
@@ -106,6 +107,7 @@ class Main {
 
             // TEST : do various tests
             TEST.test();
+
 
             // await Email.Send('garibaldy.mukti@gmail.com', 'The Subject of This Email', 'The content of this email');
         }

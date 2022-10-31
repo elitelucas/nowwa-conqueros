@@ -1,14 +1,17 @@
-import LOG, { log } from "./UTILS/LOG";
-import DB from "./DB/DB";
-import { randomBytes } from "crypto";
-import DBTABLE from "./DB/DBTABLE";
-import Environment from "./CONFIG/Environment";
-
+import LOG, { log } from "../Core/UTILS/LOG";
+import DB from "../Core/DB/DB";
+import ConquerOS from "./ConquerOS";
+ 
 class TEST {
 
     public static async test() 
     {
+    
         log('TESTING');
+
+        new ConquerOS();
+
+        return;
 
         let input005: DB.Query = 
         {
