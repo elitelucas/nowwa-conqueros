@@ -1,5 +1,5 @@
 import express from 'express';
-import Environment from '../Environment';
+import Environment from '../CONFIG/Environment';
 import Authentication from '../DEPRECATED/Authentication';
 import SocketIO from "socket.io";
 import { createServer } from "http";

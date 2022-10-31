@@ -2,7 +2,7 @@ import LOG, { log } from "./UTILS/LOG";
 import DB from "./DB/DB";
 import { randomBytes } from "crypto";
 import DBTABLE from "./DB/DBTABLE";
-import Environment from "./Environment";
+import Environment from "./CONFIG/Environment";
 
 class TEST {
 

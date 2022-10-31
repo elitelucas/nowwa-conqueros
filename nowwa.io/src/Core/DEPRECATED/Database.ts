@@ -1,6 +1,6 @@
 import mongoose, { mongo } from 'mongoose';
 import express from 'express';
-import Environment from '../Environment';
+import Environment from '../CONFIG/Environment';
 import { Custom, CustomProperty, CustomType, CustomDocument } from '../../Models/Custom';
 
 class Database {

@@ -1,5 +1,5 @@
 import mongoose, { mongo } from 'mongoose';
-import Environment from '../Environment';
+import Environment from '../CONFIG/Environment';
 import { Custom, CustomProperty, CustomType, CustomDocument } from '../../Models/Custom';
 import DB from './DB';
 import LOG, { log, error } from '../UTILS/LOG';

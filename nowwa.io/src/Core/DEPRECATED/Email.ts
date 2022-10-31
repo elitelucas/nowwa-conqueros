@@ -1,5 +1,5 @@
 import express from 'express';
-import Environment from '../Environment';
+import Environment from '../CONFIG/Environment';
 import nodemailer, { Transport, Transporter } from 'nodemailer';
 import { MailOptions } from 'nodemailer/lib/json-transport';
 

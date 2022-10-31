@@ -5,12 +5,12 @@ import multer from 'multer';
 import cloudinary from 'cloudinary';
 import path from 'path';
 import { UserDocument } from '../Models/User';
-import Environment, { toyStatusUrl } from './Environment';
+import Environment, { toyStatusUrl } from './CONFIG/Environment';
 import crypto from 'crypto';
 import Authentication from './DEPRECATED/Authentication';
 import Database from './DEPRECATED/Database';
 import Storage from './CMS/Storage';
-import Build from './Build';
+import Build from './GAME/Build';
 import Status from './GAME/Status';
 
 import Email from './DEPRECATED/Email';
@@ -27,12 +27,12 @@ class Main {
     /**
      * Initialize necessary components.
      */
-    constructor() {
+    constructor() 
+    {
         this.status = Main.StatusDefault;
         this.baseUrl = `/webhook/v${Environment.CoreConfig.VERSION}`;
 
         this.AsyncInit(Environment.CoreConfig);
-
     }
 
     private async AsyncInit(env: Environment.Config): Promise<void> {

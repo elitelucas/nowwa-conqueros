@@ -1,6 +1,6 @@
 import { TwitterApi, TwitterApiOAuth2Init } from 'twitter-api-v2';
 import express from 'express';
-import Environment, { twitterAuthUrl, twitterCallbackUrl, twitterRedirectUrl } from '../../Environment';
+import Environment, { twitterAuthUrl, twitterCallbackUrl, twitterRedirectUrl } from '../../CONFIG/Environment';
 import fetch, { RequestInfo } from 'node-fetch';
 import Authentication from '../../DEPRECATED/Authentication';
 
