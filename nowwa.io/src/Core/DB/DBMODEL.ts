@@ -3,8 +3,8 @@ import { Custom, CustomProperty, CustomType, CustomDocument } from '../../Models
 import DB from './DB';
 import DBTABLE from './DBTABLE';
 import LOG, { log, error } from '../UTILS/LOG';
- 
-class DBMODEL
+
+class DBMODEL 
 {
     private static pool: Map<string, any> = new Map<string, any>();
 
@@ -21,16 +21,16 @@ class DBMODEL
         let model = DBMODEL.pool.get( tableName );
         if( model ) return Promise.resolve( model );
 
-        let schema  = new mongoose.Schema({}, { strict: false });
+        let schema  = new mongoose.Schema({}, { strict: false, collection: tableName } });
         model       = mongoose.model(tableName, schema);
 
         DBMODEL.pool.set(tableName, model);
 
-        return Promise.resolve( model );
+        return Promise.resolve(model);
 
-       // if( DBMODEL.pool[ name ] ) return DBMODEL.pool[ name ];
-       // let schema = await DBTABLE.get( name );
-       // return DBMODEL.set( name, schema.schemaFields );
+        // if( DBMODEL.pool[ name ] ) return DBMODEL.pool[ name ];
+        // let schema = await DBTABLE.get( name );
+        // return DBMODEL.set( name, schema.schemaFields );
     };
 
 
@@ -41,7 +41,7 @@ class DBMODEL
     
 
     ================*/
- 
+
     /*
     private static set( name:string, fields:any ) 
     {
@@ -134,11 +134,11 @@ class DBMODEL
         return model;
     }
     */
- 
- 
+
+
 }
 
 
- 
+
 
 export default DBMODEL;

@@ -1,7 +1,8 @@
 import React from 'react';
 import { Icon, Button, Segment, ButtonGroup, Menu, Header, Input, InputOnChangeData, Card, Grid, Divider, Form, Message } from 'semantic-ui-react';
 import { authenticationRegisterUrl } from '../Core/Environment';
-import { IndexProps } from './Index';
+import { IndexProps, IndexState } from './Index';
+import { UpdateComponentState } from './Utils';
 
 export type RegisterState = {
     initialized: boolean,
@@ -38,103 +39,54 @@ export const RegisterLoad = (state: RegisterState): Promise<RegisterState> => {
     });
 };
 
-const Register = (state: RegisterState, setState: React.Dispatch<React.SetStateAction<RegisterState>>, indexProps: IndexProps) => {
+const Register = (state: RegisterState, setState: React.Dispatch<React.SetStateAction<RegisterState>>, setIndexState: (updates: Partial<IndexState>) => void) => {
 
     if (!state.initialized) {
         RegisterLoad(state).then(setState);
     }
 
+    let updateState = (updates: Partial<RegisterState>) => {
+        let newState = UpdateComponentState<RegisterState>(state, updates);
+        setState(newState);
+    };
+
     let setEmail = (event: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
-        setState({
-            initialized: state.initialized,
-            isBusy: state.isBusy,
-            email: data.value,
-            password: state.password,
-            repassword: state.repassword,
-            warning: state.warning,
-            shouldReset: false
+        updateState({
+            shouldReset: false,
+            email: data.value
         });
     };
 
     let setPassword = (event: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
-        setState({
-            initialized: state.initialized,
-            isBusy: state.isBusy,
-            email: state.email,
-            password: data.value,
-            repassword: state.repassword,
-            warning: state.warning,
-            shouldReset: false
+        updateState({
+            shouldReset: false,
+            password: data.value
         });
     };
 
     let setRePassword = (event: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
-        setState({
-            initialized: state.initialized,
-            isBusy: state.isBusy,
-            email: state.email,
-            password: state.password,
-            repassword: data.value,
-            warning: state.warning,
-            shouldReset: false
+        updateState({
+            shouldReset: false,
+            repassword: data.value
         });
     };
-
-    let setWarning = (warning: string) => {
-        setState({
-            initialized: state.initialized,
-            isBusy: state.isBusy,
-            email: state.email,
-            password: state.password,
-            repassword: state.repassword,
-            warning: warning,
-            shouldReset: false
-        });
-    };
-
-    let setIsBusy = (isBusy: boolean) => {
-        setState({
-            initialized: state.initialized,
-            isBusy: isBusy,
-            email: state.email,
-            password: state.password,
-            repassword: state.repassword,
-            warning: state.warning,
-            shouldReset: false
-        });
-    };
-
-    let setShouldReset = (shouldReset: boolean) => {
-        setState({
-            initialized: state.initialized,
-            isBusy: state.isBusy,
-            email: state.email,
-            password: state.password,
-            repassword: state.repassword,
-            warning: state.warning,
-            shouldReset: shouldReset
-        });
-    };
-
     let goToLogin = () => {
         setState(RegisterStateDefault);
-        indexProps.SetDisplay('Login');
+        setIndexState({
+            display: 'Login'
+        });
     };
 
     let doRegister = () => {
         if (state.email.length == 0) {
-            setWarning('email cannot be empty!');
+            updateState({ warning: `email cannot be empty` });
         } else if (state.password.length == 0) {
-            setWarning('password cannot be empty!');
+            updateState({ warning: `password cannot be empty` });
         } else if (state.password != state.repassword) {
-            setWarning('password mismatch!');
+            updateState({ warning: `password mismatch` });
         } else {
-            setState({
-                email: state.email,
-                initialized: state.initialized,
+            updateState({
                 isBusy: true,
-                password: state.password,
-                repassword: state.repassword,
                 shouldReset: true,
                 warning: ''
             });
@@ -152,22 +104,14 @@ const Register = (state: RegisterState, setState: React.Dispatch<React.SetStateA
                 .then((res: any) => {
                     console.log(`register response: ${JSON.stringify(res)}`);
                     if (res.success) {
-                        setState({
-                            email: state.email,
-                            initialized: state.initialized,
-                            isBusy: state.isBusy,
-                            password: state.password,
-                            repassword: state.repassword,
+                        updateState({
+                            isBusy: false,
                             shouldReset: true,
-                            warning: 'check your email to verify your account'
+                            warning: `check your email to verify your account`
                         });
                     } else {
-                        setState({
-                            email: state.email,
-                            initialized: state.initialized,
+                        updateState({
                             isBusy: false,
-                            password: state.password,
-                            repassword: state.repassword,
                             shouldReset: true,
                             warning: res.error
                         });
