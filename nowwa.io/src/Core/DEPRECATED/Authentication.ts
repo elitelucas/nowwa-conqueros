@@ -2,7 +2,7 @@ import passport from 'passport';
 import express from 'express';
 import passportLocal from 'passport-local';
 import { User, UserDocument } from '../../Models/User';
-import Environment, { authenticationCoreUrl, authenticationLoginUrl, authenticationRegisterUrl, authenticationUrl, authenticationVerifyUrl } from '../CONFIG/Environment';
+import Environment, { authenticationCoreUrl, authenticationHashUrl, authenticationLoginUrl, authenticationRegisterUrl, authenticationUrl, authenticationVerifyUrl } from '../CONFIG/Environment';
 import Database from './Database';
 import bcrypt from "bcrypt";
 import { CustomDocument } from '../../Models/Custom';
@@ -16,6 +16,7 @@ class Authentication {
         Authentication.WebhookLogin(app);
         Authentication.WebhookRegister(app);
         Authentication.WebhookVerify(app);
+        Authentication.WebhookHash(app);
         return Promise.resolve();
     }
 
@@ -127,7 +128,6 @@ class Authentication {
                     let userId = `${user._id}${admin ? 'admin' : ''}`
                     this.Hash(userId)
                         .then((hash) => {
-                            console.log('name:' + email);
                             res.send({
                                 success: true, value: {
                                     id: user._id,
@@ -140,6 +140,26 @@ class Authentication {
                         .catch((error) => {
                             res.send({ success: false, error: error.message });
                         });
+                })
+                .catch((error) => {
+                    res.send({ success: false, error: error.message });
+                });
+        });
+    }
+
+    /**
+     * Webhook for Hash. 
+     * @param app @type {express.Express}
+     */
+    private static WebhookHash(app: express.Express): void {
+        app.use(`${authenticationHashUrl}`, (req, res) => {
+            // console.log(`<-- authentication - hash`);
+            let input: string = req.body.input;
+            this.Hash(input)
+                .then((hash) => {
+                    res.send({
+                        success: true, value: hash
+                    });
                 })
                 .catch((error) => {
                     res.send({ success: false, error: error.message });

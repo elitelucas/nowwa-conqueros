@@ -1,10 +1,10 @@
 import { stat } from 'fs';
 import React, { useState, useEffect, SyntheticEvent } from 'react';
 import { Icon, Header, Label, Segment, Button, Card, Image, Item, Breadcrumb, List, SegmentGroup, BreadcrumbSection, BreadcrumbDivider, Table, Checkbox, CardGroup, Input, Select, Dropdown, DropdownItemProps, Accordion, LabelProps, Form, Grid, ButtonGroup, Divider, DropdownProps, InputOnChangeData, Loader, Dimmer, LabelDetail, Menu } from 'semantic-ui-react';
-import Environment, { toyBuildUrl, toyStatusUrl, toyListUrl } from '../Core/Environment';
-import Build from '../Core/Build';
+import Environment, { toyBuildUrl, toyStatusUrl, toyListUrl } from '../Core/CONFIG/Environment';
+import Build from '../Core/GAME/Build';
 import Main from '../Core/Main';
-import Status from '../Core/Status';
+import Status from '../Core/GAME/Status';
 
 type ContentIndexType = `None` | `Info` | `Build` | `Archive`;
 

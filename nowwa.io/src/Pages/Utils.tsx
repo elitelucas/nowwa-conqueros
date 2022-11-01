@@ -1,3 +1,6 @@
+import bcrypt from 'bcrypt';
+import { authenticationHashUrl } from '../Core/CONFIG/Environment';
+
 export type ComponentState = {
     initialized: boolean,
     busy: boolean,
@@ -21,3 +24,33 @@ export const UpdateComponentState = <T extends { [key: string]: unknown }>(state
     }
     return newState;
 };
+
+/**
+ * Hash a string.
+ */
+export const Hash = (input: string): Promise<string> => {
+    return new Promise((resolve, reject) => {
+        let url: URL = new URL(`${window.location.origin}${authenticationHashUrl}`);
+        let init: RequestInit = {
+            method: "POST",
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                input: input
+            })
+        };
+        fetch(url, init)
+            .then(res => res.json())
+            .then((res: any) => {
+                // console.log(`login response: ${JSON.stringify(res)}`);
+                if (res.success) {
+
+                    resolve(res.value);
+                } else {
+                    reject(res.error);
+                }
+            })
+            .catch((error: any) => {
+                reject(error);
+            });
+    });
+}

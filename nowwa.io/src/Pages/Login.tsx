@@ -1,9 +1,11 @@
 import React from 'react';
 import { Icon, Button, Segment, ButtonGroup, Menu, Header, Input, InputOnChangeData, Card, Grid, Divider, Label, Image, Message, Form } from 'semantic-ui-react';
-import { authenticationLoginUrl, authenticationRegisterUrl, twitterAuthUrl } from '../Core/CONFIG/Environment';
-import { IndexProps, IndexState, } from './Index';
+import Environment, { authenticationLoginUrl, authenticationRegisterUrl, twitterAuthUrl } from '../Core/CONFIG/Environment';
+import { IndexState, } from './Index';
 import fetch, { RequestInit, Request } from 'node-fetch';
-import { UpdateComponentState } from './Utils';
+import { Hash, UpdateComponentState } from './Utils';
+import { FirebaseApp, FirebaseOptions, initializeApp } from 'firebase/app';
+import { getAuth, signInWithRedirect, GoogleAuthProvider, getRedirectResult, signInWithEmailAndPassword, onAuthStateChanged, User, NextOrObserver, signInWithPopup } from 'firebase/auth';
 
 export type LoginState = {
     initialized: boolean,
@@ -147,6 +149,34 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
         window.open(state.twitter);
     };
 
+    let doGoogle = async () => {
+        setIndexState({
+            message: ''
+        });
+        const firebaseOptions: FirebaseOptions = {
+            apiKey: "AIzaSyAdI0h9Bwrfk4VqC3-MDdfCvkECETnpml0",
+            authDomain: "nowwaio.firebaseapp.com",
+        };
+        const app: FirebaseApp = initializeApp(firebaseOptions, "nowwa.io");
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+        provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
+        try {
+            let resolver = await signInWithPopup(auth, provider);
+            Hash(resolver.user.email as string)
+                .then((token) => {
+                    let redirectURL: string = `${Environment.PublicUrl}/Index.html?info=loggedin&name=${resolver.user.displayName}&token=${token}&admin=false&id=${token}`;
+                    window.location.href = redirectURL;
+                });
+        }
+        catch (error) {
+            updateState({
+                isBusy: false,
+                warning: error.message
+            });
+        }
+    };
+
     return (
         <Segment placeholder>
             <Form warning={state.warning.length > 0}>
@@ -209,7 +239,7 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
                             <Button fluid primary onClick={doTwitter}><Icon name='twitter'></Icon>Twitter</Button>
                         </Grid.Column>
                         <Grid.Column>
-                            <Button fluid primary disabled><Icon name='google'></Icon>Google</Button>
+                            <Button fluid primary onClick={doGoogle}><Icon name='google'></Icon>Google</Button>
                         </Grid.Column>
                         <Grid.Column>
                             <Button fluid primary disabled><Icon className='metamask'></Icon>Metamask</Button>

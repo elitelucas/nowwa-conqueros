@@ -33,11 +33,6 @@ export const IndexStateDefault: IndexState = {
     message: ``
 }
 
-export interface IndexProps {
-    SetAccount?: (account: Account) => void
-    UpdateState: (newState: Partial<IndexState>) => void
-}
-
 const GetUrlSearchParams = (url: string = window.location.href) => {
     let params: { [key: string]: any } = {};
     new URL(url).searchParams.forEach(function (val, key) {

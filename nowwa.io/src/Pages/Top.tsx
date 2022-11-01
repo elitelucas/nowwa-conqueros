@@ -1,6 +1,6 @@
 import React from 'react';
 import { Icon, Button, Segment, ButtonGroup, Menu } from 'semantic-ui-react';
-import { IndexProps, IndexState } from './Index';
+import { IndexState } from './Index';
 
 const Top = (setIndexState: (updates: Partial<IndexState>) => void) => {
 

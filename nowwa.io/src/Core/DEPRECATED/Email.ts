@@ -11,25 +11,27 @@ class Email {
      * Initialize email module.
      */
     public static async AsyncInit(app: express.Express, env: Environment.Config): Promise<void> {
-        Email.Instance = new Email();
+        Email.Instance = new Email(env);
         return Promise.resolve();
     }
 
     private transporter: Transporter;
+    private emailSender: string;
 
-    constructor() {
+    constructor(env: Environment.Config) {
+        this.emailSender = `${env.VERIFY_EMAIL_SENDER}`;
         this.transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
-                user: 'lanting.dlapan@gmail.com',
-                pass: 'ydkcknektbfmjmtm'
+                user: `${env.VERIFY_EMAIL_SENDER}`,
+                pass: `${env.VERIFY_EMAIL_PASSWORD}`
             }
         });
     }
 
     public static async Send(receiver: string, subject: string, content: string) {
         let mailOptions: MailOptions = {
-            from: 'lanting.dlapan@gmail.com',
+            from: Email.Instance.emailSender,
             to: receiver,
             subject: subject,
             html: content

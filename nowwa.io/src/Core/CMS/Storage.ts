@@ -9,7 +9,7 @@ class Storage {
 
     private static VisibleExtensions: string[] = ['html', 'png', 'jpg', 'txt', 'js'];
 
-    private static RootFolder: string = `../../storage`;
+    private static RootFolder: string = `../../../storage`;
 
     /**
      * Initialize storage module.
@@ -27,7 +27,7 @@ class Storage {
      */
     public static WebhookExplorer(app: express.Express): void {
         app.use(`${storageUrl}`, async (req, res) => {
-            // console.log(`<-- storage - files`);
+            console.log(`<-- storage - explorer`);
             let folderPath: string = req.url;
             let fullPath: string = path.join(__dirname, `${Storage.RootFolder}`, folderPath);
             fullPath = decodeURI(fullPath);
@@ -75,7 +75,9 @@ class Storage {
     private static WebhookFiles(app: express.Express): void {
         let rootPath: string = path.join(__dirname, `${Storage.RootFolder}`);
         console.log(`rootPath: ${rootPath}`);
-        app.use('/', express.static(rootPath));
+        app.use('/', (req, res, next) => {
+            return (express.static(rootPath))(req, res, next);
+        });
     }
 }
 

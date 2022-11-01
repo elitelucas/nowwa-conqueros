@@ -1,8 +1,5 @@
 import React from 'react';
 import { Icon, Button, Segment, ButtonGroup, Menu, Header, Input, InputOnChangeData, Card, Grid, Divider, Label, Image, Message, Form } from 'semantic-ui-react';
-import { authenticationLoginUrl, authenticationRegisterUrl, twitterAuthUrl } from '../Core/Environment';
-import { IndexProps } from './Index';
-import fetch, { RequestInit, Request } from 'node-fetch';
 
 export type HomeState = {
     initialized: boolean,
