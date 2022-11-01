@@ -1,4 +1,3 @@
-import { number } from "yargs";
 import STRING from "./STRING";
 
 class DATE
@@ -77,7 +76,7 @@ class DATE
             minutes++;
         }
  
-        var string = [];
+        var string : any = [];
         
         if( days ) string.push( days + "D" ); 
  
@@ -146,3 +145,5 @@ class DATE
         return Math.ceil( milliseconds / 60000 );
     };
 };
+
+export default DATE;

@@ -3,7 +3,7 @@ import Environment from '../CONFIG/Environment';
 import Authentication from '../DEPRECATED/Authentication';
 import SocketIO from "socket.io";
 import { createServer } from "http";
-import LOG, { log, error } from '../UTILS/LOG';
+import LOG, { log, error } from '../../UTIL/LOG';
 
 class SOCKET 
 {
@@ -17,7 +17,26 @@ class SOCKET
 
         io.on( "connection", (socket) => 
         {
-            log("SOCKET onConnection" );
+            log("SOCKET onConnection", socket.id ); 
+ 
+            socket.on( 'request', (text:any, callback:any) => 
+            {
+                log(  "Server request received", text ); 
+
+                callback("Oh Hey this worked?");
+                // send echo
+              //  socket.emit('fromServer', args);
+              //  socket.broadcast.emit('fromServer', `[broadcast: ${socket.id}]: ${JSON.stringify(args)}`); // sender does not get the broadcast
+            });
+ 
+ 
+        });
+
+
+        /*
+        io.on( "connection", (socket) => 
+        {
+            log("SOCKET onConnection", socket.id );
 
             socket.emit("noArg");
             socket.emit("basicEmit", 1, "2", Buffer.from([3]));
@@ -65,8 +84,8 @@ class SOCKET
 
                 });
             })
-
         });
+        */
 
         io.listen( env.SOCKET_PORT );
     }

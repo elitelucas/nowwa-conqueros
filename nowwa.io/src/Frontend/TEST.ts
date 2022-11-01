@@ -1,4 +1,4 @@
-import LOG, { log } from "../Core/UTILS/LOG";
+import LOG, { log } from "../UTIL/LOG";
 import DB from "../Core/DB/DB";
 import ConquerOS from "./ConquerOS";
  
