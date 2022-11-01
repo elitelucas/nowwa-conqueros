@@ -13,7 +13,8 @@ export type LoginState = {
     email: string,
     password: string,
     warning: string,
-    twitter: string
+    twitter: string,
+    facebookReady: boolean,
 }
 
 export const LoginStateDefault: LoginState = {
@@ -22,7 +23,8 @@ export const LoginStateDefault: LoginState = {
     email: '',
     password: '',
     warning: '',
-    twitter: ''
+    twitter: '',
+    facebookReady: false,
 }
 
 export const LoginInit = (state: LoginState): Promise<LoginState> => {
@@ -37,14 +39,32 @@ export const LoginInit = (state: LoginState): Promise<LoginState> => {
             .then(res => res.json())
             .then((res: any) => {
                 if (res.success) {
-                    resolve({
-                        email: state.email,
-                        initialized: true,
-                        isBusy: false,
-                        password: '',
-                        warning: '',
-                        twitter: res.link
-                    });
+
+                    let fbScript = document.createElement('script');
+                    fbScript.type = 'text/javascript';
+                    fbScript.src = 'https://connect.facebook.net/en_US/sdk.js';
+                    fbScript.async = true;
+                    fbScript.defer = true;
+                    fbScript.onload = () => {
+
+                        (window as any).FB.init({
+                            appId: `642034654138108`,
+                            autoLogAppEvents: true,
+                            xfbml: true,
+                            version: 'v15.0'
+                        });
+
+                        resolve({
+                            email: state.email,
+                            initialized: true,
+                            isBusy: false,
+                            password: '',
+                            warning: '',
+                            twitter: res.link,
+                            facebookReady: true
+                        });
+                    };
+                    document.body.appendChild(fbScript);
                 }
             })
             .catch((error: any) => {
@@ -165,7 +185,7 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
             let resolver = await signInWithPopup(auth, provider);
             Hash(resolver.user.email as string)
                 .then((token) => {
-                    let redirectURL: string = `${Environment.PublicUrl}/Index.html?info=loggedin&name=${resolver.user.displayName}&token=${token}&admin=false&id=${token}`;
+                    let redirectURL: string = `${Environment.PublicUrl}/Index.html?info=loggedin&name=${resolver.user.displayName}&token=${token}&admin=false&id=${resolver.user.email}`;
                     window.location.href = redirectURL;
                 });
         }
@@ -177,8 +197,23 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
         }
     };
 
+    let doFacebook = async () => {
+        let FB = (window as any).FB as any;
+        FB.login((loginResponse) => {
+            // handle the response 
+            FB.api('/me', { fields: 'name, email' }, function (apiResponse) {
+                Hash(apiResponse.email as string)
+                    .then((token) => {
+                        let redirectURL: string = `${Environment.PublicUrl}/Index.html?info=loggedin&name=${apiResponse.name}&token=${token}&admin=false&id=${apiResponse.email}`;
+                        window.location.href = redirectURL;
+                    });
+            });
+        }, { scope: 'public_profile,email' });
+    };
+
     return (
         <Segment placeholder>
+
             <Form warning={state.warning.length > 0}>
                 <Grid centered columns='8'>
                     <Grid.Row>
@@ -233,7 +268,7 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
                 <Grid centered columns='8'>
                     <Grid.Row>
                         <Grid.Column>
-                            <Button fluid primary disabled><Icon name='facebook'></Icon>Facebook</Button>
+                            <Button fluid primary onClick={doFacebook}><Icon name='facebook'></Icon>Facebook</Button>
                         </Grid.Column>
                         <Grid.Column>
                             <Button fluid primary onClick={doTwitter}><Icon name='twitter'></Icon>Twitter</Button>
