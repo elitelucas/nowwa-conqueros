@@ -273,9 +273,9 @@ class MATH
 		return !( aMax < bMin || aMin > bMax || cMax < dMin || cMin > dMax );
 	};
 
-	public static getClosest( array:any, to:any = { x:0, y:0 } ) : number
+	public static getClosest( array:any, to:any = { x:0, y:0 } ) : any
 	{
-		var closest 	= null ;
+		var closest 	= undefined ;
 		var distance 	= 9999999999999;
 
 		for( var n in array )

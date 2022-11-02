@@ -1,10 +1,9 @@
 import SocketClient from "./SocketClient";
-import LOG, { log } from "../Core/UTILS/LOG";
-import { AnyARecord } from "dns";
+import LOG, { log } from "../UTIL/LOG";
 
 class ConquerOS
 {
-    public socket : any;
+    private sClient : SocketClient;
     private onInitializedCallback : any;
  
     constructor( callback?:Function ) 
@@ -13,13 +12,17 @@ class ConquerOS
         this.onInitializedCallback = callback;
         log("New ConquerOS");
 
-        this.socket = new SocketClient( this.onConnect );
+        this.sClient = new SocketClient( this.onConnect );
  
     }
 
     private onConnect()
     {
-        log("CONNECTED!")
+        log("CONNECTED!" );
+
+        return;
+
+
 
      //   if( this.onInitializedCallback ) this.onInitializedCallback( this );
     }

@@ -2,7 +2,7 @@ import mongoose, { mongo } from 'mongoose';
 import { Custom, CustomProperty, CustomType, CustomDocument } from '../../Models/Custom';
 import DB from './DB';
 import DBTABLE from './DBTABLE';
-import LOG, { log, error } from '../UTILS/LOG';
+import LOG, { log, error } from '../../UTIL/LOG';
 
 class DBMODEL 
 {

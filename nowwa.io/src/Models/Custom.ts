@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { WithRequired } from '../Core/UTILS/Utils';
+import { WithRequired } from '../UTIL/Utils';
 
 export type CustomType = {
     schemaName      : string,
