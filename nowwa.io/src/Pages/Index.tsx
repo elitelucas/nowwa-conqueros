@@ -91,39 +91,39 @@ const Index = () => {
         }
     }
 
-    let top;
+    let top: JSX.Element = <></>;
     if (state.account && state.account.admin) {
         top = Top(updateState);
     }
     const [explorerState, setExplorerState] = useState(ExplorerStateDefault);
-    let explorer;
+    let explorer: JSX.Element = <></>;
     if (state.display == 'Explorer') {
         explorer = Explorer(explorerState, setExplorerState);
     }
 
     const [gameState, setGameState] = useState(BuildStateDefault);
     const [gameStatus, setGameStatus] = useState(Status.DetailDefault);
-    let build;
+    let build: JSX.Element = <></>;
     if (state.display == 'Build') {
         build = Builds(gameState, setGameState, gameStatus, setGameStatus);
     }
 
     const [loginState, setLoginState] = useState(LoginStateDefault);
-    let login;
+    let login: JSX.Element = <></>;
     if (state.display == 'Login') {
         login = Login(loginState, setLoginState, state, updateState);
     }
 
     const [registerState, setRegisterState] = useState(RegisterStateDefault);
-    let register;
+    let register: JSX.Element = <></>;
     if (state.display == 'Register') {
         register = Register(registerState, setRegisterState, state, updateState);
     }
 
     const [homeState, setHomeState] = useState(HomeStateDefault);
-    let home;
+    let home: JSX.Element = <></>;
     if (state.account) {
-        home = Home(homeState, setHomeState, state.account.name);
+        home = Home(homeState, setHomeState, state);
     }
 
     return (
