@@ -13,7 +13,7 @@ class Build {
 
     private static Instance: Build;
 
-    private static RootFolder: string = `../../storage/toy`;
+    private static RootFolder: string = `../../../storage/toy`;
 
     /**
      * Initialize game module.
