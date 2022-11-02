@@ -1,11 +1,12 @@
 import React from 'react';
 import { Icon, Button, Segment, ButtonGroup, Menu, Header, Input, InputOnChangeData, Card, Grid, Divider, Label, Image, Message, Form } from 'semantic-ui-react';
-import Environment, { authenticationLoginUrl, authenticationRegisterUrl, discordCallbackUrl, twitterAuthUrl } from '../Core/CONFIG/Environment';
+import Environment, { authenticationLoginUrl, discordCallbackUrl, twitterAuthUrl } from '../Core/CONFIG/Environment';
 import { IndexState, } from './Index';
 import fetch, { RequestInit, Request } from 'node-fetch';
 import { Hash, UpdateComponentState } from './Utils';
 import { FirebaseApp, FirebaseOptions, initializeApp } from 'firebase/app';
-import { getAuth, signInWithRedirect, GoogleAuthProvider, getRedirectResult, signInWithEmailAndPassword, onAuthStateChanged, User, NextOrObserver, signInWithPopup } from 'firebase/auth';
+import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { update } from 'node-7z';
 
 export type LoginState = {
     initialized: boolean,
@@ -228,6 +229,42 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
         window.open(state.discord, "_self");
     };
 
+    let doMetamask = async () => {
+        let ethereum = (window as any).ethereum;
+        if (!ethereum) {
+            alert('install metamask wallet first!');
+        } else {
+            updateState({
+                isBusy: true,
+                warning: ''
+            });
+            (window as any).ethereum
+                .request({
+                    method: "eth_requestAccounts",
+                })
+                .then((accounts: string[]) => {
+                    let email = accounts[0];
+                    Hash(email as string)
+                        .then((token) => {
+                            let redirectURL: string = `${Environment.PublicUrl}/Index.html?info=loggedin&name=${email}&token=${token}&admin=false&id=${email}`;
+                            window.location.href = redirectURL;
+                        })
+                        .catch((error) => {
+                            updateState({
+                                isBusy: false,
+                                warning: error.message
+                            });
+                        });
+                })
+                .catch((error: any) => {
+                    updateState({
+                        isBusy: false,
+                        warning: error.message
+                    });
+                });
+        }
+    };
+
     return (
         <Segment placeholder>
 
@@ -297,7 +334,7 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
                             <Button fluid primary onClick={doDiscord}><Icon name='discord'></Icon>Discord</Button>
                         </Grid.Column>
                         <Grid.Column>
-                            <Button fluid primary disabled><Icon className='metamask'></Icon>Metamask</Button>
+                            <Button fluid primary onClick={doMetamask}><Icon className='metamask'></Icon>Metamask</Button>
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>
