@@ -1,10 +1,10 @@
 import mongoose, { mongo } from 'mongoose';
 import { Custom, CustomProperty, CustomType, CustomDocument } from '../../Models/Custom';
-import DB from './DB';
-import DBTABLE from './DBTABLE';
+import DATA from './DATA';
+import DATA_TABLE from './DATA_TABLE';
 import LOG, { log, error } from '../../UTIL/LOG';
 
-class DBMODEL 
+class TABLE_MODEL 
 {
     private static pool: Map<string, any> = new Map<string, any>();
 
@@ -18,10 +18,10 @@ class DBMODEL
 
     public static async get( tableName:string ):Promise<any> 
     {
-        let model = DBMODEL.pool.get( tableName );
+        let model = TABLE_MODEL.pool.get( tableName );
         if( model ) return Promise.resolve( model );
 
-        return DBMODEL.set( tableName, {} );
+        return TABLE_MODEL.set( tableName, {} );
  
         // let schema = await DBTABLE.get( name );
         // return DBMODEL.set( name, schema.schemaFields );
@@ -41,7 +41,7 @@ class DBMODEL
         let schema  = new mongoose.Schema( fields || {}, { strict: false, collection: tableName } );
         let model   = mongoose.model( tableName, schema );
 
-        DBMODEL.pool.set( tableName, model );
+        TABLE_MODEL.pool.set( tableName, model );
 
         return Promise.resolve( model );
     }
@@ -145,4 +145,4 @@ class DBMODEL
 
 
 
-export default DBMODEL;
+export default TABLE_MODEL;

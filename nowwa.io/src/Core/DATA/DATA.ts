@@ -1,11 +1,11 @@
 import mongoose, { mongo } from 'mongoose';
 import Environment from '../CONFIG/Environment';
 import { Custom, CustomProperty, CustomType, CustomDocument } from '../../Models/Custom';
-import DBMODEL from './DBMODEL';
+import TABLE_MODEL from './TABLE_MODEL';
 import LOG, { log, error } from '../../UTIL/LOG';
 
-class DB {
- 
+class DATA 
+{
     /*=============== 
 
 
@@ -47,21 +47,19 @@ class DB {
 
     ================*/
 
-    public static async get(tableName: string, query: DB.Query): Promise<mongoose.Document<any, any, any>[]> 
+    public static async get(tableName: string, query: DATA.Query): Promise<mongoose.Document<any, any, any>[]> 
     {
-        let model = await DBMODEL.get(tableName);
+        let model   = await TABLE_MODEL.get(tableName);
         let myQuery = model.find(query.where || {});
 
         if( query.limit ) myQuery.limit(query.limit);
 
         let documents = await myQuery.exec();
 
-        if (documents) return Promise.resolve(documents);
+        if( documents ) return Promise.resolve(documents);
         return Promise.reject(new Error('entry not found'));
     }
-
  
-
     /*=============== 
 
 
@@ -70,11 +68,11 @@ class DB {
 
     ================*/
 
-    public static async set( tableName: string, query: DB.Query): Promise<mongoose.Document<any, any, any>> 
+    public static async set( tableName: string, query: DATA.Query): Promise<mongoose.Document<any, any, any>> 
     {
-        if( query.where) return DB.change( tableName, query );
+        if( query.where) return DATA.change( tableName, query );
 
-        let model       = await DBMODEL.get( tableName );
+        let model       = await TABLE_MODEL.get( tableName );
         let document    = await model.create( query.values );
 
         return Promise.resolve( document );
@@ -88,9 +86,9 @@ class DB {
 
     ================*/
 
-    public static async change( tableName: string, query: DB.Query): Promise<mongoose.Document<any, any, any>> 
+    public static async change( tableName: string, query: DATA.Query): Promise<mongoose.Document<any, any, any>> 
     {
-        let model = await DBMODEL.get(tableName);
+        let model = await TABLE_MODEL.get(tableName);
 
         let myQuery = model.find(query.where as any).limit(1);
         let documents = await myQuery.exec();
@@ -118,9 +116,9 @@ class DB {
 
     ================*/
 
-    public static async remove(tableName: string, query: DB.Query): Promise<void> 
+    public static async remove(tableName: string, query: DATA.Query): Promise<void> 
     {
-        let model = await DBMODEL.get(tableName);
+        let model = await TABLE_MODEL.get(tableName);
 
         if (query.where && query.where._id) (query.where as any)._id = new mongoose.mongo.ObjectId((query.where as any)._id);
         
@@ -131,7 +129,7 @@ class DB {
 
 }
 
-namespace DB {
+namespace DATA {
     export type FieldType = string | number | boolean | object | Date;
 
     export type Fields = { [key: string]: FieldType }
@@ -142,7 +140,7 @@ namespace DB {
         'File'
     ];
 
-    export const FieldTypeList: DB.FieldType[] = [
+    export const FieldTypeList: DATA.FieldType[] = [
         'string',
         'number',
         'boolean',
@@ -186,4 +184,4 @@ namespace DB {
         }
 }
 
-export default DB;
+export default DATA;

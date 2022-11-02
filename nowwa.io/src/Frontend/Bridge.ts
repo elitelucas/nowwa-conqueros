@@ -1,8 +1,7 @@
 import io from 'socket.io-client';
 import LOG, { log } from '../UTIL/LOG';
-import DATE from '../UTIL/DATE';
-
-class SocketClient
+ 
+class Bridge
 {
     private socketHost              : string = '127.0.0.1';
     // var socketHost = 'nowwa.io';
@@ -15,14 +14,13 @@ class SocketClient
     private get socketURL()         : string { return `${this.socketProtocol}://${this.socketHost}${this.socketPortFinal}`; }
 
     private socket?                 : any;
-    private socketListeners         : Map<string, any> = new Map<string, any>();
-    private onInitializedCallback   : any;
+    private onConnectCallback       : any;
     private id                      : any;
     private isFirstTime             : boolean = true;
 
     constructor( callback:Function )
     {
-        this.onInitializedCallback = callback;
+        this.onConnectCallback = callback;
 
         log( "client: New Socket Client" );
 
@@ -38,41 +36,14 @@ class SocketClient
         this.socket.on( "connect", () => 
         {
             this.id = this.socket.id;
-
-            log( "Socket Connected", this.id );
-            console.log(`[socket] connect status: ${this.socket.connected}`);
  
-            log( "client: ============ Socket connected" );
-            
-            /*
-            this.do("test", null, function(txt:any)
-            {
-                log("client: callback test 1", txt );
-            });
-
-            this.do("test2", null, function(txt:any)
-            {
-                log("client: callback test 2", txt );
-            });
-
-            this.do("test3", null, function(txt:any)
-            {
-                log("client: callback test 3", txt );
-            });    */
-
+            log( "client: ============ Socket connected", this.id );
+ 
             if( !this.isFirstTime ) return;
             this.isFirstTime = false;
 
-            this.onInitializedCallback();
-
-            ///=============================== 
-            
-            /*
-            this.do( "test3", null, function( txt:any )
-            {
-                log("client: callback test 3", txt );
-            }); */
-
+            this.onConnectCallback();
+ 
         });
 
         this.socket.on( "disconnect", () => 
@@ -96,4 +67,4 @@ class SocketClient
  
 };
 
-export default SocketClient;
+export default Bridge;

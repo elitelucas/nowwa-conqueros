@@ -18,6 +18,7 @@ import Twitter from './USER/AUTH/Twitter';
 import SOCKET from './SOCKET/SOCKET';
 import ConquerOS from '../Frontend/ConquerOS';
 import LOG, { log } from "../UTIL/LOG";
+import AUTH from './USER/AUTH/AUTH';
   
 console.log(`project path: ${__dirname}`);
 
@@ -88,23 +89,25 @@ class Main {
 
             // TODO : enable authentication & database
             await Authentication.AsyncInit(app, env);
+ 
             await Database.AsyncInit(app, env);
             await Email.AsyncInit(app, env);
             await Twitter.AsyncInit(app, env);
             // await DB.init(env);
-
-            await SOCKET.init(env);
-
             // routes: start
-
             // routes: end
 
             await Storage.AsyncInit(app, env);
-
             await Build.AsyncInit(app, env);
 
             app.listen(env.PORT);
             log(`[Express] listening on port ${env.PORT}`);
+ 
+
+            // NEW CODE!
+            await AUTH.init();
+            await SOCKET.init( env );    
+
 
             // HACKIN
             new ConquerOS();

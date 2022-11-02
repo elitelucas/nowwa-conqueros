@@ -1,11 +1,11 @@
 import mongoose, { mongo } from 'mongoose';
 import Environment from '../CONFIG/Environment';
 import { Custom, CustomProperty, CustomType, CustomDocument } from '../../Models/Custom';
-import DB from './DB';
+import DATA from './DATA';
 import LOG, { log, error } from '../../UTIL/LOG';
 
  
-class DBTABLE
+class DATA_TABLE
 {
 
     private static pool:{[key:string]:CustomType} = {};
@@ -20,7 +20,7 @@ class DBTABLE
 
     public static async get( tableName:string ):Promise<CustomType> 
     {
-        if( DBTABLE.pool[ tableName ] ) return DBTABLE.pool[ tableName ];
+        if( DATA_TABLE.pool[ tableName ] ) return DATA_TABLE.pool[ tableName ];
 
         let query;
  
@@ -42,7 +42,7 @@ class DBTABLE
 
         if( !data.length ) return Promise.reject( new Error(`schema '${tableName}' not found!`));
 
-        var schema = DBTABLE.pool[ tableName ] = 
+        var schema = DATA_TABLE.pool[ tableName ] = 
         {
             schemaName      : data[0].schemaName,
             schemaFields    : data[0].schemaFields
@@ -59,20 +59,20 @@ class DBTABLE
 
     ================*/
 
-    public static async set( name:string, query:DB.Query ):Promise<CustomType> 
+    public static async set( name:string, query:DATA.Query ):Promise<CustomType> 
     {
 
-        if( DB.ReservedSchemaName.includes( name )) throw new Error(`schema name '${ name }' is not allowed!`);
+        if( DATA.ReservedSchemaName.includes( name )) throw new Error(`schema name '${ name }' is not allowed!`);
  
-        let finalFields     : DB.Fields    = {...query.add};
+        let finalFields     : DATA.Fields    = {...query.add};
         let finalFieldNames : string[]          = Object.keys( finalFields );
 
         for( let i:number = 0; i < finalFieldNames.length; i++ ) 
         {
             let finalFieldName : string         = finalFieldNames[i];
-            let finalFieldType : DB.FieldType   = finalFields[ finalFieldName ];
+            let finalFieldType : DATA.FieldType   = finalFields[ finalFieldName ];
 
-            if( DB.FieldTypeList.indexOf( finalFieldType ) < 0 ) throw new Error( `field '${ finalFieldName }' has an invalid type of '${finalFieldType}'!` );
+            if( DATA.FieldTypeList.indexOf( finalFieldType ) < 0 ) throw new Error( `field '${ finalFieldName }' has an invalid type of '${finalFieldType}'!` );
         }
 
         let originalFilter : CustomType = 
@@ -156,4 +156,4 @@ class DBTABLE
 
  
 
-export default DBTABLE;
+export default DATA_TABLE;
