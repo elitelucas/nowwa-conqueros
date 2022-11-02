@@ -12,8 +12,6 @@ class ConquerOS {
         //if( callback ) 
         this.onInitializedCallback = callback;
 
-        this.onConnect.bind(this.onConnect);
-
         let onConnect = this.onConnect.bind(this); // CHECK THIS OUT
 
         this.socketClient = new SocketClient(onConnect);
@@ -22,12 +20,6 @@ class ConquerOS {
 
     private onConnect() {
         log("client: ========== CONQUER OS CONNECTED!");//,
-
-        log(this.socketClient);
-        log(this.socketClient);
-        log(this.socketClient);
-
-        return;
 
         this.socketClient.do("test1", null, function (txt: any) {
             log("client: callback test 1", txt);
