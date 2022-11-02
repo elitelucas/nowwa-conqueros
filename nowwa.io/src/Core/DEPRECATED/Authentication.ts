@@ -2,7 +2,7 @@ import passport from 'passport';
 import express from 'express';
 import passportLocal from 'passport-local';
 import { User, UserDocument } from '../../Models/User';
-import Environment, { authenticationCoreUrl, authenticationHashUrl, authenticationLoginUrl, authenticationRegisterUrl, authenticationUrl, authenticationVerifyUrl } from '../CONFIG/Environment';
+import Environment, { authenticationHashUrl, authenticationLoginUrl, authenticationRegisterUrl, authenticationUrl, authenticationVerifyUrl } from '../CONFIG/Environment';
 import Database from './Database';
 import bcrypt from "bcrypt";
 import { CustomDocument } from '../../Models/Custom';

@@ -28,9 +28,16 @@ const Home = (state: HomeState, setState: React.Dispatch<React.SetStateAction<Ho
     }
 
     return (
-        <Segment>
-            Welcome, {state.name}!
-        </Segment>
+        <>
+            <Segment>
+                Welcome, {state.name}!
+            </Segment>
+            <iframe src='https://dev.nowwa.io' style={{
+                border: '0px',
+                width: '100%',
+                height: '800px'
+            }}></iframe>
+        </>
     );
 }
 

@@ -23,7 +23,8 @@ type Account = {
 export type IndexState = ComponentState & {
     display: IndexDisplay,
     account?: Account,
-    message: string
+    message: string,
+    params?: { [key: string]: any }
 };
 
 export const IndexStateDefault: IndexState = {
@@ -51,18 +52,6 @@ const GetUrlSearchParams = (url: string = window.location.href) => {
 
 const Index = () => {
 
-    // type newType = ComponentState & {
-    //     key1: string,
-    //     key2: boolean
-    // };
-    // let test01: newType = { busy: true, initialized: false, key1: "hehe", key2: false };
-    // console.log(`test01: ${JSON.stringify(test01)}`);
-    // test01 = UpdateComponentState<newType>(test01, {
-    //     busy: false,
-    //     key1: "huhu"
-    // });
-    // console.log(`test01: ${JSON.stringify(test01)}`);
-
     const [state, setState] = useState(IndexStateDefault);
 
     const updateState = (updates: Partial<IndexState>) => {
@@ -72,7 +61,7 @@ const Index = () => {
 
     if (!state.initialized) {
         let params: { [key: string]: any } = GetUrlSearchParams(window.location.href);
-        window.history.pushState("", "", `${window.location.origin}`);
+        window.history.pushState(params, "", `${window.location.origin}`);
         if (params.info == 'verified') {
             updateState({
                 message: `email successfully verified!`
@@ -90,6 +79,10 @@ const Index = () => {
                     name: params.name,
                     token: params.token
                 }
+            });
+        } else if (params.info == 'discord') {
+            updateState({
+                message: params.detail
             });
         } else if (params.error) {
             updateState({
@@ -118,7 +111,7 @@ const Index = () => {
     const [loginState, setLoginState] = useState(LoginStateDefault);
     let login;
     if (state.display == 'Login') {
-        login = Login(loginState, setLoginState, updateState);
+        login = Login(loginState, setLoginState, state, updateState);
     }
 
     const [registerState, setRegisterState] = useState(RegisterStateDefault);
@@ -135,13 +128,15 @@ const Index = () => {
 
     return (
         <Segment placeholder>
-            <Segment placeholder>
-                <Header icon>
-                    <Icon name='earlybirds' />
-                    Nowwa IO
-                </Header>
-                {state.message.length > 0 && <Message>{state.message}</Message>}
-            </Segment>
+            {!state.account && <>
+                <Segment placeholder>
+                    <Header icon>
+                        <Icon name='earlybirds' />
+                        Nowwa IO
+                    </Header>
+                    {state.message.length > 0 && <Message>{state.message}</Message>}
+                </Segment>
+            </>}
             {home}
             {top}
             {login}

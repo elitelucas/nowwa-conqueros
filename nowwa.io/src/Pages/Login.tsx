@@ -1,6 +1,6 @@
 import React from 'react';
 import { Icon, Button, Segment, ButtonGroup, Menu, Header, Input, InputOnChangeData, Card, Grid, Divider, Label, Image, Message, Form } from 'semantic-ui-react';
-import Environment, { authenticationLoginUrl, authenticationRegisterUrl, twitterAuthUrl } from '../Core/CONFIG/Environment';
+import Environment, { authenticationLoginUrl, authenticationRegisterUrl, discordCallbackUrl, twitterAuthUrl } from '../Core/CONFIG/Environment';
 import { IndexState, } from './Index';
 import fetch, { RequestInit, Request } from 'node-fetch';
 import { Hash, UpdateComponentState } from './Utils';
@@ -14,6 +14,7 @@ export type LoginState = {
     password: string,
     warning: string,
     twitter: string,
+    discord: string,
     facebookReady: boolean,
 }
 
@@ -24,6 +25,7 @@ export const LoginStateDefault: LoginState = {
     password: '',
     warning: '',
     twitter: '',
+    discord: '',
     facebookReady: false,
 }
 
@@ -47,8 +49,15 @@ export const LoginInit = (state: LoginState): Promise<LoginState> => {
                     fbScript.defer = true;
                     fbScript.onload = () => {
 
+                        let discordClientId: string = `1037020376892452864`;
+                        let discordRedirect: string = encodeURIComponent(`${Environment.PublicUrl}${discordCallbackUrl}`);
+                        let discordScope: string = encodeURIComponent(`identify email`);
+                        let discordResponseType: string = `code`;
+                        let discordUrl: string = `https://discord.com/api/oauth2/authorize?client_id=${discordClientId}&redirect_uri=${discordRedirect}&response_type=${discordResponseType}&scope=${discordScope}`;
+
+                        let facebookAppId: string = `642034654138108`;
                         (window as any).FB.init({
-                            appId: `642034654138108`,
+                            appId: facebookAppId,
                             autoLogAppEvents: true,
                             xfbml: true,
                             version: 'v15.0'
@@ -61,6 +70,7 @@ export const LoginInit = (state: LoginState): Promise<LoginState> => {
                             password: '',
                             warning: '',
                             twitter: res.link,
+                            discord: discordUrl,
                             facebookReady: true
                         });
                     };
@@ -74,7 +84,7 @@ export const LoginInit = (state: LoginState): Promise<LoginState> => {
     });
 };
 
-const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<LoginState>>, setIndexState: (updates: Partial<IndexState>) => void) => {
+const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<LoginState>>, indexState: IndexState, setIndexState: (updates: Partial<IndexState>) => void) => {
 
     if (!state.initialized) {
         LoginInit(state).then(setState);
@@ -166,7 +176,7 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
         setIndexState({
             message: ''
         });
-        window.open(state.twitter);
+        window.open(state.twitter, "_self");
     };
 
     let doGoogle = async () => {
@@ -209,6 +219,13 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
                     });
             });
         }, { scope: 'public_profile,email' });
+    };
+
+    let doDiscord = async () => {
+        setIndexState({
+            message: ''
+        });
+        window.open(state.discord, "_self");
     };
 
     return (
@@ -275,6 +292,9 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
                         </Grid.Column>
                         <Grid.Column>
                             <Button fluid primary onClick={doGoogle}><Icon name='google'></Icon>Google</Button>
+                        </Grid.Column>
+                        <Grid.Column>
+                            <Button fluid primary onClick={doDiscord}><Icon name='discord'></Icon>Discord</Button>
                         </Grid.Column>
                         <Grid.Column>
                             <Button fluid primary disabled><Icon className='metamask'></Icon>Metamask</Button>

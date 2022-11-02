@@ -35,8 +35,11 @@ class Environment {
 
             TWITTER_CLIENT_ID: "Y0hRYi1qaC1mU0ZYdTgtbGZXNVA6MTpjaQ",
             TWITTER_CALLBACK_URL: `https://nowwa.io/twitterCallback`,
-            TWITTER_REDIRECT_URL: `https://nowwa.io/twitterRedirect`,
             TWITTER_CLIENT_SECRET: `tWeyCLNxn1XKcSzarGw4H5t3RdVBu2u0W5Yrux9MRMRzFvSpqM`,
+
+            DISCORD_CLIENT_ID: "1037020376892452864",
+            DISCORD_CALLBACK_URL: `https://nowwa.io/discordCallback`,
+            DISCORD_CLIENT_SECRET: `laUsJFYDewoElB51evKhJZx4cjm-9w4g`,
 
             VERIFY_EMAIL_SENDER: `lanting.dlapan@gmail.com`,
             VERIFY_EMAIL_PASSWORD: `ydkcknektbfmjmtm`
@@ -117,8 +120,11 @@ namespace Environment {
 
         TWITTER_CLIENT_ID: string,
         TWITTER_CALLBACK_URL: string,
-        TWITTER_REDIRECT_URL: string,
         TWITTER_CLIENT_SECRET: string,
+
+        DISCORD_CLIENT_ID: string,
+        DISCORD_CALLBACK_URL: string,
+        DISCORD_CLIENT_SECRET: string,
 
         VERIFY_EMAIL_SENDER: string,
         VERIFY_EMAIL_PASSWORD: string,
@@ -128,7 +134,6 @@ namespace Environment {
 export default Environment;
 
 export const authenticationUrl: string = `/authentication`;
-export const authenticationCoreUrl: string = `${Environment.CoreUrl}${authenticationUrl}`;
 
 export const authenticationRegisterUrl: string = `/authRegister`;
 export const authenticationLoginUrl: string = `/authLogin`;
@@ -137,7 +142,8 @@ export const authenticationHashUrl: string = `/authHash`;
 
 export const twitterAuthUrl: string = `/twitterAuth`;
 export const twitterCallbackUrl: string = `/twitterCallback`;
-export const twitterRedirectUrl: string = `/twitterRedirect`;
+
+export const discordCallbackUrl: string = `/discordCallback`;
 
 export const storageUrl: string = `/storage`;
 

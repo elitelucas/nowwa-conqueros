@@ -16,6 +16,7 @@ import Status from './GAME/Status';
 import Email from './DEPRECATED/Email';
 import Twitter from './USER/AUTH/Twitter';
 import SOCKET from './SOCKET/SOCKET';
+import Discord from './USER/AUTH/Discord';
 // import ConquerOS from '../Frontend/ConquerOS';
 
 
@@ -93,6 +94,7 @@ class Main {
             await Database.AsyncInit(app, env);
             await Email.AsyncInit(app, env);
             await Twitter.AsyncInit(app, env);
+            await Discord.AsyncInit(app, env);
             // await DB.init(env);
 
             await SOCKET.init(env);
