@@ -24,14 +24,14 @@ class SocketClient
     {
         this.onInitializedCallback = callback;
 
-        log( "New Socket Client" );
+        log( "client: New Socket Client" );
 
         this.connect();
     }
  
     private connect()  
     {
-        log( "Socket Connect" );
+        log( "client: Socket Connect" );
         
         this.socket = io( this.socketURL );
  
@@ -41,25 +41,43 @@ class SocketClient
 
             log( "Socket Connected", this.id );
             console.log(`[socket] connect status: ${this.socket.connected}`);
+ 
+            log( "client: ============ Socket connected" );
+            
+            /*
+            this.do("test", null, function(txt:any)
+            {
+                log("client: callback test 1", txt );
+            });
+
+            this.do("test2", null, function(txt:any)
+            {
+                log("client: callback test 2", txt );
+            });
+
+            this.do("test3", null, function(txt:any)
+            {
+                log("client: callback test 3", txt );
+            });    */
 
             if( !this.isFirstTime ) return;
             this.isFirstTime = false;
 
-            log( "Çlient connected, callback" );
-
             this.onInitializedCallback();
 
+            ///=============================== 
+            
             /*
-            this.socket.emit( "request", "hello from client", function( txt?:String )
+            this.do( "test3", null, function( txt:any )
             {
-                log( "Client callback received", txt );
-            });*/
- 
+                log("client: callback test 3", txt );
+            }); */
+
         });
 
         this.socket.on( "disconnect", () => 
         {
-            console.log( `[socket] connect status: ${this.socket.connected}` );
+            console.log( `client: connect status: ${this.socket.connected}` );
             this.connect();
         });
  
@@ -67,6 +85,7 @@ class SocketClient
  
     public do( action:string, vars?:any, callback?:Function )
     {
+        log("client: Calling action", action );
         this.socket.emit( "action", action, vars, callback );
     }
 

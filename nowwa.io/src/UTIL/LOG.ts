@@ -1,11 +1,11 @@
 class LOG{
     
-    public static log( ... args: any[] )
+    public static log( ... args: any  )
     {
         console.log( args );
     }
 
-    public static error( ... args: any[] )
+    public static error( ... args: any  )
     {
         console.log( args );
     }

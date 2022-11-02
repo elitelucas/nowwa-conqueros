@@ -16,12 +16,9 @@ import Status from './GAME/Status';
 import Email from './DEPRECATED/Email';
 import Twitter from './USER/AUTH/Twitter';
 import SOCKET from './SOCKET/SOCKET';
-import Discord from './USER/AUTH/Discord';
-// import ConquerOS from '../Frontend/ConquerOS';
-
-
-
-
+import ConquerOS from '../Frontend/ConquerOS';
+import LOG, { log } from "../UTIL/LOG";
+  
 console.log(`project path: ${__dirname}`);
 
 class Main {
@@ -94,7 +91,6 @@ class Main {
             await Database.AsyncInit(app, env);
             await Email.AsyncInit(app, env);
             await Twitter.AsyncInit(app, env);
-            await Discord.AsyncInit(app, env);
             // await DB.init(env);
 
             await SOCKET.init(env);
@@ -108,10 +104,10 @@ class Main {
             await Build.AsyncInit(app, env);
 
             app.listen(env.PORT);
-            console.log(`[Express] listening on port ${env.PORT}`);
+            log(`[Express] listening on port ${env.PORT}`);
 
             // HACKIN
-            // new ConquerOS();
+            new ConquerOS();
 
             // await Email.Send('garibaldy.mukti@gmail.com', 'The Subject of This Email', 'The content of this email');
         }

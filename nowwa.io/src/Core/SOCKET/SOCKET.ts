@@ -5,6 +5,7 @@ import SocketIO from "socket.io";
 import { createServer } from "http";
 import LOG, { log, error } from '../../UTIL/LOG';
 import SocketInstance from './SocketInstance';
+import { callbackPromise } from 'nodemailer/lib/shared';
 
 class SOCKET 
 {
@@ -15,90 +16,19 @@ class SOCKET
         var io : SocketIO.Server = new SocketIO.Server<SOCKET.ClientToServerEvents, SOCKET.ServerToClientEvents, SOCKET.InterServerEvents, SOCKET.SocketData>(
             httpServer, { cors : { origin: "*" } }
         );
-
-        log("SOCKET LOG");
-
+ 
         io.on( "connection", (socket) => 
         {
-            log("NEW CONNECTION" );
-           // new SocketInstance( socket );
+            log("[SERVER]========================================================== NEW CONNECTION");
+            new SocketInstance( socket );
         });
 
-
-       /*     
-
-        io.on( "connection", (socket) => 
+        // todo, destroy instance
+        io.on( "disconnect", (socket) => 
         {
-            log("SOCKET onConnection", socket.id ); 
- 
-            socket.on( 'request', (text:any, callback:any) => 
-            {
-                log(  "Server request received", text ); 
-
-                callback("Oh Hey this worked?");
-                // send echo
-              //  socket.emit('fromServer', args);
-              //  socket.broadcast.emit('fromServer', `[broadcast: ${socket.id}]: ${JSON.stringify(args)}`); // sender does not get the broadcast
-            });
- 
- 
+            log( "[SERVER] Socket disconnect", socket.id );
         });
-
-
-        
-        io.on( "connection", (socket) => 
-        {
-            log("SOCKET onConnection", socket.id );
-
-            socket.emit("noArg");
-            socket.emit("basicEmit", 1, "2", Buffer.from([3]));
-
-            socket.emit("withAck", "4", (e:any) => 
-            {
-                log(`e: ${e}`);
-            });
-        
-            // works when broadcast to all
-            io.emit("noArg");
-        
-            // works when broadcasting to a room
-            io.to("room1").emit("basicEmit", 1, "2", Buffer.from([3]));
-
-            socket.on( 'fromClient', (args:any) => 
-            {
-                log( `[socket] [client:${socket.id}]: ${JSON.stringify(args)}`); 
-                // send echo
-                socket.emit('fromServer', args);
-                socket.broadcast.emit('fromServer', `[broadcast: ${socket.id}]: ${JSON.stringify(args)}`); // sender does not get the broadcast
-            });
-
-            socket.on( 'login', (args:Authentication.Input) => 
-            {
-                Authentication.Login(args).then((user) => 
-                {
-                    socket.emit('fromServer', { success: true, value: user });
-
-                }).catch((error) => 
-                {
-                    socket.emit('fromServer', { success: false, error: error.message || error });
-                });
-            });
-
-            socket.on( 'register', (args:Authentication.Input) => 
-            {
-                Authentication.Register(args).then((user) => 
-                {
-                    socket.emit('fromServer', { success: true, value: user });
-
-                }).catch((error) => 
-                {
-                    socket.emit('fromServer', { success: false, error: error.message || error });
-
-                });
-            })
-        });
-        */
-
+ 
         io.listen( env.SOCKET_PORT );
     }
 }
