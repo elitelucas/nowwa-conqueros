@@ -3,22 +3,22 @@ import LOG, { log } from "../UTIL/LOG";
 
 class ConquerOS
 {
-    private sClient : SocketClient;
+   // private sClient : SocketClient;
     private onInitializedCallback : any;
  
     constructor( callback?:Function ) 
     {
         //if( callback ) 
         this.onInitializedCallback = callback;
-        log("New ConquerOS");
+        console.log("New ConquerOS");
 
-        this.sClient = new SocketClient( this.onConnect );
+      //  this.sClient = new SocketClient( this.onConnect );
  
     }
 
     private onConnect()
     {
-        log("CONNECTED!" );
+        log( "CONNECTED!" );
 
         return;
 

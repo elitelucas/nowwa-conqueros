@@ -4,6 +4,7 @@ import Authentication from '../DEPRECATED/Authentication';
 import SocketIO from "socket.io";
 import { createServer } from "http";
 import LOG, { log, error } from '../../UTIL/LOG';
+import SocketInstance from './SocketInstance';
 
 class SOCKET 
 {
@@ -14,6 +15,17 @@ class SOCKET
         var io : SocketIO.Server = new SocketIO.Server<SOCKET.ClientToServerEvents, SOCKET.ServerToClientEvents, SOCKET.InterServerEvents, SOCKET.SocketData>(
             httpServer, { cors : { origin: "*" } }
         );
+
+        log("SOCKET LOG");
+
+        io.on( "connection", (socket) => 
+        {
+            log("NEW CONNECTION" );
+           // new SocketInstance( socket );
+        });
+
+
+       /*     
 
         io.on( "connection", (socket) => 
         {
@@ -33,7 +45,7 @@ class SOCKET
         });
 
 
-        /*
+        
         io.on( "connection", (socket) => 
         {
             log("SOCKET onConnection", socket.id );

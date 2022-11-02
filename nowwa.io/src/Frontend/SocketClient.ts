@@ -45,14 +45,15 @@ class SocketClient
             if( !this.isFirstTime ) return;
             this.isFirstTime = false;
 
-            log("Çlient connected, callback" );
+            log( "Çlient connected, callback" );
 
             this.onInitializedCallback();
 
+            /*
             this.socket.emit( "request", "hello from client", function( txt?:String )
             {
-                log("Client callback received", txt );
-            });
+                log( "Client callback received", txt );
+            });*/
  
         });
 
@@ -63,20 +64,10 @@ class SocketClient
         });
  
     }
-
-    public send( key: string, args: any ) 
+ 
+    public do( action:string, vars?:any, callback?:Function )
     {
-        log("socket send", key, args );
-        this.socket.emit( key, args );
-    }
-
-    public request( action:string, args:any )
-    {
-        this.send( "request", 
-        {
-            action  : action,
-            key     : DATE.getNow()
-        })
+        this.socket.emit( "action", action, vars, callback );
     }
 
     public disconnect() 
