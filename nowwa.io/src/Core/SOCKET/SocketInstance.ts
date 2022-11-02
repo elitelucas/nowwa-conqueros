@@ -24,11 +24,16 @@ class SocketInstance
     {
         log( "[SERVER]: client action requested", action );
 
-        if( action == "AUTH.set" ) return AUTH.set( vars ).then( doCallback ); 
+        if( action == "AUTH.set" ) return AUTH.set( vars ).then( doCallback ).catch( doError ); 
  
-        function doCallback( vars:any )
+        function doCallback( vars?:any, isSucess:boolean=true )
         {
-            if( callback ) callback( vars );
+            if( callback ) callback( { success:isSucess, result:vars } );
+        }
+
+        function doError( vars?:any )
+        {
+            doCallback( vars, false );
         }
     }
 
