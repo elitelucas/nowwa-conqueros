@@ -54,7 +54,7 @@ class AUTH
             userName    : vars.userName,
             password    : encryptedPassword,
             admin       : false,
-            isVerified  : false
+            isVerified  : vars.isVerified || false
         });
  
         return Promise.resolve( item );
