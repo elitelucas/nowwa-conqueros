@@ -1,7 +1,9 @@
-import passport from "passport";
-import passportLocal from 'passport-local';
+
 import CRYPT from '../../../UTIL/CRYPT';
+import STRING from '../../../UTIL/STRING';
+import EMAIL from '../EMAIL';
 import USERNAME from "../USERNAME";
+import PASSPORT from './PASSPORT';
 class AUTH
 {
 
@@ -15,27 +17,19 @@ class AUTH
 
     public static async init() : Promise<void> 
     {
-        AUTH.initPassport();
-        
+ 
+        PASSPORT.init();
+
         // Init other protocols too (metamask, twitter, etc?)
 
         return Promise.resolve();
-    }
-
-    private static initPassport()
-    {
-        passport.use( new passportLocal.Strategy(
-        {
-            passwordField: "password",
-            usernameField: "email"
-        }, (email, password, done) => {}));
     }
  
     /*=============== 
 
 
     SET / REGISTER
-    
+
 
     ================*/
 
@@ -49,13 +43,15 @@ class AUTH
  
         let encryptedPassword = await CRYPT.hash( vars.password );
 
-        let item = USERNAME.set(
+        let item = await USERNAME.set(
         {
             userName    : vars.userName,
             password    : encryptedPassword,
             admin       : false,
             isVerified  : vars.isVerified || false
         });
+
+        EMAIL.set( vars.userName, item.id );
  
         return Promise.resolve( item );
     };
@@ -94,7 +90,45 @@ class AUTH
             return Promise.reject( new Error( e ) );
         }
     };
- 
+
+    /*=============== 
+
+
+    GET SET / SOCIAL LOGIN
+
+    
+    twitter: username, account id, email
+    google: display name, email
+    facebook: name, email
+    discord: username, email
+    metamask: wallet address
+
+    ================*/
+
+    public static async getSet( vars:any ) : Promise<any>
+    {
+        USERNAME.get( vars ).then( onSuccess ).catch( noUserName );
+
+        async function onSuccess( item:any )
+        {
+            let isMatch : boolean = await CRYPT.match( vars.password, item.password );
+
+            if( !isMatch ) return onError( 'incorrect password...' );
+            if( !item.isVerified ) return onError( 'email not verified...' );
+
+            return Promise.resolve( item );
+        }
+
+        function noUserName()
+        {
+            return onError( "Auth user doesn't exist "+vars.userName );
+        }
+
+        function onError( e:any )
+        {
+            return Promise.reject( new Error( e ) );
+        }
+    };
  
 };
 

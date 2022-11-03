@@ -56,7 +56,7 @@ class STRING
     public static validateEmail( email:string )
     {
         var EMAIL_REGEX = /^[A-Z0-9._%+-]+@(?:[A-Z0-9-]+\.)+[A-Z]{2,4}$/i;
-        return email.match(EMAIL_REGEX);
+        return email.match( EMAIL_REGEX );
     };
         
     public static beginsWith( input:string, prefix:string )

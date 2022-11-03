@@ -1,6 +1,14 @@
+import STRING from '../../UTIL/STRING';
+
 class EMAIL
 {
+    public static set( email:string, uID:any )
+    {
+        if( !STRING.validateEmail( email ) ) return;
 
+        
+
+    }
     
  /*
          try {
@@ -13,3 +21,5 @@ class EMAIL
         }
         */
 };
+
+export default EMAIL;
