@@ -3,6 +3,7 @@ import { Custom, CustomProperty, CustomType, CustomDocument } from '../../Models
 import DATA from './DATA';
 import DATA_TABLE from './DATA_TABLE';
 import LOG, { log, error } from '../../UTIL/LOG';
+import PROMISE, { resolve, reject } from '../../UTIL/PROMISE';
 
 class TABLE_MODEL 
 {
@@ -43,7 +44,7 @@ class TABLE_MODEL
 
         TABLE_MODEL.pool.set( tableName, model );
 
-        return Promise.resolve( model );
+        return resolve( model );
     }
 
     /*

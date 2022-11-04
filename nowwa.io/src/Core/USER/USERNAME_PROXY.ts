@@ -3,31 +3,32 @@ import PROMISE, { resolve, reject } from '../../UTIL/PROMISE';
 import EMAIL from "./EMAIL";
 import DATE from '../../UTIL/DATE';
 
-class USERNAME
+class USERNAME_PROXY
 {
-    private static table : string = "usernames";
+    private static table : string = "username_proxys";
 
     /*=============== 
 
 
     SET  
     
+    { username, email, appid, wallet }
 
     ================*/
   
     public static async set( vars:any ) : Promise<any>
     {
-        let results = await DATA.get( USERNAME.table, { username:vars.username } ); 
+        let results = await DATA.get( USERNAME_PROXY.table, { username:vars.username } ); 
 
         if( results.length > 1 ) return reject( "Username already exists" );
 
-        let item : any = await DATA.set( USERNAME.table, vars );
+        let item : any = await DATA.set( USERNAME_PROXY.table, vars );
  
         EMAIL.set(
         {
-            email       : vars.username,
-            isVerified  : vars.isVerified,
-            uID         : item._id
+            email       : vars.email,
+            uID         : vars.uID,
+            isVerified  : true,
         });
 
         return resolve( item );
@@ -41,9 +42,9 @@ class USERNAME
 
     ================*/
   
-    public static async get( vars:any ) : Promise<any>
+    public static async get( vars:any  ) : Promise<any>
     {
-        let results = await DATA.get( USERNAME.table, USERNAME.getQuery( vars ) ); 
+        let results = await DATA.get( USERNAME_PROXY.table, USERNAME_PROXY.getQuery( vars ) ); 
 
         let item : any = results[0];
  
@@ -62,21 +63,28 @@ class USERNAME
 
     public static async change( query:any )
     {
-        var item = await DATA.change( USERNAME.table, query );
+        var item = await DATA.change( USERNAME_PROXY.table, query );
 
         return resolve( item );
     }
 
-    public static async changeLastLogin( uID:any )
+
+    /*=============== 
+
+
+    GET SET 
+    
+
+    ================*/
+  
+    public static async getSet( vars:any  ) : Promise<any>
     {
-        var item = USERNAME.change(
-        { 
-            where   : { _id : uID },
-            values  : { lastLogin : DATE.now() }
-        });
+        let item = USERNAME_PROXY.get({ where:{ uID:vars.uID } });
 
+        if( !item ) item = await USERNAME_PROXY.set( vars );
+ 
         return resolve( item );
-    }
+    }; 
 
     /*=============== 
 
@@ -102,4 +110,4 @@ class USERNAME
  
 };
 
-export default USERNAME;
+export default USERNAME_PROXY;

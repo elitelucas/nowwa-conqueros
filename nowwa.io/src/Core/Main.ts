@@ -10,8 +10,8 @@ import crypto from 'crypto';
 import Authentication from './DEPRECATED/Authentication';
 import Database from './DEPRECATED/Database';
 import Storage from './CMS/Storage';
-import Build from './GAME/Build';
-import Status from './GAME/Status';
+import Build from './APPS/Build';
+import Status from './APPS/Status';
 
 import Email from './DEPRECATED/Email';
 import Twitter from './USER/AUTH/Twitter';
@@ -19,25 +19,28 @@ import SOCKET from './SOCKET/SOCKET';
 import ConquerOS from '../Frontend/ConquerOS';
 import LOG, { log } from "../UTIL/LOG";
 import AUTH from './USER/AUTH/AUTH';
+import EMAIL from './USER/EMAIL';
   
 console.log(`project path: ${__dirname}`);
 
 class Main {
 
-    private baseUrl: string;
-    public status: Main.Status;
+    private baseUrl : string;
+    public status   : Main.Status;
 
     /**
      * Initialize necessary components.
      */
-    constructor() {
+    constructor() 
+    {
         this.status = Main.StatusDefault;
         this.baseUrl = `/webhook/v${Environment.CoreConfig.VERSION}`;
 
         this.AsyncInit(Environment.CoreConfig);
     }
 
-    private async AsyncInit(env: Environment.Config): Promise<void> {
+    private async AsyncInit(env: Environment.Config): Promise<void> 
+    {
         try {
             console.log(`init express...`);
 
@@ -106,6 +109,7 @@ class Main {
 
             // NEW CODE!
             await AUTH.init();
+            await EMAIL.init( env );
             await SOCKET.init( env );    
 
 

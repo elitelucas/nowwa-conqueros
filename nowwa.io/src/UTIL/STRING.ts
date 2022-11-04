@@ -53,8 +53,10 @@ class STRING
         return r;
     };
       
-    public static validateEmail( email:string )
+    public static validateEmail( email?:string )
     {
+        if( !email ) return false;
+
         var EMAIL_REGEX = /^[A-Z0-9._%+-]+@(?:[A-Z0-9-]+\.)+[A-Z]{2,4}$/i;
         return email.match( EMAIL_REGEX );
     };

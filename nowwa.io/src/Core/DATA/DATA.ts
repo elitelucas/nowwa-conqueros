@@ -3,6 +3,7 @@ import Environment from '../CONFIG/Environment';
 import { Custom, CustomProperty, CustomType, CustomDocument } from '../../Models/Custom';
 import TABLE_MODEL from './TABLE_MODEL';
 import LOG, { log, error } from '../../UTIL/LOG';
+import PROMISE, { resolve, reject } from '../../UTIL/PROMISE';
 
 class DATA 
 {
@@ -36,7 +37,7 @@ class DATA
                 throw e;
             });
 
-        return Promise.resolve();
+        return resolve();
     }
 
     /*=============== 
@@ -47,17 +48,18 @@ class DATA
 
     ================*/
 
-    public static async get(tableName: string, query: DATA.Query): Promise<mongoose.Document<any, any, any>[]> 
+    public static async get( tableName: string, query: any ): Promise<mongoose.Document<any, any, any>[]> 
     {
-        let model   = await TABLE_MODEL.get(tableName);
-        let myQuery = model.find(query.where || {});
+        let model       = await TABLE_MODEL.get( tableName );
+        let myQuery     = model.find( query.where || {} );
 
-        if( query.limit ) myQuery.limit(query.limit);
+        if( query.limit ) myQuery.limit( query.limit );
 
-        let documents = await myQuery.exec();
-
+        let documents   = await myQuery.exec();
+        
         if( documents ) return Promise.resolve(documents);
-        return Promise.reject(new Error('entry not found'));
+
+        return reject( 'entry not found' );
     }
  
     /*=============== 
@@ -68,14 +70,16 @@ class DATA
 
     ================*/
 
-    public static async set( tableName: string, query: DATA.Query): Promise<mongoose.Document<any, any, any>> 
+    public static async set( tableName:string, query:any ): Promise<mongoose.Document<any, any, any>> 
     {
+        if( !query.values ) query = { values:query };
+
         if( query.where) return DATA.change( tableName, query );
 
         let model       = await TABLE_MODEL.get( tableName );
-        let document    = await model.create( query.values );
+        let document    = await model.create( query.values || query );
 
-        return Promise.resolve( document );
+        return resolve( document );
     }
 
     /*=============== 
@@ -86,26 +90,26 @@ class DATA
 
     ================*/
 
-    public static async change( tableName: string, query: DATA.Query): Promise<mongoose.Document<any, any, any>> 
+    public static async change( tableName: string, query: DATA.Query ) : Promise<mongoose.Document<any, any, any>> 
     {
-        let model = await TABLE_MODEL.get(tableName);
+        let model       = await TABLE_MODEL.get( tableName );
 
-        let myQuery = model.find(query.where as any).limit(1);
-        let documents = await myQuery.exec();
+        let myQuery     = model.find( query.where as any ).limit(1);
+        let documents   = await myQuery.exec();
 
-        if ( !documents || documents.length != 1) return Promise.reject(new Error(`matching entry not found!`));
+        if( !documents || documents.length != 1 ) return reject( `matching entry not found!` );
 
         let document    = documents[0];
         let fieldNames  = Object.keys(query.values!);
 
-        for (let i: number = 0; i < fieldNames.length; i++) {
-            let fieldName = fieldNames[i];
-            let fieldValue = query.values![fieldName];
-
+        for( let i: number = 0; i < fieldNames.length; i++ ) 
+        {
+            let fieldName       = fieldNames[i];
+            let fieldValue      = query.values![fieldName];
             document[fieldName] = fieldValue;
         }
         await document.save();
-        return Promise.resolve( document );
+        return resolve( document );
     };
  
     /*=============== 
@@ -124,7 +128,7 @@ class DATA
         
         let myQuery = model.find(query.where as any).limit(1);
         await model.deleteOne(myQuery);
-        return Promise.resolve();
+        return resolve();
     };
 
 }

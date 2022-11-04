@@ -4,6 +4,10 @@ import STRING from '../../../UTIL/STRING';
 import EMAIL from '../EMAIL';
 import USERNAME from "../USERNAME";
 import PASSPORT from './PASSPORT';
+import PROMISE, { resolve, reject } from '../../../UTIL/PROMISE';
+import WALLET from '../WALLET';
+import USERNAME_PROXY from '../USERNAME_PROXY';
+
 class AUTH
 {
 
@@ -22,7 +26,7 @@ class AUTH
 
         // Init other protocols too (metamask, twitter, etc?)
 
-        return Promise.resolve();
+        return resolve();
     }
  
     /*=============== 
@@ -39,21 +43,19 @@ class AUTH
 
         await USERNAME.get( vars ).then( function(){ userExists=true } );
 
-        if( userExists ) return Promise.reject( new Error( "Username already taken" ) );
+        if( userExists ) return reject( "Username already taken" );
  
         let encryptedPassword = await CRYPT.hash( vars.password );
 
         let item = await USERNAME.set(
         {
-            userName    : vars.userName,
+            username    : vars.username,
             password    : encryptedPassword,
             admin       : false,
             isVerified  : vars.isVerified || false
         });
-
-        EMAIL.set( vars.userName, item.id );
  
-        return Promise.resolve( item );
+        return resolve( item );
     };
 
  
@@ -68,66 +70,67 @@ class AUTH
 
     public static async get( vars:any ) : Promise<any>
     {
-        USERNAME.get( vars ).then( onSuccess ).catch( noUserName );
+        var item : any = await USERNAME.get( vars );
 
-        async function onSuccess( item:any )
-        {
-            let isMatch : boolean = await CRYPT.match( vars.password, item.password );
+        if( !item ) return reject( "Auth user doesn't exist "+vars.username );
 
-            if( !isMatch ) return onError( 'incorrect password...' );
-            if( !item.isVerified ) return onError( 'email not verified...' );
+        if( !item.isVerified ) return reject( 'Email is not verified...' );
+ 
+        let isMatch : boolean = await CRYPT.match( vars.password, item.password );
 
-            return Promise.resolve( item );
-        }
+        if( !isMatch ) return reject( 'Incorrect password...' );
 
-        function noUserName()
-        {
-            return onError( "Auth user doesn't exist "+vars.userName );
-        }
-
-        function onError( e:any )
-        {
-            return Promise.reject( new Error( e ) );
-        }
+        USERNAME.changeLastLogin( item._id );
+ 
+        return resolve( item );
     };
 
     /*=============== 
 
 
-    GET SET / SOCIAL LOGIN
+    GET SOCIAL
 
+    twitter     : username, account id, email
+    google      : display name, email
+    facebook    : name, email
+    discord     : username, email
+    metamask    : wallet address
+    guest       : guestID
     
-    twitter: username, account id, email
-    google: display name, email
-    facebook: name, email
-    discord: username, email
-    metamask: wallet address
+    type
 
     ================*/
 
-    public static async getSet( vars:any ) : Promise<any>
+    public static async getSocial( vars:any ) : Promise<any>
     {
-        USERNAME.get( vars ).then( onSuccess ).catch( noUserName );
+        var uID     : any;
+ 
+        if( vars.email )    uID = await EMAIL.getUID( vars.email );
+        if( vars.wallet )   uID = await WALLET.getUID( vars.wallet );
 
-        async function onSuccess( item:any )
+        let user;
+
+        if( uID )
         {
-            let isMatch : boolean = await CRYPT.match( vars.password, item.password );
+            user = await USERNAME.get( { where:{ _id:uID } } );
 
-            if( !isMatch ) return onError( 'incorrect password...' );
-            if( !item.isVerified ) return onError( 'email not verified...' );
+        }else{
 
-            return Promise.resolve( item );
+            if( !uID )
+            {
+                user = await USERNAME.set( {} );
+                if( !user ) return reject( "Auth: Could not create user" );
+                uID = user.uID;
+            }
         }
+ 
+        vars.uID = uID;
 
-        function noUserName()
-        {
-            return onError( "Auth user doesn't exist "+vars.userName );
-        }
+        await USERNAME_PROXY.getSet( vars );
 
-        function onError( e:any )
-        {
-            return Promise.reject( new Error( e ) );
-        }
+        USERNAME.changeLastLogin( uID );
+
+        return resolve( user );
     };
  
 };

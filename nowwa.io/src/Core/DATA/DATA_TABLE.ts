@@ -3,7 +3,7 @@ import Environment from '../CONFIG/Environment';
 import { Custom, CustomProperty, CustomType, CustomDocument } from '../../Models/Custom';
 import DATA from './DATA';
 import LOG, { log, error } from '../../UTIL/LOG';
-
+import PROMISE, { resolve, reject } from '../../UTIL/PROMISE';
  
 class DATA_TABLE
 {
@@ -48,7 +48,7 @@ class DATA_TABLE
             schemaFields    : data[0].schemaFields
         };
 
-        return Promise.resolve( schema );
+        return resolve( schema );
     }
 
     /*=============== 
@@ -120,7 +120,7 @@ class DATA_TABLE
 
         table               = await table.save();
 
-        return Promise.resolve(
+        return resolve(
         {
             schemaName      : name,
             schemaFields    : table.schemaFields
