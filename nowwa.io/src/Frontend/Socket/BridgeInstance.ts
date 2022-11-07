@@ -1,7 +1,8 @@
 import io from 'socket.io-client';
-import LOG, { log } from '../UTIL/LOG';
+import LOG, { log } from '../../UTIL/LOG';
+import PROMISE, { resolve } from '../../UTIL/PROMISE';
  
-class Bridge
+class BridgeInstance
 {
     private socketHost              : string = '127.0.0.1';
     // var socketHost = 'nowwa.io';
@@ -14,20 +15,17 @@ class Bridge
     private get socketURL()         : string { return `${this.socketProtocol}://${this.socketHost}${this.socketPortFinal}`; }
 
     private socket?                 : any;
-    private onConnectCallback       : any;
     private id                      : any;
-    private isFirstTime             : boolean = true;
 
-    constructor( callback:Function )
+    public async init() : Promise<any>
     {
-        this.onConnectCallback = callback;
+        log( "client: Init New Socket Client" );
+        await this.connect( true );
 
-        log( "client: New Socket Client" );
-
-        this.connect();
+        return resolve();
     }
  
-    private connect()  
+    private async connect( isFirstTime?:boolean )  
     {
         log( "client: Socket Connect" );
         
@@ -38,12 +36,7 @@ class Bridge
             this.id = this.socket.id;
  
             log( "client: ============ Socket connected", this.id );
- 
-            if( !this.isFirstTime ) return;
-            this.isFirstTime = false;
-
-            this.onConnectCallback();
- 
+            if( isFirstTime ) resolve();
         });
 
         this.socket.on( "disconnect", () => 
@@ -67,4 +60,4 @@ class Bridge
  
 };
 
-export default Bridge;
+export default BridgeInstance;
