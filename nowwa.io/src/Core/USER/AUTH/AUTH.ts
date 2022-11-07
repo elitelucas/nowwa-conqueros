@@ -7,6 +7,7 @@ import PASSPORT from './PASSPORT';
 import PROMISE, { resolve, reject } from '../../../UTIL/PROMISE';
 import WALLET from '../WALLET';
 import USERNAME_PROXY from '../USERNAME_PROXY';
+import { VariableExpressionOperator } from 'mongoose';
 
 class AUTH
 {
@@ -103,28 +104,21 @@ class AUTH
 
     public static async getSocial( vars:any ) : Promise<any>
     {
-        var uID     : any;
- 
+        var uID             : any;
+   
         if( vars.email )    uID = await EMAIL.getUID( vars.email );
         if( vars.wallet )   uID = await WALLET.getUID( vars.wallet );
-
+ 
         let user;
 
-        if( uID )
+        if( !uID )
         {
-            user = await USERNAME.get( { where:{ _id:uID } } );
-
+            user    = await USERNAME.set( {} );
         }else{
-
-            if( !uID )
-            {
-                user = await USERNAME.set( {} );
-                if( !user ) return reject( "Auth: Could not create user" );
-                uID = user.uID;
-            }
+            user    = await USERNAME.get( { where:{ _id:uID }} );
         }
- 
-        vars.uID = uID;
+
+        vars.uID    = user.uID;
 
         await USERNAME_PROXY.getSet( vars );
 
@@ -132,6 +126,17 @@ class AUTH
 
         return resolve( user );
     };
+
+    public static async addSocial( uID:any, vars:any ) : Promise<any>
+    {
+        var proxyUser = await AUTH.getSocial( vars );
+
+        if( uID != proxyUser.uID ) USERNAME.reparent( uID, proxyUser.uID );
+
+        return resolve();
+    };
+
+    
  
 };
 

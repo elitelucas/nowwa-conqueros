@@ -52,7 +52,6 @@ class EMAIL
         if( !vars.isVerified ) EMAIL.requestVerification( vars.email );
 
         return resolve( item );
- 
     }
 
     public static async requestVerification( email:string )
@@ -124,7 +123,6 @@ class EMAIL
     public static async getUID( email:string  ) : Promise<any>
     {
         let item = await EMAIL.get( { where:{ email:email }});
-
         if( item ) return resolve( item );
 
         return reject( 'Email username does not exists...' )

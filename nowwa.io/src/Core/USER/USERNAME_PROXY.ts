@@ -109,7 +109,7 @@ class USERNAME_PROXY
 
         query.where = where;
 
-        if( vars.username ) where.username = vars.username;
+        if( vars.uID ) where.uID = vars.uID;
 
         return query;
     }

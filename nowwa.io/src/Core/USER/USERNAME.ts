@@ -131,6 +131,8 @@ class USERNAME
         EMAIL.reparent( newUID, oldUID );
         USERNAME_PROXY.reparent( newUID, oldUID );
         USERNAME_CONTACTS.reparent( newUID, oldUID );
+
+        // Merge game data, wallets, anything else 
  
         USERNAME.remove( oldUID );
 
