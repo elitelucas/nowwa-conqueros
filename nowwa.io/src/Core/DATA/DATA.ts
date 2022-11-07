@@ -59,6 +59,18 @@ class DATA
         
         if( documents ) return Promise.resolve(documents);
 
+        return reject( 'entries not found' );
+    }
+
+    public static async getOne( tableName: string, query: any ): Promise<mongoose.Document<any, any, any>[]> 
+    {
+        let model       = await TABLE_MODEL.get( tableName );
+        let myQuery     = model.findOne( query.where || {} );
+ 
+        let document   = await myQuery.exec();
+        
+        if( document ) return Promise.resolve( document );
+
         return reject( 'entry not found' );
     }
  
@@ -111,7 +123,14 @@ class DATA
         await document.save();
         return resolve( document );
     };
- 
+    
+    public static async reparent( tableName:string, newUID:any, oldUID:any ) : Promise<any>
+    {
+        let results = await DATA.change( tableName, { values:{ uID:newUID }, where:{ uID:oldUID } } );
+
+        return resolve( results );
+    }
+
     /*=============== 
 
 
@@ -120,14 +139,12 @@ class DATA
 
     ================*/
 
-    public static async remove(tableName: string, query: DATA.Query): Promise<void> 
+    public static async remove( tableName: string, id:any ): Promise<void> 
     {
-        let model = await TABLE_MODEL.get(tableName);
+        let model   = await TABLE_MODEL.get( tableName );
+        let myQuery = model.find( { _id:id } ).limit(1);
 
-        if (query.where && query.where._id) (query.where as any)._id = new mongoose.mongo.ObjectId((query.where as any)._id);
-        
-        let myQuery = model.find(query.where as any).limit(1);
-        await model.deleteOne(myQuery);
+        await model.deleteOne( myQuery );
         return resolve();
     };
 

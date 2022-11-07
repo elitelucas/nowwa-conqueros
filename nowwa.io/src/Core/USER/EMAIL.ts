@@ -93,9 +93,7 @@ class EMAIL
         }
    
     };
-    
  
-
     /*=============== 
 
 
@@ -106,13 +104,21 @@ class EMAIL
   
     public static async get( vars:any  ) : Promise<any>
     {
-        let results = await DATA.get( EMAIL.table, EMAIL.getQuery( vars ) ); 
+        let query = EMAIL.getQuery( vars );
+        let results;
 
-        let item : any = results[0];
- 
-        if( !item ) return reject( new Error( 'Email does not exists...' ) );
- 
-        return resolve( item );
+        if( query.where.email )
+        {
+            results = await DATA.getOne( EMAIL.table, query ); 
+            if( !results ) return reject( new Error( 'Email does not exists...' ) );
+
+        }else{
+
+            results = await DATA.get( EMAIL.table, query ); 
+            if( !results[0] ) return reject( new Error( 'Email does not exists...' ) );
+        }
+
+        return resolve( results );
     };
 
     public static async getUID( email:string  ) : Promise<any>
@@ -123,7 +129,27 @@ class EMAIL
 
         return reject( 'Email username does not exists...' )
     };   
+
+    /*=============== 
+
+
+    CHANGE  
     
+
+    ================*/
+    
+    public static async change( query:any ) : Promise<any>
+    {
+        let results = DATA.change( EMAIL.table, query ); 
+        return resolve( results );
+    }
+ 
+    public static async reparent( newUID:any, oldUID:any ) : Promise<any>
+    {
+        let results = await DATA.reparent( EMAIL.table, newUID, oldUID );
+
+        return resolve( results );
+    }
     
 
     /*=============== 

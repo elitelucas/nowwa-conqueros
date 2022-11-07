@@ -2,6 +2,8 @@ import DATA from "../DATA/DATA";
 import PROMISE, { resolve, reject } from '../../UTIL/PROMISE';
 import EMAIL from "./EMAIL";
 import DATE from '../../UTIL/DATE';
+import USERNAME_CONTACTS from "./USERNAME_CONTACTS";
+import USERNAME_PROXY from "./USERNAME_PROXY";
 
 class USERNAME
 {
@@ -22,6 +24,12 @@ class USERNAME
         if( results.length > 1 ) return reject( "Username already exists" );
 
         let item : any = await DATA.set( USERNAME.table, vars );
+
+        // Look for previous accounts that have used this email
+        // Do merge
+
+
+        // Add email 
  
         EMAIL.set(
         {
@@ -43,14 +51,26 @@ class USERNAME
   
     public static async get( vars:any ) : Promise<any>
     {
-        let results = await DATA.get( USERNAME.table, USERNAME.getQuery( vars ) ); 
-
-        let item : any = results[0];
+        let item = await DATA.getOne( USERNAME.table, USERNAME.getQuery( vars ) ); 
  
         if( !item ) return reject( 'user does not exists...' );
  
         return resolve( item );
     }; 
+
+    private static getQuery( vars:any )
+    {
+        if( vars.where ) return vars;
+
+        var query   : any = { where:{}, values:{} };
+        var where   : any = {};
+
+        query.where = where;
+
+        if( vars.username ) where.username = vars.username;
+
+        return query;
+    }
 
     /*=============== 
 
@@ -81,23 +101,40 @@ class USERNAME
     /*=============== 
 
 
-    QUERY  
+    REMOVE  
     
 
     ================*/
 
-    private static getQuery( vars:any )
+    public static async remove( uID:any ) : Promise<any>
     {
-        if( vars.where ) return vars;
+        // remove everything created by this userName
 
-        var query   : any = { where:{}, values:{} };
-        var where   : any = {};
 
-        query.where = where;
+        // remove userName itself
 
-        if( vars.username ) where.username = vars.username;
+        await DATA.remove( USERNAME.table, uID );
 
-        return query;
+        return resolve();
+    }
+
+    /*=============== 
+
+
+    REPARENT  
+    
+
+    ================*/
+ 
+    public static async reparent( newUID:any, oldUID:any ) : Promise<any>
+    {
+        EMAIL.reparent( newUID, oldUID );
+        USERNAME_PROXY.reparent( newUID, oldUID );
+        USERNAME_CONTACTS.reparent( newUID, oldUID );
+ 
+        USERNAME.remove( oldUID );
+
+        return resolve();
     }
  
 };

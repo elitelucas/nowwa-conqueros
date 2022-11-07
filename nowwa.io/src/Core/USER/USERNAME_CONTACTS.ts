@@ -42,10 +42,10 @@ class USERNAME_CONTACTS
 
         for( var n in contacts )
         {
-            var item = contacts[n].uIDs;
-            for( var i in item ) 
+            var array = contacts[n].uIDs;
+            for( var i in array ) 
             {
-                var id = item[i];
+                var id = array[i];
                 if( id == uID ) continue;
                 ARRAY.pushUnique( output, id );
             }
@@ -53,6 +53,31 @@ class USERNAME_CONTACTS
 
         return resolve( output );
     };
+
+    public static async reparent( newUID:any, oldUID:any ) : Promise<any>
+    {
+        // How to replace an element inside of an array, one by one manually?
+
+        // would this work?
+        // await DATA.change( USERNAME_CONTACTS.table, { values:{ uIDs:[newUID] }, where:{ uIDs:oldUID } } );
+        // return resolve();
+
+        // if not 
+
+        var contacts    : any = await DATA.get( USERNAME_CONTACTS.table, { where:{ uID:[ oldUID ] }} );
+
+        for( var n in contacts )
+        {
+            var array = contacts[n].uIDs;
+
+            ARRAY.removeItem( array, oldUID );
+            ARRAY.pushUnique( array, newUID );
+ 
+            await DATA.change( USERNAME_CONTACTS.table, { values:{ uIDs:array }, where:{ _id:contacts[n]._id } } );
+        }
+ 
+        return resolve();
+    }
 }
 
 export default USERNAME_CONTACTS;

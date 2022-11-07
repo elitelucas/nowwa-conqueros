@@ -68,7 +68,13 @@ class USERNAME_PROXY
         return resolve( item );
     }
 
+    public static async reparent( newUID:any, oldUID:any ) : Promise<any>
+    {
+        let results = await DATA.reparent( USERNAME_PROXY.table, newUID, oldUID );
 
+        return resolve( results );
+    }
+ 
     /*=============== 
 
 
