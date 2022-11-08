@@ -16,6 +16,8 @@ class SOCKET
         var io : SocketIO.Server = new SocketIO.Server<SOCKET.ClientToServerEvents, SOCKET.ServerToClientEvents, SOCKET.InterServerEvents, SOCKET.SocketData>(
             httpServer, { cors : { origin: "*" } }
         );
+
+        log( "NEW SOCKET SERVER" );
  
         io.on( "connection", (socket) => 
         {

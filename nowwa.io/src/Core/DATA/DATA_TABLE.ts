@@ -3,7 +3,6 @@ import Environment from '../CONFIG/Environment';
 import { Custom, CustomProperty, CustomType, CustomDocument } from '../../Models/Custom';
 import DATA from './DATA';
 import LOG, { log, error } from '../../UTIL/LOG';
-import PROMISE, { resolve, reject } from '../../UTIL/PROMISE';
  
 class DATA_TABLE
 {
@@ -40,15 +39,15 @@ class DATA_TABLE
 
         let data = await query.exec();
 
-        if( !data.length ) return Promise.reject( new Error(`schema '${tableName}' not found!`));
-
+        if( !data.length ) return Promise.reject( LOG.msg( `schema '${tableName}' not found!` ) ); 
+ 
         var schema = DATA_TABLE.pool[ tableName ] = 
         {
             schemaName      : data[0].schemaName,
             schemaFields    : data[0].schemaFields
         };
 
-        return resolve( schema );
+        return Promise.resolve( schema );
     }
 
     /*=============== 
@@ -120,7 +119,7 @@ class DATA_TABLE
 
         table               = await table.save();
 
-        return resolve(
+        return Promise.resolve(
         {
             schemaName      : name,
             schemaFields    : table.schemaFields

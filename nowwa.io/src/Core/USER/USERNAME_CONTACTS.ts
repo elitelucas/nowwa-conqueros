@@ -2,8 +2,7 @@ import EMAIL from "./EMAIL";
 import USERNAME from "./USERNAME";
 import DATA from "../DATA/DATA";
 import ARRAY from '../../UTIL/ARRAY';
-import { resolve } from "path";
-
+ 
 class USERNAME_CONTACTS
 {
     private static table : string = "username_contacts";
@@ -51,7 +50,7 @@ class USERNAME_CONTACTS
             }
         }
 
-        return resolve( output );
+        return Promise.resolve( output );
     };
 
     public static async reparent( newUID:any, oldUID:any ) : Promise<any>
@@ -60,7 +59,7 @@ class USERNAME_CONTACTS
 
         // would this work?
         // await DATA.change( USERNAME_CONTACTS.table, { values:{ uIDs:[newUID] }, where:{ uIDs:oldUID } } );
-        // return resolve();
+        // return Promise.resolve();
 
         // if not 
 
@@ -76,7 +75,7 @@ class USERNAME_CONTACTS
             await DATA.change( USERNAME_CONTACTS.table, { values:{ uIDs:array }, where:{ _id:contacts[n]._id } } );
         }
  
-        return resolve();
+        return Promise.resolve();
     }
 }
 

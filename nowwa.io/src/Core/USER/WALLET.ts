@@ -1,5 +1,4 @@
 import STRING from '../../UTIL/STRING';
-import PROMISE, { resolve, reject } from '../../UTIL/PROMISE';
 import DATA from "../DATA/DATA";
 import USERNAME from './USERNAME';
  
@@ -23,20 +22,20 @@ class WALLET
     {
         let item : any = await WALLET.get({ where:{ wallet:vars.wallet }} );
 
-        if( item ) return reject( "Wallet already exists" );
+        if( item ) return Promise.reject( LOG.msg( 'Wallet already exists' ) ); 
 
         item = await DATA.set( WALLET.table, vars );
  
-        return resolve( item );
+        return Promise.resolve( item );
     }
 
     public static async getUID( wallet:string  ) : Promise<any>
     {
         let item = await WALLET.get( { where:{ wallet:wallet }});
 
-        if( item ) return resolve( item );
+        if( item ) return Promise.resolve( item );
 
-        return reject( 'Wallet username does not exists...' )
+        return Promise.reject( LOG.msg( 'Wallet does not exist' ) ); 
     };   
  
     /*=============== 
@@ -53,9 +52,9 @@ class WALLET
 
         let item : any = results[0];
  
-        if( !item ) return reject( new Error( 'Wallet does not exist' ) );
+        if( !item ) return Promise.reject( LOG.msg( 'Wallet does not exist' ) ); 
  
-        return resolve( item );
+        return Promise.resolve( item );
     };     
 
     /*=============== 

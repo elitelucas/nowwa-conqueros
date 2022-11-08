@@ -1,7 +1,7 @@
 import DATA from "../DATA/DATA";
-import PROMISE, { resolve, reject } from '../../UTIL/PROMISE';
 import EMAIL from "./EMAIL";
 import DATE from '../../UTIL/DATE';
+import LOG from "../../UTIL/LOG";
 
 class USERNAME_PROXY
 {
@@ -20,7 +20,7 @@ class USERNAME_PROXY
     {
         let results = await DATA.get( USERNAME_PROXY.table, { username:vars.username } ); 
 
-        if( results.length > 1 ) return reject( "Username already exists" );
+        if( results.length > 1 ) return Promise.reject( LOG.msg( 'Username already exists' ) );  
 
         let item : any = await DATA.set( USERNAME_PROXY.table, vars );
  
@@ -31,7 +31,7 @@ class USERNAME_PROXY
             isVerified  : true,
         });
 
-        return resolve( item );
+        return Promise.resolve( item );
     }; 
 
     /*=============== 
@@ -48,9 +48,9 @@ class USERNAME_PROXY
 
         let item : any = results[0];
  
-        if( !item ) return reject( 'user does not exists...' );
+        if( !item ) return Promise.reject( LOG.msg( 'User does not exist' ) ); 
  
-        return resolve( item );
+        return Promise.resolve( item );
     }; 
 
     /*=============== 
@@ -65,14 +65,14 @@ class USERNAME_PROXY
     {
         var item = await DATA.change( USERNAME_PROXY.table, query );
 
-        return resolve( item );
+        return Promise.resolve( item );
     }
 
     public static async reparent( newUID:any, oldUID:any ) : Promise<any>
     {
         let results = await DATA.reparent( USERNAME_PROXY.table, newUID, oldUID );
 
-        return resolve( results );
+        return Promise.resolve( results );
     }
  
     /*=============== 
@@ -89,7 +89,7 @@ class USERNAME_PROXY
 
         if( !item ) item = await USERNAME_PROXY.set( vars );
  
-        return resolve( item );
+        return Promise.resolve( item );
     }; 
 
     /*=============== 
