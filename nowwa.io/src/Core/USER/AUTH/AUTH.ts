@@ -10,7 +10,8 @@ import USERNAME_PROXY from '../USERNAME_PROXY';
 import { VariableExpressionOperator } from 'mongoose';
 import LOG, { log } from '../../../UTIL/LOG';
 
-class AUTH {
+class AUTH 
+{
 
     /*=============== 
 
@@ -101,7 +102,8 @@ class AUTH {
 
     ================*/
 
-    public static async getSocial(vars: any): Promise<any> {
+    public static async getSocial(vars: any): Promise<any> 
+    {
         var uID: any;
 
         if (vars.email) uID = await EMAIL.getUID(vars.email);
@@ -138,7 +140,8 @@ class AUTH {
 };
 
 
-namespace AUTH {
+namespace AUTH 
+{
     export interface Input {
         email: string;
         password: string;

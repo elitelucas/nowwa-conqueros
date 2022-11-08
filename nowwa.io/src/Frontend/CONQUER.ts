@@ -19,7 +19,7 @@ class CONQUER
 
         CONQUER.BRIDGE.do( "ActionTest" ).then( function(e?:any)
         {
-            log("ACTION PASSED", e );
+            log( "ACTION PASSED", e );
         });
  
         return Promise.resolve();
