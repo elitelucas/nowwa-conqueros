@@ -42,11 +42,6 @@ class Main
 
         await Database.AsyncInit();
         await Email.AsyncInit();
-        
-        await Twitter.AsyncInit();
-        await Snapchat.AsyncInit();
-        await Discord.AsyncInit();
-
         await Storage.AsyncInit();
         await Build.AsyncInit();
 

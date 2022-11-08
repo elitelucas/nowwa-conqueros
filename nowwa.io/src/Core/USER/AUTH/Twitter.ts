@@ -12,7 +12,7 @@ class Twitter {
     /**
      * Initialize email module.
      */
-    public static async AsyncInit(): Promise<void> {
+    public static async init(): Promise<void> {
         Twitter.Instance = new Twitter();
         Twitter.codeVerifiers = {};
         Twitter.WebhookAuthLink();

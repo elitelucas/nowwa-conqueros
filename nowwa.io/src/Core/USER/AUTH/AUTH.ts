@@ -1,14 +1,15 @@
 
 import CRYPT from '../../../UTIL/CRYPT';
-import STRING from '../../../UTIL/STRING';
 import EMAIL from '../EMAIL';
 import USERNAME from "../USERNAME";
 import PASSPORT from './PASSPORT';
  
 import WALLET from '../WALLET';
 import USERNAME_PROXY from '../USERNAME_PROXY';
-import { VariableExpressionOperator } from 'mongoose';
 import LOG, { log } from '../../../UTIL/LOG';
+import Twitter from './Twitter';
+import Snapchat from './Snapchat';
+import Discord from './Discord';
 
 class AUTH 
 {
@@ -24,6 +25,10 @@ class AUTH
     public static async init(): Promise<void> 
     {
         PASSPORT.init();
+ 
+        await Twitter.init();
+        await Snapchat.init();
+        await Discord.init();
 
         // Init other protocols too (metamask, twitter, etc?)
 

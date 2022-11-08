@@ -10,7 +10,7 @@ class Discord
     /**
      * Initialize email module.
      */
-    public static async AsyncInit(): Promise<void> 
+    public static async init(): Promise<void> 
     {
         Discord.Instance = new Discord();
         Discord.WebhookCallbackLink();

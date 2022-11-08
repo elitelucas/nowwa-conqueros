@@ -11,7 +11,7 @@ class Snapchat {
     /**
      * Initialize email module.
      */
-    public static async AsyncInit(): Promise<void> 
+    public static async init(): Promise<void> 
     {
         Snapchat.Instance = new Snapchat();
         Snapchat.WebhookCallbackLink();
