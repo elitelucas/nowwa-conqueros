@@ -2,7 +2,7 @@ import STRING from '../../UTIL/STRING';
 import DATA from "../DATA/DATA";
 import USERNAME from './USERNAME';
 
-import Environment, { authenticationVerifyUrl } from '../CONFIG/Environment';
+import CONFIG, { authenticationVerifyUrl } from '../CONFIG/CONFIG';
 import nodemailer, { Transport, Transporter } from 'nodemailer';
 import { MailOptions } from 'nodemailer/lib/json-transport';
 import LOG, { log } from '../../UTIL/LOG';
@@ -13,7 +13,7 @@ class EMAIL {
     private static emailSender: any;
     private static transporter: any;
 
-    public static async init(env: Environment.Config) {
+    public static async init(env: CONFIG.Config) {
         EMAIL.emailSender = `${env.VERIFY_EMAIL_SENDER}`;
 
         EMAIL.transporter = nodemailer.createTransport(
@@ -57,7 +57,7 @@ class EMAIL {
             {
                 email: email,
                 subject: `[Nowwa.io] Verify your Email`,
-                content: `Click <a href=${Environment.PublicUrl}${authenticationVerifyUrl}?email=${email}&token=${token}>here</a> to verify your email!`
+                content: `Click <a href=${CONFIG.PublicUrl}${authenticationVerifyUrl}?email=${email}&token=${token}>here</a> to verify your email!`
             });
     }
 

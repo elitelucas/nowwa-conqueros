@@ -1,5 +1,5 @@
 import express from 'express';
-import Environment from '../CONFIG/Environment';
+import CONFIG from '../CONFIG/CONFIG';
 import Authentication from '../DEPRECATED/Authentication';
 import SocketIO from "socket.io";
 import { createServer } from "http";
@@ -9,7 +9,7 @@ import { callbackPromise } from 'nodemailer/lib/shared';
 
 class SOCKET 
 {
-    public static async init( env:Environment.Config ):Promise<void> 
+    public static async init( env:CONFIG.Config ):Promise<void> 
     {
         var httpServer = createServer();
 

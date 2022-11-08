@@ -1,6 +1,6 @@
 import { TwitterApi, UserV2 } from 'twitter-api-v2';
 import express from 'express';
-import Environment, { twitterAuthUrl, twitterCallbackUrl } from '../../CONFIG/Environment';
+import CONFIG, { twitterAuthUrl, twitterCallbackUrl } from '../../CONFIG/CONFIG';
 import Authentication from '../../DEPRECATED/Authentication';
 
 class Twitter {
@@ -11,7 +11,7 @@ class Twitter {
     /**
      * Initialize email module.
      */
-    public static async AsyncInit(app: express.Express, env: Environment.Config): Promise<void> {
+    public static async AsyncInit(app: express.Express, env: CONFIG.Config): Promise<void> {
         Twitter.Instance = new Twitter();
         Twitter.codeVerifiers = {};
         Twitter.WebhookAuthLink(app, env);
@@ -19,7 +19,7 @@ class Twitter {
         return Promise.resolve();
     }
 
-    public static async WebhookAuthLink(app: express.Express, env: Environment.Config): Promise<void> {
+    public static async WebhookAuthLink(app: express.Express, env: CONFIG.Config): Promise<void> {
         app.use(`${twitterAuthUrl}`, (req, res) => {
             const twitterClient = new TwitterApi({
                 clientId: env.TWITTER_CLIENT_ID,
@@ -37,7 +37,7 @@ class Twitter {
         });
     }
 
-    public static async WebhookCallbackLink(app: express.Express, env: Environment.Config): Promise<void> {
+    public static async WebhookCallbackLink(app: express.Express, env: CONFIG.Config): Promise<void> {
         app.use(`${twitterCallbackUrl}`, (req, res) => {
             console.log('query callback');
             console.log(JSON.stringify(req.query));
@@ -87,7 +87,7 @@ class Twitter {
                     // console.log(`followers`, followers);
 
                     const token = await Authentication.Hash(userObject.id);
-                    res.redirect(`${Environment.PublicUrl}/Index.html?info=loggedin&name=${userObject.username}&token=${token}&admin=false&id=${userObject.id}&friend_count=${followers.length}`);
+                    res.redirect(`${CONFIG.PublicUrl}/Index.html?info=loggedin&name=${userObject.username}&token=${token}&admin=false&id=${userObject.id}&friend_count=${followers.length}`);
                 })
                 .catch(() => res.status(403).send('Invalid verifier or access tokens!'));
         });

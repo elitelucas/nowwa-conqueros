@@ -1,5 +1,5 @@
 import express from 'express';
-import Environment from '../CONFIG/Environment';
+import CONFIG from '../CONFIG/CONFIG';
 import Authentication from './Authentication';
 import SocketIO from "socket.io";
 import { createServer } from "http";
@@ -11,7 +11,7 @@ class Socket {
     /**
      * Initialize socket feature.
      */
-    public static async AsyncInit(app: express.Express, env: Environment.Config): Promise<void> {
+    public static async AsyncInit(app: express.Express, env: CONFIG.Config): Promise<void> {
 
         var httpServer = createServer();
         var io: SocketIO.Server = new SocketIO.Server<Socket.ClientToServerEvents, Socket.ServerToClientEvents, Socket.InterServerEvents, Socket.SocketData>(

@@ -1,6 +1,6 @@
 import express from 'express';
 import fetch, { RequestInit } from 'node-fetch';
-import Environment, { discordCallbackUrl } from '../../CONFIG/Environment';
+import CONFIG, { discordCallbackUrl } from '../../CONFIG/CONFIG';
 import Authentication from '../../DEPRECATED/Authentication';
 
 class Discord {
@@ -10,13 +10,13 @@ class Discord {
     /**
      * Initialize email module.
      */
-    public static async AsyncInit(app: express.Express, env: Environment.Config): Promise<void> {
+    public static async AsyncInit(app: express.Express, env: CONFIG.Config): Promise<void> {
         Discord.Instance = new Discord();
         Discord.WebhookCallbackLink(app, env);
         return Promise.resolve();
     }
 
-    public static async WebhookCallbackLink(app: express.Express, env: Environment.Config): Promise<void> {
+    public static async WebhookCallbackLink(app: express.Express, env: CONFIG.Config): Promise<void> {
         app.use(`${discordCallbackUrl}`, (req, res) => {
             // console.log('query callback');
             // console.log(JSON.stringify(req.query));
@@ -27,7 +27,7 @@ class Discord {
 
             let discordClientId: string = env.DISCORD_CLIENT_ID;
             let discordClientSecret: string = env.DISCORD_CLIENT_SECRET;
-            let discordRedirect: string = `${Environment.PublicUrl}${discordCallbackUrl}`;
+            let discordRedirect: string = `${CONFIG.PublicUrl}${discordCallbackUrl}`;
 
             var firstRequestInit: RequestInit = {
                 method: 'POST',
@@ -57,10 +57,10 @@ class Discord {
                             // console.log(JSON.stringify(secondResponse));
                             Authentication.Hash(secondResponse.email)
                                 .then((token) => {
-                                    res.redirect(`${Environment.PublicUrl}/Index.html?info=loggedin&name=${secondResponse.username}&token=${token}&admin=false&id=${secondResponse.email}`);
+                                    res.redirect(`${CONFIG.PublicUrl}/Index.html?info=loggedin&name=${secondResponse.username}&token=${token}&admin=false&id=${secondResponse.email}`);
                                 })
                                 .catch((error) => {
-                                    res.redirect(`${Environment.PublicUrl}/Index.html?error=${error.message}`);
+                                    res.redirect(`${CONFIG.PublicUrl}/Index.html?error=${error.message}`);
                                 });
                         })
                         .catch(console.error);

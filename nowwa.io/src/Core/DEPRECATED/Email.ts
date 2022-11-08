@@ -1,5 +1,5 @@
 import express from 'express';
-import Environment from '../CONFIG/Environment';
+import CONFIG from '../CONFIG/CONFIG';
 import nodemailer, { Transport, Transporter } from 'nodemailer';
 import { MailOptions } from 'nodemailer/lib/json-transport';
 
@@ -10,7 +10,7 @@ class Email {
     /**
      * Initialize email module.
      */
-    public static async AsyncInit(app: express.Express, env: Environment.Config): Promise<void> {
+    public static async AsyncInit(app: express.Express, env: CONFIG.Config): Promise<void> {
         Email.Instance = new Email(env);
         return Promise.resolve();
     }
@@ -18,7 +18,7 @@ class Email {
     private transporter: Transporter;
     private emailSender: string;
 
-    constructor(env: Environment.Config) {
+    constructor(env: CONFIG.Config) {
         this.emailSender = `${env.VERIFY_EMAIL_SENDER}`;
         this.transporter = nodemailer.createTransport({
             service: 'gmail',

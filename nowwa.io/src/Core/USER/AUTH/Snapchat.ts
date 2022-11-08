@@ -1,6 +1,6 @@
 import express from 'express';
 import fetch, { RequestInit } from 'node-fetch';
-import Environment, { snapchatCallbackUrl } from '../../CONFIG/Environment';
+import CONFIG, { snapchatCallbackUrl } from '../../CONFIG/CONFIG';
 import Authentication from '../../DEPRECATED/Authentication';
 
 class Snapchat {
@@ -10,13 +10,13 @@ class Snapchat {
     /**
      * Initialize email module.
      */
-    public static async AsyncInit(app: express.Express, env: Environment.Config): Promise<void> {
+    public static async AsyncInit(app: express.Express, env: CONFIG.Config): Promise<void> {
         Snapchat.Instance = new Snapchat();
         Snapchat.WebhookCallbackLink(app, env);
         return Promise.resolve();
     }
 
-    public static async WebhookCallbackLink(app: express.Express, env: Environment.Config): Promise<void> {
+    public static async WebhookCallbackLink(app: express.Express, env: CONFIG.Config): Promise<void> {
         app.use(`${snapchatCallbackUrl}`, (req, res) => {
             // console.log('query callback');
             // console.log(JSON.stringify(req.query, null, "\t"));
@@ -27,7 +27,7 @@ class Snapchat {
 
             let snapchatClientId: string = env.SNAPCHAT_CLIENT_ID;
             let snapchatClientSecret: string = env.SNAPCHAT_CLIENT_SECRET;
-            let snapchatRedirect: string = `${Environment.PublicUrl}${snapchatCallbackUrl}`;
+            let snapchatRedirect: string = `${CONFIG.PublicUrl}${snapchatCallbackUrl}`;
 
             let hexEncode = (input: string): string => {
                 var hex, i;
@@ -77,10 +77,10 @@ class Snapchat {
                             let name = secondResponse.data.me.displayName;
                             Authentication.Hash(id)
                                 .then((token) => {
-                                    res.redirect(`${Environment.PublicUrl}/Index.html?info=loggedin&name=${name}&token=${token}&admin=false&id=${id}`);
+                                    res.redirect(`${CONFIG.PublicUrl}/Index.html?info=loggedin&name=${name}&token=${token}&admin=false&id=${id}`);
                                 })
                                 .catch((error) => {
-                                    res.redirect(`${Environment.PublicUrl}/Index.html?error=${error.message}`);
+                                    res.redirect(`${CONFIG.PublicUrl}/Index.html?error=${error.message}`);
                                 });
                         })
                         .catch(console.error);

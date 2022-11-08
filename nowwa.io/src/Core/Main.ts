@@ -5,7 +5,7 @@ import multer from 'multer';
 import cloudinary from 'cloudinary';
 import path from 'path';
 import { UserDocument } from '../Models/User';
-import Environment, { toyStatusUrl } from './CONFIG/Environment';
+import CONFIG, { toyStatusUrl } from './CONFIG/CONFIG';
 import crypto from 'crypto';
 import Authentication from './DEPRECATED/Authentication';
 import Database from './DEPRECATED/Database';
@@ -35,12 +35,12 @@ class Main {
      */
     constructor() {
         this.status = Main.StatusDefault;
-        this.baseUrl = `/webhook/v${Environment.CoreConfig.VERSION}`;
+        this.baseUrl = `/webhook/v${CONFIG.CoreConfig.VERSION}`;
 
-        this.AsyncInit(Environment.CoreConfig);
+        this.AsyncInit(CONFIG.CoreConfig);
     }
 
-    private async AsyncInit(env: Environment.Config): Promise<void> {
+    private async AsyncInit(env: CONFIG.Config): Promise<void> {
         try {
             console.log(`init express...`);
 

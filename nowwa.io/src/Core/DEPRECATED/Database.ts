@@ -1,6 +1,6 @@
 import mongoose, { mongo } from 'mongoose';
 import express from 'express';
-import Environment from '../CONFIG/Environment';
+import CONFIG from '../CONFIG/CONFIG';
 import { Custom, CustomProperty, CustomType, CustomDocument } from '../../Models/Custom';
 
 class Database {
@@ -18,7 +18,7 @@ class Database {
     /**
      * Initialize Database module.
      */
-    public static async AsyncInit(app: express.Express, env: Environment.Config): Promise<void> {
+    public static async AsyncInit(app: express.Express, env: CONFIG.Config): Promise<void> {
         Database.Instance = new Database();
         await Database.Connect(env);
         Database.WebhookStructureSave(app);
@@ -31,7 +31,7 @@ class Database {
     /**
      * Initialize database connection.
      */
-    private static async Connect(env: Environment.Config) {
+    private static async Connect(env: CONFIG.Config) {
         console.log(`init database...`);
 
         let uri: string = `mongodb+srv://${env.MONGODB_USER}:${env.MONGODB_PASS}@${env.MONGODB_HOST}/${env.MONGODB_DB}`;

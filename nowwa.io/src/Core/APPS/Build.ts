@@ -1,5 +1,5 @@
 import express from 'express';
-import Environment, { toyUrl, toyBuildUrl, toyListUrl } from '../CONFIG/Environment';
+import CONFIG, { toyUrl, toyBuildUrl, toyListUrl } from '../CONFIG/CONFIG';
 import path from 'path';
 import fs from 'fs';
 import PlayCanvas from './Playcanvas';
@@ -18,7 +18,7 @@ class Build {
     /**
      * Initialize game module.
      */
-    public static async AsyncInit(app: express.Express, env: Environment.Config): Promise<void> {
+    public static async AsyncInit(app: express.Express, env: CONFIG.Config): Promise<void> {
         Build.Instance = new Build();
         Build.WebhookList(app);
         Build.WebhookBuild(app);
@@ -249,7 +249,7 @@ class Build {
                 console.log(`Game.CurrentActivity: ${Status.CurrentStatus.Activity}`);
                 res.status(500).send(`PLAYCANVAS BUSY | `);
             } else {
-                let url: URL = new URL(`${Environment.PublicUrl}${req.originalUrl}`);
+                let url: URL = new URL(`${CONFIG.PublicUrl}${req.originalUrl}`);
 
                 let configName: string = url.searchParams.get('n') as string;
                 let backend: Build.Backend = url.searchParams.get('b') as Build.Backend;

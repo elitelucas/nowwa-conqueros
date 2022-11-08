@@ -1,5 +1,5 @@
 import mongoose, { mongo } from 'mongoose';
-import Environment from '../CONFIG/Environment';
+import CONFIG from '../CONFIG/CONFIG';
 import { Custom, CustomProperty, CustomType, CustomDocument } from '../../Models/Custom';
 import TABLE_MODEL from './TABLE_MODEL';
 import LOG, { log, error } from '../../UTIL/LOG';
@@ -14,7 +14,7 @@ class DATA
 
     ================*/
 
-    public static async init(env: Environment.Config): Promise<void> 
+    public static async init(env: CONFIG.Config): Promise<void> 
     {
         log(`init database...`);
 

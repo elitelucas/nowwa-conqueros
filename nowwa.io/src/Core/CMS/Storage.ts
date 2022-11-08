@@ -1,5 +1,5 @@
 import express from 'express';
-import Environment, { storageUrl } from '../CONFIG/Environment';
+import CONFIG, { storageUrl } from '../CONFIG/CONFIG';
 import path from 'path';
 import fs from 'fs';
 
@@ -14,7 +14,7 @@ class Storage {
     /**
      * Initialize storage module.
      */
-    public static async AsyncInit(app: express.Express, env: Environment.Config): Promise<void> {
+    public static async AsyncInit(app: express.Express, env: CONFIG.Config): Promise<void> {
         Storage.Instance = new Storage();
         Storage.WebhookFiles(app);
         Storage.WebhookExplorer(app);

@@ -2,7 +2,7 @@ import passport from 'passport';
 import express from 'express';
 import passportLocal from 'passport-local';
 import { User, UserDocument } from '../../Models/User';
-import Environment, { authenticationHashUrl, authenticationLoginUrl, authenticationRegisterUrl, authenticationUrl, authenticationVerifyUrl } from '../CONFIG/Environment';
+import CONFIG, { authenticationHashUrl, authenticationLoginUrl, authenticationRegisterUrl, authenticationUrl, authenticationVerifyUrl } from '../CONFIG/CONFIG';
 import Database from './Database';
 import bcrypt from "bcrypt";
 import { CustomDocument } from '../../Models/Custom';
@@ -10,7 +10,7 @@ import Email from './Email';
 
 class Authentication {
 
-    public static async AsyncInit(app: express.Express, env: Environment.Config): Promise<void> {
+    public static async AsyncInit(app: express.Express, env: CONFIG.Config): Promise<void> {
         Authentication.InitPassport();
         Authentication.InitAuthentication();
         Authentication.WebhookLogin(app);
@@ -198,14 +198,14 @@ class Authentication {
         app.use(`${authenticationVerifyUrl}`, (req, res) => {
             console.log(`<-- authentication - verify`);
 
-            let url: URL = new URL(`${Environment.PublicUrl}${req.originalUrl}`);
+            let url: URL = new URL(`${CONFIG.PublicUrl}${req.originalUrl}`);
             console.log(url);
             let email: string = url.searchParams.get('email') as string;
             let token: string = url.searchParams.get('token') as string;
             this.Match(email, token)
                 .then((isMatch: boolean) => {
                     if (!isMatch) {
-                        res.status(200).redirect(`${Environment.PublicUrl}/Index.html?info=notverified`);
+                        res.status(200).redirect(`${CONFIG.PublicUrl}/Index.html?info=notverified`);
                     } else {
                         Database.DataSave(Authentication.entityTableName, {
                             where: {
@@ -216,15 +216,15 @@ class Authentication {
                             }
                         })
                             .then((document: CustomDocument) => {
-                                res.status(200).redirect(`${Environment.PublicUrl}/Index.html?info=verified`);
+                                res.status(200).redirect(`${CONFIG.PublicUrl}/Index.html?info=verified`);
                             })
                             .catch((error: Error) => {
-                                res.status(200).redirect(`${Environment.PublicUrl}/Index.html?error=${error.message}`);
+                                res.status(200).redirect(`${CONFIG.PublicUrl}/Index.html?error=${error.message}`);
                             });
                     }
                 })
                 .catch((error: Error) => {
-                    res.status(200).redirect(`${Environment.PublicUrl}/Index.html?error=${error.message}`);
+                    res.status(200).redirect(`${CONFIG.PublicUrl}/Index.html?error=${error.message}`);
                 });
         });
     }
@@ -307,7 +307,7 @@ class Authentication {
         });
         try {
             let token = await this.Hash(args.email);
-            await Email.Send(args.email, `[Nowwa.io] Verify your Email`, `<html><body>Click <a href=${Environment.PublicUrl}${authenticationVerifyUrl}?email=${args.email}&token=${token}>here</a> to verify your email!</body></html>`);
+            await Email.Send(args.email, `[Nowwa.io] Verify your Email`, `<html><body>Click <a href=${CONFIG.PublicUrl}${authenticationVerifyUrl}?email=${args.email}&token=${token}>here</a> to verify your email!</body></html>`);
         }
         catch (error) {
             console.log(`error: ${JSON.stringify(error)}`);
