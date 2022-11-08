@@ -1,23 +1,23 @@
-import BRIDGE from "./Socket/BRIDGE";
+import SOCKET from "./Socket/SOCKET";
 import LOG, { log } from "../UTIL/LOG";
-import SESSION from "./User/SESSION";
-import UserInstance from "./User/UserInstance";
+import AUTH from "./User/AUTH";
+import USER from "./User/USER";
  
 class CONQUER 
 {
-    public static USER: UserInstance = new UserInstance();
-    public static SESSION: SESSION = new SESSION();
-    public static BRIDGE: BRIDGE = new BRIDGE();
+    public static USER      : USER = new USER();
+    public static AUTH      : AUTH = new AUTH();
+    public static SOCKET    : SOCKET = new SOCKET();
 
     public static async init() : Promise<any>
     {
         log("client: =============== New ConquerOS");
 
-        await CONQUER.BRIDGE.init();
+        await CONQUER.SOCKET.init();
 
         log("Okkkk");
 
-        CONQUER.BRIDGE.do( "ActionTest" ).then( function(e?:any)
+        CONQUER.SOCKET.do( "ActionTest" ).then( function(e?:any)
         {
             log( "ACTION PASSED", e );
         });

@@ -43,7 +43,7 @@ class AUTH
 
     ================*/
 
-    public static async set(vars: any): Promise<any> 
+    public static async set( vars: any ): Promise<any> 
     {
         let userExists: boolean = false;
 
@@ -74,7 +74,7 @@ class AUTH
 
     ================*/
 
-    public static async get(vars: any): Promise<any> 
+    public static async get( vars: any ): Promise<any> 
     {
         var item: any = await USERNAME.get(vars);
 
@@ -94,7 +94,7 @@ class AUTH
     /*=============== 
 
 
-    GET SOCIAL
+    GET PROXY
 
     twitter     : username, account id
     google      : display name, email
@@ -107,7 +107,7 @@ class AUTH
 
     ================*/
 
-    public static async getSocial(vars: any): Promise<any> 
+    public static async getProxy(vars: any): Promise<any> 
     {
         var uID: any;
 
@@ -116,7 +116,8 @@ class AUTH
 
         let user;
 
-        if (!uID) {
+        if (!uID) 
+        {
             user = await USERNAME.set({});
         } else {
             user = await USERNAME.get({ where: { _id: uID } });
@@ -131,9 +132,9 @@ class AUTH
         return Promise.resolve(user);
     };
 
-    public static async addSocial(uID: any, vars: any): Promise<any> 
+    public static async addProxy( uID: any, vars: any ): Promise<any> 
     {
-        var proxyUser = await AUTH.getSocial(vars);
+        var proxyUser = await AUTH.getProxy(vars);
 
         if (uID != proxyUser.uID) USERNAME.reparent(uID, proxyUser.uID);
 

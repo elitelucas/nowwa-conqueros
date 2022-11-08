@@ -1,9 +1,6 @@
 import LOG, { log } from '../../UTIL/LOG';
  
-import CONQUER from '../CONQUER';
-
-
-class SESSION 
+class USER 
 {
     public async init(): Promise<any> 
     {
@@ -11,4 +8,4 @@ class SESSION
     }
 };
 
-export default SESSION;
+export default USER;

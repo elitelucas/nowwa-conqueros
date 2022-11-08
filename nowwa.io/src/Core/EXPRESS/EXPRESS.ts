@@ -5,17 +5,15 @@ import cors from 'cors';
 import CONFIG, { toyStatusUrl } from '../CONFIG/CONFIG';
 import Status from '../APPS/Status';
 import LOG, { log } from '../../UTIL/LOG';
-import Main from '../Main';
 import cloudinary from 'cloudinary';
 import multer from 'multer';
 import path from 'path';
 import { UserDocument } from '../../Models/User';
-
-
+ 
 class EXPRESS
 {
     public static app       : express.Express;
-    public static status    : Main.Status;
+    public static status    : EXPRESS.Status;
     private static baseUrl  : string;
 
     public static init()
@@ -24,7 +22,7 @@ class EXPRESS
 
         this.baseUrl = `/webhook/v${CONFIG.vars.VERSION}`;
 
-        EXPRESS.status = Main.StatusDefault;
+        EXPRESS.status = EXPRESS.StatusDefault;
 
         var app: express.Express = EXPRESS.app = 
             express()
@@ -168,5 +166,21 @@ class EXPRESS
     //     });
     // // }
 };
+
+
+namespace EXPRESS 
+{
+    export type Status = 
+    {
+        Builder         : Status.Detail,
+        requestCount    : number 
+    }
+
+    export const StatusDefault: Status = 
+    {
+        Builder         : Status.CurrentStatus,
+        requestCount    : 0 
+    }
+}
 
 export default EXPRESS;

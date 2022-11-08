@@ -1,7 +1,7 @@
 import io from 'socket.io-client';
 import LOG, { log } from '../../UTIL/LOG';
  
-class BRIDGE
+class SOCKET
 {
     private socketHost              : string = '127.0.0.1';
     // var socketHost = 'nowwa.io';
@@ -62,4 +62,4 @@ class BRIDGE
  
 };
 
-export default BRIDGE;
+export default SOCKET;
