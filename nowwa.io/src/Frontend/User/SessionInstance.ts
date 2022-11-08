@@ -1,14 +1,10 @@
 import LOG, { log } from '../../UTIL/LOG';
 import PROMISE, { resolve } from '../../UTIL/PROMISE';
-import COS from '../ConquerOS';
+import CONQUER from '../CONQUER';
 
 
 class SessionInstance {
-    private Conquer?: COS;
-
-    public async init(cos: COS): Promise<any> {
-        this.Conquer = cos;
-
+    public async init(cos: CONQUER): Promise<any> {
         return Promise.resolve();
     }
 };
