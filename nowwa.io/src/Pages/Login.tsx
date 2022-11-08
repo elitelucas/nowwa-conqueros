@@ -212,7 +212,11 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
         let FB = (window as any).FB as any;
         FB.login((loginResponse) => {
             // handle the response 
-            FB.api('/me', { fields: 'name, email' }, function (apiResponse) {
+            FB.api('/me', { fields: 'name, email, user_friends' }, (apiResponse) => {
+                // console.log(`apiResponse`, JSON.stringify(apiResponse, null, 4));
+                // FB.api(`/${apiResponse.id}/friends`, {}, (response) => {
+                //     console.log(`response`, JSON.stringify(response, null, 4));
+                // });
                 Hash(apiResponse.email as string)
                     .then((token) => {
                         let redirectURL: string = `${Environment.PublicUrl}/Index.html?info=loggedin&name=${apiResponse.name}&token=${token}&admin=false&id=${apiResponse.email}`;
