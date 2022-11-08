@@ -115,7 +115,7 @@ class Main {
 
             // HACKIN
 
-            CONQUER.init();
+          //  CONQUER.init();
 
             // await Email.Send('garibaldy.mukti@gmail.com', 'The Subject of This Email', 'The content of this email');
         }

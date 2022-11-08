@@ -2,7 +2,7 @@ import BridgeInstance from "./Socket/BridgeInstance";
 import LOG, { log } from "../UTIL/LOG";
 import SessionInstance from "./User/SessionInstance";
 import UserInstance from "./User/UserInstance";
-import { resolve } from "path";
+import PROMISE, { resolve } from "../UTIL/PROMISE";
 
 class CONQUER 
 {
@@ -12,13 +12,16 @@ class CONQUER
 
     public static async init() : Promise<any>
     {
-        log("client: =============== New ConquerOS");
-
+        log("client: =============== New ConquerOS"); 
         await CONQUER.BRIDGE.init();
-      //  await CONQUER.Session.init();
 
-``      return resolve();
+        //  await CONQUER.Session.init();
+
+        return resolve();
     };
+
+ 
+    
  
             /*
 
