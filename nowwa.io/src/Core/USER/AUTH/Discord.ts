@@ -2,22 +2,25 @@ import express from 'express';
 import fetch, { RequestInit } from 'node-fetch';
 import CONFIG, { discordCallbackUrl } from '../../CONFIG/CONFIG';
 import Authentication from '../../DEPRECATED/Authentication';
-
-class Discord {
-
+import EXPRESS from '../../EXPRESS/EXPRESS';
+class Discord 
+{
     private static Instance: Discord;
 
     /**
      * Initialize email module.
      */
-    public static async AsyncInit(app: express.Express ): Promise<void> {
+    public static async AsyncInit(): Promise<void> 
+    {
         Discord.Instance = new Discord();
-        Discord.WebhookCallbackLink(app );
+        Discord.WebhookCallbackLink();
         return Promise.resolve();
     }
 
-    public static async WebhookCallbackLink(app: express.Express ): Promise<void> {
-        app.use(`${discordCallbackUrl}`, (req, res) => {
+    public static async WebhookCallbackLink(): Promise<void> 
+    {
+        EXPRESS.app.use(`${discordCallbackUrl}`, (req, res) => 
+        {
             // console.log('query callback');
             // console.log(JSON.stringify(req.query));
             // console.log('session callback');
@@ -69,9 +72,5 @@ class Discord {
         });
     }
 }
-
-namespace Discord {
-
-}
-
+ 
 export default Discord;

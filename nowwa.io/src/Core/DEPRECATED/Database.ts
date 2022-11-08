@@ -2,6 +2,7 @@ import mongoose, { mongo } from 'mongoose';
 import express from 'express';
 import CONFIG from '../CONFIG/CONFIG';
 import { Custom, CustomProperty, CustomType, CustomDocument } from '../../Models/Custom';
+import EXPRESS from '../EXPRESS/EXPRESS';
 
 class Database {
 
@@ -18,13 +19,13 @@ class Database {
     /**
      * Initialize Database module.
      */
-    public static async AsyncInit(app: express.Express ): Promise<void> {
+    public static async AsyncInit(): Promise<void> {
         Database.Instance = new Database();
         await Database.Connect();
-        Database.WebhookStructureSave(app);
-        Database.WebhookStructureLoad(app);
-        Database.WebhookDataSave(app);
-        Database.WebhookDataLoad(app);
+        Database.WebhookStructureSave();
+        Database.WebhookStructureLoad();
+        Database.WebhookDataSave();
+        Database.WebhookDataLoad();
         return Promise.resolve();
     }
 
@@ -124,13 +125,11 @@ class Database {
         return mongoose.model(schemaName, NewSchema);
     }
 
-    /**
-     * Webhook to save custom schema structure. 
-     * @param app @type {express.Express}
-     */
-    private static WebhookStructureSave(app: express.Express): void {
+
+    private static WebhookStructureSave(): void 
+    {
         let url: string = `/structure/save`;
-        app.post(`${Database.BaseUrl}${url}`, async (req: express.Request, res: express.Response) => {
+        EXPRESS.app.post(`${Database.BaseUrl}${url}`, async (req: express.Request, res: express.Response) => {
             console.log(`<-- request schema structure save`);
 
             let schemaFields = <{ [key: string]: any }>(req.body.schemaFields);
@@ -149,13 +148,11 @@ class Database {
         });
     }
 
-    /**
-     * Webhook to load custom schema structure. 
-     * @param app @type {express.Express}
-     */
-    private static WebhookStructureLoad(app: express.Express): void {
+
+    private static WebhookStructureLoad(): void 
+    {
         let url: string = `/structure/load`;
-        app.post(`${Database.BaseUrl}${url}`, async (req: express.Request, res: express.Response) => {
+        EXPRESS.app.post(`${Database.BaseUrl}${url}`, async (req: express.Request, res: express.Response) => {
             console.log(`<-- request schema structure load`);
 
             try {
@@ -169,13 +166,10 @@ class Database {
         });
     }
 
-    /**
-     * Webhook to save custom schema data. 
-     * @param app @type {express.Express}
-     */
-    private static WebhookDataSave(app: express.Express): void {
+    private static WebhookDataSave(): void 
+    {
         let url: string = `/data/save`;
-        app.post(`${Database.BaseUrl}${url}`, async (req: express.Request, res: express.Response) => {
+        EXPRESS.app.post(`${Database.BaseUrl}${url}`, async (req: express.Request, res: express.Response) => {
             console.log(`<-- request schema structure save`);
 
             let schemaFields = <{ [key: string]: any }>(req.body.schemaFields);
@@ -194,13 +188,11 @@ class Database {
         });
     }
 
-    /**
-     * Webhook to load custom schema data. 
-     * @param app @type {express.Express}
-     */
-    private static WebhookDataLoad(app: express.Express): void {
+
+    private static WebhookDataLoad(): void 
+    {
         let url: string = `/data/load`;
-        app.post(`${Database.BaseUrl}${url}`, async (req: express.Request, res: express.Response) => {
+        EXPRESS.app.post(`${Database.BaseUrl}${url}`, async (req: express.Request, res: express.Response) => {
             console.log(`<-- request schema structure load`);
 
             try {

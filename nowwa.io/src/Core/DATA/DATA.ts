@@ -14,11 +14,11 @@ class DATA
 
     ================*/
 
-    public static async init(env: CONFIG.Config): Promise<void> 
+    public static async init(): Promise<void> 
     {
         log(`init database...`);
 
-        let uri: string = `mongodb+srv://${env.MONGODB_USER}:${env.MONGODB_PASS}@${env.MONGODB_HOST}/${env.MONGODB_DB}`;
+        let uri: string = `mongodb+srv://${CONFIG.vars.MONGODB_USER}:${CONFIG.vars.MONGODB_PASS}@${CONFIG.vars.MONGODB_HOST}/${CONFIG.vars.MONGODB_DB}`;
 
         log(`connect to: ${uri}`);
 
@@ -26,7 +26,7 @@ class DATA
             {
                 ssl: true,
                 sslValidate: false,
-                sslCert: `${env.MONGODB_CERT}`
+                sslCert: `${CONFIG.vars.MONGODB_CERT}`
 
             }).then((result) => {
                 log("Successfully connect to MongoDB.");

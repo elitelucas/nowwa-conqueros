@@ -2,6 +2,7 @@ import express from 'express';
 import fetch, { RequestInit } from 'node-fetch';
 import CONFIG, { snapchatCallbackUrl } from '../../CONFIG/CONFIG';
 import Authentication from '../../DEPRECATED/Authentication';
+import EXPRESS from '../../EXPRESS/EXPRESS';
 
 class Snapchat {
 
@@ -10,14 +11,16 @@ class Snapchat {
     /**
      * Initialize email module.
      */
-    public static async AsyncInit(app: express.Express ): Promise<void> {
+    public static async AsyncInit(): Promise<void> 
+    {
         Snapchat.Instance = new Snapchat();
-        Snapchat.WebhookCallbackLink(app);
+        Snapchat.WebhookCallbackLink();
         return Promise.resolve();
     }
 
-    public static async WebhookCallbackLink(app: express.Express): Promise<void> {
-        app.use(`${snapchatCallbackUrl}`, (req, res) => {
+    public static async WebhookCallbackLink(): Promise<void> 
+    {
+        EXPRESS.app.use(`${snapchatCallbackUrl}`, (req, res) => {
             // console.log('query callback');
             // console.log(JSON.stringify(req.query, null, "\t"));
             // console.log('session callback');

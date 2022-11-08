@@ -2,6 +2,7 @@ import { TwitterApi, UserV2 } from 'twitter-api-v2';
 import express from 'express';
 import CONFIG, { twitterAuthUrl, twitterCallbackUrl } from '../../CONFIG/CONFIG';
 import Authentication from '../../DEPRECATED/Authentication';
+import EXPRESS from '../../EXPRESS/EXPRESS';
 
 class Twitter {
 
@@ -11,16 +12,17 @@ class Twitter {
     /**
      * Initialize email module.
      */
-    public static async AsyncInit(app: express.Express ): Promise<void> {
+    public static async AsyncInit(): Promise<void> {
         Twitter.Instance = new Twitter();
         Twitter.codeVerifiers = {};
-        Twitter.WebhookAuthLink(app);
-        Twitter.WebhookCallbackLink(app);
+        Twitter.WebhookAuthLink();
+        Twitter.WebhookCallbackLink();
         return Promise.resolve();
     }
 
-    public static async WebhookAuthLink(app: express.Express ): Promise<void> {
-        app.use(`${twitterAuthUrl}`, (req, res) => {
+    public static async WebhookAuthLink(): Promise<void> 
+    {
+        EXPRESS.app.use(`${twitterAuthUrl}`, (req, res) => {
             const twitterClient = new TwitterApi({
                 clientId: CONFIG.vars.TWITTER_CLIENT_ID,
                 clientSecret: CONFIG.vars.TWITTER_CLIENT_SECRET
@@ -37,8 +39,9 @@ class Twitter {
         });
     }
 
-    public static async WebhookCallbackLink(app: express.Express ): Promise<void> {
-        app.use(`${twitterCallbackUrl}`, (req, res) => {
+    public static async WebhookCallbackLink(): Promise<void> 
+    {
+        EXPRESS.app.use(`${twitterCallbackUrl}`, (req, res) => {
             console.log('query callback');
             console.log(JSON.stringify(req.query));
             console.log('session callback');

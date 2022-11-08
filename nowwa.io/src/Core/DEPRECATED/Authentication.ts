@@ -1,5 +1,4 @@
 import passport from 'passport';
-import express from 'express';
 import passportLocal from 'passport-local';
 import { User, UserDocument } from '../../Models/User';
 import CONFIG, { authenticationHashUrl, authenticationLoginUrl, authenticationRegisterUrl, authenticationUrl, authenticationVerifyUrl } from '../CONFIG/CONFIG';
@@ -7,16 +6,18 @@ import Database from './Database';
 import bcrypt from "bcrypt";
 import { CustomDocument } from '../../Models/Custom';
 import Email from './Email';
+import EXPRESS from '../EXPRESS/EXPRESS';
 
 class Authentication {
 
-    public static async AsyncInit(app: express.Express ): Promise<void> {
+    public static async AsyncInit(): Promise<void> 
+    {
         Authentication.InitPassport();
         Authentication.InitAuthentication();
-        Authentication.WebhookLogin(app);
-        Authentication.WebhookRegister(app);
-        Authentication.WebhookVerify(app);
-        Authentication.WebhookHash(app);
+        Authentication.WebhookLogin();
+        Authentication.WebhookRegister();
+        Authentication.WebhookVerify();
+        Authentication.WebhookHash();
         return Promise.resolve();
     }
 
@@ -109,12 +110,11 @@ class Authentication {
         // }));
     }
 
-    /**
-     * Webhook for Login. 
-     * @param app @type {express.Express}
-     */
-    private static WebhookLogin(app: express.Express): void {
-        app.use(`${authenticationLoginUrl}`, (req, res) => {
+ 
+    private static WebhookLogin(): void 
+    {
+
+        EXPRESS.app.use(`${authenticationLoginUrl}`, (req, res) => {
             // console.log(`<-- authentication - login`);
             let email: string = req.body.email;
             let password: string = req.body.password;
@@ -147,12 +147,9 @@ class Authentication {
         });
     }
 
-    /**
-     * Webhook for Hash. 
-     * @param app @type {express.Express}
-     */
-    private static WebhookHash(app: express.Express): void {
-        app.use(`${authenticationHashUrl}`, (req, res) => {
+    private static WebhookHash(): void 
+    {
+        EXPRESS.app.use(`${authenticationHashUrl}`, (req, res) => {
             // console.log(`<-- authentication - hash`);
             let input: string = req.body.input;
             this.Hash(input)
@@ -167,12 +164,10 @@ class Authentication {
         });
     }
 
-    /**
-     * Webhook for Register. 
-     * @param app @type {express.Express}
-     */
-    private static WebhookRegister(app: express.Express): void {
-        app.use(`${authenticationRegisterUrl}`, (req, res) => {
+
+    private static WebhookRegister(): void 
+    {
+        EXPRESS.app.use(`${authenticationRegisterUrl}`, (req, res) => {
             console.log(`<-- authentication - register`);
             let email: string = req.body.email;
             let password: string = req.body.password;
@@ -190,12 +185,10 @@ class Authentication {
         });
     }
 
-    /**
-     * Webhook for Verify. 
-     * @param app @type {express.Express}
-     */
-    private static WebhookVerify(app: express.Express): void {
-        app.use(`${authenticationVerifyUrl}`, (req, res) => {
+
+    private static WebhookVerify(): void 
+    {
+        EXPRESS.app.use(`${authenticationVerifyUrl}`, (req, res) => {
             console.log(`<-- authentication - verify`);
 
             let url: URL = new URL(`${CONFIG.PublicUrl}${req.originalUrl}`);

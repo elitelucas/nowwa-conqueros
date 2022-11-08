@@ -8,6 +8,7 @@ import { stringReplace, Replace, removeNullAndFalse, removeNull } from "../../UT
 import sevenBin from '7zip-bin';
 import del from 'del';
 import Status from './Status';
+import EXPRESS from '../EXPRESS/EXPRESS';
 
 class Build {
 
@@ -18,19 +19,18 @@ class Build {
     /**
      * Initialize game module.
      */
-    public static async AsyncInit(app: express.Express ): Promise<void> {
+    public static async AsyncInit(): Promise<void> 
+    {
         Build.Instance = new Build();
-        Build.WebhookList(app);
-        Build.WebhookBuild(app);
+        Build.WebhookList();
+        Build.WebhookBuild();
         return Promise.resolve();
     }
 
-    /**
-     * Webhook for listing toy games. 
-     * @param app @type {express.Express}
-     */
-    public static WebhookList(app: express.Express): void {
-        app.use(`${toyListUrl}`, async (req, res) => {
+
+    public static WebhookList(): void 
+    {
+        EXPRESS.app.use(`${toyListUrl}`, async (req, res) => {
             // console.log(`<-- storage - files`);
             let fullPath: string = path.join(__dirname, `${Build.RootFolder}`);
             // console.log(`Game : ${fullPath}`);
@@ -150,7 +150,8 @@ class Build {
                 });
             });
         }
-        await new Promise<void>((resolve, reject) => {
+        await new Promise<void>((resolve, reject) => 
+        {
             let apkSourceFolder: string = path.join(__dirname, `..`, `..`, `platforms/android/app/build/outputs/apk/debug`);
             let apkSource: string = path.join(apkSourceFolder, Build.DefaultAPKName);
             let apkDestinationFolder: string = path.join(`${projectDirectory}`, `${config.game.Platform}`);
@@ -238,12 +239,9 @@ class Build {
         return output;
     }
 
-    /**
-     * Webhook for build toy games. 
-     * @param app @type {express.Express}
-     */
-    public static WebhookBuild(app: express.Express): void {
-        app.use(`${toyBuildUrl}`, async (req, res) => {
+    public static WebhookBuild(): void 
+    {
+        EXPRESS.app.use(`${toyBuildUrl}`, async (req, res) => {
             // console.log(`<-- storage - files`);
             if (Status.CurrentStatus.Activity != 'None') {
                 console.log(`Game.CurrentActivity: ${Status.CurrentStatus.Activity}`);
@@ -369,8 +367,8 @@ class Build {
 
 }
 
-namespace Build {
-
+namespace Build 
+{
     export type Backend = `Replicant` | `Cookies` | `Nakama` | `None`;
     export type Platform = `Facebook` | `Snapchat` | `Web` | `Android` | `iOS` | `None`;
 
@@ -378,7 +376,8 @@ namespace Build {
 
     export const DefaultAPKName: string = `app-debug.apk`;
 
-    const CreateCSPMetadata = (csps: { [key: string]: string[] }) => {
+    const CreateCSPMetadata = (csps: { [key: string]: string[] }) => 
+    {
         var tag: string = "<meta http-equiv=\"Content-Security-Policy\" content=\"{0}\" />"
         var content: string = "";
         for (var key in csps) {

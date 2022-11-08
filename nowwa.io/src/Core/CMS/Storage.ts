@@ -2,9 +2,10 @@ import express from 'express';
 import CONFIG, { storageUrl } from '../CONFIG/CONFIG';
 import path from 'path';
 import fs from 'fs';
+import EXPRESS from '../EXPRESS/EXPRESS';
 
-class Storage {
-
+class Storage 
+{
     private static Instance: Storage;
 
     private static VisibleExtensions: string[] = ['html', 'png', 'jpg', 'txt', 'js'];
@@ -14,19 +15,19 @@ class Storage {
     /**
      * Initialize storage module.
      */
-    public static async AsyncInit(app: express.Express ): Promise<void> {
+    public static async AsyncInit(): Promise<void> 
+    {
         Storage.Instance = new Storage();
-        Storage.WebhookFiles(app);
-        Storage.WebhookExplorer(app);
+        Storage.WebhookFiles();
+        Storage.WebhookExplorer();
         return Promise.resolve();
     }
 
-    /**
-     * Webhook for exploring files. 
-     * @param app @type {express.Express}
-     */
-    public static WebhookExplorer(app: express.Express): void {
-        app.use(`${storageUrl}`, async (req, res) => {
+
+    public static WebhookExplorer(): void 
+    {
+        EXPRESS.app.use(`${storageUrl}`, async (req, res) => 
+        {
             console.log(`<-- storage - explorer`);
             let folderPath: string = req.url;
             let fullPath: string = path.join(__dirname, `${Storage.RootFolder}`, folderPath);
@@ -68,14 +69,11 @@ class Storage {
         });
     }
 
-    /**
-     * Webhook for accessing files directly. 
-     * @param app @type {express.Express}
-     */
-    private static WebhookFiles(app: express.Express): void {
+    private static WebhookFiles(): void 
+    {
         let rootPath: string = path.join(__dirname, `${Storage.RootFolder}`);
         console.log(`rootPath: ${rootPath}`);
-        app.use('/', (req, res, next) => {
+        EXPRESS.app.use('/', (req, res, next) => {
             return (express.static(rootPath))(req, res, next);
         });
     }
