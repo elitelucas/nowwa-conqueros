@@ -18,7 +18,7 @@ class Build {
     /**
      * Initialize game module.
      */
-    public static async AsyncInit(app: express.Express, env: CONFIG.Config): Promise<void> {
+    public static async AsyncInit(app: express.Express ): Promise<void> {
         Build.Instance = new Build();
         Build.WebhookList(app);
         Build.WebhookBuild(app);

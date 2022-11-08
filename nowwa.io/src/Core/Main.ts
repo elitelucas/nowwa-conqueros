@@ -107,17 +107,17 @@ class Main {
             // routes: start
             // routes: end
 
-            await Storage.AsyncInit(app, env);
-            await Build.AsyncInit(app, env);
+            await Storage.AsyncInit(app );
+            await Build.AsyncInit(app );
 
-            app.listen(env.PORT);
-            log(`[Express] listening on port ${env.PORT}`);
+            app.listen(CONFIG.vars.PORT);
+            log(`[Express] listening on port ${CONFIG.vars.PORT}`);
 
 
             // NEW CODE!
             await AUTH.init();
-            await EMAIL.init(env);
-            await SOCKET.init(env);
+            await EMAIL.init();
+            await SOCKET.init();
 
 
             // HACKIN

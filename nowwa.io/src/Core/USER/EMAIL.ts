@@ -13,15 +13,17 @@ class EMAIL {
     private static emailSender: any;
     private static transporter: any;
 
-    public static async init(env: CONFIG.Config) {
-        EMAIL.emailSender = `${env.VERIFY_EMAIL_SENDER}`;
+    public static async init() 
+    {
+ 
+        EMAIL.emailSender = `${CONFIG.vars.VERIFY_EMAIL_SENDER}`;
 
         EMAIL.transporter = nodemailer.createTransport(
             {
                 service: 'gmail',
                 auth: {
-                    user: `${env.VERIFY_EMAIL_SENDER}`,
-                    pass: `${env.VERIFY_EMAIL_PASSWORD}`
+                    user: `${CONFIG.vars.VERIFY_EMAIL_SENDER}`,
+                    pass: `${CONFIG.vars.VERIFY_EMAIL_PASSWORD}`
                 }
             });
 

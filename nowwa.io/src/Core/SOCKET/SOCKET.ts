@@ -9,7 +9,7 @@ import { callbackPromise } from 'nodemailer/lib/shared';
 
 class SOCKET 
 {
-    public static async init( env:CONFIG.Config ):Promise<void> 
+    public static async init():Promise<void> 
     {
         var httpServer = createServer();
 
@@ -31,7 +31,7 @@ class SOCKET
             log( "[SERVER] Socket disconnect", socket.id );
         });
  
-        io.listen( env.SOCKET_PORT );
+        io.listen( CONFIG.vars.SOCKET_PORT );
     }
 }
 

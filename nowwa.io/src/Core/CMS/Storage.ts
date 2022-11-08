@@ -14,7 +14,7 @@ class Storage {
     /**
      * Initialize storage module.
      */
-    public static async AsyncInit(app: express.Express, env: CONFIG.Config): Promise<void> {
+    public static async AsyncInit(app: express.Express ): Promise<void> {
         Storage.Instance = new Storage();
         Storage.WebhookFiles(app);
         Storage.WebhookExplorer(app);
