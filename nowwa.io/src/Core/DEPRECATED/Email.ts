@@ -10,21 +10,22 @@ class Email {
     /**
      * Initialize email module.
      */
-    public static async AsyncInit(app: express.Express, env: CONFIG.Config): Promise<void> {
-        Email.Instance = new Email(env);
+    public static async AsyncInit(): Promise<void> {
+        Email.Instance = new Email();
         return Promise.resolve();
     }
 
     private transporter: Transporter;
     private emailSender: string;
 
-    constructor(env: CONFIG.Config) {
-        this.emailSender = `${env.VERIFY_EMAIL_SENDER}`;
+    constructor() 
+    {
+        this.emailSender = `${CONFIG.vars.VERIFY_EMAIL_SENDER}`;
         this.transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
-                user: `${env.VERIFY_EMAIL_SENDER}`,
-                pass: `${env.VERIFY_EMAIL_PASSWORD}`
+                user: `${CONFIG.vars.VERIFY_EMAIL_SENDER}`,
+                pass: `${CONFIG.vars.VERIFY_EMAIL_PASSWORD}`
             }
         });
     }

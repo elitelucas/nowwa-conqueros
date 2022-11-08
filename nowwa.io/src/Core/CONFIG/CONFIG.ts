@@ -2,6 +2,13 @@ import dotenv from 'dotenv';
 
 class CONFIG 
 {
+    public static vars : CONFIG.Config;
+
+    public static init()
+    {
+        let test = this.CoreConfig;
+    }
+
     private static get MainConfig(): CONFIG.Config {
         return {
 
@@ -49,8 +56,9 @@ class CONFIG
         };
     }
 
-    public static get CoreConfig(): CONFIG.Config {
-        let config: CONFIG.Config = this.MainConfig;
+    public static get CoreConfig(): CONFIG.Config 
+    {
+        let config: CONFIG.Config = this.vars = this.MainConfig;
 
         dotenv.config();
 
@@ -61,8 +69,9 @@ class CONFIG
         return config;
     }
 
-    public static get PublicConfig(): CONFIG.Config {
-        let config: CONFIG.Config = this.MainConfig;
+    public static get PublicConfig(): CONFIG.Config 
+    {
+        let config: CONFIG.Config = this.vars = this.MainConfig;
 
         dotenv.config();
 

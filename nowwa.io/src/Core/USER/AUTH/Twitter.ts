@@ -11,22 +11,22 @@ class Twitter {
     /**
      * Initialize email module.
      */
-    public static async AsyncInit(app: express.Express, env: CONFIG.Config): Promise<void> {
+    public static async AsyncInit(app: express.Express ): Promise<void> {
         Twitter.Instance = new Twitter();
         Twitter.codeVerifiers = {};
-        Twitter.WebhookAuthLink(app, env);
-        Twitter.WebhookCallbackLink(app, env);
+        Twitter.WebhookAuthLink(app);
+        Twitter.WebhookCallbackLink(app);
         return Promise.resolve();
     }
 
-    public static async WebhookAuthLink(app: express.Express, env: CONFIG.Config): Promise<void> {
+    public static async WebhookAuthLink(app: express.Express ): Promise<void> {
         app.use(`${twitterAuthUrl}`, (req, res) => {
             const twitterClient = new TwitterApi({
-                clientId: env.TWITTER_CLIENT_ID,
-                clientSecret: env.TWITTER_CLIENT_SECRET
+                clientId: CONFIG.vars.TWITTER_CLIENT_ID,
+                clientSecret: CONFIG.vars.TWITTER_CLIENT_SECRET
             });
 
-            const { url, codeVerifier, state } = twitterClient.generateOAuth2AuthLink(`${env.TWITTER_CALLBACK_URL}`, {
+            const { url, codeVerifier, state } = twitterClient.generateOAuth2AuthLink(`${CONFIG.vars.TWITTER_CALLBACK_URL}`, {
                 scope: ['tweet.read', 'users.read', 'follows.read']
             });
             Twitter.codeVerifiers[state] = codeVerifier;
@@ -37,7 +37,7 @@ class Twitter {
         });
     }
 
-    public static async WebhookCallbackLink(app: express.Express, env: CONFIG.Config): Promise<void> {
+    public static async WebhookCallbackLink(app: express.Express ): Promise<void> {
         app.use(`${twitterCallbackUrl}`, (req, res) => {
             console.log('query callback');
             console.log(JSON.stringify(req.query));
@@ -50,8 +50,8 @@ class Twitter {
                 return res.status(400).send('Stored tokens didnt match!');
             }
             const twitterClient = new TwitterApi({
-                clientId: env.TWITTER_CLIENT_ID,
-                clientSecret: env.TWITTER_CLIENT_SECRET,
+                clientId: CONFIG.vars.TWITTER_CLIENT_ID,
+                clientSecret: CONFIG.vars.TWITTER_CLIENT_SECRET,
             });
 
             let codeVerifier = Twitter.codeVerifiers[state as string];
@@ -60,7 +60,7 @@ class Twitter {
             twitterClient.loginWithOAuth2({
                 code: code as string,
                 codeVerifier: codeVerifier,
-                redirectUri: env.TWITTER_CALLBACK_URL
+                redirectUri: CONFIG.vars.TWITTER_CALLBACK_URL
             })
                 .then(async ({ client: loggedClient, accessToken, expiresIn, scope, refreshToken }) => {
                     // {loggedClient} is an authenticated client in behalf of some user

@@ -10,13 +10,13 @@ class Snapchat {
     /**
      * Initialize email module.
      */
-    public static async AsyncInit(app: express.Express, env: CONFIG.Config): Promise<void> {
+    public static async AsyncInit(app: express.Express ): Promise<void> {
         Snapchat.Instance = new Snapchat();
-        Snapchat.WebhookCallbackLink(app, env);
+        Snapchat.WebhookCallbackLink(app);
         return Promise.resolve();
     }
 
-    public static async WebhookCallbackLink(app: express.Express, env: CONFIG.Config): Promise<void> {
+    public static async WebhookCallbackLink(app: express.Express): Promise<void> {
         app.use(`${snapchatCallbackUrl}`, (req, res) => {
             // console.log('query callback');
             // console.log(JSON.stringify(req.query, null, "\t"));
@@ -25,8 +25,8 @@ class Snapchat {
 
             const { access_token, code } = req.query;
 
-            let snapchatClientId: string = env.SNAPCHAT_CLIENT_ID;
-            let snapchatClientSecret: string = env.SNAPCHAT_CLIENT_SECRET;
+            let snapchatClientId: string = CONFIG.vars.SNAPCHAT_CLIENT_ID;
+            let snapchatClientSecret: string = CONFIG.vars.SNAPCHAT_CLIENT_SECRET;
             let snapchatRedirect: string = `${CONFIG.PublicUrl}${snapchatCallbackUrl}`;
 
             let hexEncode = (input: string): string => {

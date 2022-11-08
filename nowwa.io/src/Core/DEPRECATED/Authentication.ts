@@ -10,7 +10,7 @@ import Email from './Email';
 
 class Authentication {
 
-    public static async AsyncInit(app: express.Express, env: CONFIG.Config): Promise<void> {
+    public static async AsyncInit(app: express.Express ): Promise<void> {
         Authentication.InitPassport();
         Authentication.InitAuthentication();
         Authentication.WebhookLogin(app);

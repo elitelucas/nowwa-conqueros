@@ -18,9 +18,9 @@ class Database {
     /**
      * Initialize Database module.
      */
-    public static async AsyncInit(app: express.Express, env: CONFIG.Config): Promise<void> {
+    public static async AsyncInit(app: express.Express ): Promise<void> {
         Database.Instance = new Database();
-        await Database.Connect(env);
+        await Database.Connect();
         Database.WebhookStructureSave(app);
         Database.WebhookStructureLoad(app);
         Database.WebhookDataSave(app);
@@ -31,15 +31,16 @@ class Database {
     /**
      * Initialize database connection.
      */
-    private static async Connect(env: CONFIG.Config) {
+    private static async Connect() 
+    {
         console.log(`init database...`);
-
-        let uri: string = `mongodb+srv://${env.MONGODB_USER}:${env.MONGODB_PASS}@${env.MONGODB_HOST}/${env.MONGODB_DB}`;
+ 
+        let uri: string = `mongodb+srv://${CONFIG.vars.MONGODB_USER}:${CONFIG.vars.MONGODB_PASS}@${CONFIG.vars.MONGODB_HOST}/${CONFIG.vars.MONGODB_DB}`;
         console.log(`connect to: ${uri}`);
         await mongoose.connect(uri, {
             ssl: true,
             sslValidate: false,
-            sslCert: `${env.MONGODB_CERT}`
+            sslCert: `${CONFIG.vars.MONGODB_CERT}`
         })
             .then((result) => {
                 console.log("Successfully connect to MongoDB.");

@@ -33,14 +33,17 @@ class Main {
     /**
      * Initialize necessary components.
      */
-    constructor() {
-        this.status = Main.StatusDefault;
-        this.baseUrl = `/webhook/v${CONFIG.CoreConfig.VERSION}`;
+    constructor() 
+    {
+        CONFIG.init();
 
-        this.AsyncInit(CONFIG.CoreConfig);
+        this.status = Main.StatusDefault;
+        this.baseUrl = `/webhook/v${CONFIG.vars.VERSION}`;
+
+        this.init();
     }
 
-    private async AsyncInit(env: CONFIG.Config): Promise<void> {
+    private async init(): Promise<void> {
         try {
             console.log(`init express...`);
 
@@ -55,7 +58,7 @@ class Main {
                     .use(cors())
                     .use(session({
                         genid: () => crypto.randomBytes(48).toString('hex'),
-                        secret: env.EXPRESS_SECRET,
+                        secret: CONFIG.vars.EXPRESS_SECRET,
                         resave: true,
                         saveUninitialized: true,
                         cookie: {
@@ -90,14 +93,16 @@ class Main {
                 res.status(200).send('test');
             });
 
-            // TODO : enable authentication & database
-            await Authentication.AsyncInit(app, env);
+            let env = CONFIG.vars;
 
-            await Database.AsyncInit(app, env);
-            await Email.AsyncInit(app, env);
-            await Twitter.AsyncInit(app, env);
-            await Snapchat.AsyncInit(app, env);
-            await Discord.AsyncInit(app, env);
+            // TODO : enable authentication & database
+            await Authentication.AsyncInit(app);
+
+            await Database.AsyncInit(app );
+            await Email.AsyncInit();
+            await Twitter.AsyncInit(app);
+            await Snapchat.AsyncInit(app);
+            await Discord.AsyncInit(app);
             // await DB.init(env);
             // routes: start
             // routes: end

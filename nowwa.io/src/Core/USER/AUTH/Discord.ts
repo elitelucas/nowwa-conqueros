@@ -10,13 +10,13 @@ class Discord {
     /**
      * Initialize email module.
      */
-    public static async AsyncInit(app: express.Express, env: CONFIG.Config): Promise<void> {
+    public static async AsyncInit(app: express.Express ): Promise<void> {
         Discord.Instance = new Discord();
-        Discord.WebhookCallbackLink(app, env);
+        Discord.WebhookCallbackLink(app );
         return Promise.resolve();
     }
 
-    public static async WebhookCallbackLink(app: express.Express, env: CONFIG.Config): Promise<void> {
+    public static async WebhookCallbackLink(app: express.Express ): Promise<void> {
         app.use(`${discordCallbackUrl}`, (req, res) => {
             // console.log('query callback');
             // console.log(JSON.stringify(req.query));
@@ -25,8 +25,8 @@ class Discord {
 
             const { access_token, code } = req.query;
 
-            let discordClientId: string = env.DISCORD_CLIENT_ID;
-            let discordClientSecret: string = env.DISCORD_CLIENT_SECRET;
+            let discordClientId: string = CONFIG.vars.DISCORD_CLIENT_ID;
+            let discordClientSecret: string = CONFIG.vars.DISCORD_CLIENT_SECRET;
             let discordRedirect: string = `${CONFIG.PublicUrl}${discordCallbackUrl}`;
 
             var firstRequestInit: RequestInit = {
