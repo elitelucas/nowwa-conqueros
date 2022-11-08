@@ -1,13 +1,13 @@
-import BridgeInstance from "./Socket/BridgeInstance";
+import BRIDGE from "./Socket/BRIDGE";
 import LOG, { log } from "../UTIL/LOG";
-import SessionInstance from "./User/SessionInstance";
+import SESSION from "./User/SESSION";
 import UserInstance from "./User/UserInstance";
  
 class CONQUER 
 {
     public static USER: UserInstance = new UserInstance();
-    public static SESSION: SessionInstance = new SessionInstance();
-    public static BRIDGE: BridgeInstance = new BridgeInstance();
+    public static SESSION: SESSION = new SESSION();
+    public static BRIDGE: BRIDGE = new BRIDGE();
 
     public static async init() : Promise<any>
     {
@@ -15,10 +15,16 @@ class CONQUER
 
         await CONQUER.BRIDGE.init();
 
+        log("Okkkk");
+
+        CONQUER.BRIDGE.do( "ActionTest" ).then( function(e?:any)
+        {
+            log("ACTION PASSED", e );
+        });
+ 
         return Promise.resolve();
     };
 
- 
  
             /*
 

@@ -3,10 +3,12 @@ import LOG, { log } from '../../UTIL/LOG';
 import CONQUER from '../CONQUER';
 
 
-class SessionInstance {
-    public async init(cos: CONQUER): Promise<any> {
+class SESSION 
+{
+    public async init(): Promise<any> 
+    {
         return Promise.resolve();
     }
 };
 
-export default SessionInstance;
+export default SESSION;

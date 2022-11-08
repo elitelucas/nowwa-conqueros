@@ -37,7 +37,8 @@ class AUTH {
 
     ================*/
 
-    public static async set(vars: any): Promise<any> {
+    public static async set(vars: any): Promise<any> 
+    {
         let userExists: boolean = false;
 
         await USERNAME.get(vars).then(function () { userExists = true });

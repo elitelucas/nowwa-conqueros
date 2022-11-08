@@ -1,7 +1,7 @@
 import io from 'socket.io-client';
 import LOG, { log } from '../../UTIL/LOG';
  
-class BridgeInstance
+class BRIDGE
 {
     private socketHost              : string = '127.0.0.1';
     // var socketHost = 'nowwa.io';
@@ -19,41 +19,40 @@ class BridgeInstance
     public async init() : Promise<any>
     {
         log( "client: Init New Socket Client" );
-        await this.connect( true );
+        var wut = await this.connect();
 
-        return Promise.resolve();
+        return Promise.resolve("SAY "+wut);
     }
  
-    private async connect( isFirstTime?:boolean )  
+    private async connect() : Promise<any>
     {
         log( "client: Socket Connect" );
-        
-        this.socket = io( this.socketURL );
- 
-        this.socket.on( "connect", () => 
+
+        var self    = this;
+        var socket  = self.socket = io( self.socketURL );
+
+        socket.on( "disconnect", () => 
         {
-            this.id = this.socket.id;
+            log( `client: connect status: ${ socket.connected }` );
+            self.connect();
+        }); 
  
-            log( "client: ============ Socket connected", this.id );
-            if( isFirstTime ) Promise.resolve();
+        return new Promise((resolve) => 
+        {
+            socket.on( "connect", () => 
+            {
+                self.id = socket.id;
+                resolve( self.id );
+            });
         });
 
-        this.socket.on( "disconnect", () => 
-        {
-            console.log( `client: connect status: ${this.socket.connected}` );
-            this.connect();
-        });
+      //  return Promise.resolve("OK I SEE");
  
     }
- 
-    public async do( action:string, vars?:any, callback?:Function ) : Promise<any>
-    {
-        log("client: Calling action", action );
 
-        this.socket.emit( "action", action, vars, function( e:any )
-        {
-            Promise.resolve( e );
-        });
+    public async do( action:string, vars?:any ) : Promise<any>
+    {
+        return new Promise( resolve => this.socket.emit( "action", action, vars, resolve ) ); 
     }
 
     public disconnect() 
@@ -63,4 +62,4 @@ class BridgeInstance
  
 };
 
-export default BridgeInstance;
+export default BRIDGE;
