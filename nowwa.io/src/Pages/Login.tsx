@@ -1,6 +1,6 @@
 import React from 'react';
 import { Icon, Button, Segment, ButtonGroup, Menu, Header, Input, InputOnChangeData, Card, Grid, Divider, Label, Image, Message, Form } from 'semantic-ui-react';
-import Environment, { authenticationLoginUrl, discordCallbackUrl, snapchatCallbackUrl, twitterAuthUrl } from '../Core/CONFIG/Environment';
+import Config, { authenticationLoginUrl, discordCallbackUrl, snapchatCallbackUrl, twitterAuthUrl } from '../Core/CONFIG/CONFIG';
 import { IndexState, } from './Index';
 import fetch, { RequestInit, Request } from 'node-fetch';
 import { Hash, UpdateComponentState } from './Utils';
@@ -51,7 +51,7 @@ export const LoginInit = (state: LoginState): Promise<LoginState> => {
                     facebookScript.onload = () => {
 
                         let discordClientId: string = `1037020376892452864`;
-                        let discordRedirect: string = encodeURIComponent(`${Environment.PublicUrl}${discordCallbackUrl}`);
+                        let discordRedirect: string = encodeURIComponent(`${Config.PublicUrl}${discordCallbackUrl}`);
                         let discordScope: string = encodeURIComponent(`identify email`);
                         let discordResponseType: string = `code`;
                         let discordUrl: string = `https://discord.com/api/oauth2/authorize?client_id=${discordClientId}&redirect_uri=${discordRedirect}&response_type=${discordResponseType}&scope=${discordScope}`;
@@ -196,7 +196,7 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
             let resolver = await signInWithPopup(auth, provider);
             Hash(resolver.user.email as string)
                 .then((token) => {
-                    let redirectURL: string = `${Environment.PublicUrl}/Index.html?info=loggedin&name=${resolver.user.displayName}&token=${token}&admin=false&id=${resolver.user.email}`;
+                    let redirectURL: string = `${Config.PublicUrl}/Index.html?info=loggedin&name=${resolver.user.displayName}&token=${token}&admin=false&id=${resolver.user.email}`;
                     window.location.href = redirectURL;
                 });
         }
@@ -212,14 +212,19 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
         let FB = (window as any).FB as any;
         FB.login((loginResponse) => {
             // handle the response 
-            FB.api('/me', { fields: 'name, email, user_friends' }, (apiResponse) => {
+            let fields: string[] = [
+                'name',
+                'email',
+                // 'user_friends' 
+            ];
+            FB.api('/me', { fields: fields.join(', ') }, (apiResponse) => {
                 // console.log(`apiResponse`, JSON.stringify(apiResponse, null, 4));
                 // FB.api(`/${apiResponse.id}/friends`, {}, (response) => {
                 //     console.log(`response`, JSON.stringify(response, null, 4));
                 // });
                 Hash(apiResponse.email as string)
                     .then((token) => {
-                        let redirectURL: string = `${Environment.PublicUrl}/Index.html?info=loggedin&name=${apiResponse.name}&token=${token}&admin=false&id=${apiResponse.email}`;
+                        let redirectURL: string = `${Config.PublicUrl}/Index.html?info=loggedin&name=${apiResponse.name}&token=${token}&admin=false&id=${apiResponse.email}`;
                         window.location.href = redirectURL;
                     });
             });
@@ -250,7 +255,7 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
                     let email = accounts[0];
                     Hash(email as string)
                         .then((token) => {
-                            let redirectURL: string = `${Environment.PublicUrl}/Index.html?info=loggedin&name=${email}&token=${token}&admin=false&id=${email}`;
+                            let redirectURL: string = `${Config.PublicUrl}/Index.html?info=loggedin&name=${email}&token=${token}&admin=false&id=${email}`;
                             window.location.href = redirectURL;
                         })
                         .catch((error) => {
@@ -273,7 +278,7 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
 
         let snapchatClientId: string = `e6a503b3-6929-4feb-a6d9-b1dc0bd963ed`;
         let snapchatClientSecret: string = `e6a503b3-6929-4feb-a6d9-b1dc0bd963ed`;
-        let snapchatRedirect: string = encodeURIComponent(`${Environment.PublicUrl}${snapchatCallbackUrl}`);
+        let snapchatRedirect: string = encodeURIComponent(`${Config.PublicUrl}${snapchatCallbackUrl}`);
         let snapchatState: string = `g0qVDoSOERd-6ClRJoCoZOI-nHrpln8XKXYwLJoXbg8`;
         let snapchatScopeList: string[] = [
             "https://auth.snapchat.com/oauth2/api/user.display_name",

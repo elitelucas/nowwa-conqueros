@@ -1,10 +1,10 @@
 import { stat } from 'fs';
 import React, { useState, useEffect, SyntheticEvent } from 'react';
 import { Icon, Header, Label, Segment, Button, Card, Image, Item, Breadcrumb, List, SegmentGroup, BreadcrumbSection, BreadcrumbDivider, Table, Checkbox, CardGroup, Input, Select, Dropdown, DropdownItemProps, Accordion, LabelProps, Form, Grid, ButtonGroup, Divider, DropdownProps, InputOnChangeData, Loader, Dimmer, LabelDetail, Menu } from 'semantic-ui-react';
-import Environment, { toyBuildUrl, toyStatusUrl, toyListUrl } from '../Core/CONFIG/Environment';
-import Build from '../Core/GAME/Build';
-import Main from '../Core/Main';
-import Status from '../Core/GAME/Status';
+import Environment, { toyBuildUrl, toyStatusUrl, toyListUrl } from '../Core/CONFIG/CONFIG';
+import Build from '../Core/APPS/Build';
+import Status from '../Core/APPS/Status';
+import EXPRESS from '../Core/EXPRESS/EXPRESS';
 
 type ContentIndexType = `None` | `Info` | `Build` | `Archive`;
 
@@ -75,7 +75,7 @@ const Builds = (state: BuildState, setState: React.Dispatch<React.SetStateAction
             // console.log(`get status`);
             fetch(`${window.location.origin}${toyStatusUrl}`)
                 .then(res => res.json())
-                .then((res: Main.Status) => {
+                .then((res: EXPRESS.Status) => {
                     resolve(res.Builder);
                 })
                 .catch((error: any) => {

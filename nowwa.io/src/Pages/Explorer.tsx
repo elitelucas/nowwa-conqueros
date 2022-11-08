@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Icon, Header, Label, Segment, Button, Card, Image, Item, Breadcrumb, List, SegmentGroup, BreadcrumbSection, BreadcrumbDivider, Table, Checkbox, Embed } from 'semantic-ui-react';
-import { storageUrl } from '../Core/CONFIG/Environment';
+import { storageUrl } from '../Core/CONFIG/CONFIG';
 
 export type ExplorerState = {
     initialized: boolean,

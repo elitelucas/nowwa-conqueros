@@ -1,7 +1,7 @@
- 
- 
+
+
 import CONFIG from './CONFIG/CONFIG';
- 
+
 import Authentication from './DEPRECATED/Authentication';
 import Database from './DEPRECATED/Database';
 import Storage from './CMS/Storage';
@@ -15,19 +15,16 @@ import AUTH from './USER/AUTH/AUTH';
 import EMAIL from './USER/EMAIL';
 import EXPRESS from './EXPRESS/EXPRESS';
 import DATA from './DATA/DATA';
- 
-class Main 
-{
+
+class Main {
     /**
      * Initialize necessary components.
      */
-    constructor() 
-    {
+    constructor() {
         this.init();
     }
 
-    private async init(): Promise<void> 
-    {
+    private async init(): Promise<void> {
         CONFIG.init();
         EXPRESS.init();
 
@@ -53,7 +50,6 @@ class Main
 
 
 }
-
 
 export default Main;
 

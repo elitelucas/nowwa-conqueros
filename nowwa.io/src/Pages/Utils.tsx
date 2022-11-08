@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import { authenticationHashUrl } from '../Core/CONFIG/Environment';
+import { authenticationHashUrl } from '../Core/CONFIG/CONFIG';
 
 export type ComponentState = {
     initialized: boolean,
