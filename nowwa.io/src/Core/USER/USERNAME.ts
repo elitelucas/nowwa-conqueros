@@ -1,9 +1,9 @@
 import DATA from "../DATA/DATA";
-import PROMISE, { resolve, reject } from '../../UTIL/PROMISE';
 import EMAIL from "./EMAIL";
 import DATE from '../../UTIL/DATE';
 import USERNAME_CONTACTS from "./USERNAME_CONTACTS";
 import USERNAME_PROXY from "./USERNAME_PROXY";
+import LOG from "../../UTIL/LOG";
 
 class USERNAME
 {
@@ -21,7 +21,7 @@ class USERNAME
     {
         let results = await DATA.get( USERNAME.table, { username:vars.username } ); 
 
-        if( results.length > 1 ) return reject( "Username already exists" );
+        if( results.length > 1 ) return Promise.reject( LOG.msg( 'Username already exists' ) );  
 
         let item : any = await DATA.set( USERNAME.table, vars );
 
@@ -38,7 +38,7 @@ class USERNAME
             uID         : item._id
         });
 
-        return resolve( item );
+        return Promise.resolve( item );
     }; 
 
     /*=============== 
@@ -53,9 +53,9 @@ class USERNAME
     {
         let item = await DATA.getOne( USERNAME.table, USERNAME.getQuery( vars ) ); 
  
-        if( !item ) return reject( 'user does not exists...' );
+        if( !item ) return Promise.reject( LOG.msg( 'User does not exist' ) );  
  
-        return resolve( item );
+        return Promise.resolve( item );
     }; 
 
     private static getQuery( vars:any )
@@ -84,7 +84,7 @@ class USERNAME
     {
         var item = await DATA.change( USERNAME.table, query );
 
-        return resolve( item );
+        return Promise.resolve( item );
     }
 
     public static async changeLastLogin( uID:any )
@@ -95,7 +95,7 @@ class USERNAME
             values  : { lastLogin : DATE.now() }
         });
 
-        return resolve( item );
+        return Promise.resolve( item );
     }
 
     /*=============== 
@@ -115,7 +115,7 @@ class USERNAME
 
         await DATA.remove( USERNAME.table, uID );
 
-        return resolve();
+        return Promise.resolve();
     }
 
     /*=============== 
@@ -136,7 +136,7 @@ class USERNAME
  
         USERNAME.remove( oldUID );
 
-        return resolve();
+        return Promise.resolve();
     }
  
 };

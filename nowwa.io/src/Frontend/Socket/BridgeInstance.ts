@@ -1,6 +1,5 @@
 import io from 'socket.io-client';
 import LOG, { log } from '../../UTIL/LOG';
-import PROMISE, { resolve } from '../../UTIL/PROMISE';
  
 class BridgeInstance
 {
@@ -22,7 +21,7 @@ class BridgeInstance
         log( "client: Init New Socket Client" );
         await this.connect( true );
 
-        return resolve();
+        return Promise.resolve();
     }
  
     private async connect( isFirstTime?:boolean )  
@@ -36,7 +35,7 @@ class BridgeInstance
             this.id = this.socket.id;
  
             log( "client: ============ Socket connected", this.id );
-            if( isFirstTime ) resolve();
+            if( isFirstTime ) Promise.resolve();
         });
 
         this.socket.on( "disconnect", () => 
@@ -50,10 +49,10 @@ class BridgeInstance
     public async do( action:string, vars?:any, callback?:Function ) : Promise<any>
     {
         log("client: Calling action", action );
-        
+
         this.socket.emit( "action", action, vars, function( e:any )
         {
-            resolve( e );
+            Promise.resolve( e );
         });
     }
 

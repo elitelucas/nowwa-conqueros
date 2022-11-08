@@ -2,8 +2,7 @@ import BridgeInstance from "./Socket/BridgeInstance";
 import LOG, { log } from "../UTIL/LOG";
 import SessionInstance from "./User/SessionInstance";
 import UserInstance from "./User/UserInstance";
-import PROMISE, { resolve } from "../UTIL/PROMISE";
-
+ 
 class CONQUER 
 {
     public static USER: UserInstance = new UserInstance();
@@ -16,7 +15,7 @@ class CONQUER
 
         await CONQUER.BRIDGE.init();
 
-        return resolve();
+        return Promise.resolve();
     };
 
  

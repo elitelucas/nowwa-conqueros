@@ -1,5 +1,4 @@
 import STRING from '../../UTIL/STRING';
-import PROMISE, { resolve, reject } from '../../UTIL/PROMISE';
 import DATA from "../DATA/DATA";
 import USERNAME from './USERNAME';
 
@@ -38,17 +37,17 @@ class EMAIL {
     ================*/
 
     public static async set(vars: any): Promise<any> {
-        if (!STRING.validateEmail(vars.email)) return reject("Email is invalid");
+        if (!STRING.validateEmail(vars.email)) return Promise.reject( LOG.msg( 'Email is invalid' ) );  
 
         let item: any = await EMAIL.get(vars);
 
-        if (item) return reject("Email already exists");
+        if (item) return Promise.reject( LOG.msg( 'Email already exists' ) ); 
 
         item = await DATA.set(EMAIL.table, vars);
 
         if (!vars.isVerified) EMAIL.requestVerification(vars.email);
 
-        return resolve(item);
+        return Promise.resolve(item);
     }
 
     public static async requestVerification(email: string) {
@@ -72,11 +71,12 @@ class EMAIL {
         };
 
         try {
-            EMAIL.transporter.sendMail(mailOptions, (error: any, info: any) => {
-                if (error) return reject(error);
+            EMAIL.transporter.sendMail(mailOptions, (error: any, info: any) => 
+            {
+                if (error) return Promise.reject( LOG.msg( error ) ); 
 
                 log('Email sent: ' + info.response);
-                return resolve(info);
+                return Promise.resolve(info);
             });
 
         } catch (error) {
@@ -99,22 +99,22 @@ class EMAIL {
 
         if (query.where.email) {
             results = await DATA.getOne(EMAIL.table, query);
-            if (!results) return reject(new Error('Email does not exists...'));
+            if (!results) return Promise.reject( LOG.msg( 'Email does not exist' ) ); 
 
         } else {
 
             results = await DATA.get(EMAIL.table, query);
-            if (!results[0]) return reject(new Error('Email does not exists...'));
+            if (!results[0]) return Promise.reject( LOG.msg( 'Email does not exist' ) ); 
         }
 
-        return resolve(results);
+        return Promise.resolve(results);
     };
 
     public static async getUID(email: string): Promise<any> {
         let item = await EMAIL.get({ where: { email: email } });
-        if (item) return resolve(item);
+        if (item) return Promise.resolve(item);
 
-        return reject('Email username does not exists...')
+        return Promise.reject( LOG.msg( 'Email username does not exist' ) ); 
     };
 
     /*=============== 
@@ -127,13 +127,13 @@ class EMAIL {
 
     public static async change(query: any): Promise<any> {
         let results = DATA.change(EMAIL.table, query);
-        return resolve(results);
+        return Promise.resolve(results);
     }
 
     public static async reparent(newUID: any, oldUID: any): Promise<any> {
         let results = await DATA.reparent(EMAIL.table, newUID, oldUID);
 
-        return resolve(results);
+        return Promise.resolve(results);
     }
 
 

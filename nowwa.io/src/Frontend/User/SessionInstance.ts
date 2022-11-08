@@ -1,5 +1,5 @@
 import LOG, { log } from '../../UTIL/LOG';
-import PROMISE, { resolve } from '../../UTIL/PROMISE';
+ 
 import CONQUER from '../CONQUER';
 
 

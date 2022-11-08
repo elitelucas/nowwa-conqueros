@@ -4,10 +4,11 @@ import STRING from '../../../UTIL/STRING';
 import EMAIL from '../EMAIL';
 import USERNAME from "../USERNAME";
 import PASSPORT from './PASSPORT';
-import PROMISE, { resolve, reject } from '../../../UTIL/PROMISE';
+ 
 import WALLET from '../WALLET';
 import USERNAME_PROXY from '../USERNAME_PROXY';
 import { VariableExpressionOperator } from 'mongoose';
+import LOG, { log } from '../../../UTIL/LOG';
 
 class AUTH {
 
@@ -19,8 +20,8 @@ class AUTH {
 
     ================*/
 
-    public static async init(): Promise<void> {
-
+    public static async init(): Promise<void> 
+    {
         PASSPORT.init();
 
         // Init other protocols too (metamask, twitter, etc?)
@@ -41,7 +42,7 @@ class AUTH {
 
         await USERNAME.get(vars).then(function () { userExists = true });
 
-        if (userExists) return reject("Username already taken");
+        if (userExists) return Promise.reject( LOG.msg("Username already taken") );
 
         let encryptedPassword = await CRYPT.hash(vars.password);
 
@@ -53,7 +54,7 @@ class AUTH {
                 isVerified: vars.isVerified || false
             });
 
-        return resolve(item);
+        return Promise.resolve(item);
     };
 
 
@@ -66,20 +67,21 @@ class AUTH {
 
     ================*/
 
-    public static async get(vars: any): Promise<any> {
+    public static async get(vars: any): Promise<any> 
+    {
         var item: any = await USERNAME.get(vars);
 
-        if (!item) return reject("Auth user doesn't exist " + vars.username);
+        if (!item) return Promise.reject( LOG.msg("Auth user doesn't exist " + vars.username) );  
 
-        if (!item.isVerified) return reject('Email is not verified...');
+        if (!item.isVerified) return Promise.reject( LOG.msg('Email is not verified...') );  
 
         let isMatch: boolean = await CRYPT.match(vars.password, item.password);
 
-        if (!isMatch) return reject('Incorrect password...');
+        if (!isMatch) return Promise.reject( LOG.msg('Incorrect password...') );  
 
         USERNAME.changeLastLogin(item._id);
 
-        return resolve(item);
+        return Promise.resolve(item);
     };
 
     /*=============== 
@@ -118,15 +120,16 @@ class AUTH {
 
         USERNAME.changeLastLogin(uID);
 
-        return resolve(user);
+        return Promise.resolve(user);
     };
 
-    public static async addSocial(uID: any, vars: any): Promise<any> {
+    public static async addSocial(uID: any, vars: any): Promise<any> 
+    {
         var proxyUser = await AUTH.getSocial(vars);
 
         if (uID != proxyUser.uID) USERNAME.reparent(uID, proxyUser.uID);
 
-        return resolve();
+        return Promise.resolve();
     };
 
 

@@ -105,17 +105,15 @@ class Main {
 
             app.listen(env.PORT);
             log(`[Express] listening on port ${env.PORT}`);
- 
 
             // NEW CODE!
             await AUTH.init();
             await EMAIL.init( env );
             await SOCKET.init( env );    
-
-
+ 
             // HACKIN
 
-          //  CONQUER.init();
+            CONQUER.init();
 
             // await Email.Send('garibaldy.mukti@gmail.com', 'The Subject of This Email', 'The content of this email');
         }
