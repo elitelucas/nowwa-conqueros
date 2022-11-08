@@ -32,7 +32,7 @@ const Home = (state: HomeState, setState: React.Dispatch<React.SetStateAction<Ho
     return (
         <>
             <Segment>
-                Welcome, {indexState.account!.name}!
+                Welcome, {indexState.account!.name}! Friends: {indexState.account?.friend_count}
             </Segment>
             <iframe
                 src='https://dev.nowwa.io'

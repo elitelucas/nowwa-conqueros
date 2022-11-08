@@ -41,6 +41,10 @@ class Environment {
             DISCORD_CALLBACK_URL: `https://nowwa.io/discordCallback`,
             DISCORD_CLIENT_SECRET: `laUsJFYDewoElB51evKhJZx4cjm-9w4g`,
 
+            SNAPCHAT_CLIENT_ID: "e6a503b3-6929-4feb-a6d9-b1dc0bd963ed",
+            SNAPCHAT_CALLBACK_URL: `https://nowwa.io/snapchatCallback`,
+            SNAPCHAT_CLIENT_SECRET: `CqbjgYrWsK-8xmZW_CLWJ4xfc6DR4RvPegGlx590hGI`,
+
             VERIFY_EMAIL_SENDER: `lanting.dlapan@gmail.com`,
             VERIFY_EMAIL_PASSWORD: `ydkcknektbfmjmtm`
 
@@ -126,6 +130,10 @@ namespace Environment {
         DISCORD_CALLBACK_URL: string,
         DISCORD_CLIENT_SECRET: string,
 
+        SNAPCHAT_CLIENT_ID: string,
+        SNAPCHAT_CALLBACK_URL: string,
+        SNAPCHAT_CLIENT_SECRET: string,
+
         VERIFY_EMAIL_SENDER: string,
         VERIFY_EMAIL_PASSWORD: string,
     };
@@ -144,6 +152,8 @@ export const twitterAuthUrl: string = `/twitterAuth`;
 export const twitterCallbackUrl: string = `/twitterCallback`;
 
 export const discordCallbackUrl: string = `/discordCallback`;
+
+export const snapchatCallbackUrl: string = `/snapchatCallback`;
 
 export const storageUrl: string = `/storage`;
 

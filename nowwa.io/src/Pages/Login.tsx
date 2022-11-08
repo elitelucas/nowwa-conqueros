@@ -1,6 +1,6 @@
 import React from 'react';
 import { Icon, Button, Segment, ButtonGroup, Menu, Header, Input, InputOnChangeData, Card, Grid, Divider, Label, Image, Message, Form } from 'semantic-ui-react';
-import Environment, { authenticationLoginUrl, discordCallbackUrl, twitterAuthUrl } from '../Core/CONFIG/Environment';
+import Environment, { authenticationLoginUrl, discordCallbackUrl, snapchatCallbackUrl, twitterAuthUrl } from '../Core/CONFIG/Environment';
 import { IndexState, } from './Index';
 import fetch, { RequestInit, Request } from 'node-fetch';
 import { Hash, UpdateComponentState } from './Utils';
@@ -43,12 +43,12 @@ export const LoginInit = (state: LoginState): Promise<LoginState> => {
             .then((res: any) => {
                 if (res.success) {
 
-                    let fbScript = document.createElement('script');
-                    fbScript.type = 'text/javascript';
-                    fbScript.src = 'https://connect.facebook.net/en_US/sdk.js';
-                    fbScript.async = true;
-                    fbScript.defer = true;
-                    fbScript.onload = () => {
+                    let facebookScript = document.createElement('script');
+                    facebookScript.type = 'text/javascript';
+                    facebookScript.src = 'https://connect.facebook.net/en_US/sdk.js';
+                    facebookScript.async = true;
+                    facebookScript.defer = true;
+                    facebookScript.onload = () => {
 
                         let discordClientId: string = `1037020376892452864`;
                         let discordRedirect: string = encodeURIComponent(`${Environment.PublicUrl}${discordCallbackUrl}`);
@@ -64,6 +64,25 @@ export const LoginInit = (state: LoginState): Promise<LoginState> => {
                             version: 'v15.0'
                         });
 
+                        // let snapchatScript = document.createElement('script');
+                        // snapchatScript.type = 'text/javascript';
+                        // snapchatScript.src = 'https://sdk.snapkit.com/js/v1/login.js';
+                        // snapchatScript.async = true;
+                        // snapchatScript.defer = true;
+                        // snapchatScript.onload = () => {
+                        //     resolve({
+                        //         email: state.email,
+                        //         initialized: true,
+                        //         isBusy: false,
+                        //         password: '',
+                        //         warning: '',
+                        //         twitter: res.link,
+                        //         discord: discordUrl,
+                        //         facebookReady: true
+                        //     });
+                        // };
+                        // document.body.appendChild(snapchatScript);
+
                         resolve({
                             email: state.email,
                             initialized: true,
@@ -75,7 +94,7 @@ export const LoginInit = (state: LoginState): Promise<LoginState> => {
                             facebookReady: true
                         });
                     };
-                    document.body.appendChild(fbScript);
+                    document.body.appendChild(facebookScript);
                 }
             })
             .catch((error: any) => {
@@ -265,6 +284,24 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
         }
     };
 
+    let doSnapchat = async () => {
+
+        let snapchatClientId: string = `e6a503b3-6929-4feb-a6d9-b1dc0bd963ed`;
+        let snapchatClientSecret: string = `e6a503b3-6929-4feb-a6d9-b1dc0bd963ed`;
+        let snapchatRedirect: string = encodeURIComponent(`${Environment.PublicUrl}${snapchatCallbackUrl}`);
+        let snapchatState: string = `g0qVDoSOERd-6ClRJoCoZOI-nHrpln8XKXYwLJoXbg8`;
+        let snapchatScopeList: string[] = [
+            "https://auth.snapchat.com/oauth2/api/user.display_name",
+            "https://auth.snapchat.com/oauth2/api/user.bitmoji.avatar",
+            "https://auth.snapchat.com/oauth2/api/user.external_id",
+        ];
+        let snapchatScope: string = encodeURIComponent(snapchatScopeList.join(' '));
+        let snapchatResponseType: string = `code`;
+        let snapchatUrl: string = `https://accounts.snapchat.com/accounts/oauth2/auth?client_id=${snapchatClientId}&redirect_uri=${snapchatRedirect}&response_type=${snapchatResponseType}&scope=${snapchatScope}&state=${snapchatState}`;
+
+        window.open(snapchatUrl, "_self");
+    };
+
     return (
         <Segment placeholder>
 
@@ -332,6 +369,9 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
                         </Grid.Column>
                         <Grid.Column>
                             <Button fluid primary onClick={doDiscord}><Icon name='discord'></Icon>Discord</Button>
+                        </Grid.Column>
+                        <Grid.Column>
+                            <Button fluid primary onClick={doSnapchat}><Icon name='snapchat'></Icon>Snapchat</Button>
                         </Grid.Column>
                         <Grid.Column>
                             <Button fluid primary onClick={doMetamask}><Icon className='metamask'></Icon>Metamask</Button>

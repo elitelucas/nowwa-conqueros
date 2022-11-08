@@ -315,6 +315,21 @@ class Authentication {
         return Promise.resolve(entity);
     }
 
+    /**
+     * Check if account with provided email exists.
+     */
+    public static async Exists(args: Authentication.Input): Promise<CustomDocument> {
+        let entities = await Database.DataLoad(Authentication.entityTableName, {
+            where: {
+                email: args.email
+            }
+        });
+        if (entities.length > 0) {
+            return Promise.resolve(entities[0]);
+        }
+        return Promise.reject(new Error('user does not exists...'));
+    }
+
 }
 
 namespace Authentication {

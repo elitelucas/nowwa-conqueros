@@ -9,7 +9,7 @@ import Login, { LoginStateDefault } from './Login';
 import Register, { RegisterStateDefault } from './Register';
 import Home, { HomeStateDefault } from './Home';
 import { ComponentState, UpdateComponentState } from './Utils';
-import Status from '../Core/GAME/Status';
+import Status from '../Core/APPS/Status';
 
 type IndexDisplay = 'None' | 'Explorer' | 'Build' | 'Test' | 'Login' | 'Register' | 'Home';
 
@@ -17,7 +17,8 @@ type Account = {
     id: string,
     token: string,
     name: string,
-    admin: boolean
+    admin: boolean,
+    friend_count: number
 }
 
 export type IndexState = ComponentState & {
@@ -77,7 +78,8 @@ const Index = () => {
                     admin: params.admin as string == 'true',
                     id: params.id,
                     name: params.name,
-                    token: params.token
+                    token: params.token,
+                    friend_count: parseInt(params.friend_count as string || "0")
                 }
             });
         } else if (params.info == 'discord') {
