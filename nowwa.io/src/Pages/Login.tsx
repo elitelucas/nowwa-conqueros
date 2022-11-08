@@ -64,25 +64,6 @@ export const LoginInit = (state: LoginState): Promise<LoginState> => {
                             version: 'v15.0'
                         });
 
-                        // let snapchatScript = document.createElement('script');
-                        // snapchatScript.type = 'text/javascript';
-                        // snapchatScript.src = 'https://sdk.snapkit.com/js/v1/login.js';
-                        // snapchatScript.async = true;
-                        // snapchatScript.defer = true;
-                        // snapchatScript.onload = () => {
-                        //     resolve({
-                        //         email: state.email,
-                        //         initialized: true,
-                        //         isBusy: false,
-                        //         password: '',
-                        //         warning: '',
-                        //         twitter: res.link,
-                        //         discord: discordUrl,
-                        //         facebookReady: true
-                        //     });
-                        // };
-                        // document.body.appendChild(snapchatScript);
-
                         resolve({
                             email: state.email,
                             initialized: true,
