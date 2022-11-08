@@ -2,31 +2,24 @@ import BridgeInstance from "./Socket/BridgeInstance";
 import LOG, { log } from "../UTIL/LOG";
 import SessionInstance from "./User/SessionInstance";
 import UserInstance from "./User/UserInstance";
+import { resolve } from "path";
 
-class COS 
+class CONQUER 
 {
-    public User                     : UserInstance      = new UserInstance();
-    public Session                  : SessionInstance   = new SessionInstance();
-    private Bridge                  : BridgeInstance    = new BridgeInstance();
- 
-    public async init()
+    public static USER                      : UserInstance      = new UserInstance();
+    public static SESSION                   : SessionInstance   = new SessionInstance();
+    public static BRIDGE                    : BridgeInstance   = new BridgeInstance();
+
+    public static async init() : Promise<any>
     {
         log("client: =============== New ConquerOS");
 
-        await this.Bridge.init();
-        await this.Session.init( this );
+        await CONQUER.BRIDGE.init();
+      //  await CONQUER.Session.init();
+
+``      return resolve();
     };
-
-    private test() 
-    {
-        log("client: ========== TEST");//,
-
-        this.Bridge.do( "AUTH.set", null, function( txt: any ) 
-        {
-            log( "client: callback test 1", txt );
-        })
-    };
-
+ 
             /*
 
         let input005: DB.Query = 
@@ -81,4 +74,4 @@ class COS
  
 }
 
-export default COS; 
+export default CONQUER; 

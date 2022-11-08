@@ -47,10 +47,14 @@ class BridgeInstance
  
     }
  
-    public do( action:string, vars?:any, callback?:Function )
+    public async do( action:string, vars?:any, callback?:Function ) : Promise<any>
     {
         log("client: Calling action", action );
-        this.socket.emit( "action", action, vars, callback );
+        
+        this.socket.emit( "action", action, vars, function( e:any )
+        {
+            resolve( e );
+        });
     }
 
     public disconnect() 

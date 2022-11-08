@@ -16,7 +16,7 @@ import Status from './APPS/Status';
 import Email from './DEPRECATED/Email';
 import Twitter from './USER/AUTH/Twitter';
 import SOCKET from './SOCKET/SOCKET';
-import COS from '../Frontend/ConquerOS';
+import CONQUER from '../Frontend/CONQUER';
 import LOG, { log } from "../UTIL/LOG";
 import AUTH from './USER/AUTH/AUTH';
 import EMAIL from './USER/EMAIL';
@@ -114,8 +114,8 @@ class Main {
 
 
             // HACKIN
-            let Conquer = new COS();
-            Conquer.init();
+
+            CONQUER.init();
 
             // await Email.Send('garibaldy.mukti@gmail.com', 'The Subject of This Email', 'The content of this email');
         }
