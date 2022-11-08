@@ -1,34 +1,31 @@
-import Bridge from "./Bridge";
+import BridgeInstance from "./Socket/BridgeInstance";
 import LOG, { log } from "../UTIL/LOG";
+import SessionInstance from "./User/SessionInstance";
+import UserInstance from "./User/UserInstance";
 
-class ConquerOS 
+class COS 
 {
-    private bridge                  : Bridge;
-    private onInitializedCallback   : any;
-
-    constructor( callback?: Function ) 
+    public User                     : UserInstance      = new UserInstance();
+    public Session                  : SessionInstance   = new SessionInstance();
+    private Bridge                  : BridgeInstance    = new BridgeInstance();
+ 
+    public async init()
     {
-        var self = this;
-
         log("client: =============== New ConquerOS");
-        //if( callback ) 
-        this.onInitializedCallback = callback;
- 
-        this.bridge = new Bridge( this.onConnect.bind(this) );
- 
-    }
 
-    private onConnect() 
+        await this.Bridge.init();
+        await this.Session.init( this );
+    };
+
+    private test() 
     {
-        log("client: ========== CONQUER OS CONNECTED!");//,
+        log("client: ========== TEST");//,
 
-        this.bridge.do( "AUTH.set", null, function( txt: any ) 
+        this.Bridge.do( "AUTH.set", null, function( txt: any ) 
         {
             log( "client: callback test 1", txt );
         })
- 
- 
-    }
+    };
 
             /*
 
@@ -84,4 +81,4 @@ class ConquerOS
  
 }
 
-export default ConquerOS; 
+export default COS; 

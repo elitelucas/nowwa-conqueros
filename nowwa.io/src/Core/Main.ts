@@ -16,31 +16,31 @@ import Status from './APPS/Status';
 import Email from './DEPRECATED/Email';
 import Twitter from './USER/AUTH/Twitter';
 import SOCKET from './SOCKET/SOCKET';
-import ConquerOS from '../Frontend/ConquerOS';
+import COS from '../Frontend/ConquerOS';
 import LOG, { log } from "../UTIL/LOG";
 import AUTH from './USER/AUTH/AUTH';
 import EMAIL from './USER/EMAIL';
-import Discord from './USER/AUTH/Discord';
-import Snapchat from './USER/AUTH/Snapchat';
-
+  
 console.log(`project path: ${__dirname}`);
 
 class Main {
 
-    private baseUrl: string;
-    public status: Main.Status;
+    private baseUrl : string;
+    public status   : Main.Status;
 
     /**
      * Initialize necessary components.
      */
-    constructor() {
+    constructor() 
+    {
         this.status = Main.StatusDefault;
         this.baseUrl = `/webhook/v${Environment.CoreConfig.VERSION}`;
 
         this.AsyncInit(Environment.CoreConfig);
     }
 
-    private async AsyncInit(env: Environment.Config): Promise<void> {
+    private async AsyncInit(env: Environment.Config): Promise<void> 
+    {
         try {
             console.log(`init express...`);
 
@@ -92,12 +92,10 @@ class Main {
 
             // TODO : enable authentication & database
             await Authentication.AsyncInit(app, env);
-
+ 
             await Database.AsyncInit(app, env);
             await Email.AsyncInit(app, env);
             await Twitter.AsyncInit(app, env);
-            await Discord.AsyncInit(app, env);
-            await Snapchat.AsyncInit(app, env);
             // await DB.init(env);
             // routes: start
             // routes: end
@@ -107,16 +105,17 @@ class Main {
 
             app.listen(env.PORT);
             log(`[Express] listening on port ${env.PORT}`);
-
+ 
 
             // NEW CODE!
             await AUTH.init();
-            await EMAIL.init(env);
-            await SOCKET.init(env);
+            await EMAIL.init( env );
+            await SOCKET.init( env );    
 
 
             // HACKIN
-            // new ConquerOS();
+            let Conquer = new COS();
+            Conquer.init();
 
             // await Email.Send('garibaldy.mukti@gmail.com', 'The Subject of This Email', 'The content of this email');
         }
