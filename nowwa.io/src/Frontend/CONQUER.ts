@@ -2,9 +2,10 @@ import BridgeInstance from "./Socket/BridgeInstance";
 import LOG, { log } from "../UTIL/LOG";
 import SessionInstance from "./User/SessionInstance";
 import UserInstance from "./User/UserInstance";
-import { resolve } from "path";
+import PROMISE, { resolve } from "../UTIL/PROMISE";
 
-class CONQUER {
+class CONQUER 
+{
     public static USER: UserInstance = new UserInstance();
     public static SESSION: SessionInstance = new SessionInstance();
     public static BRIDGE: BridgeInstance = new BridgeInstance();
@@ -14,10 +15,11 @@ class CONQUER {
         log("client: =============== New ConquerOS");
 
         await CONQUER.BRIDGE.init();
-      //  await CONQUER.Session.init();
 
-``      return resolve();
+        return resolve();
     };
+
+ 
  
             /*
 
