@@ -1,5 +1,4 @@
 import LOG, { log } from '../../UTIL/LOG';
- 
 import CONQUER from '../CONQUER';
 
 
@@ -9,6 +8,15 @@ class AUTH
 
     public async init(): Promise<any> 
     {
+        /*
+        Get session, from cookie?
+        If session exists, login via backdoor?
+        If session expired, log in as guest
+        */
+
+        var guestUsername : string = "guest123";
+ 
+
         return Promise.resolve();
     }
 
@@ -19,12 +27,12 @@ class AUTH
 
     public async set( vars:any ) : Promise<any>
     {
-
+        return CONQUER.do( "AUTH.set", vars );
     }
 
     public async get( vars:any ) : Promise<any>
     {
-
+        return CONQUER.do( "AUTH.get", vars );
     }
 
     public async getSet( vars:any ) : Promise<any>

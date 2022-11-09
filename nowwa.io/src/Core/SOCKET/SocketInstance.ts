@@ -1,3 +1,4 @@
+import { resolve } from "path";
 import { Socket } from "socket.io"
 import LOG, { log } from "../../UTIL/LOG";
 import AUTH from "../USER/AUTH/AUTH";
@@ -24,7 +25,8 @@ class SocketInstance
     {
         log( "[SERVER]: client action requested", action );
 
-        if( action == "AUTH.set" ) return AUTH.set( vars ).then( doCallback ).catch( doError ); 
+        if( action == "AUTH.set" ) return map( AUTH.set( vars ) );
+        if( action == "AUTH.get" ) return map( AUTH.get( vars ) );  
   
         doError();
 
@@ -36,6 +38,12 @@ class SocketInstance
         function doError( vars?:any )
         {
             doCallback( vars, false );
+        }
+
+        function map( promise:any )
+        {
+            log("got this", promise );
+            promise.then( doCallback ).catch( doError ); 
         }
     }
 

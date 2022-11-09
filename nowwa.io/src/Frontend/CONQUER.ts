@@ -7,23 +7,29 @@ class CONQUER
 {
     public static USER      : USER = new USER();
     public static AUTH      : AUTH = new AUTH();
-    public static SOCKET    : SOCKET = new SOCKET();
+    private static SOCKET   : SOCKET = new SOCKET();
 
     public static async init() : Promise<any>
     {
         log("client: =============== New ConquerOS");
 
-        await CONQUER.SOCKET.init();
+        await this.SOCKET.init();
+        await this.AUTH.init();
 
         log("Okkkk");
 
-        CONQUER.SOCKET.do( "ActionTest" ).then( function(e?:any)
+        this.do( "ActionTest" ).then( function(e?:any)
         {
             log( "ACTION PASSED", e );
         });
  
         return Promise.resolve();
     };
+
+    public static async do( action:string, vars?:any ) : Promise<any>
+    {
+        return this.SOCKET.do( action, vars );
+    }
 
  
             /*
