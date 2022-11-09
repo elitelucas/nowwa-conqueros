@@ -7,7 +7,6 @@ import { Hash, UpdateComponentState } from './Utils';
 import { FirebaseApp, FirebaseOptions, initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { update } from 'node-7z';
-
 export type LoginState = {
     initialized: boolean,
     isBusy: boolean,
