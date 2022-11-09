@@ -56,13 +56,15 @@ export const LoginInit = (state: LoginState): Promise<LoginState> => {
                         let discordResponseType: string = `code`;
                         let discordUrl: string = `https://discord.com/api/oauth2/authorize?client_id=${discordClientId}&redirect_uri=${discordRedirect}&response_type=${discordResponseType}&scope=${discordScope}`;
 
-                        let facebookAppId: string = `642034654138108`;
+                        let facebookAppId: string = `2303120786519319`;
                         (window as any).FB.init({
                             appId: facebookAppId,
                             autoLogAppEvents: true,
                             xfbml: true,
                             version: 'v15.0'
                         });
+
+                        (window as any).FB.AppEvents.logPageView();
 
                         resolve({
                             email: state.email,
@@ -210,25 +212,39 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
 
     let doFacebook = async () => {
         let FB = (window as any).FB as any;
-        FB.login((loginResponse) => {
-            // handle the response 
-            let fields: string[] = [
-                'name',
-                'email',
-                // 'user_friends' 
-            ];
-            FB.api('/me', { fields: fields.join(', ') }, (apiResponse) => {
-                // console.log(`apiResponse`, JSON.stringify(apiResponse, null, 4));
-                // FB.api(`/${apiResponse.id}/friends`, {}, (response) => {
-                //     console.log(`response`, JSON.stringify(response, null, 4));
-                // });
-                Hash(apiResponse.email as string)
+        await new Promise<void>((resolve, reject) => {
+            FB.getLoginStatus((loginStatus) => {
+                // console.log(`loginStatus`, JSON.stringify(loginStatus, null, 4));
+                // statusChangeCallback(response);
+                if (!loginStatus.authResponse) {
+                    FB.login((loginResponse) => {
+                        resolve();
+                    }, { scope: 'public_profile,email,user_friends' });
+                } else {
+                    // TODO : change into this
+                    // resolve();
+                    FB.login((loginResponse) => {
+                        resolve();
+                    }, { scope: 'public_profile,email,user_friends' });
+                }
+            });
+        });
+
+        let fields: string[] = [
+            'name',
+            'email',
+        ];
+        FB.api('/me', { fields: fields.join(', ') }, (apiResponse1) => {
+            // console.log(`apiResponse1`, JSON.stringify(apiResponse1, null, 4));
+            FB.api(`/me/friends`, {}, (apiResponse2) => {
+                // console.log(`apiResponse2`, JSON.stringify(apiResponse2, null, 4));
+                Hash(apiResponse1.email as string)
                     .then((token) => {
-                        let redirectURL: string = `${Config.PublicUrl}/Index.html?info=loggedin&name=${apiResponse.name}&token=${token}&admin=false&id=${apiResponse.email}`;
+                        let redirectURL: string = `${Config.PublicUrl}/Index.html?info=loggedin&name=${apiResponse1.name}&token=${token}&admin=false&id=${apiResponse1.email}&friend_count=${apiResponse2.summary.total_count}`;
                         window.location.href = redirectURL;
                     });
             });
-        }, { scope: 'public_profile,email' });
+        });
     };
 
     let doDiscord = async () => {
