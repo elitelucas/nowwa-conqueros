@@ -3,16 +3,16 @@ import CRYPT from '../../../UTIL/CRYPT';
 import EMAIL from '../EMAIL';
 import USERNAME from "../USERNAME";
 import PASSPORT from './PASSPORT';
- 
+
 import WALLET from '../WALLET';
 import USERNAME_PROXY from '../USERNAME_PROXY';
 import LOG, { log } from '../../../UTIL/LOG';
 import Twitter from './Twitter';
 import Snapchat from './Snapchat';
 import Discord from './Discord';
+import Google from './Google';
 
-class AUTH 
-{
+class AUTH {
 
     /*=============== 
 
@@ -22,13 +22,13 @@ class AUTH
 
     ================*/
 
-    public static async init(): Promise<void> 
-    {
+    public static async init(): Promise<void> {
         PASSPORT.init();
- 
+
         await Twitter.init();
         await Snapchat.init();
         await Discord.init();
+        await Google.init();
 
         // Init other protocols too (metamask, twitter, etc?)
 
@@ -43,13 +43,12 @@ class AUTH
 
     ================*/
 
-    public static async set( vars: any ): Promise<any> 
-    {
+    public static async set(vars: any): Promise<any> {
         let userExists: boolean = false;
 
         await USERNAME.get(vars).then(function () { userExists = true });
 
-        if (userExists) return Promise.reject( LOG.msg("Username already taken") );
+        if (userExists) return Promise.reject(LOG.msg("Username already taken"));
 
         let encryptedPassword = await CRYPT.hash(vars.password);
 
@@ -74,17 +73,16 @@ class AUTH
 
     ================*/
 
-    public static async get( vars: any ): Promise<any> 
-    {
+    public static async get(vars: any): Promise<any> {
         var item: any = await USERNAME.get(vars);
 
-        if (!item) return Promise.reject( LOG.msg("Auth user doesn't exist " + vars.username) );  
+        if (!item) return Promise.reject(LOG.msg("Auth user doesn't exist " + vars.username));
 
-        if (!item.isVerified) return Promise.reject( LOG.msg('Email is not verified...') );  
+        if (!item.isVerified) return Promise.reject(LOG.msg('Email is not verified...'));
 
         let isMatch: boolean = await CRYPT.match(vars.password, item.password);
 
-        if (!isMatch) return Promise.reject( LOG.msg('Incorrect password...') );  
+        if (!isMatch) return Promise.reject(LOG.msg('Incorrect password...'));
 
         USERNAME.changeLastLogin(item._id);
 
@@ -107,8 +105,7 @@ class AUTH
 
     ================*/
 
-    public static async getProxy(vars: any): Promise<any> 
-    {
+    public static async getProxy(vars: any): Promise<any> {
         var uID: any;
 
         if (vars.email) uID = await EMAIL.getUID(vars.email);
@@ -116,8 +113,7 @@ class AUTH
 
         let user;
 
-        if (!uID) 
-        {
+        if (!uID) {
             user = await USERNAME.set({});
         } else {
             user = await USERNAME.get({ where: { _id: uID } });
@@ -132,8 +128,7 @@ class AUTH
         return Promise.resolve(user);
     };
 
-    public static async addProxy( uID: any, vars: any ): Promise<any> 
-    {
+    public static async addProxy(uID: any, vars: any): Promise<any> {
         var proxyUser = await AUTH.getProxy(vars);
 
         if (uID != proxyUser.uID) USERNAME.reparent(uID, proxyUser.uID);
@@ -146,8 +141,7 @@ class AUTH
 };
 
 
-namespace AUTH 
-{
+namespace AUTH {
     export interface Input {
         email: string;
         password: string;

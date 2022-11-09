@@ -1,11 +1,9 @@
 import dotenv from 'dotenv';
 
-class CONFIG 
-{
-    public static vars : CONFIG.Config;
+class CONFIG {
+    public static vars: CONFIG.Config;
 
-    public static init()
-    {
+    public static init() {
         let test = this.CoreConfig;
     }
 
@@ -50,14 +48,17 @@ class CONFIG
             SNAPCHAT_CALLBACK_URL: `https://nowwa.io/snapchatCallback`,
             SNAPCHAT_CLIENT_SECRET: `CqbjgYrWsK-8xmZW_CLWJ4xfc6DR4RvPegGlx590hGI`,
 
+            GOOGLE_CLIENT_ID: "494971460278-q1luigu21k84335c5v5gc29m5v39kc9v.apps.googleusercontent.com",
+            GOOGLE_CALLBACK_URL: `https://nowwa.io/googleCallback`,
+            GOOGLE_CLIENT_SECRET: `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`,
+
             VERIFY_EMAIL_SENDER: `lanting.dlapan@gmail.com`,
             VERIFY_EMAIL_PASSWORD: `ydkcknektbfmjmtm`
 
         };
     }
 
-    public static get CoreConfig(): CONFIG.Config 
-    {
+    public static get CoreConfig(): CONFIG.Config {
         let config: CONFIG.Config = this.vars = this.MainConfig;
 
         dotenv.config();
@@ -69,8 +70,7 @@ class CONFIG
         return config;
     }
 
-    public static get PublicConfig(): CONFIG.Config 
-    {
+    public static get PublicConfig(): CONFIG.Config {
         let config: CONFIG.Config = this.vars = this.MainConfig;
 
         dotenv.config();
@@ -141,6 +141,10 @@ namespace CONFIG {
         SNAPCHAT_CALLBACK_URL: string,
         SNAPCHAT_CLIENT_SECRET: string,
 
+        GOOGLE_CLIENT_ID: string,
+        GOOGLE_CALLBACK_URL: string,
+        GOOGLE_CLIENT_SECRET: string,
+
         VERIFY_EMAIL_SENDER: string,
         VERIFY_EMAIL_PASSWORD: string,
     };
@@ -159,6 +163,9 @@ export const twitterAuthUrl: string = `/twitterAuth`;
 export const twitterCallbackUrl: string = `/twitterCallback`;
 
 export const discordCallbackUrl: string = `/discordCallback`;
+
+export const googleAuthUrl: string = `/googleAuth`;
+export const googleCallbackUrl: string = `/googleCallback`;
 
 export const snapchatCallbackUrl: string = `/snapchatCallback`;
 
