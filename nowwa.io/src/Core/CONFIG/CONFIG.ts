@@ -162,6 +162,7 @@ export const authenticationHashUrl: string = `/authHash`;
 export const twitterAuthUrl: string = `/twitterAuth`;
 export const twitterCallbackUrl: string = `/twitterCallback`;
 
+export const discordAuthUrl: string = `/discordAuth`;
 export const discordCallbackUrl: string = `/discordCallback`;
 
 export const googleAuthUrl: string = `/googleAuth`;

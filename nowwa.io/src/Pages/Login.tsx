@@ -1,6 +1,6 @@
 import React from 'react';
 import { Icon, Button, Segment, ButtonGroup, Menu, Header, Input, InputOnChangeData, Card, Grid, Divider, Label, Image, Message, Form } from 'semantic-ui-react';
-import CONFIG, { authenticationLoginUrl, discordCallbackUrl, googleAuthUrl, googleCallbackUrl, snapchatCallbackUrl, twitterAuthUrl } from '../Core/CONFIG/CONFIG';
+import CONFIG, { authenticationLoginUrl, discordAuthUrl, discordCallbackUrl, googleAuthUrl, googleCallbackUrl, snapchatCallbackUrl, twitterAuthUrl } from '../Core/CONFIG/CONFIG';
 import { IndexState, } from './Index';
 import fetch, { RequestInit, Request } from 'node-fetch';
 import { Hash, UpdateComponentState } from './Utils';
@@ -52,12 +52,6 @@ export const LoginInit = (state: LoginState): Promise<LoginState> => {
                     facebookScript.defer = true;
                     facebookScript.onload = () => {
 
-                        let discordClientId: string = `${CONFIG.PublicConfig.DISCORD_CLIENT_ID}`;
-                        let discordRedirect: string = encodeURIComponent(`${CONFIG.PublicUrl}${discordCallbackUrl}`);
-                        let discordScope: string = encodeURIComponent(`identify email`);
-                        let discordResponseType: string = `code`;
-                        let discordUrl: string = `https://discord.com/api/oauth2/authorize?client_id=${discordClientId}&redirect_uri=${discordRedirect}&response_type=${discordResponseType}&scope=${discordScope}`;
-
                         let facebookAppId: string = `2303120786519319`;
                         (window as any).FB.init({
                             appId: facebookAppId,
@@ -68,28 +62,47 @@ export const LoginInit = (state: LoginState): Promise<LoginState> => {
 
                         (window as any).FB.AppEvents.logPageView();
 
-                        let googleUrl: URL = new URL(`${window.location.origin}${googleAuthUrl}`);
-                        let googleRequest: RequestInit = {
+                        let discordUrl: URL = new URL(`${window.location.origin}${discordAuthUrl}`);
+                        let discordRequest: RequestInit = {
                             method: "POST",
                             headers: { 'Content-Type': 'application/json' },
                             body: '{}'
                         };
-                        fetch(googleUrl, googleRequest)
-                            .then(googleResponse => googleResponse.json())
-                            .then((googleResponse: any) => {
+                        fetch(discordUrl, discordRequest)
+                            .then(discordResponse => discordResponse.json())
+                            .then((discordResponse: any) => {
 
-                                if (googleResponse.success) {
-                                    resolve({
-                                        email: state.email,
-                                        initialized: true,
-                                        isBusy: false,
-                                        password: '',
-                                        warning: '',
-                                        twitter: twitterResponse.link,
-                                        discord: discordUrl,
-                                        google: googleResponse.link,
-                                        facebookReady: true
-                                    });
+                                if (discordResponse.success) {
+
+                                    let googleUrl: URL = new URL(`${window.location.origin}${googleAuthUrl}`);
+                                    let googleRequest: RequestInit = {
+                                        method: "POST",
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: '{}'
+                                    };
+                                    fetch(googleUrl, googleRequest)
+                                        .then(googleResponse => googleResponse.json())
+                                        .then((googleResponse: any) => {
+
+                                            if (googleResponse.success) {
+                                                resolve({
+                                                    email: state.email,
+                                                    initialized: true,
+                                                    isBusy: false,
+                                                    password: '',
+                                                    warning: '',
+                                                    twitter: twitterResponse.link,
+                                                    discord: discordResponse.link,
+                                                    google: googleResponse.link,
+                                                    facebookReady: true
+                                                });
+                                            }
+
+                                        })
+                                        .catch((error: any) => {
+                                            console.error(`error: ${error}`);
+                                            reject(error);
+                                        });
                                 }
 
                             })
@@ -208,31 +221,6 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
             message: ''
         });
         window.open(state.google, "_self");
-        // setIndexState({
-        //     message: ''
-        // });
-        // const firebaseOptions: FirebaseOptions = {
-        //     apiKey: "AIzaSyAdI0h9Bwrfk4VqC3-MDdfCvkECETnpml0",
-        //     authDomain: "nowwaio.firebaseapp.com",
-        // };
-        // const app: FirebaseApp = initializeApp(firebaseOptions, "nowwa.io");
-        // const auth = getAuth(app);
-        // const provider = new GoogleAuthProvider();
-        // provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
-        // try {
-        //     let resolver = await signInWithPopup(auth, provider);
-        //     Hash(resolver.user.email as string)
-        //         .then((token) => {
-        //             let redirectURL: string = `${CONFIG.PublicUrl}/Index.html?info=loggedin&name=${resolver.user.displayName}&token=${token}&admin=false&id=${resolver.user.email}`;
-        //             window.location.href = redirectURL;
-        //         });
-        // }
-        // catch (error) {
-        //     updateState({
-        //         isBusy: false,
-        //         warning: error.message
-        //     });
-        // }
     };
 
     let doFacebook = async () => {
