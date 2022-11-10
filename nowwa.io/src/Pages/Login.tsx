@@ -1,12 +1,13 @@
 import React from 'react';
 import { Icon, Button, Segment, ButtonGroup, Menu, Header, Input, InputOnChangeData, Card, Grid, Divider, Label, Image, Message, Form } from 'semantic-ui-react';
-import Config, { authenticationLoginUrl, discordCallbackUrl, snapchatCallbackUrl, twitterAuthUrl } from '../Core/CONFIG/CONFIG';
+import CONFIG, { authenticationLoginUrl, discordAuthUrl, discordCallbackUrl, googleAuthUrl, googleCallbackUrl, snapchatCallbackUrl, twitterAuthUrl } from '../Core/CONFIG/CONFIG';
 import { IndexState, } from './Index';
 import fetch, { RequestInit, Request } from 'node-fetch';
 import { Hash, UpdateComponentState } from './Utils';
 import { FirebaseApp, FirebaseOptions, initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
-import { update } from 'node-7z';
+import GoogleAPIs, { google } from 'googleapis';
+
 export type LoginState = {
     initialized: boolean,
     isBusy: boolean,
@@ -15,6 +16,7 @@ export type LoginState = {
     warning: string,
     twitter: string,
     discord: string,
+    google: string,
     facebookReady: boolean,
 }
 
@@ -26,21 +28,22 @@ export const LoginStateDefault: LoginState = {
     warning: '',
     twitter: '',
     discord: '',
+    google: '',
     facebookReady: false,
 }
 
 export const LoginInit = (state: LoginState): Promise<LoginState> => {
     return new Promise((resolve, reject) => {
-        let url: URL = new URL(`${window.location.origin}${twitterAuthUrl}`);
-        let init: RequestInit = {
+        let twitterUrl: URL = new URL(`${window.location.origin}${twitterAuthUrl}`);
+        let twitterRequest: RequestInit = {
             method: "POST",
             headers: { 'Content-Type': 'application/json' },
             body: '{}'
         };
-        fetch(url, init)
-            .then(res => res.json())
-            .then((res: any) => {
-                if (res.success) {
+        fetch(twitterUrl, twitterRequest)
+            .then(twitterResponse => twitterResponse.json())
+            .then((twitterResponse: any) => {
+                if (twitterResponse.success) {
 
                     let facebookScript = document.createElement('script');
                     facebookScript.type = 'text/javascript';
@@ -48,12 +51,6 @@ export const LoginInit = (state: LoginState): Promise<LoginState> => {
                     facebookScript.async = true;
                     facebookScript.defer = true;
                     facebookScript.onload = () => {
-
-                        let discordClientId: string = `1037020376892452864`;
-                        let discordRedirect: string = encodeURIComponent(`${Config.PublicUrl}${discordCallbackUrl}`);
-                        let discordScope: string = encodeURIComponent(`identify email`);
-                        let discordResponseType: string = `code`;
-                        let discordUrl: string = `https://discord.com/api/oauth2/authorize?client_id=${discordClientId}&redirect_uri=${discordRedirect}&response_type=${discordResponseType}&scope=${discordScope}`;
 
                         let facebookAppId: string = `2303120786519319`;
                         (window as any).FB.init({
@@ -65,16 +62,54 @@ export const LoginInit = (state: LoginState): Promise<LoginState> => {
 
                         (window as any).FB.AppEvents.logPageView();
 
-                        resolve({
-                            email: state.email,
-                            initialized: true,
-                            isBusy: false,
-                            password: '',
-                            warning: '',
-                            twitter: res.link,
-                            discord: discordUrl,
-                            facebookReady: true
-                        });
+                        let discordUrl: URL = new URL(`${window.location.origin}${discordAuthUrl}`);
+                        let discordRequest: RequestInit = {
+                            method: "POST",
+                            headers: { 'Content-Type': 'application/json' },
+                            body: '{}'
+                        };
+                        fetch(discordUrl, discordRequest)
+                            .then(discordResponse => discordResponse.json())
+                            .then((discordResponse: any) => {
+
+                                if (discordResponse.success) {
+
+                                    let googleUrl: URL = new URL(`${window.location.origin}${googleAuthUrl}`);
+                                    let googleRequest: RequestInit = {
+                                        method: "POST",
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: '{}'
+                                    };
+                                    fetch(googleUrl, googleRequest)
+                                        .then(googleResponse => googleResponse.json())
+                                        .then((googleResponse: any) => {
+
+                                            if (googleResponse.success) {
+                                                resolve({
+                                                    email: state.email,
+                                                    initialized: true,
+                                                    isBusy: false,
+                                                    password: '',
+                                                    warning: '',
+                                                    twitter: twitterResponse.link,
+                                                    discord: discordResponse.link,
+                                                    google: googleResponse.link,
+                                                    facebookReady: true
+                                                });
+                                            }
+
+                                        })
+                                        .catch((error: any) => {
+                                            console.error(`error: ${error}`);
+                                            reject(error);
+                                        });
+                                }
+
+                            })
+                            .catch((error: any) => {
+                                console.error(`error: ${error}`);
+                                reject(error);
+                            });
                     };
                     document.body.appendChild(facebookScript);
                 }
@@ -185,28 +220,7 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
         setIndexState({
             message: ''
         });
-        const firebaseOptions: FirebaseOptions = {
-            apiKey: "AIzaSyAdI0h9Bwrfk4VqC3-MDdfCvkECETnpml0",
-            authDomain: "nowwaio.firebaseapp.com",
-        };
-        const app: FirebaseApp = initializeApp(firebaseOptions, "nowwa.io");
-        const auth = getAuth(app);
-        const provider = new GoogleAuthProvider();
-        provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
-        try {
-            let resolver = await signInWithPopup(auth, provider);
-            Hash(resolver.user.email as string)
-                .then((token) => {
-                    let redirectURL: string = `${Config.PublicUrl}/Index.html?info=loggedin&name=${resolver.user.displayName}&token=${token}&admin=false&id=${resolver.user.email}`;
-                    window.location.href = redirectURL;
-                });
-        }
-        catch (error) {
-            updateState({
-                isBusy: false,
-                warning: error.message
-            });
-        }
+        window.open(state.google, "_self");
     };
 
     let doFacebook = async () => {
@@ -239,7 +253,7 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
                 // console.log(`apiResponse2`, JSON.stringify(apiResponse2, null, 4));
                 Hash(apiResponse1.email as string)
                     .then((token) => {
-                        let redirectURL: string = `${Config.PublicUrl}/Index.html?info=loggedin&name=${apiResponse1.name}&token=${token}&admin=false&id=${apiResponse1.email}&friend_count=${apiResponse2.summary.total_count}`;
+                        let redirectURL: string = `${CONFIG.PublicUrl}/Index.html?info=loggedin&name=${apiResponse1.name}&token=${token}&admin=false&id=${apiResponse1.email}&friend_count=${apiResponse2.summary.total_count}`;
                         window.location.href = redirectURL;
                     });
             });
@@ -270,7 +284,7 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
                     let email = accounts[0];
                     Hash(email as string)
                         .then((token) => {
-                            let redirectURL: string = `${Config.PublicUrl}/Index.html?info=loggedin&name=${email}&token=${token}&admin=false&id=${email}`;
+                            let redirectURL: string = `${CONFIG.PublicUrl}/Index.html?info=loggedin&name=${email}&token=${token}&admin=false&id=${email}`;
                             window.location.href = redirectURL;
                         })
                         .catch((error) => {
@@ -293,7 +307,7 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
 
         let snapchatClientId: string = `e6a503b3-6929-4feb-a6d9-b1dc0bd963ed`;
         let snapchatClientSecret: string = `e6a503b3-6929-4feb-a6d9-b1dc0bd963ed`;
-        let snapchatRedirect: string = encodeURIComponent(`${Config.PublicUrl}${snapchatCallbackUrl}`);
+        let snapchatRedirect: string = encodeURIComponent(`${CONFIG.PublicUrl}${snapchatCallbackUrl}`);
         let snapchatState: string = `g0qVDoSOERd-6ClRJoCoZOI-nHrpln8XKXYwLJoXbg8`;
         let snapchatScopeList: string[] = [
             "https://auth.snapchat.com/oauth2/api/user.display_name",
