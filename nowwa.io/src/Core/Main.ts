@@ -25,7 +25,6 @@ class Main {
     }
 
     private async init(): Promise<void> {
-        CONFIG.init();
         EXPRESS.init();
 
         // DEPRECATED
@@ -38,10 +37,10 @@ class Main {
 
         // NEW CODE!
 
-        await DATA.init(); 
-        await AUTH.init(); 
-        await EMAIL.init(); 
-        await SOCKET.init(); 
+        await DATA.init();
+        await AUTH.init();
+        await EMAIL.init();
+        await SOCKET.init();
 
         // HACKIN
 

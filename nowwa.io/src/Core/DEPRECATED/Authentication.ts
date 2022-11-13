@@ -10,8 +10,7 @@ import EXPRESS from '../EXPRESS/EXPRESS';
 
 class Authentication {
 
-    public static async AsyncInit(): Promise<void> 
-    {
+    public static async AsyncInit(): Promise<void> {
         Authentication.InitPassport();
         Authentication.InitAuthentication();
         Authentication.WebhookLogin();
@@ -110,9 +109,8 @@ class Authentication {
         // }));
     }
 
- 
-    private static WebhookLogin(): void 
-    {
+
+    private static WebhookLogin(): void {
 
         EXPRESS.app.use(`${authenticationLoginUrl}`, (req, res) => {
             // console.log(`<-- authentication - login`);
@@ -147,8 +145,7 @@ class Authentication {
         });
     }
 
-    private static WebhookHash(): void 
-    {
+    private static WebhookHash(): void {
         EXPRESS.app.use(`${authenticationHashUrl}`, (req, res) => {
             // console.log(`<-- authentication - hash`);
             let input: string = req.body.input;
@@ -165,8 +162,7 @@ class Authentication {
     }
 
 
-    private static WebhookRegister(): void 
-    {
+    private static WebhookRegister(): void {
         EXPRESS.app.use(`${authenticationRegisterUrl}`, (req, res) => {
             console.log(`<-- authentication - register`);
             let email: string = req.body.email;
@@ -186,19 +182,18 @@ class Authentication {
     }
 
 
-    private static WebhookVerify(): void 
-    {
+    private static WebhookVerify(): void {
         EXPRESS.app.use(`${authenticationVerifyUrl}`, (req, res) => {
             console.log(`<-- authentication - verify`);
 
-            let url: URL = new URL(`${CONFIG.PublicUrl}${req.originalUrl}`);
+            let url: URL = new URL(`${CONFIG.vars.PUBLIC_FULL_URL}${req.originalUrl}`);
             console.log(url);
             let email: string = url.searchParams.get('email') as string;
             let token: string = url.searchParams.get('token') as string;
             this.Match(email, token)
                 .then((isMatch: boolean) => {
                     if (!isMatch) {
-                        res.status(200).redirect(`${CONFIG.PublicUrl}/Index.html?info=notverified`);
+                        res.status(200).redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?info=notverified`);
                     } else {
                         Database.DataSave(Authentication.entityTableName, {
                             where: {
@@ -209,15 +204,15 @@ class Authentication {
                             }
                         })
                             .then((document: CustomDocument) => {
-                                res.status(200).redirect(`${CONFIG.PublicUrl}/Index.html?info=verified`);
+                                res.status(200).redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?info=verified`);
                             })
                             .catch((error: Error) => {
-                                res.status(200).redirect(`${CONFIG.PublicUrl}/Index.html?error=${error.message}`);
+                                res.status(200).redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?error=${error.message}`);
                             });
                     }
                 })
                 .catch((error: Error) => {
-                    res.status(200).redirect(`${CONFIG.PublicUrl}/Index.html?error=${error.message}`);
+                    res.status(200).redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?error=${error.message}`);
                 });
         });
     }
@@ -300,7 +295,7 @@ class Authentication {
         });
         try {
             let token = await this.Hash(args.email);
-            await Email.Send(args.email, `[Nowwa.io] Verify your Email`, `<html><body>Click <a href=${CONFIG.PublicUrl}${authenticationVerifyUrl}?email=${args.email}&token=${token}>here</a> to verify your email!</body></html>`);
+            await Email.Send(args.email, `[Nowwa.io] Verify your Email`, `<html><body>Click <a href=${CONFIG.vars.PUBLIC_FULL_URL}${authenticationVerifyUrl}?email=${args.email}&token=${token}>here</a> to verify your email!</body></html>`);
         }
         catch (error) {
             console.log(`error: ${JSON.stringify(error)}`);

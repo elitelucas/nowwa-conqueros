@@ -4,38 +4,45 @@ import EXPRESS from '../../EXPRESS/EXPRESS';
 import { google } from 'googleapis';
 import Authentication from '../../DEPRECATED/Authentication';
 
-class Google {
-    private static Instance: Google;
+class Facebook {
+    private static Instance: Facebook;
 
     /**
      * Initialize email module.
      */
     public static async init(): Promise<void> {
-        Google.Instance = new Google();
-        Google.WebhookCallbackLink();
+        Facebook.Instance = new Facebook();
+        Facebook.WebhookAuthLink();
+        Facebook.WebhookCallbackLink();
         return Promise.resolve();
     }
 
-    public static get AuthLink(): string {
+    public static async WebhookAuthLink(): Promise<void> {
+        EXPRESS.app.use(`${googleAuthUrl}`, (req, res) => {
 
-        let googleScope: string[] = [
-            'https://www.googleapis.com/auth/contacts.readonly',
-            'https://www.googleapis.com/auth/userinfo.email',
-            'https://www.googleapis.com/auth/userinfo.profile'
-        ]
-        let googleClient = new google.auth.OAuth2({
-            clientId: CONFIG.vars.GOOGLE_CLIENT_ID,
-            clientSecret: CONFIG.vars.GOOGLE_CLIENT_SECRET,
-            redirectUri: CONFIG.vars.GOOGLE_CALLBACK_URL,
-        });
-        let googleUrl: string = googleClient.generateAuthUrl({
-            // 'online' (default) or 'offline' (gets refresh_token)
-            access_type: 'online',
+            let googleScope: string[] = [
+                'https://www.googleapis.com/auth/contacts.readonly',
+                'https://www.googleapis.com/auth/userinfo.email',
+                'https://www.googleapis.com/auth/userinfo.profile'
+            ]
+            let googleClient = new google.auth.OAuth2({
+                clientId: CONFIG.vars.GOOGLE_CLIENT_ID,
+                clientSecret: CONFIG.vars.GOOGLE_CLIENT_SECRET,
+                redirectUri: CONFIG.vars.GOOGLE_CALLBACK_URL,
+            });
+            let googleUrl: string = googleClient.generateAuthUrl({
+                // 'online' (default) or 'offline' (gets refresh_token)
+                access_type: 'online',
 
-            // If you only need one scope you can pass it as a string
-            scope: googleScope
+                // If you only need one scope you can pass it as a string
+                scope: googleScope
+            });
+
+            res.status(200).send({
+                success: true,
+                link: googleUrl
+            });
         });
-        return googleUrl;
     }
 
     public static async WebhookCallbackLink(): Promise<void> {
@@ -79,4 +86,4 @@ class Google {
     }
 }
 
-export default Google;
+export default Facebook;

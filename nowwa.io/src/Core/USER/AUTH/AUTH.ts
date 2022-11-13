@@ -11,6 +11,8 @@ import Twitter from './Twitter';
 import Snapchat from './Snapchat';
 import Discord from './Discord';
 import Google from './Google';
+import EXPRESS from '../../EXPRESS/EXPRESS';
+import { socialAuthLinks } from '../../CONFIG/CONFIG';
 
 class AUTH {
 
@@ -24,6 +26,7 @@ class AUTH {
 
     public static async init(): Promise<void> {
         PASSPORT.init();
+        this.WebhookAuthLinks();
 
         await Twitter.init();
         await Snapchat.init();
@@ -136,6 +139,17 @@ class AUTH {
         return Promise.resolve();
     };
 
+    public static WebhookAuthLinks() {
+        EXPRESS.app.use(`${socialAuthLinks}`, (req, res) => {
+            res.status(200).send({
+                success: true,
+                discord: Discord.AuthLink,
+                snapchat: Snapchat.AuthLink,
+                google: Google.AuthLink,
+                twitter: Twitter.AuthLink
+            });
+        });
+    }
 
 
 };

@@ -8,7 +8,7 @@ import 'semantic-ui-css/semantic.css';
 import Login, { LoginStateDefault } from './Login';
 import Register, { RegisterStateDefault } from './Register';
 import Home, { HomeStateDefault } from './Home';
-import { ComponentState, UpdateComponentState } from './Utils';
+import { ComponentState, UpdateComponentState } from './Utils/Helpers';
 import Status from '../Core/APPS/Status';
 
 type IndexDisplay = 'None' | 'Explorer' | 'Build' | 'Test' | 'Login' | 'Register' | 'Home';
