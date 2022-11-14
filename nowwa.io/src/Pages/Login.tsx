@@ -1,6 +1,6 @@
 import React from 'react';
 import { Icon, Button, Segment, ButtonGroup, Menu, Header, Input, InputOnChangeData, Card, Grid, Divider, Label, Image, Message, Form } from 'semantic-ui-react';
-import CONFIG, { authenticationLoginUrl, discordAuthUrl, googleAuthUrl, snapchatCallbackUrl, socialAuthLinks as socialAuthLinks, twitterAuthUrl } from '../Core/CONFIG/CONFIG';
+import CONFIG, { authenticationLoginUrl, discordAuthUrl, googleAuthUrl, snapchatCallbackUrl, authLinks as authLinks, twitterAuthUrl } from '../Core/CONFIG/CONFIG';
 import { IndexState, } from './Index';
 import fetch, { RequestInit, Request } from 'node-fetch';
 import { Hash, UpdateComponentState } from './Utils/Helpers';
@@ -36,7 +36,7 @@ export const LoginStateDefault: LoginState = {
 export const LoginInit = async (state: LoginState): Promise<LoginState> => {
     try {
         let socialAuthLinkResponse = await new Promise<any>((resolve, reject) => {
-            let socialAuthLinksUrl: URL = new URL(`${window.location.origin}${socialAuthLinks}`);
+            let socialAuthLinksUrl: URL = new URL(`${window.location.origin}${authLinks}`);
             let socialAuthLinksRequest: RequestInit = {
                 method: "POST",
                 headers: { 'Content-Type': 'application/json' },
@@ -186,22 +186,14 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
 
     let doTwitter = async () => {
         if (CONQUER.Ready) {
-            await CONQUER.AUTH.twitter();
-            console.log('done twitter');
-        } else {
-            console.log('conquer is not ready');
+            CONQUER.AUTH.twitter();
         }
-        // setIndexState({
-        //     message: ''
-        // });
-        // window.open(state.twitter, "_self");
     };
 
     let doGoogle = async () => {
-        setIndexState({
-            message: ''
-        });
-        window.open(state.google, "_self");
+        if (CONQUER.Ready) {
+            CONQUER.AUTH.google();
+        }
     };
 
     let doFacebook = async () => {
@@ -259,17 +251,15 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
     };
 
     let doDiscord = async () => {
-        setIndexState({
-            message: ''
-        });
-        window.open(state.discord, "_self");
+        if (CONQUER.Ready) {
+            CONQUER.AUTH.discord();
+        }
     };
 
     let doSnapchat = async () => {
-        setIndexState({
-            message: ''
-        });
-        window.open(state.snapchat, "_self");
+        if (CONQUER.Ready) {
+            CONQUER.AUTH.snapchat();
+        }
     };
 
     let doMetamask = async () => {

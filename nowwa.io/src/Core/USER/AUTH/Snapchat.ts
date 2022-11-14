@@ -3,6 +3,7 @@ import fetch, { RequestInit } from 'node-fetch';
 import CONFIG, { snapchatAuthUrl, snapchatCallbackUrl } from '../../CONFIG/CONFIG';
 import Authentication from '../../DEPRECATED/Authentication';
 import EXPRESS from '../../EXPRESS/EXPRESS';
+import AUTH from './AUTH';
 
 class Snapchat {
 
@@ -91,7 +92,7 @@ class Snapchat {
                             // console.log(JSON.stringify(secondResponse, null, "\t"));
                             let id = Buffer.from(secondResponse.data.me.externalId).toString('base64');
                             let name = secondResponse.data.me.displayName;
-                            Authentication.Hash(id)
+                            AUTH.Tokenize(id)
                                 .then((token) => {
                                     res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?info=loggedin&name=${name}&token=${token}&admin=false&id=${id}`);
                                 })

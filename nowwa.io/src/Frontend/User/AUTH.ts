@@ -1,4 +1,4 @@
-import { socialAuthLinks } from '../../Core/CONFIG/CONFIG';
+import { authLinks, authVerify } from '../../Core/CONFIG/CONFIG';
 import LOG, { log } from '../../UTIL/LOG';
 import CONQUER from '../CONQUER';
 
@@ -28,7 +28,7 @@ class AUTH {
         If session expired, log in as guest
         */
         await this.redirect();
-        await this.social();
+        await this.authLinks();
 
         var guestUsername: string = "guest123";
 
@@ -38,35 +38,65 @@ class AUTH {
 
     private async redirect(): Promise<void> {
         let params = CONQUER.SearchParams;
+
         if (params.source) {
-            // TODO : check if token is valid 
-            if (params.source == 'twitter') {
-                this.account = {
-                    admin: params.admin as string == 'true',
-                    id: params.id,
-                    name: params.name,
-                    token: params.token,
-                    friend_count: parseInt(params.friend_count as string || "0")
+
+            log(`[${params.source}] verifying user...`);
+            let authVerifyResponse = await new Promise<any>((resolve, reject) => {
+                let authVerifyUrl: URL = new URL(`${window.location.origin}${authVerify}`);
+                let authVerifyRequest: RequestInit = {
+                    method: "POST",
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        id: params.id,
+                        token: params.token
+                    })
+                };
+                fetch(authVerifyUrl, authVerifyRequest)
+                    .then(authVerifyResponse => authVerifyResponse.json())
+                    .then((authVerifyResponse: any) => {
+                        log(`authResponse`, JSON.stringify(authVerifyResponse, null, 4));
+                        resolve(authVerifyResponse);
+                    })
+                    .catch((error: any) => {
+                        console.error(`error: ${error}`);
+                        reject(error);
+                    });
+            });
+
+            log(`[${params.source}] verified: ${authVerifyResponse && authVerifyResponse.valid}!`);
+
+            if (authVerifyResponse.success) {
+                if (authVerifyResponse.valid) {
+                    this.account = {
+                        admin: params.admin as string == 'true',
+                        id: params.id,
+                        name: params.name,
+                        token: params.token,
+                        friend_count: parseInt(params.friend_count as string || "0")
+                    }
+                    return Promise.resolve();
+                } else {
+                    return Promise.reject(new Error("invalid credentials"));
                 }
-                return Promise.resolve();
             }
         }
         return Promise.resolve();
     }
 
-    private async social(): Promise<void> {
+    private async authLinks(): Promise<void> {
 
-        let socialAuthLinkResponse = await new Promise<any>((resolve, reject) => {
-            let socialAuthLinksUrl: URL = new URL(`${window.location.origin}${socialAuthLinks}`);
-            let socialAuthLinksRequest: RequestInit = {
+        let authLinkResponse = await new Promise<any>((resolve, reject) => {
+            let authLinksUrl: URL = new URL(`${window.location.origin}${authLinks}`);
+            let authLinksRequest: RequestInit = {
                 method: "POST",
                 headers: { 'Content-Type': 'application/json' },
                 body: '{}'
             };
-            fetch(socialAuthLinksUrl, socialAuthLinksRequest)
-                .then(socialAuthLinkResponse => socialAuthLinkResponse.json())
-                .then((socialAuthLinkResponse: any) => {
-                    resolve(socialAuthLinkResponse);
+            fetch(authLinksUrl, authLinksRequest)
+                .then(authLinkResponse => authLinkResponse.json())
+                .then((authLinkResponse: any) => {
+                    resolve(authLinkResponse);
                 })
                 .catch((error: any) => {
                     console.error(`error: ${error}`);
@@ -74,11 +104,11 @@ class AUTH {
                 });
 
         });
-        this.vars.twitter = socialAuthLinkResponse.twitter;
-        this.vars.discord = socialAuthLinkResponse.discord;
-        this.vars.google = socialAuthLinkResponse.google;
-        this.vars.snapchat = socialAuthLinkResponse.snapchat;
-        this.vars.facebook = socialAuthLinkResponse.facebook;
+        this.vars.twitter = authLinkResponse.twitter;
+        this.vars.discord = authLinkResponse.discord;
+        this.vars.google = authLinkResponse.google;
+        this.vars.snapchat = authLinkResponse.snapchat;
+        this.vars.facebook = authLinkResponse.facebook;
     }
 
     private async login(type: string = "Guest"): Promise<any> {
@@ -103,36 +133,39 @@ class AUTH {
     };
 
     public async discord(): Promise<any> {
-        return new Promise(async (resolve) => {
-            // Do form stuff
-            await this.login("Discord");
-            resolve(true);
-        });
+        window.open(this.vars.discord, "_self");
+        // return new Promise(async (resolve) => {
+        //     // Do form stuff
+        //     await this.login("Discord");
+        //     resolve(true);
+        // });
     }
 
     public async twitter(): Promise<any> {
         window.open(this.vars.twitter, "_self");
-        return new Promise(async (resolve) => {
-            // Do form stuff
-            await this.login("Twitter");
-            resolve(true);
-        });
+        // return new Promise(async (resolve) => {
+        //     // Do form stuff
+        //     await this.login("Twitter");
+        //     resolve(true);
+        // });
     };
 
     public async snapchat(): Promise<any> {
-        return new Promise(async (resolve) => {
-            // Do form stuff
-            await this.login("Snapchat");
-            resolve(true);
-        });
+        window.open(this.vars.snapchat, "_self");
+        // return new Promise(async (resolve) => {
+        //     // Do form stuff
+        //     await this.login("Snapchat");
+        //     resolve(true);
+        // });
     };
 
     public async google(): Promise<any> {
-        return new Promise(async (resolve) => {
-            // Do form stuff
-            await this.login("Google");
-            resolve(true);
-        });
+        window.open(this.vars.google, "_self");
+        // return new Promise(async (resolve) => {
+        //     // Do form stuff
+        //     await this.login("Google");
+        //     resolve(true);
+        // });
     }
 
     public async username(): Promise<any> {

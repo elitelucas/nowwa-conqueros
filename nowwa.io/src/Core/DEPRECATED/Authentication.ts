@@ -1,7 +1,7 @@
 import passport from 'passport';
 import passportLocal from 'passport-local';
 import { User, UserDocument } from '../../Models/User';
-import CONFIG, { authenticationHashUrl, authenticationLoginUrl, authenticationRegisterUrl, authenticationUrl, authenticationVerifyUrl } from '../CONFIG/CONFIG';
+import CONFIG, { authenticationHashUrl, authenticationLoginUrl, authRegister, authVerify } from '../CONFIG/CONFIG';
 import Database from './Database';
 import bcrypt from "bcrypt";
 import { CustomDocument } from '../../Models/Custom';
@@ -13,9 +13,9 @@ class Authentication {
     public static async AsyncInit(): Promise<void> {
         Authentication.InitPassport();
         Authentication.InitAuthentication();
-        Authentication.WebhookLogin();
-        Authentication.WebhookRegister();
-        Authentication.WebhookVerify();
+        // Authentication.WebhookLogin();
+        // Authentication.WebhookRegister();
+        // Authentication.WebhookVerify();
         Authentication.WebhookHash();
         return Promise.resolve();
     }
@@ -163,7 +163,7 @@ class Authentication {
 
 
     private static WebhookRegister(): void {
-        EXPRESS.app.use(`${authenticationRegisterUrl}`, (req, res) => {
+        EXPRESS.app.use(`${authRegister}`, (req, res) => {
             console.log(`<-- authentication - register`);
             let email: string = req.body.email;
             let password: string = req.body.password;
@@ -183,7 +183,7 @@ class Authentication {
 
 
     private static WebhookVerify(): void {
-        EXPRESS.app.use(`${authenticationVerifyUrl}`, (req, res) => {
+        EXPRESS.app.use(`${authVerify}`, (req, res) => {
             console.log(`<-- authentication - verify`);
 
             let url: URL = new URL(`${CONFIG.vars.PUBLIC_FULL_URL}${req.originalUrl}`);
@@ -295,7 +295,7 @@ class Authentication {
         });
         try {
             let token = await this.Hash(args.email);
-            await Email.Send(args.email, `[Nowwa.io] Verify your Email`, `<html><body>Click <a href=${CONFIG.vars.PUBLIC_FULL_URL}${authenticationVerifyUrl}?email=${args.email}&token=${token}>here</a> to verify your email!</body></html>`);
+            await Email.Send(args.email, `[Nowwa.io] Verify your Email`, `<html><body>Click <a href=${CONFIG.vars.PUBLIC_FULL_URL}${authVerify}?email=${args.email}&token=${token}>here</a> to verify your email!</body></html>`);
         }
         catch (error) {
             console.log(`error: ${JSON.stringify(error)}`);

@@ -3,6 +3,7 @@ import fetch, { RequestInit } from 'node-fetch';
 import EXPRESS from '../../EXPRESS/EXPRESS';
 import { google } from 'googleapis';
 import Authentication from '../../DEPRECATED/Authentication';
+import AUTH from './AUTH';
 
 class Facebook {
     private static Instance: Facebook;
@@ -77,7 +78,7 @@ class Facebook {
                     resourceName: 'people/me',
                     personFields: 'names,emailAddresses'
                 });
-                let token = await Authentication.Hash(userInfo.data.email!);
+                let token = await AUTH.Tokenize(userInfo.data.email!);
                 res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?info=loggedin&name=${userInfo.data.name!}&token=${token}&admin=false&id=${userInfo.data.email!}&friend_count=${contactInfo.data.totalPeople}`);
             } catch (error: any) {
                 res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?error=${error.message}`);

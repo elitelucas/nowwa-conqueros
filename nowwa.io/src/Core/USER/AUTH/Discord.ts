@@ -1,8 +1,8 @@
 import express from 'express';
 import fetch, { RequestInit } from 'node-fetch';
 import CONFIG, { discordAuthUrl, discordCallbackUrl } from '../../CONFIG/CONFIG';
-import Authentication from '../../DEPRECATED/Authentication';
 import EXPRESS from '../../EXPRESS/EXPRESS';
+import AUTH from './AUTH';
 
 class Discord {
     private static Instance: Discord;
@@ -84,7 +84,7 @@ class Discord {
                                 .then(result => result.json())
                                 .then(thirdResponse => {
                                     console.log(`thirdResponse`, JSON.stringify(thirdResponse, null, 4));
-                                    Authentication.Hash(secondResponse.email)
+                                    AUTH.Tokenize(secondResponse.email)
                                         .then((token) => {
                                             res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?info=loggedin&name=${secondResponse.username}&token=${token}&admin=false&id=${secondResponse.email}&friend_count=${thirdResponse.length}&source=discord`);
                                         })
