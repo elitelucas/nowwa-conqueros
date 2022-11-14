@@ -28,7 +28,7 @@ class Snapchat {
         ];
         let snapchatScope: string = encodeURIComponent(snapchatScopeList.join(' '));
         let snapchatResponseType: string = `code`;
-        let snapchatUrl: string = `https://accounts.snapchat.com/accounts/oauth2/auth?client_id=${snapchatClientId}&redirect_uri=${snapchatRedirect}&response_type=${snapchatResponseType}&scope=${snapchatScope}&state=${snapchatState}`;
+        let snapchatUrl: string = `https://accounts.snapchat.com/accounts/oauth2/auth?client_id=${snapchatClientId}&redirect_uri=${snapchatRedirect}&response_type=${snapchatResponseType}&scope=${snapchatScope}&state=${snapchatState}&source=snapchat`;
         return snapchatUrl;
     }
 

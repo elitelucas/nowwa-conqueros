@@ -5,6 +5,7 @@ import { IndexState, } from './Index';
 import fetch, { RequestInit, Request } from 'node-fetch';
 import { Hash, UpdateComponentState } from './Utils/Helpers';
 import './Utils/Facebook';
+import CONQUER from '../Frontend/CONQUER';
 
 export type LoginState = {
     initialized: boolean,
@@ -62,8 +63,6 @@ export const LoginInit = async (state: LoginState): Promise<LoginState> => {
             facebookScript.defer = true;
 
             facebookScript.onload = () => {
-
-                console.log('facebook loaded');
 
                 let facebookAppId: string = `2303120786519319`;
                 FB.init({
@@ -186,10 +185,16 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
     };
 
     let doTwitter = async () => {
-        setIndexState({
-            message: ''
-        });
-        window.open(state.twitter, "_self");
+        if (CONQUER.Ready) {
+            await CONQUER.AUTH.twitter();
+            console.log('done twitter');
+        } else {
+            console.log('conquer is not ready');
+        }
+        // setIndexState({
+        //     message: ''
+        // });
+        // window.open(state.twitter, "_self");
     };
 
     let doGoogle = async () => {

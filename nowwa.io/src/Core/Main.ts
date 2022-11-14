@@ -16,6 +16,10 @@ import EMAIL from './USER/EMAIL';
 import EXPRESS from './EXPRESS/EXPRESS';
 import DATA from './DATA/DATA';
 
+import dotenv from 'dotenv';
+
+
+
 class Main {
     /**
      * Initialize necessary components.
@@ -44,7 +48,10 @@ class Main {
 
         // HACKIN
 
-        CONQUER.init();
+        dotenv.config();
+        if (process.env.DISABLE_HACKING as string != 'true') {
+            CONQUER.init();
+        }
     }
 
 

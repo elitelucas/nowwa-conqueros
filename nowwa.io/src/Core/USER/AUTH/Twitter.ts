@@ -82,7 +82,7 @@ class Twitter {
                     // console.log(`followers`, followers);
 
                     const token = await Authentication.Hash(userObject.id);
-                    res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?info=loggedin&name=${userObject.username}&token=${token}&admin=false&id=${userObject.id}&friend_count=${followers.length}`);
+                    res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?info=loggedin&name=${userObject.username}&token=${token}&admin=false&id=${userObject.id}&friend_count=${followers.length}&source=twitter`);
                 })
                 .catch(() => res.status(403).send('Invalid verifier or access tokens!'));
         });
