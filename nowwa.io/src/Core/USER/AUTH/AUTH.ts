@@ -41,9 +41,12 @@ class AUTH {
     SET / REGISTER
 
 
+    // username, password
+
     ================*/
 
-    public static async set(vars: any): Promise<any> {
+    public static async set(vars: any): Promise<any> 
+    {
         let userExists: boolean = false;
 
         await USERNAME.get(vars).then(function () { userExists = true });
@@ -105,7 +108,8 @@ class AUTH {
 
     ================*/
 
-    public static async getProxy(vars: any): Promise<any> {
+    public static async getProxy( vars: any ): Promise<any> 
+    {
         var uID: any;
 
         if (vars.email) uID = await EMAIL.getUID(vars.email);

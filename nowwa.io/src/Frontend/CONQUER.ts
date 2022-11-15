@@ -17,12 +17,11 @@ class CONQUER
         await this.AUTH.init();
 
         log("Okkkk");
-
-        /*
+ 
         this.do( "ActionTest" ).then( function(e?:any)
         {
             log( "ACTION PASSED", e );
-        });*/
+        });
  
         return Promise.resolve();
     };

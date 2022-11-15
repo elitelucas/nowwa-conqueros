@@ -35,6 +35,13 @@ class AUTH
         return CONQUER.do( "AUTH.get", vars );
     }
 
+    public async remove( vars:any ) : Promise<any>
+    {
+        //return CONQUER.do( "AUTH.remove", vars );
+    
+        return Promise.resolve();
+    }
+
     public async getSet( vars:any ) : Promise<any>
     {
 
@@ -45,45 +52,25 @@ class AUTH
         
         return this.login( "Guest" );
     };
-
-    public async discord() : Promise<any>
+ 
+    public discord()
     {
-        return new Promise( async (resolve) => 
-        {
-            // Do form stuff
-            await this.login( "Discord" );
-            resolve( true );
-        });
+ 
     }
 
-    public async twitter() : Promise<any>
+    public async twitter()
     {
-        return new Promise( async (resolve) => 
-        {
-            // Do form stuff
-            await this.login( "Twitter" );
-            resolve( true );
-        });
+
     };
 
-    public async snapchat() : Promise<any>
+    public snapchat()
     {
-        return new Promise( async (resolve) => 
-        {
-            // Do form stuff
-            await this.login( "Snapchat" );
-            resolve( true );
-        });
+
     };
  
-    public async google() : Promise<any>
+    public google()
     {
-        return new Promise( async (resolve) => 
-        {
-            // Do form stuff
-            await this.login( "Google" );
-            resolve( true );
-        });
+ 
     } 
 
     public async username() : Promise<any>
