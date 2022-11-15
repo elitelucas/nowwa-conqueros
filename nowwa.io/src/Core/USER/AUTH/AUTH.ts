@@ -28,8 +28,10 @@ class AUTH {
 
     ================*/
 
-    public static async init(): Promise<void> {
+    public static async init(): Promise<void> 
+    {
         PASSPORT.init();
+
         this.webhookAuthLinks();
         this.webhookAuthVerify();
         this.webhookAuthRegister();
@@ -54,23 +56,22 @@ class AUTH {
 
     ================*/
 
-    public static async set(vars: any): Promise<any> {
+    public static async set(vars: any): Promise<any> 
+    {
         let encryptedPassword = await CRYPT.hash(vars.password);
 
         try {
             let item = await USERNAME.set(
                 {
-                    username: vars.username,
-                    password: encryptedPassword,
-                    admin: false,
-                    isVerified: vars.isVerified || false
+                    username    : vars.username,
+                    password    : encryptedPassword,
+                    admin       : false,
+                    isVerified  : vars.isVerified || false
                 });
             return Promise.resolve(item);
         } catch (error) {
             return Promise.reject(error);
         }
-
-
     };
 
 
@@ -137,7 +138,8 @@ class AUTH {
         return Promise.resolve(user);
     };
 
-    public static async addProxy(uID: any, vars: any): Promise<any> {
+    public static async addProxy(uID: any, vars: any): Promise<any> 
+    {
         var proxyUser = await AUTH.getProxy(vars);
 
         if (uID != proxyUser.uID) USERNAME.reparent(uID, proxyUser.uID);
