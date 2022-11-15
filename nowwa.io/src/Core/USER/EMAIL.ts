@@ -2,20 +2,20 @@ import STRING from '../../UTIL/STRING';
 import DATA from "../DATA/DATA";
 import USERNAME from './USERNAME';
 
-import CONFIG, { authenticationVerifyUrl } from '../CONFIG/CONFIG';
+import CONFIG, { authVerify } from '../CONFIG/CONFIG';
 import nodemailer, { Transport, Transporter } from 'nodemailer';
 import { MailOptions } from 'nodemailer/lib/json-transport';
 import LOG, { log } from '../../UTIL/LOG';
 import CRYPT from '../../UTIL/CRYPT';
+
 class EMAIL {
     private static table: string = "username_emails";
 
     private static emailSender: any;
     private static transporter: any;
 
-    public static async init() 
-    {
- 
+    public static async init() {
+
         EMAIL.emailSender = `${CONFIG.vars.VERIFY_EMAIL_SENDER}`;
 
         EMAIL.transporter = nodemailer.createTransport(
@@ -39,11 +39,11 @@ class EMAIL {
     ================*/
 
     public static async set(vars: any): Promise<any> {
-        if (!STRING.validateEmail(vars.email)) return Promise.reject( LOG.msg( 'Email is invalid' ) );  
+        if (!STRING.validateEmail(vars.email)) return Promise.reject(LOG.msg('Email is invalid'));
 
         let item: any = await EMAIL.get(vars);
 
-        if (item) return Promise.reject( LOG.msg( 'Email already exists' ) ); 
+        if (item) return Promise.reject(LOG.msg('Email already exists'));
 
         item = await DATA.set(EMAIL.table, vars);
 
@@ -59,7 +59,7 @@ class EMAIL {
             {
                 email: email,
                 subject: `[Nowwa.io] Verify your Email`,
-                content: `Click <a href=${CONFIG.PublicUrl}${authenticationVerifyUrl}?email=${email}&token=${token}>here</a> to verify your email!`
+                content: `Click <a href=${CONFIG.vars.PUBLIC_FULL_URL}${authVerify}?email=${email}&token=${token}>here</a> to verify your email!`
             });
     }
 
@@ -73,9 +73,8 @@ class EMAIL {
         };
 
         try {
-            EMAIL.transporter.sendMail(mailOptions, (error: any, info: any) => 
-            {
-                if (error) return Promise.reject( LOG.msg( error ) ); 
+            EMAIL.transporter.sendMail(mailOptions, (error: any, info: any) => {
+                if (error) return Promise.reject(LOG.msg(error));
 
                 log('Email sent: ' + info.response);
                 return Promise.resolve(info);
@@ -101,12 +100,12 @@ class EMAIL {
 
         if (query.where.email) {
             results = await DATA.getOne(EMAIL.table, query);
-            if (!results) return Promise.reject( LOG.msg( 'Email does not exist' ) ); 
+            if (!results) return Promise.reject(LOG.msg('Email does not exist'));
 
         } else {
 
             results = await DATA.get(EMAIL.table, query);
-            if (!results[0]) return Promise.reject( LOG.msg( 'Email does not exist' ) ); 
+            if (!results[0]) return Promise.reject(LOG.msg('Email does not exist'));
         }
 
         return Promise.resolve(results);
@@ -116,7 +115,7 @@ class EMAIL {
         let item = await EMAIL.get({ where: { email: email } });
         if (item) return Promise.resolve(item);
 
-        return Promise.reject( LOG.msg( 'Email username does not exist' ) ); 
+        return Promise.reject(LOG.msg('Email username does not exist'));
     };
 
     /*=============== 

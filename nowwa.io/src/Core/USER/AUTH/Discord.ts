@@ -1,8 +1,9 @@
 import express from 'express';
 import fetch, { RequestInit } from 'node-fetch';
 import CONFIG, { discordAuthUrl, discordCallbackUrl } from '../../CONFIG/CONFIG';
-import Authentication from '../../DEPRECATED/Authentication';
 import EXPRESS from '../../EXPRESS/EXPRESS';
+import AUTH from './AUTH';
+
 class Discord {
     private static Instance: Discord;
 
@@ -11,30 +12,22 @@ class Discord {
      */
     public static async init(): Promise<void> {
         Discord.Instance = new Discord();
-        Discord.WebhookAuthLink();
         Discord.WebhookCallbackLink();
         return Promise.resolve();
     }
 
-    public static async WebhookAuthLink(): Promise<void> {
-        EXPRESS.app.use(`${discordAuthUrl}`, (req, res) => {
-
-            let discordClientId: string = CONFIG.vars.DISCORD_CLIENT_ID;
-            let discordRedirect: string = encodeURIComponent(`${CONFIG.PublicUrl}${discordCallbackUrl}`);
-            let discordScopes: string[] = [
-                'identify',
-                'email',
-                // 'relationships.read'
-            ];
-            let discordScope: string = encodeURIComponent(discordScopes.join(' '));
-            let discordResponseType: string = `code`;
-            let discordUrl: string = `https://discord.com/api/oauth2/authorize?client_id=${discordClientId}&redirect_uri=${discordRedirect}&response_type=${discordResponseType}&scope=${discordScope}`;
-
-            res.status(200).send({
-                success: true,
-                link: discordUrl
-            });
-        });
+    public static get AuthLink(): string {
+        let discordClientId: string = CONFIG.vars.DISCORD_CLIENT_ID;
+        let discordRedirect: string = encodeURIComponent(`${CONFIG.vars.DISCORD_CALLBACK_URL}`);
+        let discordScopes: string[] = [
+            'identify',
+            'email',
+            // 'relationships.read'
+        ];
+        let discordScope: string = encodeURIComponent(discordScopes.join(' '));
+        let discordResponseType: string = `code`;
+        let discordUrl: string = `https://discord.com/api/oauth2/authorize?client_id=${discordClientId}&redirect_uri=${discordRedirect}&response_type=${discordResponseType}&scope=${discordScope}`;
+        return discordUrl;
     }
 
     public static async WebhookCallbackLink(): Promise<void> {
@@ -48,7 +41,7 @@ class Discord {
 
             let discordClientId: string = CONFIG.vars.DISCORD_CLIENT_ID;
             let discordClientSecret: string = CONFIG.vars.DISCORD_CLIENT_SECRET;
-            let discordRedirect: string = `${CONFIG.PublicUrl}${discordCallbackUrl}`;
+            let discordRedirect: string = `${CONFIG.vars.PUBLIC_FULL_URL}${discordCallbackUrl}`;
 
             var firstRequestInit: RequestInit = {
                 method: 'POST',
@@ -68,7 +61,7 @@ class Discord {
                 .then(firstResponse => {
                     console.log(`firstResponse`, JSON.stringify(firstResponse, null, 4));
                     if (firstResponse.error) {
-                        res.redirect(`${CONFIG.PublicUrl}/Index.html?error=${firstResponse.error_description}`);
+                        res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?error=${firstResponse.error_description}`);
                         return;
                     }
                     var secondRequestInit: RequestInit = {
@@ -91,12 +84,12 @@ class Discord {
                                 .then(result => result.json())
                                 .then(thirdResponse => {
                                     console.log(`thirdResponse`, JSON.stringify(thirdResponse, null, 4));
-                                    Authentication.Hash(secondResponse.email)
+                                    AUTH.Tokenize(secondResponse.email)
                                         .then((token) => {
-                                            res.redirect(`${CONFIG.PublicUrl}/Index.html?info=loggedin&name=${secondResponse.username}&token=${token}&admin=false&id=${secondResponse.email}&friend_count=${thirdResponse.length}`);
+                                            res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?info=loggedin&name=${secondResponse.username}&token=${token}&admin=false&id=${secondResponse.email}&friend_count=${thirdResponse.length}&source=discord`);
                                         })
                                         .catch((error) => {
-                                            res.redirect(`${CONFIG.PublicUrl}/Index.html?error=${error.message}`);
+                                            res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?error=${error.message}`);
                                         });
                                 })
                                 .catch(console.error);

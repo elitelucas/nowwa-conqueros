@@ -1,8 +1,8 @@
 import { TwitterApi, UserV2 } from 'twitter-api-v2';
-import express from 'express';
-import CONFIG, { twitterAuthUrl, twitterCallbackUrl } from '../../CONFIG/CONFIG';
+import CONFIG, { twitterCallbackUrl } from '../../CONFIG/CONFIG';
 import Authentication from '../../DEPRECATED/Authentication';
 import EXPRESS from '../../EXPRESS/EXPRESS';
+import AUTH from './AUTH';
 
 class Twitter {
 
@@ -15,32 +15,24 @@ class Twitter {
     public static async init(): Promise<void> {
         Twitter.Instance = new Twitter();
         Twitter.codeVerifiers = {};
-        Twitter.WebhookAuthLink();
         Twitter.WebhookCallbackLink();
         return Promise.resolve();
     }
 
-    public static async WebhookAuthLink(): Promise<void> 
-    {
-        EXPRESS.app.use(`${twitterAuthUrl}`, (req, res) => {
-            const twitterClient = new TwitterApi({
-                clientId: CONFIG.vars.TWITTER_CLIENT_ID,
-                clientSecret: CONFIG.vars.TWITTER_CLIENT_SECRET
-            });
-
-            const { url, codeVerifier, state } = twitterClient.generateOAuth2AuthLink(`${CONFIG.vars.TWITTER_CALLBACK_URL}`, {
-                scope: ['tweet.read', 'users.read', 'follows.read']
-            });
-            Twitter.codeVerifiers[state] = codeVerifier;
-            res.status(200).send({
-                success: true,
-                link: url
-            });
+    public static get AuthLink(): string {
+        const twitterClient = new TwitterApi({
+            clientId: CONFIG.vars.TWITTER_CLIENT_ID,
+            clientSecret: CONFIG.vars.TWITTER_CLIENT_SECRET
         });
+
+        const { url, codeVerifier, state } = twitterClient.generateOAuth2AuthLink(`${CONFIG.vars.TWITTER_CALLBACK_URL}`, {
+            scope: ['tweet.read', 'users.read', 'follows.read']
+        });
+        Twitter.codeVerifiers[state] = codeVerifier;
+        return url;
     }
 
-    public static async WebhookCallbackLink(): Promise<void> 
-    {
+    public static async WebhookCallbackLink(): Promise<void> {
         EXPRESS.app.use(`${twitterCallbackUrl}`, (req, res) => {
             console.log('query callback');
             console.log(JSON.stringify(req.query));
@@ -89,8 +81,8 @@ class Twitter {
                     }
                     // console.log(`followers`, followers);
 
-                    const token = await Authentication.Hash(userObject.id);
-                    res.redirect(`${CONFIG.PublicUrl}/Index.html?info=loggedin&name=${userObject.username}&token=${token}&admin=false&id=${userObject.id}&friend_count=${followers.length}`);
+                    const token = await AUTH.Tokenize(userObject.id);
+                    res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?info=loggedin&name=${userObject.username}&token=${token}&admin=false&id=${userObject.id}&friend_count=${followers.length}&source=twitter`);
                 })
                 .catch(() => res.status(403).send('Invalid verifier or access tokens!'));
         });

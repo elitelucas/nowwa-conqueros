@@ -8,8 +8,9 @@ import 'semantic-ui-css/semantic.css';
 import Login, { LoginStateDefault } from './Login';
 import Register, { RegisterStateDefault } from './Register';
 import Home, { HomeStateDefault } from './Home';
-import { ComponentState, UpdateComponentState } from './Utils';
+import { ComponentState, UpdateComponentState } from './Utils/Helpers';
 import Status from '../Core/APPS/Status';
+import CONQUER from '../Frontend/CONQUER';
 
 type IndexDisplay = 'None' | 'Explorer' | 'Build' | 'Test' | 'Login' | 'Register' | 'Home';
 
@@ -50,7 +51,6 @@ const GetUrlSearchParams = (url: string = window.location.href) => {
     return params;
 }
 
-
 const Index = () => {
 
     const [state, setState] = useState(IndexStateDefault);
@@ -60,35 +60,78 @@ const Index = () => {
         setState(newState);
     };
 
+    const loadConquer = (): Promise<void> => {
+        return CONQUER.init();
+
+        // return new Promise((resolve, reject) => {
+        //     let conquerScript = document.createElement('script');
+        //     conquerScript.type = 'text/javascript';
+        //     conquerScript.src = `${window.location.origin}/home/lib/CONQUER.js`;
+        //     conquerScript.async = true;
+        //     conquerScript.defer = true;
+
+        //     conquerScript.onload = () => {
+        //         CONQUER.init();
+        //         resolve();
+        //     }
+        //     document.body.appendChild(conquerScript);
+        // });
+    };
+
     if (!state.initialized) {
-        let params: { [key: string]: any } = GetUrlSearchParams(window.location.href);
-        window.history.pushState(params, "", `${window.location.origin}`);
-        if (params.info == 'verified') {
-            updateState({
-                message: `email successfully verified!`
-            });
-        } else if (params.info == 'notverified') {
-            updateState({
-                message: `failed to verify email`
-            });
-        } else if (params.info == 'loggedin') {
-            updateState({
-                display: 'Home',
-                account: {
-                    admin: params.admin as string == 'true',
-                    id: params.id,
-                    name: params.name,
-                    token: params.token,
-                    friend_count: parseInt(params.friend_count as string || "0")
+        updateState({
+            initialized: true
+        });
+    }
+    if (state.initialized) {
+
+        if (!CONQUER.Initialized) {
+            loadConquer().then(() => {
+                let params = CONQUER.SearchParams;
+                console.log('done load conquer');
+                console.log(`params`, params);
+
+                if (CONQUER.AUTH.account) {
+                    updateState({
+                        initialized: true,
+                        display: 'Home',
+                        account: CONQUER.AUTH.account
+                    });
                 }
-            });
-        } else if (params.info == 'discord') {
-            updateState({
-                message: params.detail
-            });
-        } else if (params.error) {
-            updateState({
-                message: `${params.error}`
+
+                // if (params.info == 'verified') {
+                //     updateState({
+                //         initialized: true,
+                //         message: `email successfully verified!`
+                //     });
+                // } else if (params.info == 'notverified') {
+                //     updateState({
+                //         initialized: true,
+                //         message: `failed to verify email`
+                //     });
+                // } else if (params.info == 'loggedin') {
+                //     updateState({
+                //         initialized: true,
+                //         display: 'Home',
+                //         account: {
+                //             admin: params.admin as string == 'true',
+                //             id: params.id,
+                //             name: params.name,
+                //             token: params.token,
+                //             friend_count: parseInt(params.friend_count as string || "0")
+                //         }
+                //     });
+                // } else if (params.info == 'discord') {
+                //     updateState({
+                //         initialized: true,
+                //         message: params.detail
+                //     });
+                // } else if (params.error) {
+                //     updateState({
+                //         initialized: true,
+                //         message: `${params.error}`
+                //     });
+                // }
             });
         }
     }

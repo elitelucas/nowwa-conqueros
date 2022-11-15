@@ -1,8 +1,8 @@
 import React from 'react';
 import { Icon, Button, Segment, ButtonGroup, Menu, Header, Input, InputOnChangeData, Card, Grid, Divider, Form, Message } from 'semantic-ui-react';
-import { authenticationRegisterUrl } from '../Core/CONFIG/CONFIG';
+import { authRegister } from '../Core/CONFIG/CONFIG';
 import { IndexState } from './Index';
-import { UpdateComponentState } from './Utils';
+import { UpdateComponentState } from './Utils/Helpers';
 
 export type RegisterState = {
     initialized: boolean,
@@ -90,7 +90,7 @@ const Register = (state: RegisterState, setState: React.Dispatch<React.SetStateA
                 shouldReset: true,
                 warning: ''
             });
-            let url: URL = new URL(`${window.location.origin}${authenticationRegisterUrl}`);
+            let url: URL = new URL(`${window.location.origin}${authRegister}`);
             let init: RequestInit = {
                 method: "POST",
                 headers: { 'Content-Type': 'application/json' },

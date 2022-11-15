@@ -19,8 +19,7 @@ class Build {
     /**
      * Initialize game module.
      */
-    public static async AsyncInit(): Promise<void> 
-    {
+    public static async AsyncInit(): Promise<void> {
         Build.Instance = new Build();
         Build.WebhookList();
         Build.WebhookBuild();
@@ -28,8 +27,7 @@ class Build {
     }
 
 
-    public static WebhookList(): void 
-    {
+    public static WebhookList(): void {
         EXPRESS.app.use(`${toyListUrl}`, async (req, res) => {
             // console.log(`<-- storage - files`);
             let fullPath: string = path.join(__dirname, `${Build.RootFolder}`);
@@ -150,8 +148,7 @@ class Build {
                 });
             });
         }
-        await new Promise<void>((resolve, reject) => 
-        {
+        await new Promise<void>((resolve, reject) => {
             let apkSourceFolder: string = path.join(__dirname, `..`, `..`, `platforms/android/app/build/outputs/apk/debug`);
             let apkSource: string = path.join(apkSourceFolder, Build.DefaultAPKName);
             let apkDestinationFolder: string = path.join(`${projectDirectory}`, `${config.game.Platform}`);
@@ -239,15 +236,14 @@ class Build {
         return output;
     }
 
-    public static WebhookBuild(): void 
-    {
+    public static WebhookBuild(): void {
         EXPRESS.app.use(`${toyBuildUrl}`, async (req, res) => {
             // console.log(`<-- storage - files`);
             if (Status.CurrentStatus.Activity != 'None') {
                 console.log(`Game.CurrentActivity: ${Status.CurrentStatus.Activity}`);
                 res.status(500).send(`PLAYCANVAS BUSY | `);
             } else {
-                let url: URL = new URL(`${CONFIG.PublicUrl}${req.originalUrl}`);
+                let url: URL = new URL(`${CONFIG.vars.PUBLIC_FULL_URL}${req.originalUrl}`);
 
                 let configName: string = url.searchParams.get('n') as string;
                 let backend: Build.Backend = url.searchParams.get('b') as Build.Backend;
@@ -367,8 +363,7 @@ class Build {
 
 }
 
-namespace Build 
-{
+namespace Build {
     export type Backend = `Replicant` | `Cookies` | `Nakama` | `None`;
     export type Platform = `Facebook` | `Snapchat` | `Web` | `Android` | `iOS` | `None`;
 
@@ -376,8 +371,7 @@ namespace Build
 
     export const DefaultAPKName: string = `app-debug.apk`;
 
-    const CreateCSPMetadata = (csps: { [key: string]: string[] }) => 
-    {
+    const CreateCSPMetadata = (csps: { [key: string]: string[] }) => {
         var tag: string = "<meta http-equiv=\"Content-Security-Policy\" content=\"{0}\" />"
         var content: string = "";
         for (var key in csps) {

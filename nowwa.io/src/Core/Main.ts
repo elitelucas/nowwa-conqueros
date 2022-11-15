@@ -16,6 +16,10 @@ import EMAIL from './USER/EMAIL';
 import EXPRESS from './EXPRESS/EXPRESS';
 import DATA from './DATA/DATA';
 
+import dotenv from 'dotenv';
+
+
+
 class Main {
     /**
      * Initialize necessary components.
@@ -25,7 +29,6 @@ class Main {
     }
 
     private async init(): Promise<void> {
-        CONFIG.init();
         EXPRESS.init();
 
         // DEPRECATED
@@ -38,16 +41,18 @@ class Main {
 
         // NEW CODE!
 
-        await DATA.init(); 
-        await AUTH.init(); 
-        await EMAIL.init(); 
-        await SOCKET.init(); 
+        await DATA.init();
+        await AUTH.init();
+        await EMAIL.init();
+        await SOCKET.init();
 
         // HACKIN
 
-        CONQUER.init();
+        dotenv.config();
+        if (process.env.DISABLE_HACKING as string != 'true') {
+            CONQUER.init();
+        }
     }
-
 
 }
 

@@ -1,12 +1,11 @@
 import React from 'react';
 import { Icon, Button, Segment, ButtonGroup, Menu, Header, Input, InputOnChangeData, Card, Grid, Divider, Label, Image, Message, Form } from 'semantic-ui-react';
-import CONFIG, { authenticationLoginUrl, discordAuthUrl, discordCallbackUrl, googleAuthUrl, googleCallbackUrl, snapchatCallbackUrl, twitterAuthUrl } from '../Core/CONFIG/CONFIG';
+import CONFIG, { authenticationLoginUrl, discordAuthUrl, googleAuthUrl, snapchatCallbackUrl, authLinks as authLinks, twitterAuthUrl } from '../Core/CONFIG/CONFIG';
 import { IndexState, } from './Index';
 import fetch, { RequestInit, Request } from 'node-fetch';
-import { Hash, UpdateComponentState } from './Utils';
-import { FirebaseApp, FirebaseOptions, initializeApp } from 'firebase/app';
-import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
-import GoogleAPIs, { google } from 'googleapis';
+import { Hash, UpdateComponentState } from './Utils/Helpers';
+import './Utils/Facebook';
+import CONQUER from '../Frontend/CONQUER';
 
 export type LoginState = {
     initialized: boolean,
@@ -17,6 +16,7 @@ export type LoginState = {
     twitter: string,
     discord: string,
     google: string,
+    snapchat: string,
     facebookReady: boolean,
 }
 
@@ -29,96 +29,71 @@ export const LoginStateDefault: LoginState = {
     twitter: '',
     discord: '',
     google: '',
+    snapchat: '',
     facebookReady: false,
 }
 
-export const LoginInit = (state: LoginState): Promise<LoginState> => {
-    return new Promise((resolve, reject) => {
-        let twitterUrl: URL = new URL(`${window.location.origin}${twitterAuthUrl}`);
-        let twitterRequest: RequestInit = {
-            method: "POST",
-            headers: { 'Content-Type': 'application/json' },
-            body: '{}'
-        };
-        fetch(twitterUrl, twitterRequest)
-            .then(twitterResponse => twitterResponse.json())
-            .then((twitterResponse: any) => {
-                if (twitterResponse.success) {
+export const LoginInit = async (state: LoginState): Promise<LoginState> => {
+    try {
+        let socialAuthLinkResponse = await new Promise<any>((resolve, reject) => {
+            let socialAuthLinksUrl: URL = new URL(`${window.location.origin}${authLinks}`);
+            let socialAuthLinksRequest: RequestInit = {
+                method: "POST",
+                headers: { 'Content-Type': 'application/json' },
+                body: '{}'
+            };
+            fetch(socialAuthLinksUrl, socialAuthLinksRequest)
+                .then(socialAuthLinkResponse => socialAuthLinkResponse.json())
+                .then((socialAuthLinkResponse: any) => {
+                    resolve(socialAuthLinkResponse);
+                })
+                .catch((error: any) => {
+                    console.error(`error: ${error}`);
+                    reject(error);
+                });
 
-                    let facebookScript = document.createElement('script');
-                    facebookScript.type = 'text/javascript';
-                    facebookScript.src = 'https://connect.facebook.net/en_US/sdk.js';
-                    facebookScript.async = true;
-                    facebookScript.defer = true;
-                    facebookScript.onload = () => {
+        });
 
-                        let facebookAppId: string = `2303120786519319`;
-                        (window as any).FB.init({
-                            appId: facebookAppId,
-                            autoLogAppEvents: true,
-                            xfbml: true,
-                            version: 'v15.0'
-                        });
+        await new Promise<void>((resolve, reject) => {
 
-                        (window as any).FB.AppEvents.logPageView();
+            let facebookScript = document.createElement('script');
+            facebookScript.type = 'text/javascript';
+            facebookScript.src = 'https://connect.facebook.net/en_US/sdk.js';
+            facebookScript.async = true;
+            facebookScript.defer = true;
 
-                        let discordUrl: URL = new URL(`${window.location.origin}${discordAuthUrl}`);
-                        let discordRequest: RequestInit = {
-                            method: "POST",
-                            headers: { 'Content-Type': 'application/json' },
-                            body: '{}'
-                        };
-                        fetch(discordUrl, discordRequest)
-                            .then(discordResponse => discordResponse.json())
-                            .then((discordResponse: any) => {
+            facebookScript.onload = () => {
 
-                                if (discordResponse.success) {
+                let facebookAppId: string = `2303120786519319`;
+                FB.init({
+                    appId: facebookAppId,
+                    autoLogAppEvents: true,
+                    xfbml: true,
+                    version: 'v15.0'
+                });
 
-                                    let googleUrl: URL = new URL(`${window.location.origin}${googleAuthUrl}`);
-                                    let googleRequest: RequestInit = {
-                                        method: "POST",
-                                        headers: { 'Content-Type': 'application/json' },
-                                        body: '{}'
-                                    };
-                                    fetch(googleUrl, googleRequest)
-                                        .then(googleResponse => googleResponse.json())
-                                        .then((googleResponse: any) => {
+                FB.AppEvents.logPageView();
+                resolve();
+            }
+            document.body.appendChild(facebookScript);
+        });
 
-                                            if (googleResponse.success) {
-                                                resolve({
-                                                    email: state.email,
-                                                    initialized: true,
-                                                    isBusy: false,
-                                                    password: '',
-                                                    warning: '',
-                                                    twitter: twitterResponse.link,
-                                                    discord: discordResponse.link,
-                                                    google: googleResponse.link,
-                                                    facebookReady: true
-                                                });
-                                            }
-
-                                        })
-                                        .catch((error: any) => {
-                                            console.error(`error: ${error}`);
-                                            reject(error);
-                                        });
-                                }
-
-                            })
-                            .catch((error: any) => {
-                                console.error(`error: ${error}`);
-                                reject(error);
-                            });
-                    };
-                    document.body.appendChild(facebookScript);
-                }
-            })
-            .catch((error: any) => {
-                console.error(`error: ${error}`);
-                reject(error);
-            });
-    });
+        return Promise.resolve({
+            email: state.email,
+            initialized: true,
+            isBusy: false,
+            password: '',
+            warning: '',
+            twitter: socialAuthLinkResponse.twitter,
+            discord: socialAuthLinkResponse.discord,
+            google: socialAuthLinkResponse.google,
+            snapchat: socialAuthLinkResponse.snapchat,
+            facebookReady: true
+        });
+    } catch (error) {
+        console.error(error);
+        return Promise.reject(error);
+    }
 };
 
 const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<LoginState>>, indexState: IndexState, setIndexState: (updates: Partial<IndexState>) => void) => {
@@ -210,64 +185,85 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
     };
 
     let doTwitter = async () => {
-        setIndexState({
-            message: ''
-        });
-        window.open(state.twitter, "_self");
+        if (CONQUER.Ready) {
+            CONQUER.AUTH.twitter();
+        }
     };
 
     let doGoogle = async () => {
-        setIndexState({
-            message: ''
-        });
-        window.open(state.google, "_self");
+        if (CONQUER.Ready) {
+            CONQUER.AUTH.google();
+        }
     };
 
     let doFacebook = async () => {
-        let FB = (window as any).FB as any;
-        await new Promise<void>((resolve, reject) => {
-            FB.getLoginStatus((loginStatus) => {
-                // console.log(`loginStatus`, JSON.stringify(loginStatus, null, 4));
-                // statusChangeCallback(response);
-                if (!loginStatus.authResponse) {
-                    FB.login((loginResponse) => {
-                        resolve();
-                    }, { scope: 'public_profile,email,user_friends' });
-                } else {
-                    // TODO : change into this
-                    // resolve();
-                    FB.login((loginResponse) => {
-                        resolve();
-                    }, { scope: 'public_profile,email,user_friends' });
-                }
-            });
-        });
+        try {
 
-        let fields: string[] = [
-            'name',
-            'email',
-        ];
-        FB.api('/me', { fields: fields.join(', ') }, (apiResponse1) => {
-            // console.log(`apiResponse1`, JSON.stringify(apiResponse1, null, 4));
-            FB.api(`/me/friends`, {}, (apiResponse2) => {
-                // console.log(`apiResponse2`, JSON.stringify(apiResponse2, null, 4));
-                Hash(apiResponse1.email as string)
-                    .then((token) => {
-                        let redirectURL: string = `${CONFIG.PublicUrl}/Index.html?info=loggedin&name=${apiResponse1.name}&token=${token}&admin=false&id=${apiResponse1.email}&friend_count=${apiResponse2.summary.total_count}`;
-                        window.location.href = redirectURL;
-                    });
+            let originalUrl: string = window.location.origin;
+            let loginStatus = await new Promise<fb.StatusResponse>((resolve, reject) => {
+                FB.getLoginStatus((loginStatus) => {
+                    // console.log(`loginStatus`, JSON.stringify(loginStatus, null, 4));
+                    // statusChangeCallback(response);
+                    resolve(loginStatus);
+                });
             });
-        });
+
+            if (!loginStatus.authResponse) {
+                // no user is logged in
+            } else {
+
+                // no user is logged in
+            }
+
+            let authResponse = await new Promise<fb.StatusResponse>((resolve, reject) => {
+                FB.login((authResponse) => {
+                    resolve(authResponse);
+                }, { scope: 'public_profile,email,user_friends' });
+            });
+
+            let fields: string[] = [
+                'name',
+                'email',
+            ];
+
+            let apiResponse1 = await new Promise<fb.StatusResponse>((resolve, reject) => {
+                FB.api('/me', { fields: fields.join(', ') }, (apiResponse1: any) => {
+                    resolve(apiResponse1);
+                });
+            });
+
+            let apiResponse2 = await new Promise<fb.StatusResponse>((resolve, reject) => {
+                FB.api('/me/friends', {}, (apiResponse2: any) => {
+                    resolve(apiResponse2);
+                });
+            });
+
+            let userInfo = apiResponse1 as any;
+            let contactInfo = apiResponse2 as any;
+            let token = await Hash(userInfo.email as string);
+
+            let redirectURL: string = `${originalUrl}/Index.html?info=loggedin&name=${userInfo.name}&token=${token}&admin=false&id=${userInfo.email}&friend_count=${contactInfo.summary.total_count}`;
+            window.location.href = redirectURL;
+
+        } catch (error) {
+
+        }
     };
 
     let doDiscord = async () => {
-        setIndexState({
-            message: ''
-        });
-        window.open(state.discord, "_self");
+        if (CONQUER.Ready) {
+            CONQUER.AUTH.discord();
+        }
+    };
+
+    let doSnapchat = async () => {
+        if (CONQUER.Ready) {
+            CONQUER.AUTH.snapchat();
+        }
     };
 
     let doMetamask = async () => {
+        let originalUrl: string = window.location.origin;
         let ethereum = (window as any).ethereum;
         if (!ethereum) {
             alert('install metamask wallet first!');
@@ -284,7 +280,7 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
                     let email = accounts[0];
                     Hash(email as string)
                         .then((token) => {
-                            let redirectURL: string = `${CONFIG.PublicUrl}/Index.html?info=loggedin&name=${email}&token=${token}&admin=false&id=${email}`;
+                            let redirectURL: string = `${originalUrl}/Index.html?info=loggedin&name=${email}&token=${token}&admin=false&id=${email}`;
                             window.location.href = redirectURL;
                         })
                         .catch((error) => {
@@ -301,24 +297,6 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
                     });
                 });
         }
-    };
-
-    let doSnapchat = async () => {
-
-        let snapchatClientId: string = `e6a503b3-6929-4feb-a6d9-b1dc0bd963ed`;
-        let snapchatClientSecret: string = `e6a503b3-6929-4feb-a6d9-b1dc0bd963ed`;
-        let snapchatRedirect: string = encodeURIComponent(`${CONFIG.PublicUrl}${snapchatCallbackUrl}`);
-        let snapchatState: string = `g0qVDoSOERd-6ClRJoCoZOI-nHrpln8XKXYwLJoXbg8`;
-        let snapchatScopeList: string[] = [
-            "https://auth.snapchat.com/oauth2/api/user.display_name",
-            "https://auth.snapchat.com/oauth2/api/user.bitmoji.avatar",
-            "https://auth.snapchat.com/oauth2/api/user.external_id",
-        ];
-        let snapchatScope: string = encodeURIComponent(snapchatScopeList.join(' '));
-        let snapchatResponseType: string = `code`;
-        let snapchatUrl: string = `https://accounts.snapchat.com/accounts/oauth2/auth?client_id=${snapchatClientId}&redirect_uri=${snapchatRedirect}&response_type=${snapchatResponseType}&scope=${snapchatScope}&state=${snapchatState}`;
-
-        window.open(snapchatUrl, "_self");
     };
 
     return (

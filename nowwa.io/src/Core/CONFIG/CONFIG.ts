@@ -1,109 +1,109 @@
 import dotenv from 'dotenv';
 
 class CONFIG {
-    public static vars: CONFIG.Config;
+    private static _vars: CONFIG.Config;
+    public static get vars(): CONFIG.Config {
+        if (!this._vars) {
+            this._vars = this.MainConfig;
+        }
+        return this._vars;
+    }
 
-    public static init() {
-        let test = this.CoreConfig;
+    private static GetFullUrl(port: number, url: string, useSsl: boolean): string {
+        return (useSsl ? `https` : `http`) +
+            `://` +
+            `${url}` +
+            `:` +
+            `${port}`;
     }
 
     private static get MainConfig(): CONFIG.Config {
+
+        dotenv.config();
+
+        let corePort: number = parseInt(process.env.CORE_PORT as string);
+        let coreHost: string = process.env.CORE_HOST as string;
+        let coreUseSsl: boolean = process.env.CORE_USE_SSL as string == 'true';
+        let coreFullUrl: string = this.GetFullUrl(corePort, coreHost, coreUseSsl);
+
+        let publicPort: number = parseInt(process.env.PUBLIC_PORT as string);
+        let publicHost: string = process.env.PUBLIC_HOST as string;
+        let publicUseSsl: boolean = process.env.PUBLIC_USE_SSL as string == 'true';
+        let publicFullUrl: string = this.GetFullUrl(publicPort, publicHost, publicUseSsl);
+
+        console.log(publicFullUrl);
+
         return {
 
-            VERSION: "0.0.1",
+            VERSION: "0.0.2",
 
-            EXPRESS_SECRET: "conqueros",
+            ENVIRONMENT: this.parseEnvironment(process.env.ENVIRONMENT as string),
 
-            MONGODB_HOST: "db-mongodb-conqueros-a434f3ba.mongo.ondigitalocean.com",
-            MONGODB_PORT: 27017,
-            MONGODB_DB: "admin",
-            MONGODB_USER: "doadmin",
-            MONGODB_PASS: "Hi730Rw829Pk4J1q",
-            MONGODB_CERT: "certificates/db.ca-certificate.crt",
+            EXPRESS_SECRET: process.env.EXPRESS_SECRET as string,
 
-            CLOUDINARY_NAME: "gearball",
-            CLOUDINARY_KEY: "155952797698712",
-            CLOUDINARY_SECRET: "_qyQf6rr2QpB_-grhKotmrF-twQ",
+            MONGODB_HOST: process.env.MONGODB_HOST as string,
+            MONGODB_PORT: parseInt(process.env.MONGODB_PORT as string),
+            MONGODB_DB: process.env.MONGODB_DB as string,
+            MONGODB_USER: process.env.MONGODB_USER as string,
+            MONGODB_PASS: process.env.MONGODB_PASS as string,
+            MONGODB_CERT: process.env.MONGODB_CERT as string,
 
-            SOCKET_PORT: 9003,
-            PORT: 0,
-            URL: "0.0.0.0",
-            USE_SSL: false,
+            CLOUDINARY_NAME: process.env.CLOUDINARY_NAME as string,
+            CLOUDINARY_KEY: process.env.CLOUDINARY_KEY as string,
+            CLOUDINARY_SECRET: process.env.CLOUDINARY_SECRET as string,
 
-            NAKAMA_PORT: 7350,
-            NAKAMA_HOST: "127.0.0.1",
-            NAKAMA_HTTP_KEY: "server-N0ww@",
-            NAKAMA_SERVER_KEY: "server-N0ww@",
-            NAKAMA_USE_SSL: false,
+            SOCKET_PORT: parseInt(process.env.SOCKET_PORT as string),
 
-            TWITTER_CLIENT_ID: "Y0hRYi1qaC1mU0ZYdTgtbGZXNVA6MTpjaQ",
-            TWITTER_CALLBACK_URL: `https://nowwa.io/twitterCallback`,
-            TWITTER_CLIENT_SECRET: `tWeyCLNxn1XKcSzarGw4H5t3RdVBu2u0W5Yrux9MRMRzFvSpqM`,
+            CORE_PORT: corePort,
+            CORE_FULL_URL: coreFullUrl,
+            PUBLIC_FULL_URL: publicFullUrl,
 
-            DISCORD_CLIENT_ID: "1037020376892452864",
-            DISCORD_CALLBACK_URL: `https://nowwa.io/discordCallback`,
-            DISCORD_CLIENT_SECRET: `laUsJFYDewoElB51evKhJZx4cjm-9w4g`,
+            NAKAMA_PORT: parseInt(process.env.NAKAMA_PORT as string),
+            NAKAMA_HOST: process.env.NAKAMA_HOST as string,
+            NAKAMA_HTTP_KEY: process.env.NAKAMA_HTTP_KEY as string,
+            NAKAMA_SERVER_KEY: process.env.NAKAMA_SERVER_KEY as string,
+            NAKAMA_USE_SSL: process.env.NAKAMA_USE_SSL as string == 'true',
 
-            SNAPCHAT_CLIENT_ID: "e6a503b3-6929-4feb-a6d9-b1dc0bd963ed",
-            SNAPCHAT_CALLBACK_URL: `https://nowwa.io/snapchatCallback`,
-            SNAPCHAT_CLIENT_SECRET: `CqbjgYrWsK-8xmZW_CLWJ4xfc6DR4RvPegGlx590hGI`,
+            TWITTER_CLIENT_ID: process.env.TWITTER_CLIENT_ID as string,
+            TWITTER_CALLBACK_URL: `${publicFullUrl}${twitterCallbackUrl}`,
+            TWITTER_CLIENT_SECRET: process.env.TWITTER_CLIENT_SECRET as string,
 
-            GOOGLE_CLIENT_ID: "494971460278-q1luigu21k84335c5v5gc29m5v39kc9v.apps.googleusercontent.com",
-            GOOGLE_CALLBACK_URL: `https://nowwa.io/googleCallback`,
-            GOOGLE_CLIENT_SECRET: `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`,
+            DISCORD_CLIENT_ID: process.env.DISCORD_CLIENT_ID as string,
+            DISCORD_CALLBACK_URL: `${publicFullUrl}${discordCallbackUrl}`,
+            DISCORD_CLIENT_SECRET: process.env.DISCORD_CLIENT_SECRET as string,
 
-            VERIFY_EMAIL_SENDER: `lanting.dlapan@gmail.com`,
-            VERIFY_EMAIL_PASSWORD: `ydkcknektbfmjmtm`
+            SNAPCHAT_CLIENT_ID: process.env.SNAPCHAT_CLIENT_ID as string,
+            SNAPCHAT_CALLBACK_URL: `${publicFullUrl}${snapchatCallbackUrl}`,
+            SNAPCHAT_CLIENT_SECRET: process.env.SNAPCHAT_CLIENT_SECRET as string,
+
+            GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID as string,
+            GOOGLE_CALLBACK_URL: `${publicFullUrl}${googleCallbackUrl}`,
+            GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET as string,
+
+            VERIFY_EMAIL_SENDER: process.env.VERIFY_EMAIL_SENDER as string,
+            VERIFY_EMAIL_PASSWORD: process.env.VERIFY_EMAIL_PASSWORD as string,
 
         };
-    }
-
-    public static get CoreConfig(): CONFIG.Config {
-        let config: CONFIG.Config = this.vars = this.MainConfig;
-
-        dotenv.config();
-
-        config.URL = process.env.CORE_URL as string;
-        config.PORT = parseInt(process.env.CORE_PORT as string);
-        config.USE_SSL = process.env.CORE_USE_SSL as string == 'true';
-
-        return config;
-    }
-
-    public static get PublicConfig(): CONFIG.Config {
-        let config: CONFIG.Config = this.vars = this.MainConfig;
-
-        dotenv.config();
-
-        config.URL = process.env.PUBLIC_URL as string;
-        config.PORT = parseInt(process.env.PUBLIC_PORT as string);
-        config.USE_SSL = process.env.PUBLIC_USE_SSL as string == 'true';
-
-        return config;
-    }
-
-    public static get CoreUrl(): string {
-        let config: CONFIG.Config = this.CoreConfig;
-        return (config.USE_SSL ? `https` : `http`) +
-            `://` +
-            `${config.URL}` +
-            `:` +
-            `${config.PORT}`;
-    }
-
-    public static get PublicUrl(): string {
-        let config: CONFIG.Config = this.PublicConfig;
-        return (config.USE_SSL ? `https` : `http`) +
-            `://` +
-            `${config.URL}` +
-            `:` +
-            `${config.PORT}`;
     }
 }
 
 namespace CONFIG {
+    export type Environment = 'ssl_development' | 'development' | 'production' | 'unknown';
+    export const parseEnvironment = (input: string): Environment => {
+        if (input == 'development') {
+            return 'development';
+        } else if (input == 'production') {
+            return 'production';
+        } else if (input == 'ssl_development') {
+            return 'ssl_development';
+        } else {
+            return 'unknown';
+        }
+    }
     export type Config = {
         VERSION: string,
+
+        ENVIRONMENT: Environment,
 
         EXPRESS_SECRET: string,
 
@@ -119,9 +119,11 @@ namespace CONFIG {
         CLOUDINARY_SECRET: string,
 
         SOCKET_PORT: number,
-        URL: string,
-        PORT: number,
-        USE_SSL: boolean,
+
+        CORE_PORT: number,
+        CORE_FULL_URL: string,
+
+        PUBLIC_FULL_URL: string,
 
         NAKAMA_HOST: string,
         NAKAMA_PORT: number,
@@ -154,9 +156,7 @@ export default CONFIG;
 
 export const authenticationUrl: string = `/authentication`;
 
-export const authenticationRegisterUrl: string = `/authRegister`;
 export const authenticationLoginUrl: string = `/authLogin`;
-export const authenticationVerifyUrl: string = `/authVerify`;
 export const authenticationHashUrl: string = `/authHash`;
 
 export const twitterAuthUrl: string = `/twitterAuth`;
@@ -168,7 +168,13 @@ export const discordCallbackUrl: string = `/discordCallback`;
 export const googleAuthUrl: string = `/googleAuth`;
 export const googleCallbackUrl: string = `/googleCallback`;
 
+export const snapchatAuthUrl: string = `/snapchatAuth`;
 export const snapchatCallbackUrl: string = `/snapchatCallback`;
+
+export const authLinks: string = `/authLinks`;
+export const authVerify: string = `/authVerify`;
+export const authLogin: string = `/authLogin`;
+export const authRegister: string = `/authRegister`;
 
 export const storageUrl: string = `/storage`;
 

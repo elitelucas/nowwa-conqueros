@@ -8,7 +8,7 @@
     "core:build": "tsc",
     "front:dev": "parcel watch ./src/Pages/Index.html --dist-dir ./storage --no-content-hash",
     "front:build": "parcel build ./src/Pages/Index.html --dist-dir ./storage",
-    "conquer:build": "parcel build ./src/Frontend/Conquer.ts --dist-dir ./storage/home/lib",
+    "conquer:build": "parcel build ./src/Frontend/CONQUER.ts --dist-dir ./storage/home/lib",
     "dev": "tsc && node ./dist/Compile.js --env=\"dev\"",
     "prod": "tsc && node ./dist/Compile.js --env=\"prod\"",
     "local": "http-server ./storage -p 9876"
@@ -53,6 +53,7 @@
     "cross-env": "^7.0.3",
     "crypto-browserify": "^3.12.0",
     "del": "^6.1.1",
+    "discord-api-types": "^0.37.17",
     "events": "^3.3.0",
     "https-browserify": "^1.0.0",
     "node-7z": "^3.0.0",

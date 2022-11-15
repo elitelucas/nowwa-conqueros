@@ -11,6 +11,12 @@ import Twitter from './Twitter';
 import Snapchat from './Snapchat';
 import Discord from './Discord';
 import Google from './Google';
+import EXPRESS from '../../EXPRESS/EXPRESS';
+import { authLinks, authLogin, authRegister, authVerify } from '../../CONFIG/CONFIG';
+
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 class AUTH {
 
@@ -24,6 +30,9 @@ class AUTH {
 
     public static async init(): Promise<void> {
         PASSPORT.init();
+        this.WebhookAuthLinks();
+        this.WebhookAuthVerify();
+        this.WebhookAuthRegister();
 
         await Twitter.init();
         await Snapchat.init();
@@ -77,9 +86,12 @@ class AUTH {
     ================*/
 
     public static async get(vars: any): Promise<any> {
+
         var item: any = await USERNAME.get(vars);
 
-        if (!item) return Promise.reject(LOG.msg("Auth user doesn't exist " + vars.username));
+        console.log(`item 1`, JSON.stringify(item, null, 2));
+
+        console.log(`item 2`, JSON.stringify(item, null, 2));
 
         if (!item.isVerified) return Promise.reject(LOG.msg('Email is not verified...'));
 
@@ -139,6 +151,78 @@ class AUTH {
 
         return Promise.resolve();
     };
+
+    public static WebhookAuthLinks() {
+        EXPRESS.app.use(`${authLinks}`, (req, res) => {
+            res.status(200).send({
+                success: true,
+                discord: Discord.AuthLink,
+                snapchat: Snapchat.AuthLink,
+                google: Google.AuthLink,
+                twitter: Twitter.AuthLink
+            });
+        });
+    }
+
+    public static WebhookAuthVerify() {
+        EXPRESS.app.use(`${authVerify}`, async (req, res) => {
+            let id: string = <string>req.body.id;
+            let token: string = <string>req.body.token;
+            let isMatch: boolean = await this.Verify(id, token);
+            res.status(200).send({
+                success: true,
+                valid: isMatch
+            });
+        });
+    }
+
+    public static WebhookAuthRegister() {
+        EXPRESS.app.use(`${authRegister}`, async (req, res) => {
+            let email: string = req.body.email;
+            let password: string = req.body.password;
+            let user, err;
+            try {
+                user = await this.get({
+                    where: {
+                        username: email
+                    }
+                });
+                console.log(user);
+            } catch (error) {
+                err = error;
+            }
+            if (user) {
+                res.send({
+                    success: false,
+                    error: err
+                });
+            } else {
+                res.send({
+                    success: true
+                });
+            }
+        });
+    }
+
+    public static async Verify(userName: string, token: string): Promise<boolean> {
+        let secret: string = <string>process.env.EXPRESS_SECRET;
+        let input: string = `${userName}|${secret}`;
+        return CRYPT.match(input, token);
+    }
+
+    public static async Tokenize(userName: string): Promise<string> {
+        let secret: string = <string>process.env.EXPRESS_SECRET;
+        let input: string = `${userName}|${secret}`;
+        return CRYPT.hash(input);
+    }
+
+    public static async Login(input: AUTH.Input): Promise<AUTH.Output> {
+        let token: string = await this.Tokenize(input.email);
+        return {
+            id: input.email,
+            token: token
+        }
+    }
 
 
 

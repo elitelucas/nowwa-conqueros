@@ -1,8 +1,9 @@
 import express from 'express';
 import fetch, { RequestInit } from 'node-fetch';
-import CONFIG, { snapchatCallbackUrl } from '../../CONFIG/CONFIG';
+import CONFIG, { snapchatAuthUrl, snapchatCallbackUrl } from '../../CONFIG/CONFIG';
 import Authentication from '../../DEPRECATED/Authentication';
 import EXPRESS from '../../EXPRESS/EXPRESS';
+import AUTH from './AUTH';
 
 class Snapchat {
 
@@ -11,15 +12,28 @@ class Snapchat {
     /**
      * Initialize email module.
      */
-    public static async init(): Promise<void> 
-    {
+    public static async init(): Promise<void> {
         Snapchat.Instance = new Snapchat();
         Snapchat.WebhookCallbackLink();
         return Promise.resolve();
     }
 
-    public static async WebhookCallbackLink(): Promise<void> 
-    {
+    public static get AuthLink(): string {
+        let snapchatClientId: string = `e6a503b3-6929-4feb-a6d9-b1dc0bd963ed`;
+        let snapchatRedirect: string = encodeURIComponent(`${CONFIG.vars.PUBLIC_FULL_URL}${snapchatCallbackUrl}`);
+        let snapchatState: string = `g0qVDoSOERd-6ClRJoCoZOI-nHrpln8XKXYwLJoXbg8`;
+        let snapchatScopeList: string[] = [
+            "https://auth.snapchat.com/oauth2/api/user.display_name",
+            "https://auth.snapchat.com/oauth2/api/user.bitmoji.avatar",
+            "https://auth.snapchat.com/oauth2/api/user.external_id",
+        ];
+        let snapchatScope: string = encodeURIComponent(snapchatScopeList.join(' '));
+        let snapchatResponseType: string = `code`;
+        let snapchatUrl: string = `https://accounts.snapchat.com/accounts/oauth2/auth?client_id=${snapchatClientId}&redirect_uri=${snapchatRedirect}&response_type=${snapchatResponseType}&scope=${snapchatScope}&state=${snapchatState}&source=snapchat`;
+        return snapchatUrl;
+    }
+
+    public static async WebhookCallbackLink(): Promise<void> {
         EXPRESS.app.use(`${snapchatCallbackUrl}`, (req, res) => {
             // console.log('query callback');
             // console.log(JSON.stringify(req.query, null, "\t"));
@@ -30,7 +44,7 @@ class Snapchat {
 
             let snapchatClientId: string = CONFIG.vars.SNAPCHAT_CLIENT_ID;
             let snapchatClientSecret: string = CONFIG.vars.SNAPCHAT_CLIENT_SECRET;
-            let snapchatRedirect: string = `${CONFIG.PublicUrl}${snapchatCallbackUrl}`;
+            let snapchatRedirect: string = `${CONFIG.vars.PUBLIC_FULL_URL}${snapchatCallbackUrl}`;
 
             let hexEncode = (input: string): string => {
                 var hex, i;
@@ -78,12 +92,12 @@ class Snapchat {
                             // console.log(JSON.stringify(secondResponse, null, "\t"));
                             let id = Buffer.from(secondResponse.data.me.externalId).toString('base64');
                             let name = secondResponse.data.me.displayName;
-                            Authentication.Hash(id)
+                            AUTH.Tokenize(id)
                                 .then((token) => {
-                                    res.redirect(`${CONFIG.PublicUrl}/Index.html?info=loggedin&name=${name}&token=${token}&admin=false&id=${id}`);
+                                    res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?info=loggedin&name=${name}&token=${token}&admin=false&id=${id}`);
                                 })
                                 .catch((error) => {
-                                    res.redirect(`${CONFIG.PublicUrl}/Index.html?error=${error.message}`);
+                                    res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?error=${error.message}`);
                                 });
                         })
                         .catch(console.error);

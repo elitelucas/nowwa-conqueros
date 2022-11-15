@@ -9,22 +9,22 @@ import cloudinary from 'cloudinary';
 import multer from 'multer';
 import path from 'path';
 import { UserDocument } from '../../Models/User';
- 
-class EXPRESS
-{
-    public static app       : express.Express;
-    public static status    : EXPRESS.Status;
-    private static baseUrl  : string;
+import { readFileSync } from 'fs';
+import https from 'https';
 
-    public static init()
-    {
+class EXPRESS {
+    public static app: express.Express;
+    public static status: EXPRESS.Status;
+    private static baseUrl: string;
+
+    public static init() {
         console.log(`init express...`);
 
         this.baseUrl = `/webhook/v${CONFIG.vars.VERSION}`;
 
         EXPRESS.status = EXPRESS.StatusDefault;
 
-        var app: express.Express = EXPRESS.app = 
+        var app: express.Express = EXPRESS.app =
             express()
                 .use(express.json())
                 .use(express.urlencoded({
@@ -68,16 +68,24 @@ class EXPRESS
             res.status(200).send('test');
         });
 
-        app.listen(CONFIG.vars.PORT);
-        log(`[Express] listening on port ${CONFIG.vars.PORT}`);
+        console.log(`running Environment: ${CONFIG.vars.ENVIRONMENT}`);
+        if (CONFIG.vars.ENVIRONMENT == 'production' || CONFIG.vars.ENVIRONMENT == 'development') {
+            app.listen(CONFIG.vars.CORE_PORT);
+        } else if (CONFIG.vars.ENVIRONMENT == 'ssl_development') {
+            const key = readFileSync(path.join(__dirname, '..', '..', '..', 'localhost.decrypted.key'));
+            const cert = readFileSync(path.join(__dirname, '..', '..', '..', 'localhost.crt'));
+            const server = https.createServer({ key: key, cert: cert }, app);
+            server.listen(CONFIG.vars.CORE_PORT);
+        }
+
+        log(`[Express] listening on port ${CONFIG.vars.CORE_PORT}`);
     }
 
-    private static async ExpressPostUpload() 
-    {
+    private static async ExpressPostUpload() {
         var app = EXPRESS.app;
 
         console.log(`set express post upload...`);
- 
+
         var storage = multer.diskStorage({
             destination: (req, file, callback) => {
                 callback(null, path.resolve(__dirname, '../../temp/'));
@@ -168,18 +176,17 @@ class EXPRESS
 };
 
 
-namespace EXPRESS 
-{
-    export type Status = 
-    {
-        Builder         : Status.Detail,
-        requestCount    : number 
-    }
+namespace EXPRESS {
+    export type Status =
+        {
+            Builder: Status.Detail,
+            requestCount: number
+        }
 
-    export const StatusDefault: Status = 
+    export const StatusDefault: Status =
     {
-        Builder         : Status.CurrentStatus,
-        requestCount    : 0 
+        Builder: Status.CurrentStatus,
+        requestCount: 0
     }
 }
 

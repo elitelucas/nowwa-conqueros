@@ -23,7 +23,8 @@
         "src/Core/",
         "src/Models/",
         "src/Frontend/",
-        "src/Compile.ts", "src/Utils/UTIL",
+        "src/Compile.ts",
+        "src/Utils/UTIL",
     ],
     "exclude": [
         "node_modules"
