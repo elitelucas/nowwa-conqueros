@@ -1,22 +1,76 @@
 class STATS
 {
-    public static async get() : Promise<any>
+    /*=============== 
+
+
+    GET  
+    
+
+    ================*/
+
+    public static async get( query: any ) : Promise<any>
     {
 
     };
 
-    public static async set() : Promise<any>
+    /*=============== 
+
+
+    SET  
+    
+
+    ================*/
+
+    public static async set( query: any ) : Promise<any>
     {
 
     };
 
-    public static async change() : Promise<any>
+    /*=============== 
+
+
+    CHANGE  
+    
+
+    ================*/
+
+    public static async change( query: any ) : Promise<any>
     {
 
     };
 
-    public static async remove() : Promise<any>
+    /*=============== 
+
+
+    REMOVE  
+    
+
+    ================*/
+
+    public static async remove( query: any ) : Promise<any>
     {
 
     };
+
+    /*=============== 
+
+
+    QUERY  
+    
+
+    ================*/
+
+    private static getQuery( vars:any )
+    {
+        if( vars.where ) return vars;
+
+        var query   : any = { where:{}, values:{} };
+        var where   : any = {};
+
+        query.where = where;
+
+        if( vars.uID ) where.uID = vars.uID;
+
+        return query;
+    }
 };

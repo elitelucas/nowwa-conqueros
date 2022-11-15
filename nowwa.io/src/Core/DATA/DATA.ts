@@ -45,7 +45,8 @@ class DATA {
 
     ================*/
 
-    public static async get(tableName: string, query: any): Promise<mongoose.Document<any, any, any>[]> {
+    public static async get(tableName: string, query: any): Promise<mongoose.Document<any, any, any>[]> 
+    {
         let model = await TABLE_MODEL.get(tableName);
         let myQuery = model.find(query.where || {});
 
@@ -58,7 +59,8 @@ class DATA {
         return Promise.reject(LOG.msg('entries not found'));
     }
 
-    public static async getOne(tableName: string, query: any): Promise<mongoose.Document<any, any, any>> {
+    public static async getOne(tableName: string, query: any): Promise<mongoose.Document<any, any, any>> 
+    {
 
         let model = await TABLE_MODEL.get(tableName);
 
@@ -79,7 +81,8 @@ class DATA {
 
     ================*/
 
-    public static async set(tableName: string, query: any): Promise<mongoose.Document<any, any, any>> {
+    public static async set(tableName: string, query: any): Promise<mongoose.Document<any, any, any>> 
+    {
         if (!query.values) query = { values: query };
 
         if (query.values && query.values._id) {
@@ -102,7 +105,8 @@ class DATA {
 
     ================*/
 
-    public static async change(tableName: string, query: DATA.Query): Promise<mongoose.Document<any, any, any>> {
+    public static async change(tableName: string, query: DATA.Query): Promise<mongoose.Document<any, any, any>>
+    {
         let model = await TABLE_MODEL.get(tableName);
 
         let myQuery = model.find(query.where as any).limit(1);
@@ -122,7 +126,8 @@ class DATA {
         return Promise.resolve(document);
     };
 
-    public static async reparent(tableName: string, newUID: any, oldUID: any): Promise<any> {
+    public static async reparent(tableName: string, newUID: any, oldUID: any): Promise<any> 
+    {
         let results = await DATA.change(tableName, { values: { uID: newUID }, where: { uID: oldUID } });
 
         return Promise.resolve(results);
@@ -136,7 +141,8 @@ class DATA {
 
     ================*/
 
-    public static async remove(tableName: string, id: any): Promise<void> {
+    public static async remove(tableName: string, id: any): Promise<void> 
+    {
         let model = await TABLE_MODEL.get(tableName);
         let myQuery = model.find({ _id: id }).limit(1);
 
