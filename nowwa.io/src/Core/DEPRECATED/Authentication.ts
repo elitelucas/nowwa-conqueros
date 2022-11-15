@@ -1,7 +1,7 @@
 import passport from 'passport';
 import passportLocal from 'passport-local';
 import { User, UserDocument } from '../../Models/User';
-import CONFIG, { authenticationHashUrl, authenticationLoginUrl, authRegister, authVerify } from '../CONFIG/CONFIG';
+import CONFIG, { authTokenize, authLogin, authRegister, authVerify } from '../CONFIG/CONFIG';
 import Database from './Database';
 import bcrypt from "bcrypt";
 import { CustomDocument } from '../../Models/Custom';
@@ -112,7 +112,7 @@ class Authentication {
 
     private static WebhookLogin(): void {
 
-        EXPRESS.app.use(`${authenticationLoginUrl}`, (req, res) => {
+        EXPRESS.app.use(`${authLogin}`, (req, res) => {
             // console.log(`<-- authentication - login`);
             let email: string = req.body.email;
             let password: string = req.body.password;
@@ -146,7 +146,7 @@ class Authentication {
     }
 
     private static WebhookHash(): void {
-        EXPRESS.app.use(`${authenticationHashUrl}`, (req, res) => {
+        EXPRESS.app.use(`${authTokenize}`, (req, res) => {
             // console.log(`<-- authentication - hash`);
             let input: string = req.body.input;
             this.Hash(input)

@@ -1,8 +1,6 @@
 import React from 'react';
 import { Icon, Button, Segment, ButtonGroup, Menu, Header, Input, InputOnChangeData, Card, Grid, Divider, Label, Image, Message, Form } from 'semantic-ui-react';
-import CONFIG, { authenticationLoginUrl, discordAuthUrl, googleAuthUrl, snapchatCallbackUrl, authLinks as authLinks, twitterAuthUrl } from '../Core/CONFIG/CONFIG';
 import { IndexState, } from './Index';
-import fetch, { RequestInit, Request } from 'node-fetch';
 import { Hash, UpdateComponentState } from './Utils/Helpers';
 import './Utils/Facebook';
 import CONQUER from '../Frontend/CONQUER';
@@ -13,11 +11,6 @@ export type LoginState = {
     email: string,
     password: string,
     warning: string,
-    twitter: string,
-    discord: string,
-    google: string,
-    snapchat: string,
-    facebookReady: boolean,
 }
 
 export const LoginStateDefault: LoginState = {
@@ -26,69 +19,17 @@ export const LoginStateDefault: LoginState = {
     email: '',
     password: '',
     warning: '',
-    twitter: '',
-    discord: '',
-    google: '',
-    snapchat: '',
-    facebookReady: false,
 }
 
 export const LoginInit = async (state: LoginState): Promise<LoginState> => {
     try {
-        let socialAuthLinkResponse = await new Promise<any>((resolve, reject) => {
-            let socialAuthLinksUrl: URL = new URL(`${window.location.origin}${authLinks}`);
-            let socialAuthLinksRequest: RequestInit = {
-                method: "POST",
-                headers: { 'Content-Type': 'application/json' },
-                body: '{}'
-            };
-            fetch(socialAuthLinksUrl, socialAuthLinksRequest)
-                .then(socialAuthLinkResponse => socialAuthLinkResponse.json())
-                .then((socialAuthLinkResponse: any) => {
-                    resolve(socialAuthLinkResponse);
-                })
-                .catch((error: any) => {
-                    console.error(`error: ${error}`);
-                    reject(error);
-                });
-
-        });
-
-        await new Promise<void>((resolve, reject) => {
-
-            let facebookScript = document.createElement('script');
-            facebookScript.type = 'text/javascript';
-            facebookScript.src = 'https://connect.facebook.net/en_US/sdk.js';
-            facebookScript.async = true;
-            facebookScript.defer = true;
-
-            facebookScript.onload = () => {
-
-                let facebookAppId: string = `2303120786519319`;
-                FB.init({
-                    appId: facebookAppId,
-                    autoLogAppEvents: true,
-                    xfbml: true,
-                    version: 'v15.0'
-                });
-
-                FB.AppEvents.logPageView();
-                resolve();
-            }
-            document.body.appendChild(facebookScript);
-        });
 
         return Promise.resolve({
             email: state.email,
             initialized: true,
             isBusy: false,
             password: '',
-            warning: '',
-            twitter: socialAuthLinkResponse.twitter,
-            discord: socialAuthLinkResponse.discord,
-            google: socialAuthLinkResponse.google,
-            snapchat: socialAuthLinkResponse.snapchat,
-            facebookReady: true
+            warning: ''
         });
     } catch (error) {
         console.error(error);
@@ -140,47 +81,31 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
         } else if (state.password.length == 0) {
             setWarning('password cannot be empty!');
         } else {
-            // window.history.pushState("", "", `${window.location.origin}`);
-            updateState({
-                isBusy: true,
-                warning: '',
-            });
-            let url: URL = new URL(`${window.location.origin}${authenticationLoginUrl}`);
-            let init: RequestInit = {
-                method: "POST",
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
+            if (CONQUER.Ready) {
+                updateState({
+                    isBusy: true,
+                    warning: '',
+                });
+
+                CONQUER.AUTH.username({
                     email: state.email,
                     password: state.password
                 })
-            };
-            fetch(url, init)
-                .then(res => res.json())
-                .then((res: any) => {
-                    // console.log(`login response: ${JSON.stringify(res)}`);
-                    if (res.success) {
-                        console.log(res.value);
-                        if (res.value.admin) {
-                            setIndexState({
-                                display: 'Build',
-                                account: res.value
-                            });
-                        } else {
+                    .then((res) => {
+                        console.log(res);
+                        if (res.success) {
                             setIndexState({
                                 display: 'Home',
-                                account: res.value
+                                account: res.account
+                            });
+                        } else {
+                            updateState({
+                                isBusy: false,
+                                warning: res.error,
                             });
                         }
-                    } else {
-                        updateState({
-                            isBusy: false,
-                            warning: res.error,
-                        });
-                    }
-                })
-                .catch((error: any) => {
-                    console.error(`error: ${error}`);
-                });
+                    });
+            }
         }
     };
 
@@ -197,56 +122,21 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
     };
 
     let doFacebook = async () => {
-        try {
-
-            let originalUrl: string = window.location.origin;
-            let loginStatus = await new Promise<fb.StatusResponse>((resolve, reject) => {
-                FB.getLoginStatus((loginStatus) => {
-                    // console.log(`loginStatus`, JSON.stringify(loginStatus, null, 4));
-                    // statusChangeCallback(response);
-                    resolve(loginStatus);
+        if (CONQUER.Ready) {
+            CONQUER.AUTH.facebook()
+                .then((res) => {
+                    if (res.success) {
+                        setIndexState({
+                            display: 'Home',
+                            account: res.account
+                        });
+                    } else {
+                        updateState({
+                            isBusy: false,
+                            warning: res.error,
+                        });
+                    }
                 });
-            });
-
-            if (!loginStatus.authResponse) {
-                // no user is logged in
-            } else {
-
-                // no user is logged in
-            }
-
-            let authResponse = await new Promise<fb.StatusResponse>((resolve, reject) => {
-                FB.login((authResponse) => {
-                    resolve(authResponse);
-                }, { scope: 'public_profile,email,user_friends' });
-            });
-
-            let fields: string[] = [
-                'name',
-                'email',
-            ];
-
-            let apiResponse1 = await new Promise<fb.StatusResponse>((resolve, reject) => {
-                FB.api('/me', { fields: fields.join(', ') }, (apiResponse1: any) => {
-                    resolve(apiResponse1);
-                });
-            });
-
-            let apiResponse2 = await new Promise<fb.StatusResponse>((resolve, reject) => {
-                FB.api('/me/friends', {}, (apiResponse2: any) => {
-                    resolve(apiResponse2);
-                });
-            });
-
-            let userInfo = apiResponse1 as any;
-            let contactInfo = apiResponse2 as any;
-            let token = await Hash(userInfo.email as string);
-
-            let redirectURL: string = `${originalUrl}/Index.html?info=loggedin&name=${userInfo.name}&token=${token}&admin=false&id=${userInfo.email}&friend_count=${contactInfo.summary.total_count}`;
-            window.location.href = redirectURL;
-
-        } catch (error) {
-
         }
     };
 
@@ -263,40 +153,57 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
     };
 
     let doMetamask = async () => {
-        let originalUrl: string = window.location.origin;
-        let ethereum = (window as any).ethereum;
-        if (!ethereum) {
-            alert('install metamask wallet first!');
-        } else {
-            updateState({
-                isBusy: true,
-                warning: ''
-            });
-            (window as any).ethereum
-                .request({
-                    method: "eth_requestAccounts",
-                })
-                .then((accounts: string[]) => {
-                    let email = accounts[0];
-                    Hash(email as string)
-                        .then((token) => {
-                            let redirectURL: string = `${originalUrl}/Index.html?info=loggedin&name=${email}&token=${token}&admin=false&id=${email}`;
-                            window.location.href = redirectURL;
-                        })
-                        .catch((error) => {
-                            updateState({
-                                isBusy: false,
-                                warning: error.message
-                            });
+        if (CONQUER.Ready) {
+            CONQUER.AUTH.metamask()
+                .then((res) => {
+                    console.log(res);
+                    if (res.success) {
+                        setIndexState({
+                            display: 'Home',
+                            account: res.account
                         });
-                })
-                .catch((error: any) => {
-                    updateState({
-                        isBusy: false,
-                        warning: error.message
-                    });
+                    } else {
+                        updateState({
+                            isBusy: false,
+                            warning: res.error,
+                        });
+                    }
                 });
         }
+        // let originalUrl: string = window.location.origin;
+        // let ethereum = (window as any).ethereum;
+        // if (!ethereum) {
+        //     alert('install metamask wallet first!');
+        // } else {
+        //     updateState({
+        //         isBusy: true,
+        //         warning: ''
+        //     });
+        //     (window as any).ethereum
+        //         .request({
+        //             method: "eth_requestAccounts",
+        //         })
+        //         .then((accounts: string[]) => {
+        //             let email = accounts[0];
+        //             Hash(email as string)
+        //                 .then((token) => {
+        //                     let redirectURL: string = `${originalUrl}/Index.html?info=loggedin&name=${email}&token=${token}&admin=false&id=${email}`;
+        //                     window.location.href = redirectURL;
+        //                 })
+        //                 .catch((error) => {
+        //                     updateState({
+        //                         isBusy: false,
+        //                         warning: error.message
+        //                     });
+        //                 });
+        //         })
+        //         .catch((error: any) => {
+        //             updateState({
+        //                 isBusy: false,
+        //                 warning: error.message
+        //             });
+        //         });
+        // }
     };
 
     return (

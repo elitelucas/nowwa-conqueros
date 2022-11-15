@@ -1,6 +1,6 @@
 import React from 'react';
 import { Icon, Button, Segment, ButtonGroup, Menu, Header, Input, InputOnChangeData, Card, Grid, Divider, Form, Message } from 'semantic-ui-react';
-import { authRegister } from '../Core/CONFIG/CONFIG';
+import CONQUER from '../Frontend/CONQUER';
 import { IndexState } from './Index';
 import { UpdateComponentState } from './Utils/Helpers';
 
@@ -85,41 +85,33 @@ const Register = (state: RegisterState, setState: React.Dispatch<React.SetStateA
         } else if (state.password != state.repassword) {
             updateState({ warning: `password mismatch` });
         } else {
-            updateState({
-                isBusy: true,
-                shouldReset: true,
-                warning: ''
-            });
-            let url: URL = new URL(`${window.location.origin}${authRegister}`);
-            let init: RequestInit = {
-                method: "POST",
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
+            if (CONQUER.Ready) {
+                updateState({
+                    isBusy: true,
+                    shouldReset: true,
+                    warning: ''
+                });
+
+                CONQUER.AUTH.register({
                     email: state.email,
                     password: state.password
                 })
-            };
-            fetch(url, init)
-                .then(res => res.json())
-                .then((res: any) => {
-                    console.log(`register response: ${JSON.stringify(res)}`);
-                    if (res.success) {
-                        updateState({
-                            isBusy: false,
-                            shouldReset: true,
-                            warning: `check your email to verify your account`
-                        });
-                    } else {
-                        updateState({
-                            isBusy: false,
-                            shouldReset: true,
-                            warning: res.error
-                        });
-                    }
-                })
-                .catch((error: any) => {
-                    console.error(`error: ${error}`);
-                });
+                    .then((res) => {
+                        if (res.success) {
+                            updateState({
+                                isBusy: false,
+                                shouldReset: true,
+                                warning: `check your email to verify your account`
+                            });
+                        } else {
+                            updateState({
+                                isBusy: false,
+                                shouldReset: true,
+                                warning: res.error
+                            });
+                        }
+                    });
+            }
         }
     };
 

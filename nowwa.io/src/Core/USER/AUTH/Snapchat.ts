@@ -1,7 +1,6 @@
 import express from 'express';
 import fetch, { RequestInit } from 'node-fetch';
 import CONFIG, { snapchatAuthUrl, snapchatCallbackUrl } from '../../CONFIG/CONFIG';
-import Authentication from '../../DEPRECATED/Authentication';
 import EXPRESS from '../../EXPRESS/EXPRESS';
 import AUTH from './AUTH';
 
@@ -29,7 +28,7 @@ class Snapchat {
         ];
         let snapchatScope: string = encodeURIComponent(snapchatScopeList.join(' '));
         let snapchatResponseType: string = `code`;
-        let snapchatUrl: string = `https://accounts.snapchat.com/accounts/oauth2/auth?client_id=${snapchatClientId}&redirect_uri=${snapchatRedirect}&response_type=${snapchatResponseType}&scope=${snapchatScope}&state=${snapchatState}&source=snapchat`;
+        let snapchatUrl: string = `https://accounts.snapchat.com/accounts/oauth2/auth?client_id=${snapchatClientId}&redirect_uri=${snapchatRedirect}&response_type=${snapchatResponseType}&scope=${snapchatScope}&state=${snapchatState}`;
         return snapchatUrl;
     }
 
@@ -92,9 +91,9 @@ class Snapchat {
                             // console.log(JSON.stringify(secondResponse, null, "\t"));
                             let id = Buffer.from(secondResponse.data.me.externalId).toString('base64');
                             let name = secondResponse.data.me.displayName;
-                            AUTH.Tokenize(id)
+                            AUTH.tokenize(id)
                                 .then((token) => {
-                                    res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?info=loggedin&name=${name}&token=${token}&admin=false&id=${id}`);
+                                    res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?info=loggedin&name=${name}&token=${token}&admin=false&id=${id}&source=snapchat`);
                                 })
                                 .catch((error) => {
                                     res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?error=${error.message}`);

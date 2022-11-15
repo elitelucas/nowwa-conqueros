@@ -17,26 +17,31 @@ class USERNAME {
     ================*/
 
     public static async set(vars: any): Promise<any> {
-        let results = await DATA.get(USERNAME.table, { username: vars.username });
 
-        if (results.length > 1) return Promise.reject(LOG.msg('Username already exists'));
+        let user;
+        try {
+            user = await DATA.getOne(USERNAME.table, USERNAME.getQuery(vars));
+        } catch (error) {
+            // if user does not exists, then proceed
+        }
 
-        let item: any = await DATA.set(USERNAME.table, vars);
+        if (user) return Promise.reject(LOG.msg('user already exists'));
+
+        user = await DATA.set(USERNAME.table, vars);
 
         // Look for previous accounts that have used this email
         // Do merge
 
-
         // Add email 
 
-        EMAIL.set(
+        await EMAIL.set(
             {
                 email: vars.username,
                 isVerified: vars.isVerified,
-                uID: item._id
+                uID: user._id
             });
 
-        return Promise.resolve(item);
+        return Promise.resolve(user);
     };
 
     /*=============== 
@@ -49,11 +54,7 @@ class USERNAME {
 
     public static async get(vars: any): Promise<any> {
 
-        console.log(`item -1`, JSON.stringify(vars, null, 2));
-
         let item = await DATA.getOne(USERNAME.table, USERNAME.getQuery(vars));
-
-        console.log(`item 0`, JSON.stringify(item, null, 2));
 
         if (!item) return Promise.reject(LOG.msg('User does not exist'));
 
@@ -69,6 +70,8 @@ class USERNAME {
         query.where = where;
 
         if (vars.username) where.username = vars.username;
+        if (vars.uID) where.uID = vars.uID;
+        if (vars._id) where._id = vars._id;
 
         return query;
     }
@@ -82,9 +85,8 @@ class USERNAME {
     ================*/
 
     public static async change(query: any) {
-        var item = await DATA.change(USERNAME.table, query);
-
-        return Promise.resolve(item);
+        let results = DATA.change(USERNAME.table, query);
+        return Promise.resolve(results);
     }
 
     public static async changeLastLogin(uID: any) {

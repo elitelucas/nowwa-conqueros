@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import { authenticationHashUrl } from '../../Core/CONFIG/CONFIG';
+import { authTokenize } from '../../Core/CONFIG/CONFIG';
 
 export type ComponentState = {
     initialized: boolean,
@@ -30,7 +30,7 @@ export const UpdateComponentState = <T extends { [key: string]: unknown }>(state
  */
 export const Hash = (input: string): Promise<string> => {
     return new Promise((resolve, reject) => {
-        let url: URL = new URL(`${window.location.origin}${authenticationHashUrl}`);
+        let url: URL = new URL(`${window.location.origin}${authTokenize}`);
         let init: RequestInit = {
             method: "POST",
             headers: { 'Content-Type': 'application/json' },

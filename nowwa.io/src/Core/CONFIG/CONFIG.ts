@@ -156,9 +156,6 @@ export default CONFIG;
 
 export const authenticationUrl: string = `/authentication`;
 
-export const authenticationLoginUrl: string = `/authLogin`;
-export const authenticationHashUrl: string = `/authHash`;
-
 export const twitterAuthUrl: string = `/twitterAuth`;
 export const twitterCallbackUrl: string = `/twitterCallback`;
 
@@ -171,6 +168,9 @@ export const googleCallbackUrl: string = `/googleCallback`;
 export const snapchatAuthUrl: string = `/snapchatAuth`;
 export const snapchatCallbackUrl: string = `/snapchatCallback`;
 
+export const emailVerify: string = `/emailVerify`;
+
+export const authTokenize: string = `/authTokenize`;
 export const authLinks: string = `/authLinks`;
 export const authVerify: string = `/authVerify`;
 export const authLogin: string = `/authLogin`;

@@ -2,7 +2,6 @@ import CONFIG, { googleAuthUrl, googleCallbackUrl } from '../../CONFIG/CONFIG';
 import fetch, { RequestInit } from 'node-fetch';
 import EXPRESS from '../../EXPRESS/EXPRESS';
 import { google } from 'googleapis';
-import Authentication from '../../DEPRECATED/Authentication';
 import AUTH from './AUTH';
 
 class Google {
@@ -71,7 +70,7 @@ class Google {
                     resourceName: 'people/me',
                     personFields: 'names,emailAddresses'
                 });
-                let token = await AUTH.Tokenize(userInfo.data.email!);
+                let token = await AUTH.tokenize(userInfo.data.email!);
                 res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?info=loggedin&name=${userInfo.data.name!}&token=${token}&admin=false&id=${userInfo.data.email!}&friend_count=${contactInfo.data.totalPeople}&source=google`);
             } catch (error: any) {
                 res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?error=${error.message}`);

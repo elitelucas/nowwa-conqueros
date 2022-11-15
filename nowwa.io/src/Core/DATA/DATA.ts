@@ -58,7 +58,8 @@ class DATA {
         return Promise.reject(LOG.msg('entries not found'));
     }
 
-    public static async getOne(tableName: string, query: any): Promise<mongoose.Document<any, any, any>[]> {
+    public static async getOne(tableName: string, query: any): Promise<mongoose.Document<any, any, any>> {
+
         let model = await TABLE_MODEL.get(tableName);
 
         let myQuery = model.findOne(query.where || {});
@@ -81,6 +82,10 @@ class DATA {
     public static async set(tableName: string, query: any): Promise<mongoose.Document<any, any, any>> {
         if (!query.values) query = { values: query };
 
+        if (query.values && query.values._id) {
+            delete (query.values._id);
+        }
+
         if (query.where) return DATA.change(tableName, query);
 
         let model = await TABLE_MODEL.get(tableName);
@@ -102,16 +107,16 @@ class DATA {
 
         let myQuery = model.find(query.where as any).limit(1);
         let documents = await myQuery.exec();
-
         if (!documents || documents.length != 1) return Promise.reject(LOG.msg('entry not found'));
 
-        let document = documents[0];
+        let document: mongoose.Document<any, any, any> & { [key: string]: any } = documents[0];
         let fieldNames = Object.keys(query.values!);
 
         for (let i: number = 0; i < fieldNames.length; i++) {
             let fieldName = fieldNames[i];
             let fieldValue = query.values![fieldName];
-            document[fieldName] = fieldValue;
+            document.set(fieldName, fieldValue);
+            document.markModified(fieldName);
         }
         await document.save();
         return Promise.resolve(document);

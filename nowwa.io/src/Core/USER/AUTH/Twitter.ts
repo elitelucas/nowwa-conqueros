@@ -1,6 +1,5 @@
 import { TwitterApi, UserV2 } from 'twitter-api-v2';
 import CONFIG, { twitterCallbackUrl } from '../../CONFIG/CONFIG';
-import Authentication from '../../DEPRECATED/Authentication';
 import EXPRESS from '../../EXPRESS/EXPRESS';
 import AUTH from './AUTH';
 
@@ -81,7 +80,7 @@ class Twitter {
                     }
                     // console.log(`followers`, followers);
 
-                    const token = await AUTH.Tokenize(userObject.id);
+                    const token = await AUTH.tokenize(userObject.id);
                     res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?info=loggedin&name=${userObject.username}&token=${token}&admin=false&id=${userObject.id}&friend_count=${followers.length}&source=twitter`);
                 })
                 .catch(() => res.status(403).send('Invalid verifier or access tokens!'));

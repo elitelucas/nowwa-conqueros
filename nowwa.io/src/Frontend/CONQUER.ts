@@ -16,14 +16,14 @@ class CONQUER {
         log("client: =============== New ConquerOS");
 
         await this.ParseUrlSearchParams();
-        await this.SOCKET.init();
+        // await this.SOCKET.init();
         await this.AUTH.init();
 
         log("Okkkk");
 
-        this.do("ActionTest").then(function (e?: any) {
-            log("ACTION PASSED", e);
-        });
+        // this.do("ActionTest").then(function (e?: any) {
+        //     log("ACTION PASSED", e);
+        // });
         this.Ready = true;
         return Promise.resolve();
     };

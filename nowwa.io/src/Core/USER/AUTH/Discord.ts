@@ -84,7 +84,7 @@ class Discord {
                                 .then(result => result.json())
                                 .then(thirdResponse => {
                                     console.log(`thirdResponse`, JSON.stringify(thirdResponse, null, 4));
-                                    AUTH.Tokenize(secondResponse.email)
+                                    AUTH.tokenize(secondResponse.email)
                                         .then((token) => {
                                             res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?info=loggedin&name=${secondResponse.username}&token=${token}&admin=false&id=${secondResponse.email}&friend_count=${thirdResponse.length}&source=discord`);
                                         })

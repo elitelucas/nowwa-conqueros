@@ -99,12 +99,13 @@ const Index = () => {
                     });
                 }
 
-                // if (params.info == 'verified') {
-                //     updateState({
-                //         initialized: true,
-                //         message: `email successfully verified!`
-                //     });
-                // } else if (params.info == 'notverified') {
+                if (params.info == 'verified') {
+                    updateState({
+                        initialized: true,
+                        message: `email successfully verified!`
+                    });
+                }
+                // else if (params.info == 'notverified') {
                 //     updateState({
                 //         initialized: true,
                 //         message: `failed to verify email`
