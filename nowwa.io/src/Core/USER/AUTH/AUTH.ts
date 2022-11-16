@@ -28,8 +28,10 @@ class AUTH {
 
     ================*/
 
-    public static async init(): Promise<void> {
+    public static async init(): Promise<void> 
+    {
         PASSPORT.init();
+
         this.webhookAuthLinks();
         this.webhookAuthVerify();
         this.webhookAuthRegister();
@@ -54,23 +56,22 @@ class AUTH {
 
     ================*/
 
-    public static async set(vars: any): Promise<any> {
+    public static async set(vars: any): Promise<any> 
+    {
         let encryptedPassword = await CRYPT.hash(vars.password);
 
         try {
             let item = await USERNAME.set(
                 {
-                    username: vars.username,
-                    password: encryptedPassword,
-                    admin: false,
-                    isVerified: vars.isVerified || false
+                    username    : vars.username,
+                    password    : encryptedPassword,
+                    admin       : false,
+                    isVerified  : vars.isVerified || false
                 });
             return Promise.resolve(item);
         } catch (error) {
             return Promise.reject(error);
         }
-
-
     };
 
 
@@ -114,7 +115,8 @@ class AUTH {
 
     ================*/
 
-    public static async getProxy(vars: any): Promise<any> {
+    public static async getProxy(vars: any): Promise<any> 
+    {
         var uID: any;
 
         if (vars.email) uID = await EMAIL.getUID(vars.email);
@@ -122,7 +124,8 @@ class AUTH {
 
         let user;
 
-        if (!uID) {
+        if (!uID) 
+        {
             user = await USERNAME.set({});
         } else {
             user = await USERNAME.get({ where: { _id: uID } });
@@ -137,7 +140,8 @@ class AUTH {
         return Promise.resolve(user);
     };
 
-    public static async addProxy(uID: any, vars: any): Promise<any> {
+    public static async addProxy(uID: any, vars: any): Promise<any> 
+    {
         var proxyUser = await AUTH.getProxy(vars);
 
         if (uID != proxyUser.uID) USERNAME.reparent(uID, proxyUser.uID);
@@ -145,8 +149,10 @@ class AUTH {
         return Promise.resolve();
     };
 
-    public static webhookAuthLinks() {
-        EXPRESS.app.use(`${authLinks}`, (req, res) => {
+    public static webhookAuthLinks() 
+    {
+        EXPRESS.app.use(`${authLinks}`, (req, res) => 
+        {
             res.status(200).send({
                 success: true,
                 discord: Discord.AuthLink,
@@ -157,8 +163,10 @@ class AUTH {
         });
     }
 
-    public static webhookAuthVerify() {
-        EXPRESS.app.use(`${authVerify}`, async (req, res) => {
+    public static webhookAuthVerify() 
+    {
+        EXPRESS.app.use(`${authVerify}`, async (req, res) => 
+        {
             let id: string = <string>req.body.id;
             let token: string = <string>req.body.token;
             let isMatch: boolean = await this.verify(id, token);
@@ -169,8 +177,10 @@ class AUTH {
         });
     }
 
-    public static webhookAuthRegister() {
-        EXPRESS.app.use(`${authRegister}`, async (req, res) => {
+    public static webhookAuthRegister() 
+    {
+        EXPRESS.app.use(`${authRegister}`, async (req, res) => 
+        {
             let email: string = req.body.email;
             let password: string = req.body.password;
             let err;
@@ -195,7 +205,8 @@ class AUTH {
         });
     }
 
-    public static webhookAuthLogin() {
+    public static webhookAuthLogin() 
+    {
         EXPRESS.app.use(`${authLogin}`, async (req, res) => {
             let email: string = req.body.email;
             let password: string = req.body.password;
@@ -232,8 +243,10 @@ class AUTH {
         });
     }
 
-    public static webhookAuthTokenize() {
-        EXPRESS.app.use(`${authTokenize}`, async (req, res) => {
+    public static webhookAuthTokenize() 
+    {
+        EXPRESS.app.use(`${authTokenize}`, async (req, res) => 
+        {
             let input: string = <string>req.body.input;
             let token: string = await this.tokenize(input);
             res.status(200).send({
@@ -243,13 +256,15 @@ class AUTH {
         });
     }
 
-    public static async verify(value: string, token: string): Promise<boolean> {
+    public static async verify(value: string, token: string): Promise<boolean> 
+    {
         let secret: string = <string>process.env.EXPRESS_SECRET;
         let input: string = `${value}|${secret}`;
         return CRYPT.match(input, token);
     }
 
-    public static async tokenize(value: string): Promise<string> {
+    public static async tokenize(value: string): Promise<string> 
+    {
         let secret: string = <string>process.env.EXPRESS_SECRET;
         let input: string = `${value}|${secret}`;
         return CRYPT.hash(input);

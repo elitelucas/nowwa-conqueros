@@ -5,7 +5,8 @@ import USERNAME_CONTACTS from "./USERNAME_CONTACTS";
 import USERNAME_PROXY from "./USERNAME_PROXY";
 import LOG from "../../UTIL/LOG";
 
-class USERNAME {
+class USERNAME 
+{
     private static table: string = "usernames";
 
     /*=============== 
@@ -16,8 +17,8 @@ class USERNAME {
 
     ================*/
 
-    public static async set(vars: any): Promise<any> {
-
+    public static async set(vars: any): Promise<any> 
+    {
         let user;
         try {
             user = await DATA.getOne(USERNAME.table, USERNAME.getQuery(vars));
@@ -84,12 +85,14 @@ class USERNAME {
 
     ================*/
 
-    public static async change(query: any) {
-        let results = DATA.change(USERNAME.table, query);
+    public static async change( query: any ) 
+    {
+        let results = DATA.change( USERNAME.table, query );
         return Promise.resolve(results);
     }
 
-    public static async changeLastLogin(uID: any) {
+    public static async changeLastLogin( uID: any ) 
+    {
         var item = USERNAME.change(
             {
                 where: { _id: uID },
@@ -107,7 +110,8 @@ class USERNAME {
 
     ================*/
 
-    public static async remove(uID: any): Promise<any> {
+    public static async remove(uID: any): Promise<any> 
+    {
         // remove everything created by this userName
 
 
@@ -126,7 +130,8 @@ class USERNAME {
 
     ================*/
 
-    public static async reparent(newUID: any, oldUID: any): Promise<any> {
+    public static async reparent(newUID: any, oldUID: any): Promise<any> 
+    {
         EMAIL.reparent(newUID, oldUID);
         USERNAME_PROXY.reparent(newUID, oldUID);
         USERNAME_CONTACTS.reparent(newUID, oldUID);

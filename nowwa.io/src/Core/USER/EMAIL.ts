@@ -11,7 +11,8 @@ import mongoose from 'mongoose';
 import AUTH from './AUTH/AUTH';
 import EXPRESS from '../EXPRESS/EXPRESS';
 
-class EMAIL {
+class EMAIL 
+{
     private static table: string = "username_emails";
 
     private static emailSender: any;

@@ -1,15 +1,19 @@
 import dotenv from 'dotenv';
 
-class CONFIG {
+class CONFIG 
+{
     private static _vars: CONFIG.Config;
-    public static get vars(): CONFIG.Config {
+
+    public static get vars(): CONFIG.Config 
+    {
         if (!this._vars) {
             this._vars = this.MainConfig;
         }
         return this._vars;
     }
 
-    private static GetFullUrl(port: number, url: string, useSsl: boolean): string {
+    private static GetFullUrl(port: number, url: string, useSsl: boolean): string 
+    {
         return (useSsl ? `https` : `http`) +
             `://` +
             `${url}` +
@@ -17,8 +21,8 @@ class CONFIG {
             `${port}`;
     }
 
-    private static get MainConfig(): CONFIG.Config {
-
+    private static get MainConfig(): CONFIG.Config 
+    {
         dotenv.config();
 
         let corePort: number = parseInt(process.env.CORE_PORT as string);
@@ -87,9 +91,12 @@ class CONFIG {
     }
 }
 
-namespace CONFIG {
+namespace CONFIG 
+{
     export type Environment = 'ssl_development' | 'development' | 'production' | 'unknown';
-    export const parseEnvironment = (input: string): Environment => {
+
+    export const parseEnvironment = (input: string): Environment => 
+    {
         if (input == 'development') {
             return 'development';
         } else if (input == 'production') {
@@ -100,7 +107,9 @@ namespace CONFIG {
             return 'unknown';
         }
     }
-    export type Config = {
+
+    export type Config = 
+    {
         VERSION: string,
 
         ENVIRONMENT: Environment,
