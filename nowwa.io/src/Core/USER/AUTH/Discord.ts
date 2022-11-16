@@ -4,19 +4,22 @@ import CONFIG, { discordAuthUrl, discordCallbackUrl } from '../../CONFIG/CONFIG'
 import EXPRESS from '../../EXPRESS/EXPRESS';
 import AUTH from './AUTH';
 
-class Discord {
+class Discord 
+{
     private static Instance: Discord;
 
     /**
      * Initialize email module.
      */
-    public static async init(): Promise<void> {
+    public static async init(): Promise<void> 
+    {
         Discord.Instance = new Discord();
         Discord.WebhookCallbackLink();
         return Promise.resolve();
     }
 
-    public static get AuthLink(): string {
+    public static get AuthLink(): string 
+    {
         let discordClientId: string = CONFIG.vars.DISCORD_CLIENT_ID;
         let discordRedirect: string = encodeURIComponent(`${CONFIG.vars.DISCORD_CALLBACK_URL}`);
         let discordScopes: string[] = [
@@ -30,8 +33,10 @@ class Discord {
         return discordUrl;
     }
 
-    public static async WebhookCallbackLink(): Promise<void> {
-        EXPRESS.app.use(`${discordCallbackUrl}`, (req, res) => {
+    public static async WebhookCallbackLink(): Promise<void> 
+    {
+        EXPRESS.app.use(`${discordCallbackUrl}`, (req, res) => 
+        {
             // console.log('query callback');
             // console.log(JSON.stringify(req.query));
             // console.log('session callback');

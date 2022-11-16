@@ -4,20 +4,22 @@ import CONFIG, { snapchatAuthUrl, snapchatCallbackUrl } from '../../CONFIG/CONFI
 import EXPRESS from '../../EXPRESS/EXPRESS';
 import AUTH from './AUTH';
 
-class Snapchat {
-
+class Snapchat 
+{
     private static Instance: Snapchat;
 
     /**
      * Initialize email module.
      */
-    public static async init(): Promise<void> {
+    public static async init(): Promise<void> 
+    {
         Snapchat.Instance = new Snapchat();
         Snapchat.WebhookCallbackLink();
         return Promise.resolve();
     }
 
-    public static get AuthLink(): string {
+    public static get AuthLink(): string 
+    {
         let snapchatClientId: string = `e6a503b3-6929-4feb-a6d9-b1dc0bd963ed`;
         let snapchatRedirect: string = encodeURIComponent(`${CONFIG.vars.PUBLIC_FULL_URL}${snapchatCallbackUrl}`);
         let snapchatState: string = `g0qVDoSOERd-6ClRJoCoZOI-nHrpln8XKXYwLJoXbg8`;
@@ -32,8 +34,10 @@ class Snapchat {
         return snapchatUrl;
     }
 
-    public static async WebhookCallbackLink(): Promise<void> {
-        EXPRESS.app.use(`${snapchatCallbackUrl}`, (req, res) => {
+    public static async WebhookCallbackLink(): Promise<void> 
+    {
+        EXPRESS.app.use(`${snapchatCallbackUrl}`, (req, res) => 
+        {
             // console.log('query callback');
             // console.log(JSON.stringify(req.query, null, "\t"));
             // console.log('session callback');
@@ -56,9 +60,11 @@ class Snapchat {
 
                 return result;
             };
+
             let snapchatFirstHeader: string = hexEncode(`${snapchatClientId}:${snapchatClientSecret}`);
 
-            var firstRequestInit: RequestInit = {
+            var firstRequestInit: RequestInit =
+            {
                 method: 'POST',
                 body: new URLSearchParams({
                     client_id: snapchatClientId,
@@ -71,6 +77,7 @@ class Snapchat {
                     'Authorization': `Basic ${snapchatFirstHeader}`
                 }
             };
+
             fetch('https://accounts.snapchat.com/accounts/oauth2/token', firstRequestInit)
                 .then(result => result.json())
                 .then(firstResponse => {

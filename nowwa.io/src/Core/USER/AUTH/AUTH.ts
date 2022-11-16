@@ -15,6 +15,7 @@ import EXPRESS from '../../EXPRESS/EXPRESS';
 import CONFIG, { authLinks, authLogin, authRegister, authTokenize, authVerify, emailVerify } from '../../CONFIG/CONFIG';
 
 import dotenv from 'dotenv';
+import AVATAR from '../TRIBE/AVATAR';
 
 dotenv.config();
 
@@ -84,19 +85,25 @@ class AUTH {
 
     ================*/
 
-    public static async get(vars: any): Promise<any> {
+    public static async get( vars:any ): Promise<any> 
+    {
+        var item : any = await USERNAME.get( vars );
 
-        var item: any = await USERNAME.get(vars);
+        if( !item.isVerified ) return Promise.reject( LOG.msg( 'Email is not verified...' ) );
 
-        if (!item.isVerified) return Promise.reject(LOG.msg('Email is not verified...'));
+        let isMatch : boolean = await CRYPT.match( vars.password, item.password );
 
-        let isMatch: boolean = await CRYPT.match(vars.password, item.password);
+        if( !isMatch ) return Promise.reject( LOG.msg( 'Incorrect password...' ) );
 
-        if (!isMatch) return Promise.reject(LOG.msg('Incorrect password...'));
+        return this.getLogin( item._id );
+    };
 
-        USERNAME.changeLastLogin(item._id);
+    private static async getLogin( uID:any ) : Promise<any> 
+    {
+        let user    = await USERNAME.changeLastLogin( uID ); 
+        let avatar  = await AVATAR.getOne( { uid : uID, isMain:true } );
 
-        return Promise.resolve(item);
+        return Promise.resolve( user );
     };
 
     /*=============== 
@@ -115,36 +122,26 @@ class AUTH {
 
     ================*/
 
-    public static async getProxy(vars: any): Promise<any> 
+    public static async getProxy( vars:any ) : Promise<any> 
     {
-        var uID: any;
+        var uID : any;
 
-        if (vars.email) uID = await EMAIL.getUID(vars.email);
-        if (vars.wallet) uID = await WALLET.getUID(vars.wallet);
+        if( vars.email )    uID = await EMAIL.getUID( vars.email );
+        if( vars.wallet )   uID = await WALLET.getUID( vars.wallet );
+ 
+        let user    = await (  !uID ? USERNAME.set( {} ) : USERNAME.get( { where: { _id: uID } } ) );
+        uID         = vars.uID = user.uID;
 
-        let user;
-
-        if (!uID) 
-        {
-            user = await USERNAME.set({});
-        } else {
-            user = await USERNAME.get({ where: { _id: uID } });
-        }
-
-        vars.uID = user.uID;
-
-        await USERNAME_PROXY.getSet(vars);
-
-        USERNAME.changeLastLogin(uID);
-
-        return Promise.resolve(user);
+        await USERNAME_PROXY.getSet( vars );
+    
+        return this.getLogin( uID );
     };
-
-    public static async addProxy(uID: any, vars: any): Promise<any> 
+ 
+    public static async addProxy( uID:any, vars:any ) : Promise<any> 
     {
-        var proxyUser = await AUTH.getProxy(vars);
+        var proxyUser = await AUTH.getProxy( vars );
 
-        if (uID != proxyUser.uID) USERNAME.reparent(uID, proxyUser.uID);
+        if( uID != proxyUser.uID) USERNAME.reparent( uID, proxyUser.uID );
 
         return Promise.resolve();
     };

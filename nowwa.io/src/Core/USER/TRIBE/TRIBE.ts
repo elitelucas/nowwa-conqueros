@@ -1,3 +1,5 @@
+import DATA from "../../DATA/DATA";
+import LOG, { log } from "../../../UTIL/LOG";
 class TRIBE
 {
     private static table: string = "tribes";
@@ -53,26 +55,7 @@ class TRIBE
     {
 
     };
-
-    /*=============== 
-
-
-    QUERY  
-    
-
-    ================*/
-
-    private static getQuery( vars:any )
-    {
-        if( vars.where ) return vars;
-
-        var query   : any = { where:{}, values:{} };
-        var where   : any = {};
-
-        query.where = where;
-
-        if( vars.uID ) where.uID = vars.uID;
-
-        return query;
-    }
+ 
 };
+
+export default TRIBE;

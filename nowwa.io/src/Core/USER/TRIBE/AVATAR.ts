@@ -1,6 +1,10 @@
+import DATA from "../../DATA/DATA";
+import LOG, { log } from "../../../UTIL/LOG";
+import QUERY from "../../../UTIL/QUERY";
+
 class AVATAR
 {
-    private static table: string = "avatars";
+    private static table : string = "avatars";
 
     /*=============== 
 
@@ -10,23 +14,44 @@ class AVATAR
 
     ================*/
 
-    public static async get( query: any ) : Promise<any>
+    public static async get( vars:any ) : Promise<any>
     {
+        var results = await DATA.get( this.table, QUERY.get( vars ) );
 
+        return Promise.resolve( results );
     };
+
+    public static async getOne( vars:any ) : Promise<any>
+    {
+        let avatar              = await DATA.getOne( this.table, QUERY.get( vars ) );
+        if( !avatar ) avatar    = await this.set( vars );
+
+        return Promise.resolve( avatar );
+    };
+
 
     /*=============== 
 
 
     SET  
-    
 
+    {
+        uID,
+        firstName
+        lastName,
+        picture,
+    }
+ 
     ================*/
 
-    public static async set( query: any ) : Promise<any>
+    public static async set( vars:any ) : Promise<any>
     {
-
+        let avatar = await DATA.set( this.table, QUERY.set( vars ) );
+ 
+        return Promise.resolve( avatar );
     };
+
+
 
     /*=============== 
 
@@ -36,7 +61,7 @@ class AVATAR
 
     ================*/
 
-    public static async change( query: any ) : Promise<any>
+    public static async change( query:any ) : Promise<any>
     {
 
     };
@@ -49,31 +74,36 @@ class AVATAR
 
     ================*/
 
-    public static async remove( query: any ) : Promise<any>
+    public static async remove( query:any ) : Promise<any>
     {
+        query = QUERY.get( query );
 
+        if( query.where.uID )
+        {
+            let results = this.get( { uId:query.uID } );
+
+            for( let n in results )
+            {
+                // remove FOLDERS, ITEMS
+            }
+        }
+
+        if( query.where._id )
+        {
+            let results = this.get( { _id:query._id } );
+
+            for( let n in results )
+            {
+                // remove FOLDERS, ITEMS
+            }
+        }
+ 
+        await DATA.remove( this.table, query );
+        return Promise.resolve(); 
     };
 
-    /*=============== 
-
-
-    QUERY  
-    
-
-    ================*/
-
-    private static getQuery( vars:any )
-    {
-        if( vars.where ) return vars;
-
-        var query   : any = { where:{}, values:{} };
-        var where   : any = {};
-
-        query.where = where;
-
-        if( vars.uID ) where.uID = vars.uID;
-
-        return query;
-    }
+   
 
 };
+
+export default AVATAR;
