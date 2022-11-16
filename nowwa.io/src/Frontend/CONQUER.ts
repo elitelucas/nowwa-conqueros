@@ -2,6 +2,7 @@ import SOCKET from "./Socket/SOCKET";
 import LOG, { log } from "../UTIL/LOG";
 import AUTH from "./User/AUTH";
 import USER from "./User/USER";
+import FILE from "./File/FILE";
 
 class CONQUER {
     public static Initialized: boolean = false;
@@ -10,6 +11,7 @@ class CONQUER {
     public static USER: USER = new USER();
     public static AUTH: AUTH = new AUTH();
     private static SOCKET: SOCKET = new SOCKET();
+    public static FILE: FILE = new FILE();
 
     public static async init(): Promise<void> {
         this.Initialized = true;

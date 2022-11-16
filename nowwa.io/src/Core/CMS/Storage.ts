@@ -4,8 +4,7 @@ import path from 'path';
 import fs from 'fs';
 import EXPRESS from '../EXPRESS/EXPRESS';
 
-class Storage 
-{
+class Storage {
     private static Instance: Storage;
 
     private static VisibleExtensions: string[] = ['html', 'png', 'jpg', 'txt', 'js'];
@@ -15,8 +14,7 @@ class Storage
     /**
      * Initialize storage module.
      */
-    public static async AsyncInit(): Promise<void> 
-    {
+    public static async AsyncInit(): Promise<void> {
         Storage.Instance = new Storage();
         Storage.WebhookFiles();
         Storage.WebhookExplorer();
@@ -24,10 +22,8 @@ class Storage
     }
 
 
-    public static WebhookExplorer(): void 
-    {
-        EXPRESS.app.use(`${storageUrl}`, async (req, res) => 
-        {
+    public static WebhookExplorer(): void {
+        EXPRESS.app.use(`${storageUrl}`, async (req, res) => {
             console.log(`<-- storage - explorer`);
             let folderPath: string = req.url;
             let fullPath: string = path.join(__dirname, `${Storage.RootFolder}`, folderPath);
@@ -47,16 +43,16 @@ class Storage
                             var contentPath = path.join(fullPath, content);
                             var isDirectory: boolean = fs.statSync(contentPath).isDirectory();
                             if (!isDirectory) {
-                                let extension = content.split('.').pop();
-                                if (extension && Storage.VisibleExtensions.includes(extension.toLowerCase())) {
-                                    filePaths.push(content);
-                                }
+                                // let extension = content.split('.').pop();
+                                // if (extension && Storage.VisibleExtensions.includes(extension.toLowerCase())) {
+                                filePaths.push(content);
+                                // }
                             } else {
                                 folderPaths.push(content);
                             }
                         });
 
-                        let output = JSON.stringify({ files: filePaths, folders: folderPaths });
+                        let output = JSON.stringify({ success: true, files: filePaths, folders: folderPaths });
                         res.status(200).send(`${output}`);
                     });
                 } else {
@@ -69,8 +65,7 @@ class Storage
         });
     }
 
-    private static WebhookFiles(): void 
-    {
+    private static WebhookFiles(): void {
         let rootPath: string = path.join(__dirname, `${Storage.RootFolder}`);
         console.log(`rootPath: ${rootPath}`);
         EXPRESS.app.use('/', (req, res, next) => {

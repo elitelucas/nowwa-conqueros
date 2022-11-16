@@ -17,6 +17,7 @@ import EXPRESS from './EXPRESS/EXPRESS';
 import DATA from './DATA/DATA';
 
 import dotenv from 'dotenv';
+import FILE from './CMS/FILE';
 
 
 
@@ -45,6 +46,7 @@ class Main {
         await AUTH.init();
         await EMAIL.init();
         await SOCKET.init();
+        await FILE.init();
 
         // HACKIN
 

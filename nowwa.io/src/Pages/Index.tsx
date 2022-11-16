@@ -11,6 +11,8 @@ import Home, { HomeStateDefault } from './Home';
 import { ComponentState, UpdateComponentState } from './Utils/Helpers';
 import Status from '../Core/APPS/Status';
 import CONQUER from '../Frontend/CONQUER';
+import Uploader, { UploaderStateDefault } from './Uploader';
+import Downloader, { DownloaderState, DownloaderStateDefault } from './Downloader';
 
 type IndexDisplay = 'None' | 'Explorer' | 'Build' | 'Test' | 'Login' | 'Register' | 'Home';
 
@@ -172,6 +174,18 @@ const Index = () => {
         home = Home(homeState, setHomeState, state);
     }
 
+    const [downloaderState, setDownloaderState] = useState(DownloaderStateDefault);
+    let downloader: JSX.Element = <></>;
+    downloader = Downloader(downloaderState, setDownloaderState, state);
+    let updateDownloaderState = (updates: Partial<DownloaderState>) => {
+        let newDownloaderState = UpdateComponentState<DownloaderState>(downloaderState, updates);
+        setDownloaderState(newDownloaderState);
+    };
+
+    const [uploaderState, setUploaderState] = useState(UploaderStateDefault);
+    let uploader: JSX.Element = <></>;
+    uploader = Uploader(uploaderState, setUploaderState, state, updateDownloaderState);
+
     return (
         <Segment placeholder>
             {!state.account && <>
@@ -189,6 +203,8 @@ const Index = () => {
             {register}
             {explorer}
             {build}
+            {uploader}
+            {downloader}
         </Segment>
     );
 }
