@@ -1,5 +1,7 @@
 class FOLDER
 {
+    private static table: string = "folders";
+
     /*=============== 
 
 

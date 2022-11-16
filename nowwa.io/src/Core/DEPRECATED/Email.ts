@@ -3,14 +3,15 @@ import CONFIG from '../CONFIG/CONFIG';
 import nodemailer, { Transport, Transporter } from 'nodemailer';
 import { MailOptions } from 'nodemailer/lib/json-transport';
 
-class Email {
-
+class Email 
+{
     private static Instance: Email;
 
     /**
      * Initialize email module.
      */
-    public static async AsyncInit(): Promise<void> {
+    public static async AsyncInit(): Promise<void> 
+    {
         Email.Instance = new Email();
         return Promise.resolve();
     }

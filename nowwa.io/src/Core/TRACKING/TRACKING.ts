@@ -1,5 +1,7 @@
 class TRACKING
 {
+    private static table: string = "trackings";
+
     /*=============== 
 
 

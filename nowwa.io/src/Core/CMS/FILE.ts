@@ -3,9 +3,10 @@ import path from "path";
 import { fileUpload } from "../CONFIG/CONFIG";
 import EXPRESS from "../EXPRESS/EXPRESS";
 
-class FILE {
-
-    private static storage: multer.StorageEngine;
+class FILE 
+{
+    private static table    : string = "files";
+    private static storage  : multer.StorageEngine;
 
     public static async init(): Promise<any> {
 

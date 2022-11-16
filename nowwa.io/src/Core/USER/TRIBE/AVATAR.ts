@@ -1,5 +1,7 @@
 class AVATAR
 {
+    private static table: string = "avatars";
+
     /*=============== 
 
 

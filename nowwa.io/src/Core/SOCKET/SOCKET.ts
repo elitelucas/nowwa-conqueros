@@ -5,8 +5,10 @@ import { createServer } from "http";
 import LOG, { log, error } from '../../UTIL/LOG';
 import SocketInstance from './SocketInstance';
 
-class SOCKET {
-    public static async init(): Promise<void> {
+class SOCKET 
+{
+    public static async init(): Promise<void> 
+    {
         var httpServer = createServer();
 
         var io: SocketIO.Server = new SocketIO.Server<SOCKET.ClientToServerEvents, SOCKET.ServerToClientEvents, SOCKET.InterServerEvents, SOCKET.SocketData>(
@@ -29,22 +31,27 @@ class SOCKET {
     }
 }
 
-namespace SOCKET {
-    export interface ServerToClientEvents {
+namespace SOCKET 
+{
+    export interface ServerToClientEvents 
+    {
         noArg: () => void;
         basicEmit: (a: number, b: string, c: Buffer) => void;
         withAck: (d: string, callback: (e: number) => void) => void;
     }
 
-    export interface ClientToServerEvents {
+    export interface ClientToServerEvents 
+    {
         hello: () => void;
     }
 
-    export interface InterServerEvents {
+    export interface InterServerEvents 
+    {
         ping: () => void;
     }
 
-    export interface SocketData {
+    export interface SocketData 
+    {
         name: string;
         age: number;
     }

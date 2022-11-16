@@ -7,7 +7,7 @@ import LOG from "../../UTIL/LOG";
 
 class USERNAME 
 {
-    private static table: string = "usernames";
+    private static table : string = "usernames";
 
     /*=============== 
 
@@ -17,32 +17,34 @@ class USERNAME
 
     ================*/
 
-    public static async set(vars: any): Promise<any> 
+    public static async set( vars: any ): Promise<any> 
     {
         let user;
+
         try {
             user = await DATA.getOne(USERNAME.table, USERNAME.getQuery(vars));
         } catch (error) {
             // if user does not exists, then proceed
         }
 
-        if (user) return Promise.reject(LOG.msg('user already exists'));
+        if ( user ) return Promise.reject(LOG.msg('user already exists'));
 
-        user = await DATA.set(USERNAME.table, vars);
+        user        = await DATA.set(USERNAME.table, vars);
+        let uID     = user._id;
 
         // Look for previous accounts that have used this email
         // Do merge
-
-        // Add email 
-
+ 
         await EMAIL.set(
-            {
-                email: vars.username,
-                isVerified: vars.isVerified,
-                uID: user._id
-            });
+        {
+            email       : vars.username,
+            isVerified  : vars.isVerified,
+            uID         : uID
+        });
 
-        return Promise.resolve(user);
+        await AVATAR.set({ uID:uID });
+
+        return Promise.resolve( user );
     };
 
     /*=============== 
@@ -53,26 +55,27 @@ class USERNAME
 
     ================*/
 
-    public static async get(vars: any): Promise<any> {
-
+    public static async get( vars : any ): Promise<any> 
+    {
         let item = await DATA.getOne(USERNAME.table, USERNAME.getQuery(vars));
 
         if (!item) return Promise.reject(LOG.msg('User does not exist'));
 
-        return Promise.resolve(item);
+        return Promise.resolve( item );
     };
 
-    private static getQuery(vars: any) {
-        if (vars.where) return vars;
+    private static getQuery( vars : any ) 
+    {
+        if( vars.where ) return vars;
 
         var query: any = { where: {}, values: {} };
         var where: any = {};
 
         query.where = where;
 
-        if (vars.username) where.username = vars.username;
-        if (vars.uID) where.uID = vars.uID;
-        if (vars._id) where._id = vars._id;
+        if( vars.username ) where.username = vars.username;
+        if( vars.uID ) where.uID = vars.uID;
+        if( vars._id ) where._id = vars._id;
 
         return query;
     }
@@ -85,18 +88,18 @@ class USERNAME
 
     ================*/
 
-    public static async change( query: any ) 
+    public static async change( query : any ) 
     {
         let results = DATA.change( USERNAME.table, query );
         return Promise.resolve(results);
     }
 
-    public static async changeLastLogin( uID: any ) 
+    public static async changeLastLogin( uID : any ) 
     {
         var item = USERNAME.change(
             {
-                where: { _id: uID },
-                values: { lastLogin: DATE.now() }
+                where   : { _id: uID },
+                values  : { lastLogin: DATE.now() }
             });
 
         return Promise.resolve(item);
@@ -110,14 +113,14 @@ class USERNAME
 
     ================*/
 
-    public static async remove(uID: any): Promise<any> 
+    public static async remove( uID: any ): Promise<any> 
     {
         // remove everything created by this userName
 
 
         // remove userName itself
 
-        await DATA.remove(USERNAME.table, uID);
+        await DATA.remove( USERNAME.table, uID );
 
         return Promise.resolve();
     }
@@ -130,7 +133,7 @@ class USERNAME
 
     ================*/
 
-    public static async reparent(newUID: any, oldUID: any): Promise<any> 
+    public static async reparent( newUID : any, oldUID : any ) : Promise<any> 
     {
         EMAIL.reparent(newUID, oldUID);
         USERNAME_PROXY.reparent(newUID, oldUID);

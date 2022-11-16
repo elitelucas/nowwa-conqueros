@@ -1,5 +1,7 @@
 class INSTANCE
 {
+    private static table: string = "instances";
+
     /*=============== 
 
 

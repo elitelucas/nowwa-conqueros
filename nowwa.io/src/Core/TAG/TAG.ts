@@ -1,5 +1,7 @@
 class TAG
 {
+    private static table: string = "tags";
+
     /*=============== 
 
 

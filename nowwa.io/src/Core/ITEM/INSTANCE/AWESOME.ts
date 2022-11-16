@@ -1,5 +1,7 @@
 class AWESOME
 {
+    private static table: string = "awesomes";
+
     /*=============== 
 
 

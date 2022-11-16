@@ -1,5 +1,7 @@
 class IMAGE
 {
+    private static table: string = "images";
+
     /*=============== 
 
 

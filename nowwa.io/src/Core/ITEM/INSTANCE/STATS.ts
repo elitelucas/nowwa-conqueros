@@ -1,5 +1,7 @@
 class STATS
 {
+    private static table: string = "stats";
+
     /*=============== 
 
 
