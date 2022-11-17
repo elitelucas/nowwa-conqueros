@@ -18,6 +18,8 @@ import DATA from './DATA/DATA';
 
 import dotenv from 'dotenv';
 import FILE from './CMS/FILE';
+import ACCOUNT from './TESTS/ACCOUNT';
+import TEMPORARY from './TESTS/TEMPORARY';
 
 
 
@@ -61,3 +63,21 @@ class Main {
 export default Main;
 
 var c: Main = new Main();
+
+let test = async () => {
+    await TEMPORARY.Init();
+    let value = await ACCOUNT.Set({
+        username: 'test2'
+    });
+    console.log(`value: ${JSON.stringify(value, null, 2)}`);
+    let results1 = await ACCOUNT.Get({
+        username: 'test1'
+    });
+    console.log(`results1: ${JSON.stringify(results1, null, 2)}`);
+    let results2 = await ACCOUNT.Get({
+        username: 'test2'
+    });
+    console.log(`results2: ${JSON.stringify(results2, null, 2)}`);
+};
+
+test();
