@@ -24,7 +24,7 @@ class ARRAY
         return JSON.parse( JSON.stringify( object ) );
     };
 
-    public static extract( from:any, to:any )
+    public static extract( from?:any, to?:any )
     {
         var output = to || {};
 

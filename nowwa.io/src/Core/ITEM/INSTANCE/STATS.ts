@@ -1,5 +1,6 @@
 import DATA from "../../DATA/DATA";
 import LOG, { log } from "../../../UTIL/LOG";
+import ARRAY from "../../../UTIL/ARRAY";
 
 class STATS
 {
@@ -35,11 +36,11 @@ class STATS
 
     ================*/
 
-    public static async set( query: any ) : Promise<any>
+    public static async set( query:any ) : Promise<any>
     {
-        let value = await DATA.set( this.table, query );
-
-        return Promise.resolve( value );
+        let item            = await ( this.getOne( query ) || DATA.set( this.table, { avatarID:query.avatarID, instanceID:query.instanceID } ) );
+ 
+        return this.change( { where:{ _id:item._id }, values:query.values || query } );
     };
 
     /*=============== 
@@ -52,11 +53,24 @@ class STATS
 
     public static async change( query: any ) : Promise<any>
     {
-        let value = await DATA.change( this.table, query );
+        let item : any      = this.getOne( query );
+        let values : any    = {};
+
+        values.awesome      = item.awesome      || 0;
+        values.bullshit     = item.bullshit     || 0;
+        values.views        = item.views        || 0;
+        values.downloads    = item.downloads    || 0;
+
+        if( query.awesome )     values.awesome  += query.awesome;
+        if( query.bullshit )    values.bullshit += query.bullshit;
+ 
+        item                = this.change({ where:{ _id:item._id }, values:values });
+ 
+        let value           = await DATA.change( this.table, query );
 
         return Promise.resolve( value );
     };
-
+ 
     /*=============== 
 
 

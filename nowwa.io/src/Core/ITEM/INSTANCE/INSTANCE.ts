@@ -2,6 +2,9 @@ import DATA from "../../DATA/DATA";
 import LOG, { log } from "../../../UTIL/LOG";
 import QUERY from "../../../UTIL/QUERY";
 import FOLDER from "./FOLDER";
+import STATS from "./STATS";
+import TAG from "../../TAG/TAG";
+import AWESOME from "./AWESOME";
  
 class INSTANCE
 {
@@ -90,10 +93,19 @@ class INSTANCE
 
     public static async remove( query:any ) : Promise<any>
     {
+        var results = await  this.get( query );
+
+        for( var n in results )
+        {
+            let vars = { instanceID: results[n]._id };
+            
+            await STATS.remove( vars );
+            await TAG.remove( vars );
+            await AWESOME.remove( vars, true );
+        }
+ 
         let remove = await DATA.remove( this.table, query );
-
-        // REMOVE TAGS!
-
+ 
         return Promise.resolve( remove );
     };
  
