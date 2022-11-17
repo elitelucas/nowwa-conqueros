@@ -19,7 +19,7 @@ class DATA
     {
         log( `init database...` );
 
-        let uri: string = `mongodb+srv://${CONFIG.vars.MONGODB_USER}:${CONFIG.vars.MONGODB_PASS}@${CONFIG.vars.MONGODB_HOST}/${CONFIG.vars.MONGODB_DB}`;
+        let uri : string = `mongodb+srv://${CONFIG.vars.MONGODB_USER}:${CONFIG.vars.MONGODB_PASS}@${CONFIG.vars.MONGODB_HOST}/${CONFIG.vars.MONGODB_DB}`;
 
         log( `connect to: ${uri}` );
 
@@ -29,11 +29,12 @@ class DATA
             sslValidate: false,
             sslCert: `${CONFIG.vars.MONGODB_CERT}`
 
-        }).then((result) => {
-            log("Successfully connect to MongoDB.");
-
-        }).catch((e: Error) => {
-            error("Connection error", e);
+        }).then((result) => 
+        {
+            log( "Successfully connect to MongoDB.");
+        }).catch((e: Error) => 
+        {
+            error( "Connection error", e );
             throw e;
         });
 
@@ -48,12 +49,14 @@ class DATA
 
     ================*/
 
-    public static async get( tableName:string, query:any ): Promise<mongoose.Document<any, any, any>[]> 
+    public static async get( tableName:string, vars:any ): Promise<mongoose.Document<any, any, any>[]> 
     {
-        let model       = await TABLE_MODEL.get( tableName );
-        let myQuery     = model.find( query.where || {} );
+        vars            = QUERY.get( vars );
 
-        if( query.limit ) myQuery.limit( query.limit );
+        let model       = await TABLE_MODEL.get( tableName );
+        let myQuery     = model.find( vars.where );
+
+        if( vars.limit ) myQuery.limit( vars.limit );
 
         let documents   = await myQuery.exec();
 
@@ -64,8 +67,9 @@ class DATA
 
     public static async getOne( tableName:string, query:any ): Promise<mongoose.Document<any, any, any>> 
     {
+        query           = QUERY.get( query );
         let model       = await TABLE_MODEL.get( tableName );
-        let myQuery     = model.findOne( query.where || {} );
+        let myQuery     = model.findOne( query.where );
         let document    = await myQuery.exec();
 
         if( document ) return Promise.resolve( document );
@@ -88,7 +92,7 @@ class DATA
         if( query.where ) return this.change( tableName, query );
 
         let model       = await TABLE_MODEL.get( tableName );
-        let document    = await model.create( query.values || query );
+        let document    = await model.create( query );
 
         return Promise.resolve( document );
     }
@@ -101,8 +105,10 @@ class DATA
 
     ================*/
 
-    public static async change( tableName:string, query:DATA.Query ): Promise<mongoose.Document<any, any, any>>
+    public static async change( tableName:string, query:any ): Promise<mongoose.Document<any, any, any>>
     {
+        query           = QUERY.change( query );
+
         let model       = await TABLE_MODEL.get( tableName );
         let myQuery     = model.find( query.where as any ).limit( 1 );
         let documents   = await myQuery.exec();
@@ -174,20 +180,20 @@ namespace DATA
 
     export type MapSchemaTypes =
     {
-        string: string;
-        number: number;
-        boolean: boolean;
-        object: object;
-        date: Date;
+        string  : string;
+        number  : number;
+        boolean : boolean;
+        object  : object;
+        date    : Date;
     }
 
     export type Query =
     {
-        remove?: string[],
-        add?: { [key: string]: string }
-        values?: { [key: string]: any },
-        types?: { [key: string]: string },
-        where?: {
+        remove?     : string[],
+        add?        : { [key: string]: string }
+        values?     : { [key: string]: any },
+        types?      : { [key: string]: string },
+        where?      : {
             [key: string]:
             string |
             number |
@@ -204,7 +210,7 @@ namespace DATA
                 $size?: number, // is an array with size of   
             }
         },
-        limit?: number,
+        limit?  : number,
     }
 }
 
