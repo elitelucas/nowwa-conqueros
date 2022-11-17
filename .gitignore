@@ -25,6 +25,6 @@ nakama/data/*.log
 nakama/.cookie
 nowwa.io/plugins/
 supersnappy.io/node_modules/
-test/
 flutter/
 nowwa.io/heap-*
+test/
