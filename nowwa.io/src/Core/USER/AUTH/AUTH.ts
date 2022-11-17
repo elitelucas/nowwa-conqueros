@@ -19,8 +19,8 @@ import AVATAR from '../TRIBE/AVATAR';
 
 dotenv.config();
 
-class AUTH {
-
+class AUTH 
+{
     /*=============== 
 
 
@@ -29,7 +29,7 @@ class AUTH {
 
     ================*/
 
-    public static async init(): Promise<void> 
+    public static async init() : Promise<void> 
     {
         PASSPORT.init();
 
@@ -57,7 +57,7 @@ class AUTH {
 
     ================*/
 
-    public static async set(vars: any): Promise<any> 
+    public static async set( vars:any ) : Promise<any> 
     {
         let encryptedPassword = await CRYPT.hash(vars.password);
 
@@ -85,7 +85,7 @@ class AUTH {
 
     ================*/
 
-    public static async get( vars:any ): Promise<any> 
+    public static async get( vars:any ) : Promise<any> 
     {
         var item : any = await USERNAME.get( vars );
 
@@ -141,7 +141,7 @@ class AUTH {
     {
         var proxyUser = await AUTH.getProxy( vars );
 
-        if( uID != proxyUser.uID) USERNAME.reparent( uID, proxyUser.uID );
+        if( uID != proxyUser.uID ) USERNAME.reparent( uID, proxyUser.uID );
 
         return Promise.resolve();
     };
@@ -204,11 +204,15 @@ class AUTH {
 
     public static webhookAuthLogin() 
     {
-        EXPRESS.app.use(`${authLogin}`, async (req, res) => {
-            let email: string = req.body.email;
-            let password: string = req.body.password;
+        EXPRESS.app.use(`${authLogin}`, async (req, res) => 
+        {
+            let email       : string = req.body.email;
+            let password    : string = req.body.password;
+
             let user, err;
-            try {
+
+            try 
+            {
                 user = await this.get({
                     username: email,
                     password: password
@@ -216,24 +220,30 @@ class AUTH {
                 if (!user.isVerified) {
                     return Promise.reject(LOG.msg('email is not verified!'));
                 }
-            } catch (error) {
+            } catch( error )
+            {
                 err = error;
             }
-            if (err) {
-                res.send({
-                    success: false,
-                    error: (<Error>err).message
+            if( err ) 
+            {
+                res.send(
+                {
+                    success : false,
+                    error   : (<Error>err).message
                 });
-            } else {
-                let token: string = await this.tokenize(user.username);
-                res.send({
-                    success: true,
-                    account: {
-                        id: user.username,
-                        name: user.username,
-                        token: token,
-                        admin: user.admin,
-                        friend_count: 0
+            } else 
+            {
+                let token : string = await this.tokenize( user.username );
+                res.send(
+                {
+                    success             : true,
+                    account             : 
+                    {
+                        id              : user.username,
+                        name            : user.username,
+                        token           : token,
+                        admin           : user.admin,
+                        friend_count    : 0
                     }
                 });
             }
@@ -242,29 +252,33 @@ class AUTH {
 
     public static webhookAuthTokenize() 
     {
-        EXPRESS.app.use(`${authTokenize}`, async (req, res) => 
+        EXPRESS.app.use(`${authTokenize}`, async ( req, res ) => 
         {
-            let input: string = <string>req.body.input;
-            let token: string = await this.tokenize(input);
-            res.status(200).send({
-                success: true,
-                value: token
+            let input : string = <string>req.body.input;
+            let token : string = await this.tokenize( input );
+
+            res.status( 200 ).send(
+            {
+                success : true,
+                value   : token
             });
         });
     }
 
     public static async verify(value: string, token: string): Promise<boolean> 
     {
-        let secret: string = <string>process.env.EXPRESS_SECRET;
-        let input: string = `${value}|${secret}`;
-        return CRYPT.match(input, token);
+        let secret  : string = <string>process.env.EXPRESS_SECRET;
+        let input   : string = `${value}|${secret}`;
+
+        return CRYPT.match( input, token );
     }
 
     public static async tokenize(value: string): Promise<string> 
     {
-        let secret: string = <string>process.env.EXPRESS_SECRET;
-        let input: string = `${value}|${secret}`;
-        return CRYPT.hash(input);
+        let secret  : string = <string>process.env.EXPRESS_SECRET;
+        let input   : string = `${value}|${secret}`;
+
+        return CRYPT.hash( input );
     }
 
 };

@@ -1,6 +1,10 @@
 import DATA from "../../DATA/DATA";
 import LOG, { log } from "../../../UTIL/LOG";
 import QUERY from "../../../UTIL/QUERY";
+import TRIBE from "./TRIBE";
+import TRIBE_ASSOCIATIONS from "./TRIBE_ASSOCIATIONS";
+import TRIBE_MEMBERS from "./TRIBE_MEMBERS";
+import FOLDER from "../../ITEM/INSTANCE/FOLDER";
 
 class AVATAR
 {
@@ -16,7 +20,7 @@ class AVATAR
 
     public static async get( vars:any ) : Promise<any>
     {
-        var results = await DATA.get( this.table, QUERY.get( vars ) );
+        var results             = await DATA.get( this.table, QUERY.get( vars ) );
 
         return Promise.resolve( results );
     };
@@ -48,11 +52,28 @@ class AVATAR
     {
         let avatar = await DATA.set( this.table, QUERY.set( vars ) );
  
+        let tribe = await TRIBE.set(
+        {
+            domainID    : avatar._id,
+            type        : "avatar"
+        });
+ 
+        await TRIBE_MEMBERS.set(
+        {
+            tribeID     : tribe._id,
+            avatarID    : avatar._id,
+            role        : 0
+        });
+ 
+        await FOLDER.set(
+        { 
+            type        : "root",
+            avatarID    : avatar._id
+        });
+ 
         return Promise.resolve( avatar );
     };
-
-
-
+ 
     /*=============== 
 
 

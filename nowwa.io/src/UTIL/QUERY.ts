@@ -1,23 +1,26 @@
+import DATE from "./DATE";
+
 class QUERY
 {
     public static get( vars:any )
     {
-        if( vars.where ) return vars;
+        return vars.where ? vars : { where:vars };
+    };
 
-        var query   : any = { where:{}, values:{} };
-        var where   : any = {};
-
-        query.where = where;
-
-        if( vars.uID ) where.uID = vars.uID;
+    public static set( vars:any )
+    {
+        let query : any = vars.values ? vars : { values : vars };
+        if( query.values._id ) delete ( query.values._id );
+        if( !query.values.timestamp ) query.values.timestamp = DATE.now(); 
 
         return query;
     };
 
-    public static set( query:any )
+    public static change( vars:any )
     {
-        if( !query.values ) query = { values : query };
-        if( query.values && query.values._id ) delete ( query.values._id );
+        let query : any = vars.values ? vars : { values : vars };
+        if( query.values._id ) delete ( query.values._id );
+        if( !query.values.lastChange ) query.values.lastChange = DATE.now(); 
 
         return query;
     };

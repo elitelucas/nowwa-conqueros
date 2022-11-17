@@ -2,20 +2,25 @@ import multer from "multer";
 import path from "path";
 import { fileUpload } from "../CONFIG/CONFIG";
 import EXPRESS from "../EXPRESS/EXPRESS";
+import DATA from "../DATA/DATA";
 
 class FILE 
 {
     private static table    : string = "files";
     private static storage  : multer.StorageEngine;
 
-    public static async init(): Promise<any> {
-
-        this.storage = multer.diskStorage({
-            destination: (req, file, callback) => {
-                let tmpDestination: string = path.resolve(__dirname, '..', '..', '..', 'storage', 'temp');
+    public static async init(): Promise<any> 
+    {
+        this.storage = multer.diskStorage(
+        {
+            destination : ( req, file, callback) => 
+            {
+                let tmpDestination: string = path.resolve( __dirname, '..', '..', '..', 'storage', 'temp' );
                 callback(null, tmpDestination);
             },
-            filename: (req, file, callback) => {
+
+            filename : ( req, file, callback ) => 
+            {
                 /*
                 var extensionRegex:RegExp = /[^.]+$/i;
                 var extension = file.originalname.match(extensionRegex);
@@ -26,8 +31,8 @@ class FILE
                 }
                 callback(null, `${fieldName}.${extensionName}`);
                 */
-                console.log(`uploaded file: ${file.originalname}`);
-                callback(null, file.originalname);
+                console.log( `uploaded file: ${file.originalname}` );
+                callback( null, file.originalname );
             }
         });
 
@@ -35,22 +40,51 @@ class FILE
         return Promise.resolve();
     }
 
-    private static webhookFileUpload() {
-
+    private static webhookFileUpload() 
+    {
         var upload = multer({ storage: this.storage });
 
-        EXPRESS.app.use(`${fileUpload}`, upload.array('files'), async (req, res) => {
-
-            console.log(`<-- request upload`);
+        EXPRESS.app.use( `${fileUpload}`, upload.array('files'), async( req, res ) => 
+        {
+            console.log( `<-- request upload` );
 
             var files = req.files;
-            console.log(JSON.stringify(files));
-            res.status(200).send({
-                success: true
-            });
+            console.log( JSON.stringify(files) );
+
+            res.status( 200 ).send({ success: true });
+
+            // WRITE ENTRIES FOR FILES
+
+            for( let n in files )
+            {
+                // FILE.set( { } )
+            }
 
         });
     }
+
+    /*=============== 
+
+
+    SET  
+
+    {
+        name,
+        location,
+        avatarID
+    }
+
+    
+ 
+    ================*/
+
+    public static async set( query:any ) : Promise<any> 
+    {
+       var file = DATA.set( this.table, query );
+       
+       return Promise.resolve( file );
+    };
+
     /*=============== 
 
 
@@ -59,21 +93,13 @@ class FILE
 
     ================*/
 
-    public static async get(query: any): Promise<any> {
-
+    public static async get( query:any ) : Promise<any> 
+    {
+        var file = DATA.get( this.table, query );
+       
+        return Promise.resolve( file );
     };
 
-    /*=============== 
-
-
-    SET  
-    
-
-    ================*/
-
-    public static async set(query: any): Promise<any> {
-
-    };
 
     /*=============== 
 
@@ -83,8 +109,11 @@ class FILE
 
     ================*/
 
-    public static async change(query: any): Promise<any> {
-
+    public static async change( query:any ) : Promise<any> 
+    {
+        var file = DATA.change( this.table, query );
+       
+        return Promise.resolve( file );     
     };
 
     /*=============== 
@@ -95,30 +124,16 @@ class FILE
 
     ================*/
 
-    public static async remove(query: any): Promise<any> {
+    public static async remove( query:any ) : Promise<any> 
+    {
+        var file = DATA.change( this.table, query );
 
+        // DELETE FILE FROM HARD DRIVE NOW
+       
+        return Promise.resolve( file );  
     };
 
-    /*=============== 
-
-
-    QUERY  
-    
-
-    ================*/
-
-    private static getQuery(vars: any) {
-        if (vars.where) return vars;
-
-        var query: any = { where: {}, values: {} };
-        var where: any = {};
-
-        query.where = where;
-
-        if (vars.uID) where.uID = vars.uID;
-
-        return query;
-    }
+ 
 };
 
 export default FILE;
