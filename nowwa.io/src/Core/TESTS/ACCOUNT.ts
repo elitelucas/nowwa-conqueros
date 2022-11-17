@@ -5,12 +5,14 @@ type ACCOUNT_TYPE = {
     username: string;
     password: string;
     verified: boolean;
+    admin: boolean;
 }
 
 const ACCOUNT_TYPE_DEFAULT: Partial<ACCOUNT_TYPE> = {
     username: '',
     password: '',
-    verified: false
+    verified: false,
+    admin: false
 }
 
 class ACCOUNT {
@@ -21,9 +23,6 @@ class ACCOUNT {
             this.instance = new ACCOUNT();
         }
         return this.instance;
-    }
-    constructor() {
-
     }
     public init(): void {
 
@@ -41,7 +40,7 @@ class ACCOUNT {
     }
 
     private set(values: Partial<ACCOUNT_TYPE>): Promise<Partial<ACCOUNT_TYPE>> {
-        return Promise.resolve(TEMPORARY.Set<ACCOUNT_TYPE>(ACCOUNT.Instance.name, values));
+        return Promise.resolve(TEMPORARY.Set<ACCOUNT_TYPE>(ACCOUNT.Instance.name, values, ['username']));
     }
 
     public change(query: Partial<ACCOUNT_TYPE>, values: Partial<ACCOUNT_TYPE>): Promise<Partial<ACCOUNT_TYPE>> {

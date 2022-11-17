@@ -1,5 +1,5 @@
 interface BASE<T> {
-    name: string;
+    readonly name: string;
     init(): void;
     get(query?: Partial<T>): Promise<Partial<T>[]>;
     set(values: Partial<T>): Promise<Partial<T>>;
