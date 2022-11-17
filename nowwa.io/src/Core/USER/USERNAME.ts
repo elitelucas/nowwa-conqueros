@@ -4,6 +4,7 @@ import DATE from '../../UTIL/DATE';
 import USERNAME_CONTACTS from "./USERNAME_CONTACTS";
 import USERNAME_PROXY from "./USERNAME_PROXY";
 import LOG from "../../UTIL/LOG";
+import AVATAR from "./TRIBE/AVATAR";
 
 class USERNAME 
 {
@@ -22,14 +23,14 @@ class USERNAME
         let user;
 
         try {
-            user = await DATA.getOne(USERNAME.table, USERNAME.getQuery(vars));
+            user = await DATA.getOne( this.table, this.getQuery(vars));
         } catch (error) {
             // if user does not exists, then proceed
         }
 
-        if ( user ) return Promise.reject(LOG.msg('user already exists'));
+        if ( user ) return Promise.reject( LOG.msg('user already exists') );
 
-        user        = await DATA.set(USERNAME.table, vars);
+        user        = await DATA.set( this.table, vars );
         let uID     = user._id;
 
         // Look for previous accounts that have used this email
@@ -42,8 +43,8 @@ class USERNAME
             uID         : uID
         });
 
-        await AVATAR.set({ uID:uID });
-
+        await AVATAR.set({ uID:uID, isMain:true });
+ 
         return Promise.resolve( user );
     };
 
@@ -57,9 +58,9 @@ class USERNAME
 
     public static async get( vars : any ): Promise<any> 
     {
-        let item = await DATA.getOne(USERNAME.table, USERNAME.getQuery(vars));
+        let item = await DATA.getOne( this.table, this.getQuery(vars));
 
-        if (!item) return Promise.reject(LOG.msg('User does not exist'));
+        if (!item) return Promise.reject( LOG.msg('User does not exist'));
 
         return Promise.resolve( item );
     };
@@ -90,19 +91,21 @@ class USERNAME
 
     public static async change( query : any ) 
     {
-        let results = DATA.change( USERNAME.table, query );
+        let results = DATA.change( this.table, query );
         return Promise.resolve(results);
     }
 
     public static async changeLastLogin( uID : any ) 
     {
-        var item = USERNAME.change(
-            {
-                where   : { _id: uID },
-                values  : { lastLogin: DATE.now() }
-            });
+        let user = await this.change(
+        {
+            where   : { _id: uID },
+            values  : { lastLogin: DATE.now() }
+        });
 
-        return Promise.resolve(item);
+       // USERNAME.get( { _id: uID } );
+
+        return Promise.resolve( user );
     }
 
     /*=============== 
@@ -120,7 +123,7 @@ class USERNAME
 
         // remove userName itself
 
-        await DATA.remove( USERNAME.table, uID );
+        await DATA.remove( this.table, uID );
 
         return Promise.resolve();
     }
@@ -141,7 +144,7 @@ class USERNAME
 
         // Merge game data, wallets, anything else 
 
-        USERNAME.remove(oldUID);
+        this.remove(oldUID);
 
         return Promise.resolve();
     }
