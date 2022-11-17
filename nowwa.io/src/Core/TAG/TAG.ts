@@ -1,5 +1,6 @@
 import DATA from "../DATA/DATA";
 import LOG, { log } from "../../UTIL/LOG";
+ 
 
 class TAG
 {
@@ -27,19 +28,31 @@ class TAG
         return Promise.resolve( value );
     };
 
+    public static async getSet( query:any ) : Promise<any>
+    {
+        let value = await this.get( query );
+        if( !value ) value = await this.set( query );
+
+        return Promise.resolve( value );
+    };
+
     /*=============== 
 
 
     SET  
+
+    {
+        name
+    }
     
 
     ================*/
 
-    public static async set( query: any ) : Promise<any>
+    public static async set( query:any ) : Promise<any>
     {
-        let value = await DATA.set( this.table, query );
-
-        return Promise.resolve( value );
+        var item = await DATA.set( this.table, query );
+ 
+        return Promise.resolve( item );
     };
 
     /*=============== 

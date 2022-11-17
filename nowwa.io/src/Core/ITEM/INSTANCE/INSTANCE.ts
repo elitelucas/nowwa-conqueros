@@ -3,8 +3,8 @@ import LOG, { log } from "../../../UTIL/LOG";
 import QUERY from "../../../UTIL/QUERY";
 import FOLDER from "./FOLDER";
 import STATS from "./STATS";
-import TAG from "../../TAG/TAG";
 import AWESOME from "./AWESOME";
+import TAG_ASSOCIATIONS from "../../TAG/TAG_ASSOCIATIONS";
  
 class INSTANCE
 {
@@ -97,10 +97,10 @@ class INSTANCE
 
         for( var n in results )
         {
-            let vars = { instanceID: results[n]._id };
-            
+            let vars = { instanceID : results[n]._id };
+
             await STATS.remove( vars );
-            await TAG.remove( vars );
+            await TAG_ASSOCIATIONS.remove( vars );
             await AWESOME.remove( vars, true );
         }
  

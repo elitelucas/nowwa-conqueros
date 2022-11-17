@@ -1,5 +1,7 @@
 import DATA from "../DATA/DATA";
 import LOG, { log } from "../../UTIL/LOG";
+import QUERY from "../../UTIL/QUERY";
+import TAG from "./TAG";
 
 class TAG_ASSOCIATIONS
 {
@@ -27,19 +29,43 @@ class TAG_ASSOCIATIONS
         return Promise.resolve( value );
     };
 
+    public static async getSet( query: any ) : Promise<any>
+    {
+        let value = await this.get( query );
+        if( !value ) value = await this.set( query );
+
+        return Promise.resolve( value );
+    };
+
+
     /*=============== 
 
 
     SET  
     
+    {
+        instanceID,
+        tagID,
+
+        tags[]
+    }
 
     ================*/
 
-    public static async set( query: any ) : Promise<any>
+    public static async set( query:any ) : Promise<any>
     {
-        let value = await DATA.set( this.table, query );
+        if( query.tagID ) return DATA.set( this.table, query );
+ 
+        await this.remove( { instanceID:query.instanceID } );
 
-        return Promise.resolve( value );
+        for( var n in query.tags )
+        {
+            let tagItem : any = await TAG.getSet( { name:query.tags[n] } );
+ 
+            await this.getSet( { instanceID:query.instanceID, tagID: tagItem._id } );
+        }
+ 
+        return Promise.resolve();
     };
 
     /*=============== 

@@ -147,12 +147,12 @@ class DATA
 
     ================*/
 
-    public static async remove( tableName:string, id:any ) : Promise<void> 
+    public static async remove( tableName:string, query:any ) : Promise<void> 
     {
-        let model   = await TABLE_MODEL.get( tableName );
-        let myQuery = model.find({ _id: id }).limit( 1 );
+        let model = await TABLE_MODEL.get( tableName );
 
-        await model.deleteOne( myQuery );
+        await model.delete( model.find( QUERY.get( query ) ) );
+
         return Promise.resolve();
     };
 
