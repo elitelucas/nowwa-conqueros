@@ -49,7 +49,7 @@ class DATA
 
     ================*/
 
-    public static async get( tableName:string, vars:any ): Promise<mongoose.Document<any, any, any>[]> 
+    public static async get( tableName:string, vars:any ) : Promise<mongoose.Document<any, any, any>[]> 
     {
         vars            = QUERY.get( vars );
 
@@ -65,7 +65,7 @@ class DATA
         return Promise.reject( LOG.msg('entries not found') );
     }
 
-    public static async getOne( tableName:string, query:any ): Promise<mongoose.Document<any, any, any>> 
+    public static async getOne( tableName:string, query:any ) : Promise<mongoose.Document<any, any, any>> 
     {
         query           = QUERY.get( query );
         let model       = await TABLE_MODEL.get( tableName );
@@ -127,6 +127,7 @@ class DATA
             document.set( fieldName, fieldValue );
             document.markModified( fieldName );
         }
+        
         await document.save();
         return Promise.resolve( document );
     };

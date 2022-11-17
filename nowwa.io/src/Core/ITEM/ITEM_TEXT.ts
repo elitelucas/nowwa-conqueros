@@ -1,9 +1,9 @@
 import DATA from "../DATA/DATA";
 import LOG, { log } from "../../UTIL/LOG";
 
-class TAG
+class ITEM_TEXT
 {
-    private static table : string = "tags";
+    private static table: string = "item_texts";
 
     /*=============== 
 
@@ -32,6 +32,10 @@ class TAG
 
     SET  
     
+    {
+        itemID,
+        text
+    }
 
     ================*/
 
@@ -74,4 +78,4 @@ class TAG
  
 };
 
-export default TAG;
+export default ITEM_TEXT;

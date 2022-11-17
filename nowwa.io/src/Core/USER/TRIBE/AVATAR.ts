@@ -5,6 +5,7 @@ import TRIBE from "./TRIBE";
 import TRIBE_ASSOCIATIONS from "./TRIBE_ASSOCIATIONS";
 import TRIBE_MEMBERS from "./TRIBE_MEMBERS";
 import FOLDER from "../../ITEM/INSTANCE/FOLDER";
+import ITEM from "../../ITEM/ITEM";
 
 class AVATAR
 {
@@ -101,12 +102,8 @@ class AVATAR
 
         if( query.where.uID )
         {
-            let results = this.get( { uId:query.uID } );
-
-            for( let n in results )
-            {
-                // remove FOLDERS, ITEMS
-            }
+            let results : any = this.get( { uId:query.uID } );
+            for( let n in results ) await this.removeAvatar( results[n]._id );
         }
 
         if( query.where._id )
@@ -123,6 +120,13 @@ class AVATAR
         return Promise.resolve(); 
     };
 
+
+    public static async removeAvatar( avatarID:any ) : Promise<any>
+    {
+        await ITEM.remove( { avatarID:avatarID } );
+        await FOLDER.remove( { avatarID:avatarID } );
+        
+    };
    
 
 };

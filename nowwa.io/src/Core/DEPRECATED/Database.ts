@@ -4,10 +4,9 @@ import CONFIG from '../CONFIG/CONFIG';
 import { Custom, CustomProperty, CustomType, CustomDocument } from '../../Models/Custom';
 import EXPRESS from '../EXPRESS/EXPRESS';
 
-class Database {
-
+class Database 
+{
     private static Instance: Database;
-
     private static BaseUrl: string = `/database`;
 
     private models: { [key: string]: mongoose.Model<any, {}, {}> };

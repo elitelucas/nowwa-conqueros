@@ -1,9 +1,9 @@
 import DATA from "../DATA/DATA";
 import LOG, { log } from "../../UTIL/LOG";
 
-class TAG
+class TAG_ASSOCIATIONS
 {
-    private static table : string = "tags";
+    private static table : string = "tag_associations";
 
     /*=============== 
 
@@ -74,4 +74,4 @@ class TAG
  
 };
 
-export default TAG;
+export default TAG_ASSOCIATIONS;

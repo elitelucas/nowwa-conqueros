@@ -1,5 +1,6 @@
 import DATA from "../DATA/DATA";
 import LOG, { log } from "../../UTIL/LOG";
+import FILE from "./FILE";
 
 class IMAGE
 {
@@ -70,9 +71,13 @@ class IMAGE
 
     public static async remove( query: any ) : Promise<any>
     {
-        let remove = await DATA.remove( this.table, query );
+        let results : any   = await DATA.get( this.table, query ); 
 
-        return Promise.resolve( remove );
+        for( let n in results ) FILE.remove({ itemID:results[n].itemID });
+ 
+        let removed         = await DATA.remove( this.table, query );
+
+        return Promise.resolve( removed );
     };
  
 };
