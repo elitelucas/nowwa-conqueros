@@ -1,10 +1,11 @@
 import DATA from "../DATA/DATA";
 import LOG, { log } from "../../UTIL/LOG";
- 
+import QUERY from "../../UTIL/QUERY";
+import TAG from "./TAG";
 
-class TAG
+class TAG_ASSOCIATIONS
 {
-    private static table : string = "tags";
+    private static table : string = "tag_associations";
 
     /*=============== 
 
@@ -28,7 +29,7 @@ class TAG
         return Promise.resolve( value );
     };
 
-    public static async getSet( query:any ) : Promise<any>
+    public static async getSet( query: any ) : Promise<any>
     {
         let value = await this.get( query );
         if( !value ) value = await this.set( query );
@@ -36,23 +37,35 @@ class TAG
         return Promise.resolve( value );
     };
 
+
     /*=============== 
 
 
     SET  
-
-    {
-        name
-    }
     
+    {
+        instanceID,
+        tagID,
+
+        tags[]
+    }
 
     ================*/
 
     public static async set( query:any ) : Promise<any>
     {
-        var item = await DATA.set( this.table, query );
+        if( query.tagID ) return DATA.set( this.table, query );
  
-        return Promise.resolve( item );
+        await this.remove( { instanceID:query.instanceID } );
+
+        for( var n in query.tags )
+        {
+            let tagItem : any = await TAG.getSet( { name:query.tags[n] } );
+ 
+            await this.getSet( { instanceID:query.instanceID, tagID: tagItem._id } );
+        }
+ 
+        return Promise.resolve();
     };
 
     /*=============== 
@@ -87,4 +100,4 @@ class TAG
  
 };
 
-export default TAG;
+export default TAG_ASSOCIATIONS;

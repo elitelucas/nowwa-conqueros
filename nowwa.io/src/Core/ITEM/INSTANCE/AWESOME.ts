@@ -1,9 +1,11 @@
 import DATA from "../../DATA/DATA";
 import LOG, { log } from "../../../UTIL/LOG";
+import QUERY from "../../../UTIL/QUERY";
+import STATS from "./STATS";
 
 class AWESOME
 {
-    private static table: string = "folders";
+    public static table : string = "awesomes";
 
     /*=============== 
 
@@ -13,33 +15,38 @@ class AWESOME
 
     ================*/
 
-    public static async get( query: any ) : Promise<any>
+    public static async get( query:any ) : Promise<any>
     {
-        let value = await DATA.get( this.table, query );
+        let values = await DATA.get( this.table, query );
 
-        return Promise.resolve( value );
+        return Promise.resolve( values );
     };
 
-    public static async getOne( query: any ) : Promise<any>
+    public static async getOne( query:any ) : Promise<any>
     {
         let value = await DATA.getOne( this.table, query );
 
         return Promise.resolve( value );
     };
-
+ 
     /*=============== 
-
-
+ 
     SET  
     
+    {
+        instanceID,
+        avatarID,
+        awesome (-1,0,1) dislike, neutral, like
+    }
 
     ================*/
 
-    public static async set( query: any ) : Promise<any>
+    public static async set( query:any ) : Promise<any>
     {
-        let value = await DATA.set( this.table, query );
+        let where : any     = { avatarID:query.avatarID, instanceID:query.instanceID };
+        let item            = await ( this.getOne( where ) || DATA.set( this.table, where ) );
 
-        return Promise.resolve( value );
+        return this.change( { where:{ _id:item._id, values:query }} );
     };
 
     /*=============== 
@@ -50,11 +57,38 @@ class AWESOME
 
     ================*/
 
-    public static async change( query: any ) : Promise<any>
+    public static async change( query:any ) : Promise<any>
     {
-        let value = await DATA.change( this.table, query );
+        query           = QUERY.change( query );
 
-        return Promise.resolve( value );
+        let item : any  = this.changeStats( query );
+
+        item = await DATA.change( this.table, { where:{ _id:item._id }, values:{ awesome:query.values.awesome } } );
+
+        return Promise.resolve( item );
+    };
+
+    private static async changeStats( query:any ) : Promise<any>
+    {
+        let item        : any = this.getOne( query.where );
+ 
+        let lastValue   : number = item.awesome || 0;
+        let currValue   : number = query.values.awesome;
+
+        if( lastValue == currValue ) return Promise.resolve( item );
+
+        let awesome     : number = currValue == 1 ? 1 : ( lastValue == 1 ? - 1 : 0 );
+        let bullshit    : number = currValue == -1 ? 1 : ( lastValue == -1 ? - 1 : 0 );
+ 
+        STATS.set(
+        {
+            instanceID  : item.instanceID,
+            avatarID    : item.avatarID,
+            awesome     : awesome,
+            bullshit    : bullshit
+        }); 
+
+        return Promise.resolve( item );
     };
 
     /*=============== 
@@ -65,11 +99,18 @@ class AWESOME
 
     ================*/
 
-    public static async remove( query: any ) : Promise<any>
+    public static async remove( query:any, isForced?:boolean ) : Promise<any>
     {
-        let remove = await DATA.remove( this.table, query );
+        let results = await this.get( query );
 
-        return Promise.resolve( remove );
+        if( !isForced )
+        {
+            for( var n in results ) await this.changeStats( { where:{ _id:results[n]._id }, values:{ awesome:0 } })
+        }
+ 
+        let removed = await DATA.remove( this.table, query );
+
+        return Promise.resolve( removed );
     };
  
 };

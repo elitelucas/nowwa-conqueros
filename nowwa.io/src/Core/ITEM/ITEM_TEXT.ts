@@ -1,22 +1,19 @@
 import DATA from "../DATA/DATA";
 import LOG, { log } from "../../UTIL/LOG";
-import FILE from "./FILE";
 
-class IMAGE
+class ITEM_TEXT
 {
-    private static table : string = "images";
+    private static table: string = "item_texts";
 
     /*=============== 
 
 
     GET  
-
-    // This needs a GET method that receives a file and witdh & height, and returns a cached file if it exists or crops it on the fly
     
 
     ================*/
 
-    public static async get( query:any ) : Promise<any>
+    public static async get( query: any ) : Promise<any>
     {
         let value = await DATA.get( this.table, query );
 
@@ -30,12 +27,15 @@ class IMAGE
         return Promise.resolve( value );
     };
 
- 
     /*=============== 
 
 
     SET  
     
+    {
+        itemID,
+        text
+    }
 
     ================*/
 
@@ -71,15 +71,11 @@ class IMAGE
 
     public static async remove( query: any ) : Promise<any>
     {
-        let results : any   = await DATA.get( this.table, query ); 
+        let remove = await DATA.remove( this.table, query );
 
-        for( let n in results ) FILE.remove({ itemID:results[n].itemID });
- 
-        let removed         = await DATA.remove( this.table, query );
-
-        return Promise.resolve( removed );
+        return Promise.resolve( remove );
     };
  
 };
 
-export default IMAGE;
+export default ITEM_TEXT;

@@ -5,7 +5,8 @@ import TABLE_MODEL from './TABLE_MODEL';
 import LOG, { log, error } from '../../UTIL/LOG';
 import QUERY from '../../UTIL/QUERY';
 
-class DATA {
+class DATA 
+{
     /*=============== 
 
 
@@ -14,25 +15,28 @@ class DATA {
 
     ================*/
 
-    public static async init(): Promise<void> {
-        log(`init database...`);
+    public static async init(): Promise<void> 
+    {
+        log( `init database...` );
 
-        let uri: string = `mongodb+srv://${CONFIG.vars.MONGODB_USER}:${CONFIG.vars.MONGODB_PASS}@${CONFIG.vars.MONGODB_HOST}/${CONFIG.vars.MONGODB_DB}`;
+        let uri : string = `mongodb+srv://${CONFIG.vars.MONGODB_USER}:${CONFIG.vars.MONGODB_PASS}@${CONFIG.vars.MONGODB_HOST}/${CONFIG.vars.MONGODB_DB}`;
 
-        log(`connect to: ${uri}`);
+        log( `connect to: ${uri}` );
 
-        await mongoose.connect(uri,
-            {
-                ssl: true,
-                sslValidate: false,
-                sslCert: `${CONFIG.vars.MONGODB_CERT}`
+        await mongoose.connect( uri,
+        {
+            ssl: true,
+            sslValidate: false,
+            sslCert: `${CONFIG.vars.MONGODB_CERT}`
 
-            }).then((result) => {
-                log("Successfully connect to MongoDB.");
-            }).catch((e: Error) => {
-                error("Connection error", e);
-                throw e;
-            });
+        }).then((result) => 
+        {
+            log( "Successfully connect to MongoDB.");
+        }).catch((e: Error) => 
+        {
+            error( "Connection error", e );
+            throw e;
+        });
 
         return Promise.resolve();
     }
@@ -45,33 +49,32 @@ class DATA {
 
     ================*/
 
-    public static async get(tableName: string, vars: any): Promise<mongoose.Document<any, any, any>[]> {
-        vars = QUERY.get(vars);
+    public static async get( tableName:string, vars:any ) : Promise<mongoose.Document<any, any, any>[]> 
+    {
+        vars            = QUERY.get( vars );
 
-        let model = await TABLE_MODEL.get(tableName);
-        let myQuery = model.find(vars.where);
+        let model       = await TABLE_MODEL.get( tableName );
+        let myQuery     = model.find( vars.where );
 
-        if (vars.limit) myQuery.limit(vars.limit);
+        if( vars.limit ) myQuery.limit( vars.limit );
 
-        let documents = await myQuery.exec();
+        let documents   = await myQuery.exec();
 
-        if (documents) return Promise.resolve(documents);
-
-        return Promise.reject(LOG.msg('entries not found'));
+        if( documents ) return Promise.resolve( documents );
+ 
+        return Promise.reject( LOG.msg('entries not found') );
     }
 
-    public static async getOne(tableName: string, query: any): Promise<mongoose.Document<any, any, any>> {
-        console.log(`query before [${tableName}]`, JSON.stringify(query, null, 2));
-        query = QUERY.get(query);
-        console.log(`query after [${tableName}]`, JSON.stringify(query, null, 2));
-        let model = await TABLE_MODEL.get(tableName);
-        let myQuery = model.findOne(query);
-        let document = await myQuery.exec();
-        console.log(`document after [${tableName}]`, JSON.stringify(document, null, 2));
+    public static async getOne( tableName:string, query:any ) : Promise<mongoose.Document<any, any, any>> 
+    {
+        query           = QUERY.get( query );
+        let model       = await TABLE_MODEL.get( tableName );
+        let myQuery     = model.findOne( query.where );
+        let document    = await myQuery.exec();
 
-        if (document) return Promise.resolve(document);
+        if( document ) return Promise.resolve( document );
 
-        return Promise.reject(LOG.msg('entry not found'));
+        return Promise.reject( LOG.msg('entry not found') );
     }
 
     /*=============== 
@@ -82,15 +85,16 @@ class DATA {
 
     ================*/
 
-    public static async set(tableName: string, query: any): Promise<mongoose.Document<any, any, any>> {
-        query = QUERY.set(query);
+    public static async set( tableName:string, query:any ): Promise<mongoose.Document<any, any, any>> 
+    {
+        query           = QUERY.set( query );
+ 
+        if( query.where ) return this.change( tableName, query );
 
-        if (query.where) return this.change(tableName, query);
+        let model       = await TABLE_MODEL.get( tableName );
+        let document    = await model.create( query );
 
-        let model = await TABLE_MODEL.get(tableName);
-        let document = await model.create(query.values);
-
-        return Promise.resolve(document);
+        return Promise.resolve( document );
     }
 
     /*=============== 
@@ -101,34 +105,38 @@ class DATA {
 
     ================*/
 
-    public static async change(tableName: string, query: any): Promise<mongoose.Document<any, any, any>> {
-        query = QUERY.change(query);
+    public static async change( tableName:string, query:any ): Promise<mongoose.Document<any, any, any>>
+    {
+        query           = QUERY.change( query );
 
-        let model = await TABLE_MODEL.get(tableName);
-        let myQuery = model.find(query.where as any).limit(1);
-        let documents = await myQuery.exec();
+        let model       = await TABLE_MODEL.get( tableName );
+        let myQuery     = model.find( query.where as any ).limit( 1 );
+        let documents   = await myQuery.exec();
 
-        if (!documents || documents.length != 1) return Promise.reject(LOG.msg('entry not found'));
+        if( !documents || documents.length != 1 ) return Promise.reject(LOG.msg('entry not found'));
 
-        let document: mongoose.Document<any, any, any> & { [key: string]: any } = documents[0];
+        let document : mongoose.Document<any, any, any> & { [key: string]: any } = documents[0];
 
-        let fieldNames = Object.keys(query.values!);
+        let fieldNames  = Object.keys( query.values! );
 
-        for (let i: number = 0; i < fieldNames.length; i++) {
-            let fieldName = fieldNames[i];
-            let fieldValue = query.values![fieldName];
+        for( let i : number = 0; i < fieldNames.length; i++ ) 
+        {
+            let fieldName   = fieldNames[i];
+            let fieldValue  = query.values![fieldName];
 
-            document.set(fieldName, fieldValue);
-            document.markModified(fieldName);
+            document.set( fieldName, fieldValue );
+            document.markModified( fieldName );
         }
+        
         await document.save();
-        return Promise.resolve(document);
+        return Promise.resolve( document );
     };
 
-    public static async reparent(tableName: string, newUID: any, oldUID: any): Promise<any> {
-        let results = await DATA.change(tableName, { values: { uID: newUID }, where: { uID: oldUID } });
+    public static async reparent( tableName: string, newUID: any, oldUID: any ): Promise<any> 
+    {
+        let results = await DATA.change( tableName, { values: { uID: newUID }, where: { uID: oldUID } } );
 
-        return Promise.resolve(results);
+        return Promise.resolve( results );
     }
 
     /*=============== 
@@ -139,70 +147,72 @@ class DATA {
 
     ================*/
 
-    public static async remove(tableName: string, id: any): Promise<void> {
-        let model = await TABLE_MODEL.get(tableName);
-        let myQuery = model.find({ _id: id }).limit(1);
+    public static async remove( tableName:string, query:any ) : Promise<void> 
+    {
+        let model = await TABLE_MODEL.get( tableName );
 
-        await model.deleteOne(myQuery);
+        await model.delete( model.find( QUERY.get( query ) ) );
+
         return Promise.resolve();
     };
 
 }
 
-namespace DATA {
-    export type FieldType = string | number | boolean | object | Date;
-    export type Fields = { [key: string]: FieldType }
+namespace DATA 
+{
+    export type FieldType   = string | number | boolean | object | Date;
+    export type Fields      = { [key: string]: FieldType }
 
-    export const ReservedSchemaName: string[] =
-        [
-            'User',
-            'Custom',
-            'File'
-        ];
+    export const ReservedSchemaName: string[] = 
+    [
+        'User',
+        'Custom',
+        'File'
+    ];
 
-    export const FieldTypeList: DATA.FieldType[] =
-        [
-            'string',
-            'number',
-            'boolean',
-            'object',
-            'date'
-        ];
+    export const FieldTypeList: DATA.FieldType[] = 
+    [
+        'string',
+        'number',
+        'boolean',
+        'object',
+        'date'
+    ];
 
     export type MapSchemaTypes =
-        {
-            string: string;
-            number: number;
-            boolean: boolean;
-            object: object;
-            date: Date;
-        }
+    {
+        string  : string;
+        number  : number;
+        boolean : boolean;
+        object  : object;
+        date    : Date;
+    }
 
     export type Query =
-        {
-            remove?: string[],
-            add?: { [key: string]: string }
-            values?: { [key: string]: any },
-            types?: { [key: string]: string },
-            where?: {
-                [key: string]:
-                string |
-                number |
-                boolean |
-                {
-                    $lt?: number, // less than
-                    $lte?: number, // less than equal to
-                    $gt?: number, // greater than
-                    $gte?: number, // greater than equal to
-                    $ne?: number, // not equal to
-                    $in?: number[] | string[], // in an array of
-                    $nin?: number[] | string[], // not in an array of 
-                    $regex?: string | RegExp, // match regex
-                    $size?: number, // is an array with size of   
-                }
-            },
-            limit?: number,
-        }
+    {
+        remove?     : string[],
+        add?        : { [key: string]: string }
+        values?     : { [key: string]: any },
+        types?      : { [key: string]: string },
+        where?      : {
+            [key: string]:
+            string |
+            number |
+            boolean |
+            {
+                $lt?: number, // less than
+                $lte?: number, // less than equal to
+                $gt?: number, // greater than
+                $gte?: number, // greater than equal to
+                $ne?: number, // not equal to
+                $in?: number[] | string[], // in an array of
+                $nin?: number[] | string[], // not in an array of 
+                $regex?: string | RegExp, // match regex
+                $size?: number, // is an array with size of   
+            }
+        },
+        limit?  : number,
+    }
 }
 
 export default DATA;
