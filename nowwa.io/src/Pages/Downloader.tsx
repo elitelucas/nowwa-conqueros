@@ -51,8 +51,6 @@ const Downloader = (state: DownloaderState, setState: React.Dispatch<React.SetSt
     }
 
     let refresh = () => {
-        console.log(state);
-        console.log('refresh!');
         updateState({
             isBusy: true,
             needRefresh: false

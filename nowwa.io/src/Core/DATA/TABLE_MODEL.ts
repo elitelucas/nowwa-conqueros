@@ -3,10 +3,9 @@ import { Custom, CustomProperty, CustomType, CustomDocument } from '../../Models
 import DATA from './DATA';
 import DATA_TABLE from './DATA_TABLE';
 import LOG, { log, error } from '../../UTIL/LOG';
- 
-class TABLE_MODEL 
-{
-    private static pool: Map<string, any> = new Map<string, any>();
+
+class TABLE_MODEL {
+    private static pool: Map<string, mongoose.Model<any, {}, {}, {}, any>> = new Map<string, mongoose.Model<any, {}, {}, {}, any>>();
 
     /*=============== 
 
@@ -16,13 +15,12 @@ class TABLE_MODEL
 
     ================*/
 
-    public static async get( tableName:string ):Promise<any> 
-    {
-        let model = TABLE_MODEL.pool.get( tableName );
-        if( model ) return Promise.resolve( model );
+    public static async get(tableName: string): Promise<mongoose.Model<any, {}, {}, {}, any>> {
+        let model = TABLE_MODEL.pool.get(tableName);
+        if (model) return Promise.resolve(model);
 
-        return TABLE_MODEL.set( tableName, {} );
- 
+        return TABLE_MODEL.set(tableName, {});
+
         // let schema = await DBTABLE.get( name );
         // return DBMODEL.set( name, schema.schemaFields );
     };
@@ -36,14 +34,13 @@ class TABLE_MODEL
 
     ================*/
 
-    private static async set( tableName:string, fields:any ):Promise<any> 
-    {
-        let schema  = new mongoose.Schema( fields || {}, { strict: false, collection: tableName } );
-        let model   = mongoose.model( tableName, schema );
+    private static async set(tableName: string, fields: any): Promise<mongoose.Model<any, {}, {}, {}, any>> {
+        let schema = new mongoose.Schema(fields || {}, { strict: false, collection: tableName });
+        let model: mongoose.Model<any, {}, {}, {}, any> = mongoose.model(tableName, schema);
 
-        TABLE_MODEL.pool.set( tableName, model );
+        TABLE_MODEL.pool.set(tableName, model);
 
-        return Promise.resolve( model );
+        return Promise.resolve(model);
     }
 
     /*

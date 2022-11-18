@@ -1,11 +1,12 @@
 import BASE from "./BASE";
 import TEMPORARY from "./TEMPORARY";
+import { RequiredKeys } from "./UTILITIES";
 
 type ACCOUNT_TYPE = {
     username: string;
     password: string;
-    verified: boolean;
-    admin: boolean;
+    verified?: boolean;
+    admin?: boolean;
 }
 
 const ACCOUNT_TYPE_DEFAULT: Partial<ACCOUNT_TYPE> = {
@@ -15,7 +16,7 @@ const ACCOUNT_TYPE_DEFAULT: Partial<ACCOUNT_TYPE> = {
     admin: false
 }
 
-class ACCOUNT {
+class ACCOUNT implements BASE<ACCOUNT_TYPE> {
     readonly name: string = 'ACCOUNT';
     static instance: ACCOUNT;
     private static get Instance(): ACCOUNT {
@@ -31,7 +32,7 @@ class ACCOUNT {
         return ACCOUNT.Instance.get(query);
     }
 
-    private get(query?: Partial<ACCOUNT_TYPE> | undefined): Promise<Partial<ACCOUNT_TYPE>[]> {
+    public get(query?: Partial<ACCOUNT_TYPE> | undefined): Promise<Partial<ACCOUNT_TYPE>[]> {
         return Promise.resolve(TEMPORARY.Get<ACCOUNT_TYPE>(ACCOUNT.Instance.name, query));
     }
 
@@ -39,8 +40,14 @@ class ACCOUNT {
         return ACCOUNT.Instance.set(values);
     }
 
-    private set(values: Partial<ACCOUNT_TYPE>): Promise<Partial<ACCOUNT_TYPE>> {
+    public set(values: Partial<ACCOUNT_TYPE>): Promise<Partial<ACCOUNT_TYPE>> {
+        type uniqueKeys = RequiredKeys<ACCOUNT_TYPE>;
+
         return Promise.resolve(TEMPORARY.Set<ACCOUNT_TYPE>(ACCOUNT.Instance.name, values, ['username']));
+    }
+
+    public static Change(query: Partial<ACCOUNT_TYPE>, values: Partial<ACCOUNT_TYPE>): Promise<Partial<ACCOUNT_TYPE>> {
+        return ACCOUNT.Instance.change(query, values);
     }
 
     public change(query: Partial<ACCOUNT_TYPE>, values: Partial<ACCOUNT_TYPE>): Promise<Partial<ACCOUNT_TYPE>> {

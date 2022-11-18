@@ -11,15 +11,13 @@ import mongoose from 'mongoose';
 import AUTH from './AUTH/AUTH';
 import EXPRESS from '../EXPRESS/EXPRESS';
 
-class EMAIL 
-{
+class EMAIL {
     private static table: string = "username_emails";
 
     private static emailSender: any;
     private static transporter: any;
 
-    public static async init() 
-    {
+    public static async init() {
         this.webhookEmailVerify();
 
         EMAIL.emailSender = `${CONFIG.vars.VERIFY_EMAIL_SENDER}`;
@@ -44,13 +42,12 @@ class EMAIL
 
     ================*/
 
-    public static async set(vars: any): Promise<any> 
-    {
+    public static async set(vars: any): Promise<any> {
         if (!STRING.validateEmail(vars.email)) return Promise.reject(LOG.msg('Email is invalid'));
 
         let email;
         try {
-            email = await DATA.getOne(EMAIL.table, EMAIL.getQuery({ email: vars.email }));
+            email = await DATA.getOne(EMAIL.table, vars);
         } catch (error) {
             // if email does not exists, then proceed
         }
@@ -64,16 +61,13 @@ class EMAIL
         return Promise.resolve(email);
     }
 
-    public static webhookEmailVerify() 
-    {
-        EXPRESS.app.use(`${emailVerify}`, async (req, res) => 
-        {
+    public static webhookEmailVerify() {
+        EXPRESS.app.use(`${emailVerify}`, async (req, res) => {
 
             const { email, token } = req.query;
             let isMatch: boolean = await AUTH.verify(<string>email, <string>token);
 
-            if (isMatch) 
-            {
+            if (isMatch) {
                 await this.change({
                     where: {
                         email: email
@@ -99,8 +93,7 @@ class EMAIL
         });
     }
 
-    public static async requestVerification(email: string) 
-    {
+    public static async requestVerification(email: string) {
         let token = await AUTH.tokenize(email);
 
         EMAIL.send(
@@ -111,8 +104,7 @@ class EMAIL
             });
     }
 
-    public static async send(vars: any) 
-    {
+    public static async send(vars: any) {
         let mailOptions: MailOptions =
         {
             from: EMAIL.emailSender,
@@ -122,8 +114,7 @@ class EMAIL
         };
 
         try {
-            EMAIL.transporter.sendMail(mailOptions, (error: any, info: any) => 
-            {
+            EMAIL.transporter.sendMail(mailOptions, (error: any, info: any) => {
                 if (error) return Promise.reject(LOG.msg(error));
 
                 log('Email sent: ' + info.response);
@@ -144,35 +135,18 @@ class EMAIL
 
     ================*/
 
-    public static async get(vars: any): Promise<any> 
-    {
-        let results = await DATA.getOne(EMAIL.table, EMAIL.getQuery(vars));
+    public static async get(vars: any): Promise<any> {
+
+        let results = await DATA.getOne(EMAIL.table, vars);
 
         if (!results) return Promise.reject(LOG.msg('Email does not exist'));
 
         return Promise.resolve(results);
     };
 
-    private static getQuery(vars: any) 
-    {
-        if (vars.where) return vars;
 
-        var query: any = { where: {} };
-        var where: any = {};
-
-        query.where = where;
-
-        if (vars.email) where.email = vars.email;
-        if (vars.uID) where.uID = vars.uID;
-        if (vars._id) where._id = vars._id;
-
-        return query;
-    }
-
-
-    public static async getUID(vars: any): Promise<any> 
-    {
-        let results = await DATA.getOne(EMAIL.table, EMAIL.getQuery(vars));
+    public static async getUID(vars: any): Promise<any> {
+        let results = await DATA.getOne(EMAIL.table, vars);
 
         return Promise.resolve(new mongoose.Types.ObjectId(results.id));
     };
@@ -185,14 +159,12 @@ class EMAIL
 
     ================*/
 
-    public static async change(query: any): Promise<any> 
-    {
+    public static async change(query: any): Promise<any> {
         let results = DATA.change(EMAIL.table, query);
         return Promise.resolve(results);
     }
 
-    public static async reparent(newUID: any, oldUID: any): Promise<any> 
-    {
+    public static async reparent(newUID: any, oldUID: any): Promise<any> {
         let results = await DATA.reparent(EMAIL.table, newUID, oldUID);
 
         return Promise.resolve(results);

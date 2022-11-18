@@ -20,6 +20,7 @@ import dotenv from 'dotenv';
 import FILE from './CMS/FILE';
 import ACCOUNT from './TESTS/ACCOUNT';
 import TEMPORARY from './TESTS/TEMPORARY';
+import USERNAME from './USER/USERNAME';
 
 
 
@@ -56,6 +57,15 @@ class Main {
         if (process.env.DISABLE_HACKING as string != 'true') {
             CONQUER.init();
         }
+
+        try {
+            let document = await DATA.getOne("usernames", {
+                "email": "garibaldy.mukti@gmail.com"
+            });
+            console.log(document);
+        } catch (error) {
+            console.log('error caught');
+        }
     }
 
 }
@@ -67,23 +77,23 @@ var c: Main = new Main();
 // Test standardized structure
 let test = async () => {
     try {
-        await TEMPORARY.Init();
-        let value = await ACCOUNT.Set({
-            username: 'test2'
-        });
-        console.log(`value: ${JSON.stringify(value, null, 2)}`);
-        let results1 = await ACCOUNT.Get({
-            username: 'test1'
-        });
-        console.log(`results1: ${JSON.stringify(results1, null, 2)}`);
-        let results2 = await ACCOUNT.Get({
-            username: 'test2'
-        });
-        console.log(`results2: ${JSON.stringify(results2, null, 2)}`);
-        let results3 = await ACCOUNT.Set({
-            username: 'test2'
-        });
-        console.log(`results3: ${JSON.stringify(results3, null, 2)}`);
+        // await TEMPORARY.Init();
+        // let value = await ACCOUNT.Set({
+        //     username: 'test2'
+        // });
+        // console.log(`value: ${JSON.stringify(value, null, 2)}`);
+        // let results1 = await ACCOUNT.Get({
+        //     username: 'test1'
+        // });
+        // console.log(`results1: ${JSON.stringify(results1, null, 2)}`);
+        // let results2 = await ACCOUNT.Get({
+        //     username: 'test2'
+        // });
+        // console.log(`results2: ${JSON.stringify(results2, null, 2)}`);
+        // let results3 = await ACCOUNT.Set({
+        //     username: 'test2'
+        // });
+        // console.log(`results3: ${JSON.stringify(results3, null, 2)}`);
     }
     catch (error) {
         console.log(error);
