@@ -55,7 +55,8 @@ class AUTH {
 
     ================*/
 
-    public static async set(vars: any): Promise<any> {
+    public static async set(vars: any): Promise<any> 
+    {
         let encryptedPassword = await CRYPT.hash(vars.password);
         try {
             let item = await USERNAME.set(
@@ -81,8 +82,9 @@ class AUTH {
 
     ================*/
 
-    public static async get(vars: any): Promise<any> {
-        var item: any = await USERNAME.get(vars);
+    public static async get( vars:any ): Promise<any> 
+    {
+        var item : any = await USERNAME.get( vars );
 
         if (!item.isVerified) return Promise.reject(LOG.msg('Email is not verified...'));
 

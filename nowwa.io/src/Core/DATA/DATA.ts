@@ -14,7 +14,8 @@ class DATA {
 
     ================*/
 
-    public static async init(): Promise<void> {
+    public static async init(): Promise<void> 
+    {
         log(`init database...`);
 
         let uri: string = `mongodb+srv://${CONFIG.vars.MONGODB_USER}:${CONFIG.vars.MONGODB_PASS}@${CONFIG.vars.MONGODB_HOST}/${CONFIG.vars.MONGODB_DB}`;
@@ -45,30 +46,30 @@ class DATA {
 
     ================*/
 
-    public static async get(tableName: string, vars: any): Promise<mongoose.Document<any, any, any>[]> {
-        vars = QUERY.get(vars);
+    public static async get( tableName: string, vars: any ): Promise<mongoose.Document<any, any, any>[] > 
+    {
+        vars            = QUERY.get( vars );
 
-        let model = await TABLE_MODEL.get(tableName);
-        let myQuery = model.find(vars.where);
+        let model       = await TABLE_MODEL.get( tableName );
+        let myQuery     = model.find( vars.where );
 
-        if (vars.limit) myQuery.limit(vars.limit);
+        if( vars.limit ) myQuery.limit( vars.limit );
 
-        let documents = await myQuery.exec();
+        let documents : mongoose.Document<any, any, any>[] = await myQuery.exec();
 
-        if (documents) return Promise.resolve(documents);
-
-        return Promise.reject(LOG.msg('entries not found'));
+        return Promise.resolve( documents );
     }
 
-    public static async getOne(tableName: string, query: any): Promise<mongoose.Document<any, any, any>> {
-        query = QUERY.get(query);
-        let model = await TABLE_MODEL.get(tableName);
-        let myQuery = model.findOne(query.where);
-        let document = await myQuery.exec();
+    public static async getOne( tableName: string, query: any): Promise<mongoose.Document<any, any, any> | null> 
+    {
+        query           = QUERY.get(query);
+        let model       = await TABLE_MODEL.get(tableName);
+        let myQuery     = model.findOne(query.where);
+        let document    = await myQuery.exec();
 
-        if (document) return Promise.resolve(document);
+        // double check document can be null 
 
-        return Promise.reject(LOG.msg('entry not found'));
+        return Promise.resolve( document );
     }
 
     /*=============== 
@@ -79,15 +80,16 @@ class DATA {
 
     ================*/
 
-    public static async set(tableName: string, query: any): Promise<mongoose.Document<any, any, any>> {
-        query = QUERY.set(query);
+    public static async set( tableName: string, query: any ): Promise<mongoose.Document<any, any, any> > 
+    {
+        query           = QUERY.set( query );
 
-        if (query.where) return this.change(tableName, query);
+        if ( query.where ) return this.change( tableName, query );
 
-        let model = await TABLE_MODEL.get(tableName);
-        let document = await model.create(query);
+        let model       = await TABLE_MODEL.get( tableName );
+        let document    = await model.create( query.values );
 
-        return Promise.resolve(document);
+        return Promise.resolve( document );
     }
 
     /*=============== 
@@ -98,7 +100,8 @@ class DATA {
 
     ================*/
 
-    public static async change(tableName: string, query: any): Promise<mongoose.Document<any, any, any>> {
+    public static async change(tableName: string, query: any): Promise<mongoose.Document<any, any, any>> 
+    {
         query = QUERY.change(query);
 
         let model = await TABLE_MODEL.get(tableName);
@@ -123,7 +126,8 @@ class DATA {
         return Promise.resolve(document);
     };
 
-    public static async reparent(tableName: string, newUID: any, oldUID: any): Promise<any> {
+    public static async reparent(tableName: string, newUID: any, oldUID: any): Promise<any> 
+    {
         let results = await DATA.change(tableName, { values: { uID: newUID }, where: { uID: oldUID } });
 
         return Promise.resolve(results);
@@ -137,7 +141,8 @@ class DATA {
 
     ================*/
 
-    public static async remove(tableName: string, query: any): Promise<void> {
+    public static async remove(tableName: string, query: any): Promise<void> 
+    {
         let model = await TABLE_MODEL.get(tableName);
 
         await model.findOneAndDelete(QUERY.get(query));
@@ -147,7 +152,8 @@ class DATA {
 
 }
 
-namespace DATA {
+namespace DATA 
+{
     export type FieldType = string | number | boolean | object | Date;
     export type Fields = { [key: string]: FieldType }
 
