@@ -9,14 +9,16 @@ type ACCOUNT_TYPE = {
     admin?: boolean;
 }
 
-const ACCOUNT_TYPE_DEFAULT: Partial<ACCOUNT_TYPE> = {
+const ACCOUNT_TYPE_DEFAULT: Partial<ACCOUNT_TYPE> = 
+{
     username: '',
     password: '',
     verified: false,
     admin: false
 }
 
-class ACCOUNT implements BASE<ACCOUNT_TYPE> {
+class ACCOUNT implements BASE<ACCOUNT_TYPE> 
+{
     readonly name: string = 'ACCOUNT';
     static instance: ACCOUNT;
     private static get Instance(): ACCOUNT {

@@ -35,7 +35,7 @@ class GAME
 
     ================*/
 
-    public static async set( query: any ) : Promise<any>
+    public static async set( query:any ) : Promise<any>
     {
         let value = await DATA.set( this.table, query );
 
@@ -68,6 +68,9 @@ class GAME
     public static async remove( query: any ) : Promise<any>
     {
         let remove = await DATA.remove( this.table, query );
+
+        // remove
+        // Scores, GameData, GameRooms, Leaderboards, Tournaments, Turns
 
         return Promise.resolve( remove );
     };

@@ -44,9 +44,7 @@ class ITEM
         type,
         name,
         description,
-        fileID,
-        gameKey,
-        textID
+        gameID
     }
 
     ================*/
@@ -75,7 +73,7 @@ class ITEM
         if( type == "game" ) await GAME.set(
         {
             itemID      : itemID,
-            gameKey     : values.gameKey
+            gameID      : values.gameID
         });
   
         let instance    = await INSTANCE.set( 
