@@ -6,6 +6,8 @@ import INSTANCE from "./INSTANCE/INSTANCE";
 import ITEM_TEXT from "./ITEM_TEXT";
 import FILE from "../CMS/FILE";
 import IMAGE from "../CMS/IMAGE";
+import GAME from "../GAME/GAME";
+import { ValidatedPurchaseStore } from "@heroiclabs/nakama-js/dist/api.gen";
 class ITEM
 {
     private static table : string = "items";
@@ -43,6 +45,7 @@ class ITEM
         name,
         description,
         fileID,
+        gameKey,
         textID
     }
 
@@ -61,18 +64,25 @@ class ITEM
         delete values.text;
  
         let item            = await DATA.set( this.table, query );
+        let itemID          = item._id;
  
         if( type == "text" ) await ITEM_TEXT.set(
         {
-            itemID      : item._id,
+            itemID      : itemID,
             text        : text
+        });
+
+        if( type == "game" ) await GAME.set(
+        {
+            itemID      : itemID,
+            gameKey     : values.gameKey
         });
   
         let instance    = await INSTANCE.set( 
         { 
             avatarID    : query.values.avatarID,
             folderID    : folderID,
-            itemID      : item._id 
+            itemID      : itemID 
         });
 
         return Promise.resolve( instance );
@@ -111,16 +121,16 @@ class ITEM
             let type        = item.type;
             let itemID      = item._id;
 
+            await DATA.remove( this.table, { _id:itemID } );
             await INSTANCE.remove({ itemID:itemID });
-        
+
             if( type == "text" )    await ITEM_TEXT.remove({ itemID:itemID });
             if( type == "image" )   await IMAGE.remove({ itemID:itemID });
             if( type == "file" )    await FILE.remove({ itemID:itemID });
+            if( type == "game" )    await FILE.remove({ itemID:itemID });
         }
  
-        let remove  = await DATA.remove( this.table, query );
-
-        return Promise.resolve( remove );
+        return Promise.resolve();
     };
  
 };
