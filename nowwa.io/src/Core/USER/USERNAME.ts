@@ -5,6 +5,7 @@ import USERNAME_CONTACTS from "./USERNAME_CONTACTS";
 import USERNAME_PROXY from "./USERNAME_PROXY";
 import LOG from "../../UTIL/LOG";
 import AVATAR from "./TRIBE/AVATAR";
+import mongoose from "mongoose";
 
 class USERNAME {
     private static table: string = "usernames";
@@ -16,6 +17,38 @@ class USERNAME {
     
 
     ================*/
+
+    public static async set2(values: Partial<USERNAME.TYPE>): Promise<USERNAME.DOCUMENT> {
+        let user: USERNAME.DOCUMENT = null;
+
+        try {
+            user = await DATA.getOne2<USERNAME.TYPE>(this.table, {
+                username: values.username
+            });
+        } catch (error) {
+            // if user does not exists, then proceed
+            console.log(`user does not exists! continue...`);
+        }
+
+        if (user) return Promise.reject(LOG.msg('user already exists'));
+
+        user = await DATA.set2<USERNAME.TYPE>(this.table, values);
+        let uID = user._id;
+
+        // Look for previous accounts that have used this email
+        // Do merge
+
+        await EMAIL.set(
+            {
+                email: values.username,
+                isVerified: values.isVerified,
+                uID: uID
+            });
+
+        await AVATAR.set({ uID: uID, isMain: true });
+
+        return Promise.resolve(user);
+    };
 
     public static async set(vars: any): Promise<any> {
         let user;
@@ -55,6 +88,10 @@ class USERNAME {
 
     ================*/
 
+    public static async get2(vars: Partial<USERNAME.TYPE>): Promise<USERNAME.DOCUMENT> {
+        return DATA.getOne2<USERNAME.TYPE>(this.table, vars);
+    };
+
     public static async get(vars: any): Promise<any> {
         let item = await DATA.getOne(this.table, vars);
 
@@ -62,21 +99,6 @@ class USERNAME {
 
         return Promise.resolve(item);
     };
-
-    private static getQuery(vars: any) {
-        if (vars.where) return vars;
-
-        var query: any = { where: {}, values: {} };
-        var where: any = {};
-
-        query.where = where;
-
-        if (vars.username) where.username = vars.username;
-        if (vars.uID) where.uID = vars.uID;
-        if (vars._id) where._id = vars._id;
-
-        return query;
-    }
 
     /*=============== 
 
@@ -143,5 +165,19 @@ class USERNAME {
     }
 
 };
+
+namespace USERNAME {
+    export type TYPE = {
+        _id: mongoose.Types.ObjectId,
+        username: string,
+        password: string,
+        admin: boolean,
+        isVerified: boolean,
+        lastLogin: number,
+        lastChange: number,
+        __v: number
+    };
+    export type DOCUMENT = (mongoose.Document<any, any, any> & Partial<TYPE>) | null;
+}
 
 export default USERNAME;

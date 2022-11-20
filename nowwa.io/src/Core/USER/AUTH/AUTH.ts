@@ -55,6 +55,22 @@ class AUTH {
 
     ================*/
 
+    public static async set2(vars: Partial<USERNAME.TYPE>): Promise<USERNAME.DOCUMENT> {
+        let encryptedPassword = await CRYPT.hash(vars.password!);
+        try {
+            let item = await USERNAME.set2(
+                {
+                    username: vars.username,
+                    password: encryptedPassword,
+                    admin: false,
+                    isVerified: vars.isVerified || false
+                });
+            return Promise.resolve(item);
+        } catch (error) {
+            return Promise.reject(error);
+        }
+    };
+
     public static async set(vars: any): Promise<any> {
         let encryptedPassword = await CRYPT.hash(vars.password);
         try {
@@ -80,6 +96,22 @@ class AUTH {
     
 
     ================*/
+
+    public static async get2(vars: Partial<USERNAME.TYPE>): Promise<any> {
+
+        var item = await USERNAME.get2({ username: vars.username });
+
+        if (!item) return Promise.reject(LOG.msg('user does not exists...'));
+
+        if (!item.isVerified) return Promise.reject(LOG.msg('user is not verified...'));
+
+        let isMatch: boolean = await CRYPT.match(vars.password!, item.password!);
+
+        if (!isMatch) return Promise.reject(LOG.msg('Incorrect password...'));
+
+        return this.getLogin(item._id);
+    };
+
 
     public static async get(vars: any): Promise<any> {
 
@@ -198,13 +230,10 @@ class AUTH {
             let user, err;
 
             try {
-                user = await this.get({
+                user = await this.get2({
                     username: email,
-                    password: password
+                    password: password,
                 });
-                if (!user.isVerified) {
-                    return Promise.reject(LOG.msg('email is not verified!'));
-                }
             } catch (error) {
                 err = error;
             }

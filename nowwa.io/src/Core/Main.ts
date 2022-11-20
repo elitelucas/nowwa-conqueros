@@ -82,6 +82,12 @@ class Main {
             //     "username": "garibaldy.mukti@gmail.com"
             // });
             // console.log(document);
+            let result = await USERNAME.set2(
+                {
+                    username: "garibaldy.mukti@gmail.com"
+                }
+            );
+            console.log(`result`, result);
         }
         catch (error) {
             console.log(error);

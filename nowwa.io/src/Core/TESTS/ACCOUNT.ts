@@ -1,6 +1,7 @@
 import BASE from "./BASE";
 import TEMPORARY from "./TEMPORARY";
 import { RequiredKeys } from "./UTILITIES";
+import { keys } from 'ts-transformer-keys';
 
 type ACCOUNT_TYPE = {
     username: string;
@@ -9,7 +10,7 @@ type ACCOUNT_TYPE = {
     admin?: boolean;
 }
 
-const ACCOUNT_TYPE_DEFAULT: Partial<ACCOUNT_TYPE> = 
+const ACCOUNT_TYPE_DEFAULT: Partial<ACCOUNT_TYPE> =
 {
     username: '',
     password: '',
@@ -17,7 +18,7 @@ const ACCOUNT_TYPE_DEFAULT: Partial<ACCOUNT_TYPE> =
     admin: false
 }
 
-class ACCOUNT implements BASE<ACCOUNT_TYPE> 
+class ACCOUNT implements BASE<ACCOUNT_TYPE>
 {
     readonly name: string = 'ACCOUNT';
     static instance: ACCOUNT;
@@ -43,8 +44,6 @@ class ACCOUNT implements BASE<ACCOUNT_TYPE>
     }
 
     public set(values: Partial<ACCOUNT_TYPE>): Promise<Partial<ACCOUNT_TYPE>> {
-        type uniqueKeys = RequiredKeys<ACCOUNT_TYPE>;
-
         return Promise.resolve(TEMPORARY.Set<ACCOUNT_TYPE>(ACCOUNT.Instance.name, values, ['username']));
     }
 

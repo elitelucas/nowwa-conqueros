@@ -3,56 +3,49 @@ import { Socket } from "socket.io"
 import LOG, { log } from "../../UTIL/LOG";
 import AUTH from "../USER/AUTH/AUTH";
 
-class SocketInstance
-{
+class SocketInstance {
     // Todo, destroy instances on disconnect
 
-    public socket   : Socket;
-    public id       : any;
+    public socket: Socket;
+    public id: any;
 
-    constructor( socket:Socket )
-    {
+    constructor(socket: Socket) {
         this.socket = socket;
-        this.id     = socket.id;
+        this.id = socket.id;
 
-        log( "[SERVER]: New SOCKET instance", this.id ); 
+        log("[SERVER]: New SOCKET instance", this.id);
 
-        this.socket.on( 'action', this.onAction.bind( this ) );
-        this.socket.on( "disconnect", this.onDisconnect.bind( this ) ); 
+        this.socket.on('action', this.onAction.bind(this));
+        this.socket.on("disconnect", this.onDisconnect.bind(this));
     };
 
-    public onAction( action:string, vars?:any, callback?:Function )
-    {
-        log( "[SERVER]: client action requested", action );
+    public onAction(action: string, vars?: any, callback?: Function) {
+        log("[SERVER]: client action requested", action);
 
-        if( action == "AUTH.set" ) return map( AUTH.set( vars ) );
-        if( action == "AUTH.get" ) return map( AUTH.get( vars ) );  
-  
+        if (action == "AUTH.set") return map(AUTH.set(vars));
+        if (action == "AUTH.get") return map(AUTH.get(vars));
+
         doError();
 
-        function doCallback( vars?:any, isSucess:boolean=true )
-        {
-            if( callback ) callback( { success:isSucess, result:vars || {} } );
+        function doCallback(vars?: any, isSucess: boolean = true) {
+            if (callback) callback({ success: isSucess, result: vars || {} });
         }
 
-        function doError( vars?:any )
-        {
-            doCallback( vars, false );
+        function doError(vars?: any) {
+            doCallback(vars, false);
         }
 
-        function map( promise:any )
-        {
-            log("got this", promise );
-            promise.then( doCallback ).catch( doError ); 
+        function map(promise: any) {
+            log("got this", promise);
+            promise.then(doCallback).catch(doError);
         }
     }
 
- 
-    public onDisconnect()
-    {
-        log("[SERVER] socket disconnected", this.id );
+
+    public onDisconnect() {
+        log("[SERVER] socket disconnected", this.id);
     }
- 
+
     /*     
 
     io.on( "connection", (socket) => 
@@ -95,7 +88,7 @@ class SocketInstance
  
     });
     */
- 
+
 }
 
 export default SocketInstance;
