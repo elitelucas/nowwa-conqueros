@@ -146,9 +146,11 @@ class EMAIL {
 
 
     public static async getUID(vars: any): Promise<any> {
-        let results = await DATA.getOne(EMAIL.table, vars);
+        let results: any = await DATA.getOne(EMAIL.table, vars);
 
-        return Promise.resolve(new mongoose.Types.ObjectId(results.id));
+        if (!results) return Promise.resolve(null);
+
+        return Promise.resolve(results.uID);
     };
 
     /*=============== 
