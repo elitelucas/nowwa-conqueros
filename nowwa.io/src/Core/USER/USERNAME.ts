@@ -6,6 +6,7 @@ import USERNAME_PROXY from "./USERNAME_PROXY";
 import LOG from "../../UTIL/LOG";
 import AVATAR from "./TRIBE/AVATAR";
 import mongoose from "mongoose";
+import { BASETYPE } from "../HELPERS";
 
 class USERNAME {
     private static table: string = "usernames";
@@ -120,7 +121,19 @@ class USERNAME {
                 values: { lastLogin: DATE.now() }
             });
 
-        // USERNAME.get( { _id: uID } );
+        return Promise.resolve(user);
+    }
+
+    public static async change2(where: Partial<USERNAME.TYPE>, values: Partial<USERNAME.TYPE>) {
+        return DATA.change2<USERNAME.TYPE>(this.table, where, values);
+    }
+
+    public static async changeLastLogin2(uID: any) {
+
+        let user = await this.change2(
+            { _id: uID, },
+            { lastLogin: DATE.now() }
+        );
 
         return Promise.resolve(user);
     }
@@ -167,15 +180,13 @@ class USERNAME {
 };
 
 namespace USERNAME {
-    export type TYPE = {
-        _id: mongoose.Types.ObjectId,
+    export type TYPE = BASETYPE & {
         username: string,
         password: string,
         admin: boolean,
         isVerified: boolean,
         lastLogin: number,
         lastChange: number,
-        __v: number
     };
     export type DOCUMENT = (mongoose.Document<any, any, any> & Partial<TYPE>) | null;
 }

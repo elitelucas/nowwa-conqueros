@@ -21,6 +21,7 @@ import FILE from './CMS/FILE';
 import ACCOUNT from './TESTS/ACCOUNT';
 import TEMPORARY from './TESTS/TEMPORARY';
 import USERNAME from './USER/USERNAME';
+import mongoose from 'mongoose';
 
 
 
@@ -82,12 +83,18 @@ class Main {
             //     "username": "garibaldy.mukti@gmail.com"
             // });
             // console.log(document);
-            let result = await USERNAME.set2(
+            let uID = await EMAIL.getUID2(
                 {
-                    username: "garibaldy.mukti@gmail.com"
+                    email: "garibaldy.mukti@gmail.coms"
                 }
             );
-            console.log(`result`, result);
+            console.log(`uID`, uID);
+            let user = await USERNAME.get2(
+                {
+                    _id: new mongoose.Types.ObjectId(uID)
+                }
+            );
+            console.log(`user`, JSON.stringify(user, null, 2));
         }
         catch (error) {
             console.log(error);

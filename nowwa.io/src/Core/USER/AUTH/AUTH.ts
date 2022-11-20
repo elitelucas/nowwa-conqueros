@@ -109,7 +109,7 @@ class AUTH {
 
         if (!isMatch) return Promise.reject(LOG.msg('Incorrect password...'));
 
-        return this.getLogin(item._id);
+        return this.getLogin2(item._id);
     };
 
 
@@ -129,6 +129,15 @@ class AUTH {
     private static async getLogin(uID: any): Promise<any> {
 
         let user = await USERNAME.changeLastLogin(uID);
+        let avatar = await AVATAR.getOne({ uid: uID, isMain: true });
+
+        return Promise.resolve(user);
+    };
+
+    private static async getLogin2(uID: any): Promise<any> {
+
+        let user = await USERNAME.changeLastLogin2(uID);
+
         let avatar = await AVATAR.getOne({ uid: uID, isMain: true });
 
         return Promise.resolve(user);

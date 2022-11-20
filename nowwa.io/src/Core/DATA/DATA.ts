@@ -144,7 +144,7 @@ class DATA {
         return Promise.resolve(document);
     };
 
-    public static async change2<T>(tableName: string, values: Partial<T>, where: Partial<T>): Promise<mongoose.Document<any, any, any> & Partial<T>> {
+    public static async change2<T>(tableName: string, where: Partial<T>, values: Partial<T>): Promise<mongoose.Document<any, any, any> & Partial<T>> {
 
         let model = await TABLE_MODEL.get(tableName);
         let myQuery = model.find(where).limit(1);
