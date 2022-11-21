@@ -8,7 +8,8 @@ import FOLDER from "../../ITEM/INSTANCE/FOLDER";
 import ITEM from "../../ITEM/ITEM";
 import FRIENDS from "./FRIENDS/FRIENDS";
 
-class AVATAR {
+class AVATAR 
+{
     private static table: string = "avatars";
 
     /*=============== 
@@ -19,13 +20,14 @@ class AVATAR {
 
     ================*/
 
-    public static async get(vars: any): Promise<any> {
+    public static async get(vars: any): Promise<any> 
+    {
         var results = await DATA.get(this.table, vars);
-
         return Promise.resolve(results);
     };
 
-    public static async getOne(vars: any): Promise<any> {
+    public static async getOne(vars: any): Promise<any> 
+    {
         let avatar = await DATA.getOne(this.table, vars);
         if (!avatar) avatar = await this.set(vars);
 
@@ -47,7 +49,7 @@ class AVATAR {
  
     ================*/
 
-    public static async set(vars: any): Promise<any> 
+    public static async set( vars:any ): Promise<any> 
     {
         let avatar      = await DATA.set(this.table, QUERY.set(vars));
         let avatarID    = avatar._id;
@@ -111,15 +113,18 @@ class AVATAR {
 
     ================*/
 
-    public static async remove(query: any): Promise<any> {
+    public static async remove(query: any): Promise<any> 
+    {
         query = QUERY.get(query);
 
-        if (query.where.uID) {
+        if (query.where.uID) 
+        {
             let results: any = this.get({ uId: query.uID });
             for (let n in results) await this.removeAvatar(results[n]._id);
         }
 
-        if (query.where._id) {
+        if (query.where._id) 
+        {
             let results = this.get({ _id: query._id });
 
             for (let n in results) {
@@ -132,7 +137,8 @@ class AVATAR {
     };
 
 
-    public static async removeAvatar(avatarID: any): Promise<any> {
+    public static async removeAvatar(avatarID: any): Promise<any> 
+    {
         await ITEM.remove({ avatarID: avatarID });
         await FOLDER.remove({ avatarID: avatarID });
 
