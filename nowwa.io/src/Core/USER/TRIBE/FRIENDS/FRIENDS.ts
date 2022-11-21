@@ -48,10 +48,14 @@ class FRIENDS
 
         //status (active, invited, pending ) 
 
-        query.status        = query.status || "pending";
-        query.tribeID       = tribe._id;
+        let vars : any = 
+        {
+            status      : query.status || "pending",
+            tribeID     : tribe._id,
+            avatarID    : query.avatarID
+        }
 
-        var membership      = await TRIBE_MEMBERS.getSet( query )
+        var membership      = await TRIBE_MEMBERS.getSet( vars )
 
         return Promise.resolve( membership );
     };

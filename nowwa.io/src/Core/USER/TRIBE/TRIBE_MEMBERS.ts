@@ -54,7 +54,7 @@ class TRIBE_MEMBERS
         var vars : any      = { avatarID:query.avatarID, tribeID:query.tribeID };
         var entry           = await this.getOne( vars );
 
-        if( entry ) return Promise.resolve( entry );
+        if( entry ) return this.change( { where:{ _id:entry._id }, values:vars } );
  
         if( !entry ) entry  = this.set( vars );
 
