@@ -6,6 +6,7 @@ import TRIBE_ASSOCIATIONS from "./TRIBE_ASSOCIATIONS";
 import TRIBE_MEMBERS from "./TRIBE_MEMBERS";
 import FOLDER from "../../ITEM/INSTANCE/FOLDER";
 import ITEM from "../../ITEM/ITEM";
+import FRIENDS from "./FRIENDS/FRIENDS";
 
 class AVATAR {
     private static table: string = "avatars";
@@ -46,27 +47,45 @@ class AVATAR {
  
     ================*/
 
-    public static async set(vars: any): Promise<any> {
-        let avatar = await DATA.set(this.table, QUERY.set(vars));
+    public static async set(vars: any): Promise<any> 
+    {
+        let avatar      = await DATA.set(this.table, QUERY.set(vars));
+        let avatarID    = avatar._id;
 
         let tribe = await TRIBE.set(
-            {
-                domainID: avatar._id,
-                type: "avatar"
-            });
+        {
+            private     : true,
+            domainID    : avatarID,
+            type        : "avatarAdmin"
+        });
+ 
+        await TRIBE_MEMBERS.set(
+        {
+            tribeID     : tribe._id,
+            avatarID    : avatarID,
+            role        : 0
+        });
+
+        let friends = await TRIBE.set(
+        {
+            type        : "friends",
+            domainID    : avatarID,
+            private     : true
+        });
 
         await TRIBE_MEMBERS.set(
-            {
-                tribeID: tribe._id,
-                avatarID: avatar._id,
-                role: 0
-            });
-
+        {
+            tribeID     : friends._id,
+            avatarID    : avatarID,
+            role        : 0,
+            hidden      : true
+        });
+ 
         await FOLDER.set(
-            {
-                type: "root",
-                avatarID: avatar._id
-            });
+        {
+            type        : "root",
+            avatarID    : avatar._id
+        });
 
         return Promise.resolve(avatar);
     };
@@ -79,7 +98,8 @@ class AVATAR {
 
     ================*/
 
-    public static async change(query: any): Promise<any> {
+    public static async change(query: any): Promise<any> 
+    {
 
     };
 

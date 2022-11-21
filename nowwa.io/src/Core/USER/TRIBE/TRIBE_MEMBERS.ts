@@ -32,6 +32,13 @@ class TRIBE_MEMBERS
 
     SET  
     
+    {
+        avatarID,
+        tribeID,
+        status (active, invited, pending ),
+        hidden ( boolean, used for stuff like friends lists )
+
+    }
 
     ================*/
 
@@ -40,6 +47,18 @@ class TRIBE_MEMBERS
         let value = await DATA.set( this.table, query );
 
         return Promise.resolve( value );
+    };
+
+    public static async getSet( query:any ) : Promise<any>
+    {
+        var vars : any      = { avatarID:query.avatarID, tribeID:query.tribeID };
+        var entry           = await this.getOne( vars );
+
+        if( entry ) return Promise.resolve( entry );
+ 
+        if( !entry ) entry  = this.set( vars );
+
+        return Promise.resolve( entry );
     };
 
     /*=============== 
