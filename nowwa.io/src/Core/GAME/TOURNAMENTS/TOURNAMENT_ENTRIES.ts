@@ -1,5 +1,7 @@
 import DATA from "../../DATA/DATA";
 import LOG, { log } from "../../../UTIL/LOG";
+import TOURNAMENT from "./TOURNAMENT";
+import TOURNAMENT_INSTANCES from "./TOURNAMENT_INSTANCES";
 
 class TOURNAMENT_ENTRIES
 {
@@ -15,9 +17,11 @@ class TOURNAMENT_ENTRIES
 
     public static async get( query:any ) : Promise<any>
     {
-        let value = await DATA.get( this.table, query );
+        // SORTED
 
-        return Promise.resolve( value );
+        let values = await DATA.get( this.table, query );
+
+        return Promise.resolve( values );
     };
 
     public static async getOne( query:any ) : Promise<any>
@@ -36,10 +40,36 @@ class TOURNAMENT_ENTRIES
     ================*/
 
     public static async set( query:any ) : Promise<any>
-    {
-        let value = await DATA.set( this.table, query );
+    { 
+        let tournamentInstanceID        = query.tournamentInstanceID;
+  
+        if( !tournamentInstanceID ) return Promise.resolve();
+ 
+        let tournamentInstance : any    = TOURNAMENT_INSTANCES.getOne({ _id:tournamentInstanceID });
+        let tournament : any            = TOURNAMENT.getOne({ _id:tournamentInstance.tournamentID });
+ 
+        let scoreEntry                  = await this.getSet( { avatarID:query.avatarID, tournamentInstanceID:tournamentInstanceID });
 
-        return Promise.resolve( value );
+        var newScore                    = query.score;
+        var oldScore                    = scoreEntry.score || 0;
+
+        newScore                        = tournament.cummulative ? ( newScore + oldScore ) : ( newScore > oldScore ? newScore : oldScore );
+
+        scoreEntry                      = await this.change( { where:{ _id:scoreEntry._id }, values:{ vars:query.vars, score:query.score } } );
+
+        return Promise.resolve( scoreEntry );
+    };
+
+    public static async getSet( query:any ) : Promise<any>
+    {
+        var vars : any      = { avatarID:query.avatarID, tournamentInstanceID:query.tournamentInstanceID };
+        var entry           = await this.getOne( vars );
+
+        if( entry ) return Promise.resolve( entry );
+ 
+        if( !entry ) entry  = DATA.set( this.table, vars );
+
+        return Promise.resolve( entry );
     };
 
     /*=============== 

@@ -55,6 +55,7 @@ class TOURNAMENT
         query.endDate       = query.endDate || query.startDate + query.duration;
         query.capacity      = query.capacity || 100;
         query.lenght        = 0;
+        query.cummulative   = query.cummulative || false;
         query.recursive     = query.recursive || false;
  
         let value           = await DATA.set( this.table, query );

@@ -1,5 +1,6 @@
 import DATA from "../DATA/DATA";
 import LOG, { log } from "../../UTIL/LOG";
+import TOURNAMENT_ENTRIES from "./TOURNAMENTS/TOURNAMENT_ENTRIES";
 
 class GAMESCORE
 {
@@ -107,7 +108,9 @@ class GAMESCORE
 
         if( query.score > entry.maxScore ) entry.maxScore = query.score;
  
-        entry       = await DATA.change( this.table, { where:{ _id:entry._id }, values:{ score:entry.score, maxScore:entry.maxScore } } );
+        entry       = await this.change( { where:{ _id:entry._id }, values:{ score:entry.score, maxScore:entry.maxScore, vars:query.vars } } );
+
+        if( query.tournamentID || query.tournamentInstanceID ) TOURNAMENT_ENTRIES.set( query );
 
         return Promise.resolve( entry );
     };
