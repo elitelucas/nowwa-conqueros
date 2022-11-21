@@ -1,5 +1,12 @@
 import DATA from "../DATA/DATA";
 import LOG, { log } from "../../UTIL/LOG";
+import TOURNAMENT from "./TOURNAMENTS/TOURNAMENT";
+import GAMEDATA from "./GAMEDATA";
+import GAMEPLAYER from "./GAMEPLAYER";
+import GAMESCORE from "./GAMESCORE";
+import GAMEROOM from "./GAMEROOM";
+import MATCHMAKING from "./MATCHMAKING";
+import GAMETURN from "./GAMETURNS/GAMETURN";
 
 class GAME
 {
@@ -65,14 +72,26 @@ class GAME
 
     ================*/
 
-    public static async remove( query: any ) : Promise<any>
+    public static async remove( query:any ) : Promise<any>
     {
-        let remove = await DATA.remove( this.table, query );
+        let items : any = await DATA.get( this.table, query ); 
 
-        // remove
-        // Scores, GameData, GameRooms, Leaderboards, Tournaments, Turns
-
-        return Promise.resolve( remove );
+        for( let n in items ) 
+        {
+            let vars : any = { gameID:items[n].gameID };
+   
+            await TOURNAMENT.remove( vars );
+            await GAMEDATA.remove( vars );
+            await GAMEPLAYER.remove( vars );
+            await GAMESCORE.remove( vars );
+            await GAMEROOM.remove( vars );
+            await MATCHMAKING.remove( vars );
+            await GAMETURN.remove( vars );
+        }
+ 
+        let removed = await DATA.remove( this.table, query );
+ 
+        return Promise.resolve( removed );
     };
  
 };

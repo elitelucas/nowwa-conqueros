@@ -47,9 +47,9 @@ class GAMEDATA
 
     public static async set( query:any ) : Promise<any>
     {
-        if( query.vars )
+        if( query.$vars )
         {
-            for( var n in query.vars ) await this.set({ avatarID:query.avatarID, gameID:query.gameID, name:query.vars[n].name, value:query.vars[n].value });
+            for( var n in query.$vars ) await this.set({ avatarID:query.avatarID, gameID:query.gameID, name:query.$vars[n].name, value:query.$vars[n].value });
             return Promise.resolve();
         }
  

@@ -1,9 +1,9 @@
-import DATA from "../DATA/DATA";
-import LOG, { log } from "../../UTIL/LOG";
+import DATA from "../../DATA/DATA";
+import LOG, { log } from "../../../UTIL/LOG";
 
-class GAMETURN
+class TOURNAMENT_ENTRIES
 {
-    private static table: string = "game_turns";
+    private static table: string = "game_tournament_entries";
 
     /*=============== 
 
@@ -74,4 +74,4 @@ class GAMETURN
  
 };
 
-export default GAMETURN;
+export default TOURNAMENT_ENTRIES;
