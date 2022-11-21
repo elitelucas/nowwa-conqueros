@@ -1,6 +1,7 @@
 import DATA from "../DATA/DATA";
 import LOG, { log } from "../../UTIL/LOG";
 import TOURNAMENT_ENTRIES from "./TOURNAMENTS/TOURNAMENT_ENTRIES";
+import FRIENDS from "../USER/TRIBE/FRIENDS/FRIENDS";
 
 class GAMESCORE
 {
@@ -47,7 +48,7 @@ class GAMESCORE
         // Get max 100 entries that have gameID, sorted down by maxScore
 
         let query : any = {};
-        let value = await DATA.getOne( this.table, query );
+        let value = await this.get( query );
 
         return Promise.resolve( value );
     };
@@ -57,31 +58,35 @@ class GAMESCORE
         // Get max 100 entries that have gameID, sorted down by score, when lastEdit happened in the last day
 
         let query : any = {};
-        let value = await DATA.getOne( this.table, query );
+        let value = await this.get( query );
 
         return Promise.resolve( value );
     };
 
     public static async getFriendsAllTime( avatarID:any ) : Promise<any>
     { 
+        let friends     = FRIENDS.get( { avatarID:avatarID } );
+        
         // make list of max 100 friends including avatarID that play this game
         // Get max 100 entries that have gameID, sorted down by maxScore
 
         let query : any = {};
-        let value = await DATA.getOne( this.table, query );
+        let value       = await this.get( query );
 
         return Promise.resolve( value );
     };
 
     public static async getFriendsToday( avatarID:any ) : Promise<any>
     {
+        let friends     = FRIENDS.get( { avatarID:avatarID } );
+
         // make list of max 100 friends including avatarID that play this game
         // Get max 100 entries that have gameID, sorted down by score, when lastEdit happened in the last day
 
         let query : any = {};
-        let value = await DATA.getOne( this.table, query );
+        let values      = await this.get( query );
 
-        return Promise.resolve( value );
+        return Promise.resolve( values );
     };
 
 
