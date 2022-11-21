@@ -1,5 +1,6 @@
 import DATA from "../DATA/DATA";
 import LOG, { log } from "../../UTIL/LOG";
+import ARRAY from "../../UTIL/ARRAY";
 
 class MATCHMAKING
 {
@@ -31,15 +32,43 @@ class MATCHMAKING
 
 
     SET  
+
+    {
+        gameID,
+        capacity,
+        users,
+        length,
+        level (optional)
+    }
     
 
     ================*/
 
     public static async set( query:any ) : Promise<any>
     {
-        let value = await DATA.set( this.table, query );
+        let value = await this.getSet( query );
 
+        ARRAY.pushUnique( value.users, query.avatarID );
+
+        await this.change( { where:{ _id:value._id }, values:value } );
+ 
         return Promise.resolve( value );
+    };
+
+    private static async getSet( query:any ) : Promise<any>
+    {
+        // where length is < capacity
+        var vars : any      = { gameID:query.gameID, level:query.level };
+        var entry           = await this.getOne( vars );
+
+        if( entry ) return Promise.resolve( entry );
+
+        vars.users  = [];
+        vars.length = 0;
+ 
+        entry       = DATA.set( this.table, vars );
+
+        return Promise.resolve( entry );
     };
 
     /*=============== 
@@ -52,6 +81,8 @@ class MATCHMAKING
 
     public static async change( query:any ) : Promise<any>
     {
+        query.values.length = query.values.users.length;
+
         let value = await DATA.change( this.table, query );
 
         return Promise.resolve( value );

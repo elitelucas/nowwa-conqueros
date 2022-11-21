@@ -31,7 +31,13 @@ class TRIBE
 
     SET  
     
+    {
+        name,
+        type,
+        private (boolean)
 
+    }
+    
     ================*/
 
     public static async set( query:any ) : Promise<any>
