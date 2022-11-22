@@ -8,7 +8,8 @@ import AVATAR from "./TRIBE/AVATAR";
 import mongoose from "mongoose";
 import { BASETYPE } from "../HELPERS";
 
-class USERNAME {
+class USERNAME 
+{
     private static table: string = "usernames";
 
     /*=============== 
@@ -19,7 +20,8 @@ class USERNAME {
 
     ================*/
 
-    public static async set2(values: Partial<USERNAME.TYPE>): Promise<USERNAME.DOCUMENT> {
+    public static async set2(values: Partial<USERNAME.TYPE>): Promise<USERNAME.DOCUMENT> 
+    {
         let user: USERNAME.DOCUMENT = null;
 
         try {
@@ -40,11 +42,11 @@ class USERNAME {
         // Do merge
 
         await EMAIL.set(
-            {
-                email: values.username,
-                isVerified: values.isVerified,
-                uID: uID
-            });
+        {
+            email       : values.username,
+            isVerified  : values.isVerified,
+            uID         : uID
+        });
 
         await AVATAR.set({ uID: uID, isMain: true });
 
@@ -140,9 +142,9 @@ class USERNAME {
 
     ================*/
 
-    public static async remove(uID: any): Promise<any> {
+    public static async remove( uID: any ): Promise<any> 
+    {
         // remove everything created by this userName
-
 
         // remove userName itself
 

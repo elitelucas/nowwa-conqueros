@@ -36,7 +36,8 @@ class TRIBE_MEMBERS
         avatarID,
         tribeID,
         status (active, invited, pending ),
-        hidden ( boolean, used for stuff like friends lists )
+        hidden ( boolean, used for stuff like friends lists ),
+        role : 0 Admin, 1 visitor
 
     }
 
@@ -44,6 +45,9 @@ class TRIBE_MEMBERS
 
     public static async set( query:any ) : Promise<any>
     {
+        if( typeof query.role == undefined ) query.role = 1;
+        query.status = query.status || "active";
+
         let value = await DATA.set( this.table, query );
 
         return Promise.resolve( value );

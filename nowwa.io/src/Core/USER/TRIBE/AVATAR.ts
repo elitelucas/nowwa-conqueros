@@ -58,16 +58,10 @@ class AVATAR
         {
             private     : true,
             domainID    : avatarID,
-            type        : "avatarAdmin"
+            type        : "avatarAdmin",
+            avatarIDs   : [ avatarID ]
         });
  
-        await TRIBE_MEMBERS.set(
-        {
-            tribeID     : tribe._id,
-            avatarID    : avatarID,
-            role        : 0
-        });
-
         let friends = await TRIBE.set(
         {
             type        : "friends",
@@ -89,7 +83,7 @@ class AVATAR
             avatarID    : avatar._id
         });
 
-        return Promise.resolve(avatar);
+        return Promise.resolve( avatar );
     };
 
     /*=============== 
@@ -100,7 +94,7 @@ class AVATAR
 
     ================*/
 
-    public static async change(query: any): Promise<any> 
+    public static async change( query:any ): Promise<any> 
     {
 
     };

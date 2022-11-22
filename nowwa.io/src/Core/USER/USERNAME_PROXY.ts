@@ -18,11 +18,11 @@ class USERNAME_PROXY
   
     public static async set( vars:any ) : Promise<any>
     {
-        let results = await DATA.get( USERNAME_PROXY.table, { username:vars.username } ); 
+        let results     = await DATA.get( USERNAME_PROXY.table, { username:vars.username } ); 
 
         if( results.length > 1 ) return Promise.reject( LOG.msg( 'Username already exists' ) );  
 
-        let item : any = await DATA.set( USERNAME_PROXY.table, vars );
+        let item : any  = await DATA.set( USERNAME_PROXY.table, vars );
  
         EMAIL.set(
         {

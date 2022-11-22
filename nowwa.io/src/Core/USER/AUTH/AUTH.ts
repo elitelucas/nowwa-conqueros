@@ -164,7 +164,9 @@ class AUTH {
         if (vars.email) uID = await EMAIL.getUID(vars.email);
         if (vars.wallet) uID = await WALLET.getUID(vars.wallet);
 
-        let user = await (!uID ? USERNAME.set({}) : USERNAME.get({ where: { _id: uID } }));
+        let username = vars.username || vars.wallet || vars.email
+
+        let user = await (!uID ? USERNAME.set({ username:username }) : USERNAME.get({ where: { _id: uID } }));
         uID = vars.uID = user.uID;
 
         await USERNAME_PROXY.getSet(vars);
