@@ -25,7 +25,8 @@ class SocketInstance {
         log("[SERVER]: client action requested", action);
 
         if (action == "AUTH.set") return map( AUTH.set(vars) );
-        if (action == "AUTH.get") return map( AUTH.get(vars) );
+        if (action == "AUTH.get") return map(AUTH.get(vars));
+        if (action == "AUTH.tokenize") return map(AUTH.tokenize(vars));
 
         // FRIENDS.remove(asdas)
         // this person has permissions to do this 

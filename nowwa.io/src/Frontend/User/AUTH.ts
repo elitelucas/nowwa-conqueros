@@ -1,4 +1,3 @@
-import { authLinks, authLogin, authRegister, authTokenize, authVerify } from '../../Core/CONFIG/CONFIG';
 import CONQUER from '../CONQUER';
 
 class AUTH {
@@ -52,29 +51,7 @@ class AUTH {
     }
 
     public async tokenize(input: string): Promise<any> {
-        return new Promise((resolve, reject) => {
-            let url: URL = new URL(`${window.location.origin}${authTokenize}`);
-            let init: RequestInit = {
-                method: "POST",
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    input: input
-                })
-            };
-            fetch(url, init)
-                .then(res => res.json())
-                .then((res: any) => {
-                    // console.log(`login response: ${JSON.stringify(res)}`);
-                    if (res.success) {
-                        resolve(res.value);
-                    } else {
-                        reject(res.error);
-                    }
-                })
-                .catch((error: any) => {
-                    reject(error);
-                });
-        });
+        return CONQUER.do("AUTH.tokenize", input);
     }
 };
 

@@ -18,7 +18,6 @@ class SOCIALAUTH {
         this.webhookAuthVerify();
         this.webhookAuthRegister();
         this.webhookAuthLogin();
-        this.webhookAuthTokenize();
 
         await Twitter.init();
         await Snapchat.init();
@@ -116,19 +115,6 @@ class SOCIALAUTH {
                         }
                     });
             }
-        });
-    }
-
-    public static webhookAuthTokenize() {
-        EXPRESS.app.use(`${authTokenize}`, async (req, res) => {
-            let input: string = <string>req.body.input;
-            let token: string = await AUTH.tokenize(input);
-
-            res.status(200).send(
-                {
-                    success: true,
-                    value: token
-                });
         });
     }
 }
