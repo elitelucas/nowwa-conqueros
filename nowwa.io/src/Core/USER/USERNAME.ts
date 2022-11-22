@@ -20,8 +20,30 @@ class USERNAME
 
     ================*/
 
+    public static async set(vars: any): Promise<any> 
+    {
+        let user = await DATA.getOne(this.table, { username: vars.username });
 
-    
+        if (user) return Promise.reject(LOG.msg('user already exists'));
+
+        user = await DATA.set(this.table, vars);
+
+        let uID = user._id;
+
+        // Look for previous accounts that have used this email
+        // Do merge
+
+        await EMAIL.set(
+        {
+            email: vars.username,
+            isVerified: vars.isVerified,
+            uID: uID
+        });
+
+        await AVATAR.set({ uID: uID, isMain: true, firstName: vars.username });
+
+        return Promise.resolve(user);
+    };
 
     /*=============== 
 
@@ -70,9 +92,9 @@ class USERNAME
 
     ================*/
 
-    public static async remove( uID: any ): Promise<any> 
-    {
+    public static async remove(uID: any): Promise<any> {
         // remove everything created by this userName
+
 
         // remove userName itself
 
