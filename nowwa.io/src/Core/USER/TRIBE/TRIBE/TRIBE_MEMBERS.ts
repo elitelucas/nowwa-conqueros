@@ -1,5 +1,5 @@
-import DATA from "../../DATA/DATA";
-import LOG, { log } from "../../../UTIL/LOG";
+import DATA from "../../../DATA/DATA";
+import LOG, { log } from "../../../../UTIL/LOG";
 
 class TRIBE_MEMBERS
 {

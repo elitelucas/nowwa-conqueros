@@ -34,7 +34,7 @@ class USERNAME {
         if (user) return Promise.reject(LOG.msg('user already exists'));
 
         user = await DATA.set2<USERNAME.TYPE>(this.table, values);
-        let uID = user._id;
+        let uID = user!._id;
 
         // Look for previous accounts that have used this email
         // Do merge
@@ -188,7 +188,7 @@ namespace USERNAME {
         lastLogin: number,
         lastChange: number,
     };
-    export type DOCUMENT = (mongoose.Document<any, any, any> & Partial<TYPE>) | null;
+    export type DOCUMENT = DATA.DOCUMENT<TYPE>;
 }
 
 export default USERNAME;

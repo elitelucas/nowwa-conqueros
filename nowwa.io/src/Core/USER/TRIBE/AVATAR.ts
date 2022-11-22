@@ -1,9 +1,9 @@
 import DATA from "../../DATA/DATA";
 import LOG, { log } from "../../../UTIL/LOG";
 import QUERY from "../../../UTIL/QUERY";
-import TRIBE from "./TRIBE";
+import TRIBE from "./TRIBE/TRIBE";
 import TRIBE_ASSOCIATIONS from "./TRIBE/TRIBE_ASSOCIATIONS";
-import TRIBE_MEMBERS from "./TRIBE_MEMBERS";
+import TRIBE_MEMBERS from "./TRIBE/TRIBE_MEMBERS";
 import FOLDER from "../../ITEM/INSTANCE/FOLDER";
 import ITEM from "../../ITEM/ITEM";
 import FRIENDS from "./FRIENDS/FRIENDS";
