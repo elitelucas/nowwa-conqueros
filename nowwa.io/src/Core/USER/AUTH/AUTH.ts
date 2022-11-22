@@ -2,7 +2,6 @@
 import CRYPT from '../../../UTIL/CRYPT';
 import EMAIL from '../EMAIL';
 import USERNAME from "../USERNAME";
-import PASSPORT from './PASSPORT';
 
 import WALLET from '../WALLET';
 import USERNAME_PROXY from '../USERNAME_PROXY';
@@ -14,10 +13,7 @@ import Google from './Google';
 import EXPRESS from '../../EXPRESS/EXPRESS';
 import CONFIG, { authLinks, authLogin, authRegister, authTokenize, authVerify, emailVerify } from '../../CONFIG/CONFIG';
 
-import dotenv from 'dotenv';
 import AVATAR from '../TRIBE/AVATAR';
-
-dotenv.config();
 
 class AUTH {
     /*=============== 
@@ -29,20 +25,6 @@ class AUTH {
     ================*/
 
     public static async init(): Promise<void> {
-        PASSPORT.init();
-
-        this.webhookAuthLinks();
-        this.webhookAuthVerify();
-        this.webhookAuthRegister();
-        this.webhookAuthLogin();
-        this.webhookAuthTokenize();
-
-        await Twitter.init();
-        await Snapchat.init();
-        await Discord.init();
-        await Google.init();
-
-        // Init other protocols too (metamask, twitter, etc?)
 
         return Promise.resolve();
     }
@@ -141,108 +123,6 @@ class AUTH {
 
         return Promise.resolve();
     };
-
-    public static webhookAuthLinks() {
-        EXPRESS.app.use(`${authLinks}`, (req, res) => {
-            res.status(200).send({
-                success: true,
-                discord: Discord.AuthLink,
-                snapchat: Snapchat.AuthLink,
-                google: Google.AuthLink,
-                twitter: Twitter.AuthLink
-            });
-        });
-    }
-
-    public static webhookAuthVerify() {
-        EXPRESS.app.use(`${authVerify}`, async (req, res) => {
-            let id: string = <string>req.body.id;
-            let token: string = <string>req.body.token;
-            let isMatch: boolean = await this.verify(id, token);
-            res.status(200).send({
-                success: true,
-                valid: isMatch
-            });
-        });
-    }
-
-    public static webhookAuthRegister() {
-        EXPRESS.app.use(`${authRegister}`, async (req, res) => {
-            let email: string = req.body.email;
-            let password: string = req.body.password;
-            let err;
-            try {
-                await this.set2({
-                    username: email,
-                    password: password
-                });
-            } catch (error) {
-                err = error;
-            }
-            if (err) {
-                res.send({
-                    success: false,
-                    error: (<Error>err).message
-                });
-            } else {
-                res.send({
-                    success: true
-                });
-            }
-        });
-    }
-
-    public static webhookAuthLogin() {
-        EXPRESS.app.use(`${authLogin}`, async (req, res) => {
-            let email: string = req.body.email;
-            let password: string = req.body.password;
-
-            let user, err;
-
-            try {
-                user = await this.get2({
-                    username: email,
-                    password: password,
-                });
-            } catch (error) {
-                err = error;
-            }
-            if (err) {
-                res.send(
-                    {
-                        success: false,
-                        error: (<Error>err).message
-                    });
-            } else {
-                let token: string = await this.tokenize(user.username);
-                res.send(
-                    {
-                        success: true,
-                        account:
-                        {
-                            id: user.username,
-                            name: user.username,
-                            token: token,
-                            admin: user.admin,
-                            friend_count: 0
-                        }
-                    });
-            }
-        });
-    }
-
-    public static webhookAuthTokenize() {
-        EXPRESS.app.use(`${authTokenize}`, async (req, res) => {
-            let input: string = <string>req.body.input;
-            let token: string = await this.tokenize(input);
-
-            res.status(200).send(
-                {
-                    success: true,
-                    value: token
-                });
-        });
-    }
 
     public static async verify(value: string, token: string): Promise<boolean> {
         let secret: string = <string>process.env.EXPRESS_SECRET;

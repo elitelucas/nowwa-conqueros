@@ -23,6 +23,7 @@ import TEMPORARY from './TESTS/TEMPORARY';
 import USERNAME from './USER/USERNAME';
 import mongoose from 'mongoose';
 import TEST from './TESTS/TEST';
+import SOCIALAUTH from './USER/AUTH/SOCIALAUTH';
 
 
 
@@ -49,6 +50,7 @@ class Main {
 
         await DATA.init();
         await AUTH.init();
+        await SOCIALAUTH.init();
         await EMAIL.init();
         await SOCKET.init();
         await FILE.init();
