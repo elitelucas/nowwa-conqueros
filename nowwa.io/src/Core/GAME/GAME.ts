@@ -6,7 +6,7 @@ import GAMEPLAYER from "./GAMEPLAYER";
 import GAMESCORE from "./GAMESCORE";
 import GAMEROOM from "./GAMEROOM";
 import MATCHMAKING from "./MATCHMAKING";
-import GAMETURN from "./GAMETURNS/GAMETURN";
+import GAMETURN from "./GAMETURN";
 
 class GAME
 {
