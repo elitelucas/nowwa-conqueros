@@ -61,31 +61,14 @@ class DATA {
         return Promise.resolve( ARRAY.getFields( documents, vars.values ) );
     }
 
-    public static async getOne(tableName: string, query: any): Promise<mongoose.Document<any, any, any> | null> 
+    public static async getOne(tableName: string, query: any): Promise<any> 
     {
-        query           = QUERY.get(query);
+        query = QUERY.get(query);
         let model       = await TABLE_MODEL.get(tableName);
         let myQuery     = model.findOne(query.where);
         let document    = await myQuery.exec();
  
         return Promise.resolve( ARRAY.getFields( document, query.values ));
-    }
-
-    public static async get2<T>(tableName: string, where: Partial<T>): Promise<(mongoose.Document<any, any, any> & Partial<T>)[]> 
-    {
-        let model       = await TABLE_MODEL.get( tableName );
-        let myQuery     = model.find( where );
-
-        return myQuery.exec();
-    }
-
-
-    public static async getOne2<T>(tableName: string, where: Partial<T>): Promise<(mongoose.Document<any, any, any> & Partial<T>) | null> 
-    {
-        let model       = await TABLE_MODEL.get( tableName );
-        let myQuery     = model.findOne( where );
- 
-        return myQuery.exec();
     }
 
     /*=============== 
@@ -96,7 +79,7 @@ class DATA {
 
     ================*/
 
-    public static async set(tableName: string, query: any): Promise<mongoose.Document<any, any, any>> 
+    public static async set(tableName: string, query: any): Promise<any> 
     {
         query           = QUERY.set( query );
 
@@ -108,15 +91,6 @@ class DATA {
         return Promise.resolve( document );
     }
 
-    public static async set2<T>(tableName: string, query: Partial<T>, where?: Partial<T>): Promise<DATA.DOCUMENT<T>> {
-        if (where) return this.change2<T>(tableName, query, where);
-
-        let model = await TABLE_MODEL.get(tableName);
-        let document: mongoose.Document<any, any, any> & Partial<T> = await model.create(query);
-
-        return Promise.resolve(document);
-    }
-
     /*=============== 
 
 
@@ -125,7 +99,7 @@ class DATA {
 
     ================*/
 
-    public static async change(tableName: string, query: any): Promise<mongoose.Document<any, any, any>> {
+    public static async change(tableName: string, query: any): Promise<any> {
         query = QUERY.change(query);
 
         let model = await TABLE_MODEL.get(tableName);
@@ -134,7 +108,7 @@ class DATA {
 
         if (!documents || documents.length != 1) return Promise.reject(LOG.msg('entry not found'));
 
-        let document: mongoose.Document<any, any, any> & { [key: string]: any } = documents[0];
+        let document = documents[0];
 
         let fieldNames = Object.keys(query.values!);
 
@@ -149,6 +123,62 @@ class DATA {
         await document.save();
         return Promise.resolve(document);
     };
+
+    public static async reparent(tableName: string, newUID: any, oldUID: any): Promise<any> {
+        let results = await DATA.change(tableName, { values: { uID: newUID }, where: { uID: oldUID } });
+
+        return Promise.resolve(results);
+    }
+
+    /*=============== 
+
+
+    REMOVE
+    
+
+    ================*/
+
+    public static async remove(tableName: string, query: any): Promise<void> {
+        let model = await TABLE_MODEL.get(tableName);
+
+        await model.findOneAndDelete(QUERY.get(query));
+
+        return Promise.resolve();
+    };
+
+    /*===============
+
+
+    STRICT TYPE - IGNORE
+
+
+    ================*/
+
+    //#region "STRICT TYPE - IGNORE"
+
+    public static async get2<T>(tableName: string, where: Partial<T>): Promise<(mongoose.Document<any, any, any> & Partial<T>)[]> {
+        let model = await TABLE_MODEL.get(tableName);
+        let myQuery = model.find(where);
+
+        return myQuery.exec();
+    }
+
+
+    public static async getOne2<T>(tableName: string, where: Partial<T>): Promise<(mongoose.Document<any, any, any> & Partial<T>) | null> {
+        let model = await TABLE_MODEL.get(tableName);
+        let myQuery = model.findOne(where);
+
+        return myQuery.exec();
+    }
+
+    public static async set2<T>(tableName: string, query: Partial<T>, where?: Partial<T>): Promise<DATA.DOCUMENT<T>> {
+        if (where) return this.change2<T>(tableName, query, where);
+
+        let model = await TABLE_MODEL.get(tableName);
+        let document: mongoose.Document<any, any, any> & Partial<T> = await model.create(query);
+
+        return Promise.resolve(document);
+    }
 
     public static async change2<T>(tableName: string, where: Partial<T>, values: Partial<T>): Promise<DATA.DOCUMENT<T>> {
 
@@ -174,33 +204,13 @@ class DATA {
         return Promise.resolve(document);
     };
 
-    public static async reparent(tableName: string, newUID: any, oldUID: any): Promise<any> {
-        let results = await DATA.change(tableName, { values: { uID: newUID }, where: { uID: oldUID } });
-
-        return Promise.resolve(results);
-    }
-
-    /*=============== 
-
-
-    REMOVE
-    
-
-    ================*/
-
     public static async remove2<T>(tableName: string, where: Partial<T>): Promise<DATA.DOCUMENT<T>> {
         let model = await TABLE_MODEL.get(tableName);
 
         return model.findOneAndDelete(where).exec();
     };
 
-    public static async remove(tableName: string, query: any): Promise<void> {
-        let model = await TABLE_MODEL.get(tableName);
-
-        await model.findOneAndDelete(QUERY.get(query));
-
-        return Promise.resolve();
-    };
+    //#endregion "STRICT TYPE - IGNORE"
 
 }
 

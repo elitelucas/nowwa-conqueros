@@ -19,13 +19,13 @@ class SOCKET
 
         io.on("connection", (socket) => 
         {
-            log("[SERVER]========================================================== NEW CONNECTION");
+            // log("[SERVER]========================================================== NEW CONNECTION");
             new SocketInstance(socket);
         });
 
         // todo, destroy instance
         io.on("disconnect", (socket) => {
-            log("[SERVER] Socket disconnect", socket.id);
+            // log("[SERVER] Socket disconnect", socket.id);
         });
 
         io.listen(CONFIG.vars.SOCKET_PORT);

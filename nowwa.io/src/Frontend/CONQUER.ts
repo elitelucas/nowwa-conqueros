@@ -3,6 +3,7 @@ import LOG, { log } from "../UTIL/LOG";
 import AUTH from "./User/AUTH";
 import USER from "./User/USER";
 import FILE from "./File/FILE";
+import SOCIALAUTH from "./User/SOCIALAUTH";
 
 class CONQUER 
 {
@@ -11,6 +12,7 @@ class CONQUER
     public static SearchParams: { [key: string]: any } = {};
     public static USER: USER = new USER();
     public static AUTH: AUTH = new AUTH();
+    public static SOCIALAUTH: SOCIALAUTH = new SOCIALAUTH();
     private static SOCKET: SOCKET = new SOCKET();
     public static FILE: FILE = new FILE();
 
@@ -20,7 +22,8 @@ class CONQUER
         log("client: =============== New ConquerOS");
 
         await this.ParseUrlSearchParams();
-        // await this.SOCKET.init();
+        await this.SOCKET.init();
+        await this.SOCIALAUTH.init();
         await this.AUTH.init();
 
         log("Okkkk");
@@ -41,19 +44,24 @@ class CONQUER
     {
         let params: { [key: string]: any } = {};
 
-        new URL(window.location.href).searchParams.forEach(function (val, key) 
-        {
-            if (params[key] !== undefined) {
-                if (!Array.isArray(params[key])) {
-                    params[key] = [params[key]];
+        if (typeof window != 'undefined') {
+
+            new URL(window.location.href).searchParams.forEach(function (val, key) 
+            {
+                if (params[key] !== undefined) {
+                    if (!Array.isArray(params[key])) {
+                        params[key] = [params[key]];
+                    }
+                    params[key].push(val);
+                } else {
+                    params[key] = val;
                 }
-                params[key].push(val);
-            } else {
-                params[key] = val;
-            }
-        });
+            });
         
-        window.history.pushState(params, "", `${window.location.origin}`);
+            window.history.pushState(params, "", `${window.location.origin}`);
+
+        }
+
         this.SearchParams = params;
         return Promise.resolve();
     }

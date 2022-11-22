@@ -42,26 +42,6 @@ class EMAIL {
 
     ================*/
 
-
-    public static async set2(values: Partial<EMAIL.TYPE>): Promise<any> {
-        if (!STRING.validateEmail(values.email)) return Promise.reject(LOG.msg('Email is invalid'));
-
-        let email: EMAIL.DOCUMENT = null;
-        try {
-            email = await DATA.getOne2<EMAIL.TYPE>(EMAIL.table, values);
-        } catch (error) {
-            // if email does not exists, then proceed
-        }
-
-        if (email) return Promise.reject(LOG.msg('Email already exists'));
-
-        email = await DATA.set(EMAIL.table, values);
-
-        if (!values.isVerified) EMAIL.requestVerification(values.email!);
-
-        return Promise.resolve(email);
-    }
-
     public static async set(vars: any): Promise<any> {
         if (!STRING.validateEmail(vars.email)) return Promise.reject(LOG.msg('Email is invalid'));
 
@@ -116,6 +96,9 @@ class EMAIL {
     public static async requestVerification(email: string) {
         let token = await AUTH.tokenize(email);
 
+        console.log(`[Testing] : [EMAIL]: currently not sending any email when registering`);
+        return;
+
         EMAIL.send(
             {
                 email: email,
@@ -155,10 +138,6 @@ class EMAIL {
 
     ================*/
 
-    public static async get2(vars: Partial<EMAIL.TYPE>): Promise<EMAIL.DOCUMENT> {
-        return DATA.getOne2<EMAIL.TYPE>(this.table, vars);
-    };
-
 
     public static async get(vars: any): Promise<any> {
 
@@ -178,15 +157,6 @@ class EMAIL {
         return Promise.resolve(results.uID);
     };
 
-
-    public static async getUID2(values: Partial<EMAIL.TYPE>): Promise<mongoose.Types.ObjectId | undefined> {
-        let results = await DATA.getOne2<EMAIL.TYPE>(EMAIL.table, values);
-
-        if (!results) return Promise.resolve(undefined);
-
-        return Promise.resolve(results.uID);
-    };
-
     /*=============== 
 
 
@@ -194,10 +164,6 @@ class EMAIL {
     
 
     ================*/
-
-    public static async change2(where: Partial<EMAIL.TYPE>, values: Partial<EMAIL.TYPE>): Promise<any> {
-        return DATA.change2<EMAIL.TYPE>(this.table, where, values);
-    }
 
     public static async change(query: any): Promise<any> {
         let results = DATA.change(EMAIL.table, query);
@@ -218,6 +184,57 @@ class EMAIL {
     
 
     ================*/
+
+
+
+    /*===============
+
+
+    STRICT TYPE - IGNORE  
+    
+
+    ================*/
+
+    //#region "STRICT TYPE - IGNORE"
+
+
+
+    public static async get2(vars: Partial<EMAIL.TYPE>): Promise<EMAIL.DOCUMENT> {
+        return DATA.getOne2<EMAIL.TYPE>(this.table, vars);
+    };
+
+    public static async set2(values: Partial<EMAIL.TYPE>): Promise<any> {
+        if (!STRING.validateEmail(values.email)) return Promise.reject(LOG.msg('Email is invalid'));
+
+        let email: EMAIL.DOCUMENT = null;
+        try {
+            email = await DATA.getOne2<EMAIL.TYPE>(EMAIL.table, values);
+        } catch (error) {
+            // if email does not exists, then proceed
+        }
+
+        if (email) return Promise.reject(LOG.msg('Email already exists'));
+
+        email = await DATA.set(EMAIL.table, values);
+
+        if (!values.isVerified) EMAIL.requestVerification(values.email!);
+
+        return Promise.resolve(email);
+    }
+
+    public static async getUID2(values: Partial<EMAIL.TYPE>): Promise<mongoose.Types.ObjectId | undefined> {
+        let results = await DATA.getOne2<EMAIL.TYPE>(EMAIL.table, values);
+
+        if (!results) return Promise.resolve(undefined);
+
+        return Promise.resolve(results.uID);
+    };
+
+    public static async change2(where: Partial<EMAIL.TYPE>, values: Partial<EMAIL.TYPE>): Promise<any> {
+        return DATA.change2<EMAIL.TYPE>(this.table, where, values);
+    }
+
+    //#endregion "STRICT TYPE - IGNORE"
 };
 
 

@@ -86,8 +86,7 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
                     isBusy: true,
                     warning: '',
                 });
-
-                CONQUER.AUTH.oldUsername({
+                CONQUER.SOCIALAUTH.oldUsername({
                     email: state.email,
                     password: state.password
                 })
@@ -111,19 +110,19 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
 
     let doTwitter = async () => {
         if (CONQUER.Ready) {
-            CONQUER.AUTH.twitter();
+            CONQUER.SOCIALAUTH.twitter();
         }
     };
 
     let doGoogle = async () => {
         if (CONQUER.Ready) {
-            CONQUER.AUTH.google();
+            CONQUER.SOCIALAUTH.google();
         }
     };
 
     let doFacebook = async () => {
         if (CONQUER.Ready) {
-            CONQUER.AUTH.facebook()
+            CONQUER.SOCIALAUTH.facebook()
                 .then((res) => {
                     if (res.success) {
                         setIndexState({
@@ -142,19 +141,19 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
 
     let doDiscord = async () => {
         if (CONQUER.Ready) {
-            CONQUER.AUTH.discord();
+            CONQUER.SOCIALAUTH.discord();
         }
     };
 
     let doSnapchat = async () => {
         if (CONQUER.Ready) {
-            CONQUER.AUTH.snapchat();
+            CONQUER.SOCIALAUTH.snapchat();
         }
     };
 
     let doMetamask = async () => {
         if (CONQUER.Ready) {
-            CONQUER.AUTH.metamask()
+            CONQUER.SOCIALAUTH.metamask()
                 .then((res) => {
                     console.log(res);
                     if (res.success) {

@@ -14,7 +14,7 @@ class SocketInstance {
         this.socket = socket;
         this.id = socket.id;
 
-        log("[SERVER]: New SOCKET instance", this.id);
+        // log("[SERVER]: New SOCKET instance", this.id);
 
         this.socket.on('action', this.onAction.bind(this));
         this.socket.on("disconnect", this.onDisconnect.bind(this));
@@ -25,7 +25,8 @@ class SocketInstance {
         log("[SERVER]: client action requested", action);
 
         if (action == "AUTH.set") return map( AUTH.set(vars) );
-        if (action == "AUTH.get") return map( AUTH.get(vars) );
+        if (action == "AUTH.get") return map(AUTH.get(vars));
+        if (action == "AUTH.tokenize") return map(AUTH.tokenize(vars));
 
         // FRIENDS.remove(asdas)
         // this person has permissions to do this 
@@ -48,7 +49,7 @@ class SocketInstance {
 
 
     public onDisconnect() {
-        log("[SERVER] socket disconnected", this.id);
+        // log("[SERVER] socket disconnected", this.id);
     }
 
     /*     
