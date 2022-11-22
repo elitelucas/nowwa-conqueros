@@ -69,14 +69,14 @@ class DATA {
         return Promise.resolve(document);
     }
 
-    public static async get2<T>(tableName: string, where: Partial<T>): Promise<(mongoose.Document<any, any, any> & Partial<T>)[]> {
+    public static async get2<T>(tableName: string, where: Partial<T>): Promise<DATA.DOCUMENT<T>[]> {
         let model = await TABLE_MODEL.get(tableName);
         let myQuery = model.find(where);
 
         return myQuery.exec();
     }
 
-    public static async getOne2<T>(tableName: string, where: Partial<T>): Promise<(mongoose.Document<any, any, any> & Partial<T>) | null> {
+    public static async getOne2<T>(tableName: string, where: Partial<T>): Promise<DATA.DOCUMENT<T>> {
         let model = await TABLE_MODEL.get(tableName);
         let myQuery = model.findOne(where);
 
@@ -102,7 +102,7 @@ class DATA {
         return Promise.resolve(document);
     }
 
-    public static async set2<T>(tableName: string, query: Partial<T>, where?: Partial<T>): Promise<mongoose.Document<any, any, any> & Partial<T>> {
+    public static async set2<T>(tableName: string, query: Partial<T>, where?: Partial<T>): Promise<DATA.DOCUMENT<T>> {
         if (where) return this.change2<T>(tableName, query, where);
 
         let model = await TABLE_MODEL.get(tableName);
@@ -144,15 +144,15 @@ class DATA {
         return Promise.resolve(document);
     };
 
-    public static async change2<T>(tableName: string, where: Partial<T>, values: Partial<T>): Promise<mongoose.Document<any, any, any> & Partial<T>> {
+    public static async change2<T>(tableName: string, where: Partial<T>, values: Partial<T>): Promise<DATA.DOCUMENT<T>> {
 
         let model = await TABLE_MODEL.get(tableName);
         let myQuery = model.find(where).limit(1);
-        let documents: (mongoose.Document<any, any, any> & Partial<T>)[] = await myQuery.exec();
+        let documents: DATA.DOCUMENT<T>[] = await myQuery.exec();
 
         if (!documents || documents.length != 1) return Promise.reject(LOG.msg('entry not found'));
 
-        let document: mongoose.Document<any, any, any> & Partial<T> = documents[0];
+        let document: DATA.DOCUMENT<T> = documents[0];
 
         let fieldNames = Object.keys(values);
 
@@ -160,11 +160,11 @@ class DATA {
             let fieldName: string = fieldNames[i];
             let fieldValue = values[fieldName as keyof T];
 
-            document.set(fieldName, fieldValue);
-            document.markModified(fieldName);
+            document!.set(fieldName, fieldValue);
+            document!.markModified(fieldName);
         }
 
-        await document.save();
+        await document!.save();
         return Promise.resolve(document);
     };
 
@@ -182,6 +182,12 @@ class DATA {
 
     ================*/
 
+    public static async remove2<T>(tableName: string, where: Partial<T>): Promise<DATA.DOCUMENT<T>> {
+        let model = await TABLE_MODEL.get(tableName);
+
+        return model.findOneAndDelete(where).exec();
+    };
+
     public static async remove(tableName: string, query: any): Promise<void> {
         let model = await TABLE_MODEL.get(tableName);
 
@@ -193,6 +199,7 @@ class DATA {
 }
 
 namespace DATA {
+    export type DOCUMENT<T> = (mongoose.Document<any, any, any> & Partial<T>) | null;
     export type FieldType = string | number | boolean | object | Date;
     export type Fields = { [key: string]: FieldType }
 
