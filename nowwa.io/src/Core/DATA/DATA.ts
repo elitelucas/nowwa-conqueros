@@ -49,16 +49,16 @@ class DATA {
 
     public static async get( tableName: string, vars: any): Promise<any> 
     {
-        vars = QUERY.get(vars);
+        vars            = QUERY.get(vars);
 
-        let model = await TABLE_MODEL.get(tableName);
-        let myQuery = model.find(vars.where);
+        let model       = await TABLE_MODEL.get(tableName);
+        let myQuery     = model.find(vars.where);
 
-        if ( vars.limit ) myQuery.limit(vars.limit);
+        if ( vars.limit ) myQuery.limit( vars.limit );
 
         let documents : mongoose.Document<any, any, any>[] = await myQuery.exec();
 
-        if( !vars.values ) return Promise.resolve( ARRAY.getFields( documents, vars.values ) );
+        return Promise.resolve( ARRAY.getFields( documents, vars.values ) );
     }
 
     public static async getOne(tableName: string, query: any): Promise<mongoose.Document<any, any, any> | null> 
