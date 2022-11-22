@@ -53,12 +53,7 @@ class Main {
         await SOCKET.init();
         await FILE.init();
 
-        // HACKIN
-
-        dotenv.config();
-        if (process.env.DISABLE_HACKING as string != 'true') {
-            CONQUER.init();
-        }
+        // TESTING
 
         await TEST.Run();
     }

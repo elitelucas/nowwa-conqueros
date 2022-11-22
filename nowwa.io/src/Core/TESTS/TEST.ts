@@ -12,6 +12,8 @@ class TEST {
 
         // TESTING
         try {
+            //#region "OLD TEST"
+
             // await TEMPORARY.Init();
             // let value = await ACCOUNT.Set({
             //     username: 'test2'
@@ -47,7 +49,15 @@ class TEST {
             // );
             // console.log(`user`, JSON.stringify(user, null, 2));
 
+            //#endregion "OLD TEST"
+
             await CONQUER.init();
+
+            let result = await CONQUER.AUTH.username({
+                username: "garibaldy.mukti@gmail.com",
+                password: "1111"
+            });
+            console.log(`result`, JSON.stringify(result, null, 2));
         }
         catch (error) {
             console.log(error);
