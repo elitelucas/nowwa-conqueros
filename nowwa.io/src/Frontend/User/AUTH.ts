@@ -21,7 +21,8 @@ class AUTH {
 
     public account?: Account;
 
-    public async init(): Promise<any> {
+    public async init(): Promise<any> 
+    {
         /*
         Get session, from cookie?
         If session exists, login via backdoor?
@@ -50,7 +51,8 @@ class AUTH {
                 let authVerifyRequest: RequestInit = {
                     method: "POST",
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
+                    body: JSON.stringify(
+                    {
                         id: params.id,
                         token: params.token
                     })
@@ -69,7 +71,8 @@ class AUTH {
 
             log(`[${params.source}] verified: ${authVerifyResponse && authVerifyResponse.valid}!`);
 
-            if (authVerifyResponse.success) {
+            if (authVerifyResponse.success) 
+            {
                 if (authVerifyResponse.valid) {
                     this.account = {
                         admin: params.admin as string == 'true',
@@ -117,11 +120,14 @@ class AUTH {
         this.vars.type = type;
     };
 
-    public async set(vars: any): Promise<any> {
+ 
+    public async set(vars: any): Promise<any> 
+    {
         return CONQUER.do("AUTH.set", vars);
     }
 
-    public async get(vars: any): Promise<any> {
+    public async get(vars: any): Promise<any> 
+    {
         return CONQUER.do("AUTH.get", vars);
     }
 
@@ -278,7 +284,8 @@ class AUTH {
         });
     }
 
-    public async username(params: { email: string, password: string }): Promise<any> {
+    public async oldUsername( params: { email: string, password: string }): Promise<any> 
+    {
         return new Promise(async (resolve) => {
             let url: URL = new URL(`${window.location.origin}${authLogin}`);
             let init: RequestInit = {
@@ -304,7 +311,8 @@ class AUTH {
                 });
         });
     }
-
+ 
+ 
     public async register(params: { email: string, password: string }): Promise<any> {
         return new Promise((resolve, reject) => {
             let url: URL = new URL(`${window.location.origin}${authRegister}`);

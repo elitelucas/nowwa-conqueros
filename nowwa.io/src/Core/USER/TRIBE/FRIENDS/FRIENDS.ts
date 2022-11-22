@@ -1,7 +1,7 @@
 import DATA from "../../../DATA/DATA";
 import LOG, { log } from "../../../../UTIL/LOG";
-import TRIBE from "../TRIBE";
-import TRIBE_MEMBERS from "../TRIBE_MEMBERS";
+import TRIBE from "../TRIBE/TRIBE";
+import TRIBE_MEMBERS from "../TRIBE/TRIBE_MEMBERS";
 
 class FRIENDS
 {
@@ -16,6 +16,8 @@ class FRIENDS
 
     public static async get( query:any ) : Promise<any>
     {
+        // Mask only avatarIDs
+
         let tribe : any     = await TRIBE.getOne({ domainID:query.avatarID, type:"friends" });
 
         // ignore HIDDEN ?

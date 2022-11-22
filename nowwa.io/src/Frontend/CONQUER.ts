@@ -4,7 +4,8 @@ import AUTH from "./User/AUTH";
 import USER from "./User/USER";
 import FILE from "./File/FILE";
 
-class CONQUER {
+class CONQUER 
+{
     public static Initialized: boolean = false;
     public static Ready: boolean = false;
     public static SearchParams: { [key: string]: any } = {};
@@ -13,7 +14,8 @@ class CONQUER {
     private static SOCKET: SOCKET = new SOCKET();
     public static FILE: FILE = new FILE();
 
-    public static async init(): Promise<void> {
+    public static async init(): Promise<void> 
+    {
         this.Initialized = true;
         log("client: =============== New ConquerOS");
 
@@ -30,13 +32,17 @@ class CONQUER {
         return Promise.resolve();
     };
 
-    public static async do(action: string, vars?: any): Promise<any> {
+    public static async do(action: string, vars?: any): Promise<any> 
+    {
         return this.SOCKET.do(action, vars);
     }
 
-    private static async ParseUrlSearchParams(): Promise<void> {
+    private static async ParseUrlSearchParams(): Promise<void> 
+    {
         let params: { [key: string]: any } = {};
-        new URL(window.location.href).searchParams.forEach(function (val, key) {
+
+        new URL(window.location.href).searchParams.forEach(function (val, key) 
+        {
             if (params[key] !== undefined) {
                 if (!Array.isArray(params[key])) {
                     params[key] = [params[key]];
@@ -46,6 +52,7 @@ class CONQUER {
                 params[key] = val;
             }
         });
+        
         window.history.pushState(params, "", `${window.location.origin}`);
         this.SearchParams = params;
         return Promise.resolve();
