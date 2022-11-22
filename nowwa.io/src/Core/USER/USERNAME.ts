@@ -44,7 +44,7 @@ class USERNAME {
                 uID: uID
             });
 
-        await AVATAR.set({ uID: uID, isMain: true });
+        await AVATAR.set({ uID: uID, isMain: true, firstName: vars.username });
 
         return Promise.resolve(user);
     };
