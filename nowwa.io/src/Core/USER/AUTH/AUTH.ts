@@ -136,11 +136,10 @@ class AUTH {
 
     private static async getLogin2(uID: any): Promise<any> {
 
-        let user = await USERNAME.changeLastLogin2(uID);
-
-        let avatar = await AVATAR.getOne({ uid: uID, isMain: true });
-
-        return Promise.resolve(user);
+        let user    = await USERNAME.changeLastLogin2(uID);
+        let avatar  = await AVATAR.getOne({ uid: uID, isMain: true });
+ 
+        return Promise.resolve( avatar );
     };
 
     /*=============== 

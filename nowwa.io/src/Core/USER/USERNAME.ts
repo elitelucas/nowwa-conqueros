@@ -51,15 +51,9 @@ class USERNAME {
         return Promise.resolve(user);
     };
 
-    public static async set(vars: any): Promise<any> {
-        let user;
-
-        try {
-            user = await DATA.getOne(this.table, vars);
-        } catch (error) {
-            // if user does not exists, then proceed
-            console.log(`user does not exists! continue...`);
-        }
+    public static async set(vars: any): Promise<any> 
+    {
+        let user = await DATA.getOne(this.table, vars);
 
         if (user) return Promise.reject(LOG.msg('user already exists'));
 
@@ -76,7 +70,7 @@ class USERNAME {
                 uID: uID
             });
 
-        await AVATAR.set({ uID: uID, isMain: true });
+        await AVATAR.set({ uID: uID, firstName:vars.username, isMain: true });
 
         return Promise.resolve(user);
     };
