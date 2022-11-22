@@ -22,9 +22,9 @@ class USERNAME
 
     public static async set(vars: any): Promise<any> 
     {
-        let user = await DATA.getOne(this.table, { username: vars.username });
+        let user = await DATA.getOne( this.table, { username: vars.username });
 
-        if (user) return Promise.reject(LOG.msg('user already exists'));
+        if( user ) return Promise.reject(LOG.msg('user already exists'));
 
         user = await DATA.set(this.table, vars);
 
@@ -35,9 +35,9 @@ class USERNAME
 
         await EMAIL.set(
         {
-            email: vars.username,
-            isVerified: vars.isVerified,
-            uID: uID
+            email       : vars.username,
+            isVerified  : vars.isVerified,
+            uID         : uID
         });
 
         await AVATAR.set({ uID: uID, isMain: true, firstName: vars.username });
