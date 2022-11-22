@@ -55,22 +55,6 @@ class AUTH {
 
     ================*/
 
-    public static async set2(vars: Partial<USERNAME.TYPE>): Promise<USERNAME.DOCUMENT> {
-        let encryptedPassword = await CRYPT.hash(vars.password!);
-        try {
-            let item = await USERNAME.set2(
-                {
-                    username: vars.username,
-                    password: encryptedPassword,
-                    admin: false,
-                    isVerified: vars.isVerified || false
-                });
-            return Promise.resolve(item);
-        } catch (error) {
-            return Promise.reject(error);
-        }
-    };
-
     public static async set(vars: any): Promise<any> {
         let encryptedPassword = await CRYPT.hash(vars.password);
         try {
@@ -97,21 +81,6 @@ class AUTH {
 
     ================*/
 
-    public static async get2(vars: Partial<USERNAME.TYPE>): Promise<any> {
-
-        var item = await USERNAME.get2({ username: vars.username });
-
-        if (!item) return Promise.reject(LOG.msg('user does not exists...'));
-
-        if (!item.isVerified) return Promise.reject(LOG.msg('user is not verified...'));
-
-        let isMatch: boolean = await CRYPT.match(vars.password!, item.password!);
-
-        if (!isMatch) return Promise.reject(LOG.msg('Incorrect password...'));
-
-        return this.getLogin2(item._id);
-    };
-
 
     public static async get(vars: any): Promise<any> {
 
@@ -131,16 +100,7 @@ class AUTH {
         let user = await USERNAME.changeLastLogin(uID);
         let avatar = await AVATAR.getOne({ uid: uID, isMain: true });
 
-        return Promise.resolve(user);
-    };
-
-    private static async getLogin2(uID: any): Promise<any> {
-
-        let user = await USERNAME.changeLastLogin2(uID);
-
-        let avatar = await AVATAR.getOne({ uid: uID, isMain: true });
-
-        return Promise.resolve(user);
+        return Promise.resolve(avatar);
     };
 
     /*=============== 
@@ -211,7 +171,7 @@ class AUTH {
             let password: string = req.body.password;
             let err;
             try {
-                await this.set({
+                await this.set2({
                     username: email,
                     password: password
                 });
@@ -296,6 +256,58 @@ class AUTH {
 
         return CRYPT.hash(input);
     }
+
+    /*===============
+
+
+    STRICT TYPE - IGNORE
+
+
+    ================*/
+
+    //#region "STRICT TYPE - IGNORE"
+
+    public static async set2(vars: Partial<USERNAME.TYPE>): Promise<USERNAME.DOCUMENT> {
+        let encryptedPassword = await CRYPT.hash(vars.password!);
+        try {
+            let item = await USERNAME.set2(
+                {
+                    username: vars.username,
+                    password: encryptedPassword,
+                    admin: false,
+                    isVerified: vars.isVerified || false
+                });
+            return Promise.resolve(item);
+        } catch (error) {
+            return Promise.reject(error);
+        }
+    };
+
+    public static async get2(vars: Partial<USERNAME.TYPE>): Promise<any> {
+
+        var item = await USERNAME.get2({ username: vars.username });
+
+        if (!item) return Promise.reject(LOG.msg('user does not exists...'));
+
+        if (!item.isVerified) return Promise.reject(LOG.msg('user is not verified...'));
+
+        let isMatch: boolean = await CRYPT.match(vars.password!, item.password!);
+
+        if (!isMatch) return Promise.reject(LOG.msg('Incorrect password...'));
+
+        return this.getLogin2(item._id);
+    };
+
+    private static async getLogin2(uID: any): Promise<any> {
+
+        let user = await USERNAME.changeLastLogin2(uID);
+
+        let avatar = await AVATAR.getOne({ uid: uID, isMain: true });
+
+        return Promise.resolve(user);
+    };
+
+    //#endregion "STRICT TYPE - IGNORE"
 
 };
 

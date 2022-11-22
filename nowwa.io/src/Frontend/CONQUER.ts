@@ -19,8 +19,8 @@ class CONQUER
         this.Initialized = true;
         log("client: =============== New ConquerOS");
 
-        await this.ParseUrlSearchParams();
-        // await this.SOCKET.init();
+        // await this.ParseUrlSearchParams();
+        await this.SOCKET.init();
         await this.AUTH.init();
 
         log("Okkkk");

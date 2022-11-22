@@ -86,7 +86,6 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
                     isBusy: true,
                     warning: '',
                 });
-
                 CONQUER.AUTH.oldUsername({
                     email: state.email,
                     password: state.password

@@ -92,7 +92,7 @@ const Register = (state: RegisterState, setState: React.Dispatch<React.SetStateA
                     warning: ''
                 });
 
-                CONQUER.AUTH.register({
+                CONQUER.AUTH.oldRegister({
                     email: state.email,
                     password: state.password
                 })

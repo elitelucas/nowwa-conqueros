@@ -28,6 +28,7 @@ class AUTH {
         If session exists, login via backdoor?
         If session expired, log in as guest
         */
+
         await this.redirect();
         await this.authLinks();
 
@@ -92,28 +93,31 @@ class AUTH {
 
     private async authLinks(): Promise<void> {
 
-        let authLinkResponse = await new Promise<any>((resolve, reject) => {
-            let authLinksUrl: URL = new URL(`${window.location.origin}${authLinks}`);
-            let authLinksRequest: RequestInit = {
-                method: "POST",
-                headers: { 'Content-Type': 'application/json' },
-                body: '{}'
-            };
-            fetch(authLinksUrl, authLinksRequest)
-                .then(authLinkResponse => authLinkResponse.json())
-                .then((authLinkResponse: any) => {
-                    resolve(authLinkResponse);
-                })
-                .catch((error: any) => {
-                    console.error(`error: ${error}`);
-                    reject(error);
-                });
+        if (typeof window != 'undefined') {
 
-        });
-        this.vars.twitter = authLinkResponse.twitter;
-        this.vars.discord = authLinkResponse.discord;
-        this.vars.google = authLinkResponse.google;
-        this.vars.snapchat = authLinkResponse.snapchat;
+            let authLinkResponse = await new Promise<any>((resolve, reject) => {
+                let authLinksUrl: URL = new URL(`${window.location.origin}${authLinks}`);
+                let authLinksRequest: RequestInit = {
+                    method: "POST",
+                    headers: { 'Content-Type': 'application/json' },
+                    body: '{}'
+                };
+                fetch(authLinksUrl, authLinksRequest)
+                    .then(authLinkResponse => authLinkResponse.json())
+                    .then((authLinkResponse: any) => {
+                        resolve(authLinkResponse);
+                    })
+                    .catch((error: any) => {
+                        console.error(`error: ${error}`);
+                        reject(error);
+                    });
+
+            });
+            this.vars.twitter = authLinkResponse.twitter;
+            this.vars.discord = authLinkResponse.discord;
+            this.vars.google = authLinkResponse.google;
+            this.vars.snapchat = authLinkResponse.snapchat;
+        }
     }
 
     public async login(type: string = "Guest"): Promise<any> {
@@ -284,6 +288,14 @@ class AUTH {
         });
     }
 
+    public async username(params: { username: string, password: string }): Promise<any> {
+        return CONQUER.do("AUTH.get", params);
+    }
+
+    public async register(params: { username: string, password: string }): Promise<any> {
+        return CONQUER.do("AUTH.set", params);
+    }
+
     public async oldUsername( params: { email: string, password: string }): Promise<any> 
     {
         return new Promise(async (resolve) => {
@@ -312,8 +324,7 @@ class AUTH {
         });
     }
  
- 
-    public async register(params: { email: string, password: string }): Promise<any> {
+    public async oldRegister(params: { email: string, password: string }): Promise<any> {
         return new Promise((resolve, reject) => {
             let url: URL = new URL(`${window.location.origin}${authRegister}`);
             let init: RequestInit = {

@@ -71,23 +71,6 @@ class DATA {
         return Promise.resolve( ARRAY.getFields( document, query.values ));
     }
 
-    public static async get2<T>(tableName: string, where: Partial<T>): Promise<(mongoose.Document<any, any, any> & Partial<T>)[]> 
-    {
-        let model       = await TABLE_MODEL.get( tableName );
-        let myQuery     = model.find( where );
-
-        return myQuery.exec();
-    }
-
-
-    public static async getOne2<T>(tableName: string, where: Partial<T>): Promise<(mongoose.Document<any, any, any> & Partial<T>) | null> 
-    {
-        let model       = await TABLE_MODEL.get( tableName );
-        let myQuery     = model.findOne( where );
- 
-        return myQuery.exec();
-    }
-
     /*=============== 
 
 
@@ -106,15 +89,6 @@ class DATA {
         let document    = await model.create( query.values );
 
         return Promise.resolve( document );
-    }
-
-    public static async set2<T>(tableName: string, query: Partial<T>, where?: Partial<T>): Promise<DATA.DOCUMENT<T>> {
-        if (where) return this.change2<T>(tableName, query, where);
-
-        let model = await TABLE_MODEL.get(tableName);
-        let document: mongoose.Document<any, any, any> & Partial<T> = await model.create(query);
-
-        return Promise.resolve(document);
     }
 
     /*=============== 
@@ -150,6 +124,62 @@ class DATA {
         return Promise.resolve(document);
     };
 
+    public static async reparent(tableName: string, newUID: any, oldUID: any): Promise<any> {
+        let results = await DATA.change(tableName, { values: { uID: newUID }, where: { uID: oldUID } });
+
+        return Promise.resolve(results);
+    }
+
+    /*=============== 
+
+
+    REMOVE
+    
+
+    ================*/
+
+    public static async remove(tableName: string, query: any): Promise<void> {
+        let model = await TABLE_MODEL.get(tableName);
+
+        await model.findOneAndDelete(QUERY.get(query));
+
+        return Promise.resolve();
+    };
+
+    /*===============
+
+
+    STRICT TYPE - IGNORE
+
+
+    ================*/
+
+    //#region "STRICT TYPE - IGNORE"
+
+    public static async get2<T>(tableName: string, where: Partial<T>): Promise<(mongoose.Document<any, any, any> & Partial<T>)[]> {
+        let model = await TABLE_MODEL.get(tableName);
+        let myQuery = model.find(where);
+
+        return myQuery.exec();
+    }
+
+
+    public static async getOne2<T>(tableName: string, where: Partial<T>): Promise<(mongoose.Document<any, any, any> & Partial<T>) | null> {
+        let model = await TABLE_MODEL.get(tableName);
+        let myQuery = model.findOne(where);
+
+        return myQuery.exec();
+    }
+
+    public static async set2<T>(tableName: string, query: Partial<T>, where?: Partial<T>): Promise<DATA.DOCUMENT<T>> {
+        if (where) return this.change2<T>(tableName, query, where);
+
+        let model = await TABLE_MODEL.get(tableName);
+        let document: mongoose.Document<any, any, any> & Partial<T> = await model.create(query);
+
+        return Promise.resolve(document);
+    }
+
     public static async change2<T>(tableName: string, where: Partial<T>, values: Partial<T>): Promise<DATA.DOCUMENT<T>> {
 
         let model = await TABLE_MODEL.get(tableName);
@@ -174,33 +204,13 @@ class DATA {
         return Promise.resolve(document);
     };
 
-    public static async reparent(tableName: string, newUID: any, oldUID: any): Promise<any> {
-        let results = await DATA.change(tableName, { values: { uID: newUID }, where: { uID: oldUID } });
-
-        return Promise.resolve(results);
-    }
-
-    /*=============== 
-
-
-    REMOVE
-    
-
-    ================*/
-
     public static async remove2<T>(tableName: string, where: Partial<T>): Promise<DATA.DOCUMENT<T>> {
         let model = await TABLE_MODEL.get(tableName);
 
         return model.findOneAndDelete(where).exec();
     };
 
-    public static async remove(tableName: string, query: any): Promise<void> {
-        let model = await TABLE_MODEL.get(tableName);
-
-        await model.findOneAndDelete(QUERY.get(query));
-
-        return Promise.resolve();
-    };
+    //#endregion "STRICT TYPE - IGNORE"
 
 }
 
