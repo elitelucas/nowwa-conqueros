@@ -17,7 +17,8 @@ class SOCKET
 
         log("NEW SOCKET SERVER");
 
-        io.on("connection", (socket) => {
+        io.on("connection", (socket) => 
+        {
             log("[SERVER]========================================================== NEW CONNECTION");
             new SocketInstance(socket);
         });

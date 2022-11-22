@@ -1,9 +1,8 @@
 import DATA from "../../DATA/DATA";
 import LOG, { log } from "../../../UTIL/LOG";
-
-class TRIBE_ASSOCIATIONS
+class TRIBE
 {
-    private static table: string = "tribe_associations";
+    private static table : string = "tribes";
 
     /*=============== 
 
@@ -32,7 +31,13 @@ class TRIBE_ASSOCIATIONS
 
     SET  
     
+    {
+        name,
+        type,
+        private (boolean)
 
+    }
+    
     ================*/
 
     public static async set( query:any ) : Promise<any>
@@ -74,4 +79,4 @@ class TRIBE_ASSOCIATIONS
  
 };
 
-export default TRIBE_ASSOCIATIONS;
+export default TRIBE;

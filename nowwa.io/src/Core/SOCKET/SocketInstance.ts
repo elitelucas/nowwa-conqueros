@@ -9,7 +9,8 @@ class SocketInstance {
     public socket: Socket;
     public id: any;
 
-    constructor(socket: Socket) {
+    constructor(socket: Socket) 
+    {
         this.socket = socket;
         this.id = socket.id;
 
@@ -19,11 +20,15 @@ class SocketInstance {
         this.socket.on("disconnect", this.onDisconnect.bind(this));
     };
 
-    public onAction(action: string, vars?: any, callback?: Function) {
+    public onAction(action: string, vars?: any, callback?: Function) 
+    {
         log("[SERVER]: client action requested", action);
 
         if (action == "AUTH.set") return map(AUTH.set(vars));
         if (action == "AUTH.get") return map(AUTH.get(vars));
+
+        // FRIENDS.remove(asdas)
+        // this person has permissions to do this 
 
         doError();
 
@@ -35,9 +40,9 @@ class SocketInstance {
             doCallback(vars, false);
         }
 
-        function map(promise: any) {
-            log("got this", promise);
-            promise.then(doCallback).catch(doError);
+        function map(promise: any) 
+        {
+            promise.then( doCallback ).catch( doError );
         }
     }
 

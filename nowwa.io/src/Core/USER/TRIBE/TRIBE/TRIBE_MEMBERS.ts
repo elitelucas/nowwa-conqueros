@@ -1,8 +1,9 @@
 import DATA from "../../DATA/DATA";
 import LOG, { log } from "../../../UTIL/LOG";
-class TRIBE
+
+class TRIBE_MEMBERS
 {
-    private static table : string = "tribes";
+    private static table : string = "tribe_members";
 
     /*=============== 
 
@@ -31,6 +32,13 @@ class TRIBE
 
     SET  
     
+    {
+        avatarID,
+        tribeID,
+        status (active, invited, pending ),
+        hidden ( boolean, used for stuff like friends lists )
+
+    }
 
     ================*/
 
@@ -39,6 +47,18 @@ class TRIBE
         let value = await DATA.set( this.table, query );
 
         return Promise.resolve( value );
+    };
+
+    public static async getSet( query:any ) : Promise<any>
+    {
+        var vars : any      = { avatarID:query.avatarID, tribeID:query.tribeID };
+        var entry           = await this.getOne( vars );
+
+        if( entry ) return this.change( { where:{ _id:entry._id }, values:vars } );
+ 
+        if( !entry ) entry  = this.set( vars );
+
+        return Promise.resolve( entry );
     };
 
     /*=============== 
@@ -73,4 +93,4 @@ class TRIBE
  
 };
 
-export default TRIBE;
+export default TRIBE_MEMBERS;

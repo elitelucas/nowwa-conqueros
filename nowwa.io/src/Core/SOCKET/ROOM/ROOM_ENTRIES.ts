@@ -1,9 +1,9 @@
 import DATA from "../../DATA/DATA";
 import LOG, { log } from "../../../UTIL/LOG";
 
-class TRIBE_MEMBERS
+class ROOM_ENTRIES
 {
-    private static table : string = "tribe_members";
+    private static table : string = "room_entries";
 
     /*=============== 
 
@@ -74,4 +74,4 @@ class TRIBE_MEMBERS
  
 };
 
-export default TRIBE_MEMBERS;
+export default ROOM_ENTRIES;

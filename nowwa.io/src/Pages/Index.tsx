@@ -87,7 +87,8 @@ const Index = () => {
     }
     if (state.initialized) {
 
-        if (!CONQUER.Initialized) {
+        if (!CONQUER.Initialized) 
+        {
             loadConquer().then(() => {
                 let params = CONQUER.SearchParams;
                 console.log('done load conquer');

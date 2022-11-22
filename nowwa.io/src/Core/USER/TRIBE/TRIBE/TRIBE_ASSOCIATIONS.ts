@@ -1,9 +1,9 @@
-import DATA from "../DATA/DATA";
-import LOG, { log } from "../../UTIL/LOG";
+import DATA from "../../../DATA/DATA";
+import LOG, { log } from "../../../../UTIL/LOG";
 
-class TOURNAMENT
+class TRIBE_ASSOCIATIONS
 {
-    private static table: string = "game_tournaments";
+    private static table: string = "tribe_associations";
 
     /*=============== 
 
@@ -67,11 +67,11 @@ class TOURNAMENT
 
     public static async remove( query:any ) : Promise<any>
     {
-        let removed = await DATA.remove( this.table, query );
- 
-        return Promise.resolve( removed );
+        let remove = await DATA.remove( this.table, query );
+
+        return Promise.resolve( remove );
     };
  
 };
 
-export default TOURNAMENT;
+export default TRIBE_ASSOCIATIONS;
