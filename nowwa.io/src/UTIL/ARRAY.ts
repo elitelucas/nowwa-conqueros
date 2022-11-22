@@ -39,6 +39,26 @@ class ARRAY
  
         return output;  
     };
+
+    public static getFields( from?:any, fields?:[] ) : any
+    {
+        if( !from || !fields ) return from;
+
+        if( !Array.isArray( from ) ) return doGetFields( from );
+ 
+        let output : any = [];
+
+        for( let n=0; n< from.length; n++ ) output.push( doGetFields( from[n] ) );
+    
+        return output;
+
+        function doGetFields( from:any )
+        {
+            var item    : any = {};
+            for( let field in fields ) if( typeof from[ field ] != undefined ) item[ field ] = from[ field ];
+            return item;
+        }
+    }
     
     public static merge( from:any, to:any  )
     {

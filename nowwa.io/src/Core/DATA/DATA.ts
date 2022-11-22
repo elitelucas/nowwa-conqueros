@@ -4,6 +4,8 @@ import { Custom, CustomProperty, CustomType, CustomDocument } from '../../Models
 import TABLE_MODEL from './TABLE_MODEL';
 import LOG, { log, error } from '../../UTIL/LOG';
 import QUERY from '../../UTIL/QUERY';
+import { query } from 'express';
+import ARRAY from '../../UTIL/ARRAY';
 
 class DATA {
     /*=============== 
@@ -45,40 +47,42 @@ class DATA {
 
     ================*/
 
-    public static async get(tableName: string, vars: any): Promise<mongoose.Document<any, any, any>[]> {
+    public static async get( tableName: string, vars: any): Promise<mongoose.Document<any, any, any>[]> 
+    {
         vars = QUERY.get(vars);
 
         let model = await TABLE_MODEL.get(tableName);
         let myQuery = model.find(vars.where);
 
-        if (vars.limit) myQuery.limit(vars.limit);
+        if ( vars.limit ) myQuery.limit(vars.limit);
 
-        let documents: mongoose.Document<any, any, any>[] = await myQuery.exec();
+        let documents : mongoose.Document<any, any, any>[] = await myQuery.exec();
 
-        return Promise.resolve(documents);
+        if( !vars.values ) return Promise.resolve( ARRAY.getFields( documents, vars.values ) );
     }
 
-    public static async getOne(tableName: string, query: any): Promise<mongoose.Document<any, any, any> | null> {
-        query = QUERY.get(query);
-        let model = await TABLE_MODEL.get(tableName);
-        let myQuery = model.findOne(query.where);
-        let document = await myQuery.exec();
-
-        // double check document can be null 
-
-        return Promise.resolve(document);
+    public static async getOne(tableName: string, query: any): Promise<mongoose.Document<any, any, any> | null> 
+    {
+        query           = QUERY.get(query);
+        let model       = await TABLE_MODEL.get(tableName);
+        let myQuery     = model.findOne(query.where);
+        let document    = await myQuery.exec();
+ 
+        return Promise.resolve( ARRAY.getFields( document, query.values ));
     }
 
-    public static async get2<T>(tableName: string, where: Partial<T>): Promise<(mongoose.Document<any, any, any> & Partial<T>)[]> {
-        let model = await TABLE_MODEL.get(tableName);
-        let myQuery = model.find(where);
+    public static async get2<T>(tableName: string, where: Partial<T>): Promise<(mongoose.Document<any, any, any> & Partial<T>)[]> 
+    {
+        let model       = await TABLE_MODEL.get( tableName );
+        let myQuery     = model.find( where );
 
         return myQuery.exec();
     }
 
-    public static async getOne2<T>(tableName: string, where: Partial<T>): Promise<(mongoose.Document<any, any, any> & Partial<T>) | null> {
-        let model = await TABLE_MODEL.get(tableName);
-        let myQuery = model.findOne(where);
+    public static async getOne2<T>(tableName: string, where: Partial<T>): Promise<(mongoose.Document<any, any, any> & Partial<T>) | null> 
+    {
+        let model       = await TABLE_MODEL.get( tableName );
+        let myQuery     = model.findOne( where );
 
         return myQuery.exec();
     }
@@ -91,15 +95,16 @@ class DATA {
 
     ================*/
 
-    public static async set(tableName: string, query: any): Promise<mongoose.Document<any, any, any>> {
-        query = QUERY.set(query);
+    public static async set(tableName: string, query: any): Promise<mongoose.Document<any, any, any>> 
+    {
+        query           = QUERY.set( query );
 
-        if (query.where) return this.change(tableName, query);
+        if (query.where) return this.change( tableName, query );
 
-        let model = await TABLE_MODEL.get(tableName);
-        let document = await model.create(query.values);
+        let model       = await TABLE_MODEL.get( tableName );
+        let document    = await model.create( query.values );
 
-        return Promise.resolve(document);
+        return Promise.resolve( document );
     }
 
     public static async set2<T>(tableName: string, query: Partial<T>, where?: Partial<T>): Promise<mongoose.Document<any, any, any> & Partial<T>> {
