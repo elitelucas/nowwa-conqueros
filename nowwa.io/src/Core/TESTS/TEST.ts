@@ -53,11 +53,17 @@ class TEST {
 
             await CONQUER.init();
 
-            let result = await CONQUER.AUTH.username({
+            let resultRegister = await CONQUER.AUTH.register({
                 username: "garibaldy.mukti@gmail.com",
                 password: "1111"
             });
-            console.log(`result`, JSON.stringify(result, null, 2));
+            console.log(`resultRegister`, JSON.stringify(resultRegister, null, 2));
+
+            let resultLogin = await CONQUER.AUTH.username({
+                username: "garibaldy.mukti@gmail.com",
+                password: "1111"
+            });
+            console.log(`resultLogin`, JSON.stringify(resultLogin, null, 2));
         }
         catch (error) {
             console.log(error);

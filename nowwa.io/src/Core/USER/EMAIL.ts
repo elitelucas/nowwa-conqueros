@@ -96,6 +96,9 @@ class EMAIL {
     public static async requestVerification(email: string) {
         let token = await AUTH.tokenize(email);
 
+        console.log(`[Testing] : [EMAIL]: currently not sending any email when registering`);
+        return;
+
         EMAIL.send(
             {
                 email: email,

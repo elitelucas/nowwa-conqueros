@@ -23,7 +23,7 @@ class USERNAME {
         let user;
 
         try {
-            user = await DATA.getOne(this.table, vars);
+            user = await DATA.getOne(this.table, { username: vars.username });
         } catch (error) {
             // if user does not exists, then proceed
             console.log(`user does not exists! continue...`);

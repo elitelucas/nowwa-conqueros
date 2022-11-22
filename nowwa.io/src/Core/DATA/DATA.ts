@@ -61,9 +61,9 @@ class DATA {
         return Promise.resolve( ARRAY.getFields( documents, vars.values ) );
     }
 
-    public static async getOne(tableName: string, query: any): Promise<mongoose.Document<any, any, any> | null> 
+    public static async getOne(tableName: string, query: any): Promise<any> 
     {
-        query           = QUERY.get(query);
+        query = QUERY.get(query);
         let model       = await TABLE_MODEL.get(tableName);
         let myQuery     = model.findOne(query.where);
         let document    = await myQuery.exec();
@@ -79,7 +79,7 @@ class DATA {
 
     ================*/
 
-    public static async set(tableName: string, query: any): Promise<mongoose.Document<any, any, any>> 
+    public static async set(tableName: string, query: any): Promise<any> 
     {
         query           = QUERY.set( query );
 
@@ -99,7 +99,7 @@ class DATA {
 
     ================*/
 
-    public static async change(tableName: string, query: any): Promise<mongoose.Document<any, any, any>> {
+    public static async change(tableName: string, query: any): Promise<any> {
         query = QUERY.change(query);
 
         let model = await TABLE_MODEL.get(tableName);
@@ -108,7 +108,7 @@ class DATA {
 
         if (!documents || documents.length != 1) return Promise.reject(LOG.msg('entry not found'));
 
-        let document: mongoose.Document<any, any, any> & { [key: string]: any } = documents[0];
+        let document = documents[0];
 
         let fieldNames = Object.keys(query.values!);
 

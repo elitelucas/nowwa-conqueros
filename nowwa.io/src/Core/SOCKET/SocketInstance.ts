@@ -14,7 +14,7 @@ class SocketInstance {
         this.socket = socket;
         this.id = socket.id;
 
-        log("[SERVER]: New SOCKET instance", this.id);
+        // log("[SERVER]: New SOCKET instance", this.id);
 
         this.socket.on('action', this.onAction.bind(this));
         this.socket.on("disconnect", this.onDisconnect.bind(this));
@@ -48,7 +48,7 @@ class SocketInstance {
 
 
     public onDisconnect() {
-        log("[SERVER] socket disconnected", this.id);
+        // log("[SERVER] socket disconnected", this.id);
     }
 
     /*     

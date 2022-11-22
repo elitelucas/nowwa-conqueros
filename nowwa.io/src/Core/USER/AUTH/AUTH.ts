@@ -56,6 +56,7 @@ class AUTH {
     ================*/
 
     public static async set(vars: any): Promise<any> {
+
         let encryptedPassword = await CRYPT.hash(vars.password);
         try {
             let item = await USERNAME.set(
