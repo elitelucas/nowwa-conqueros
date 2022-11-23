@@ -169,40 +169,6 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
                     }
                 });
         }
-        // let originalUrl: string = window.location.origin;
-        // let ethereum = (window as any).ethereum;
-        // if (!ethereum) {
-        //     alert('install metamask wallet first!');
-        // } else {
-        //     updateState({
-        //         isBusy: true,
-        //         warning: ''
-        //     });
-        //     (window as any).ethereum
-        //         .request({
-        //             method: "eth_requestAccounts",
-        //         })
-        //         .then((accounts: string[]) => {
-        //             let email = accounts[0];
-        //             Hash(email as string)
-        //                 .then((token) => {
-        //                     let redirectURL: string = `${originalUrl}/Index.html?info=loggedin&name=${email}&token=${token}&admin=false&id=${email}`;
-        //                     window.location.href = redirectURL;
-        //                 })
-        //                 .catch((error) => {
-        //                     updateState({
-        //                         isBusy: false,
-        //                         warning: error.message
-        //                     });
-        //                 });
-        //         })
-        //         .catch((error: any) => {
-        //             updateState({
-        //                 isBusy: false,
-        //                 warning: error.message
-        //             });
-        //         });
-        // }
     };
 
     return (

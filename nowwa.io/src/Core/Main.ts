@@ -24,6 +24,7 @@ import USERNAME from './USER/USERNAME';
 import mongoose from 'mongoose';
 import TEST from './TESTS/TEST';
 import SOCIALAUTH from './USER/AUTH/SOCIALAUTH';
+import CRON from './CRON/CRON';
 
 
 
@@ -54,6 +55,7 @@ class Main {
         await EMAIL.init();
         await SOCKET.init();
         await FILE.init();
+        await CRON.init();
 
         // TESTING
 
