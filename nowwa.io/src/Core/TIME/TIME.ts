@@ -1,9 +1,11 @@
-import DATA from "../DATA/DATA";
+import RANDOM from "../../UTIL/RANDOM";
 import LOG, { log } from "../../UTIL/LOG";
-
-class GAMEROOM
+import STRING from "../../UTIL/STRING";
+import DATA from "../DATA/DATA";
+ 
+class TIME
 {
-    private static table: string = "game_rooms";
+    private static table: string = "times";
 
     /*=============== 
 
@@ -13,14 +15,15 @@ class GAMEROOM
 
     ================*/
 
-    public static async get( query:any ) : Promise<any>
+
+    public static async get( query: any ) : Promise<any>
     {
         let value = await DATA.get( this.table, query );
 
         return Promise.resolve( value );
     };
 
-    public static async getOne( query:any ) : Promise<any>
+    public static async getOne( query: any ) : Promise<any>
     {
         let value = await DATA.getOne( this.table, query );
 
@@ -35,7 +38,7 @@ class GAMEROOM
 
     ================*/
 
-    public static async set( query:any ) : Promise<any>
+    public static async set( query: any ) : Promise<any>
     {
         let value = await DATA.set( this.table, query );
 
@@ -50,7 +53,7 @@ class GAMEROOM
 
     ================*/
 
-    public static async change( query:any ) : Promise<any>
+    public static async change( query: any ) : Promise<any>
     {
         let value = await DATA.change( this.table, query );
 
@@ -65,13 +68,12 @@ class GAMEROOM
 
     ================*/
 
-    public static async remove( query:any ) : Promise<any>
+    public static async remove( query: any ) : Promise<any>
     {
-        let removed = await DATA.remove( this.table, query );
- 
-        return Promise.resolve( removed );
-    };
- 
-};
+        let remove = await DATA.remove( this.table, query );
 
-export default GAMEROOM;
+        return Promise.resolve( remove );
+    };
+}
+
+export default TIME;

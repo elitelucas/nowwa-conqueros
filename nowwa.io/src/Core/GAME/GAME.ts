@@ -4,7 +4,7 @@ import TOURNAMENT from "./TOURNAMENTS/TOURNAMENT";
 import GAMEDATA from "./GAMEDATA";
 import GAMEPLAYER from "./GAMEPLAYER";
 import GAMESCORE from "./GAMESCORE";
-import GAMEROOM from "./GAMEROOM";
+import GAMEROOM from "../SOCKET/GAMEROOM/GAMEROOM";
 import MATCHMAKING from "./MATCHMAKING";
 import GAMETURN from "./GAMETURN";
 

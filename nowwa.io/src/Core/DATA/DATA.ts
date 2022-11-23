@@ -214,65 +214,63 @@ class DATA {
 
 }
 
-namespace DATA {
+namespace DATA 
+{
     export type DOCUMENT<T> = (mongoose.Document<any, any, any> & Partial<T>) | null;
     export type FieldType = string | number | boolean | object | Date;
     export type Fields = { [key: string]: FieldType }
 
     export const ReservedSchemaName: string[] =
-        [
-            'User',
-            'Custom',
-            'File'
-        ];
+    [
+        'User',
+        'Custom',
+        'File'
+    ];
 
     export const FieldTypeList: DATA.FieldType[] =
-        [
-            'string',
-            'number',
-            'boolean',
-            'object',
-            'date'
-        ];
+    [
+        'string',
+        'number',
+        'boolean',
+        'object',
+        'date'
+    ];
 
     export type MapSchemaTypes =
-        {
-            string: string;
-            number: number;
-            boolean: boolean;
-            object: object;
-            date: Date;
-        }
+    {
+        string: string;
+        number: number;
+        boolean: boolean;
+        object: object;
+        date: Date;
+    }
 
     export type Query =
-        {
-            remove?: string[],
-            add?: { [key: string]: string }
-            values?: { [key: string]: any },
-            types?: { [key: string]: string },
-            where?: {
-                [key: string]:
-                string |
-                number |
-                boolean |
-                {
-                    $lt?: number, // less than
-                    $lte?: number, // less than equal to
-                    $gt?: number, // greater than
-                    $gte?: number, // greater than equal to
-                    $ne?: number, // not equal to
-                    $in?: number[] | string[], // in an array of
-                    $nin?: number[] | string[], // not in an array of 
-                    $regex?: string | RegExp, // match regex
-                    $size?: number, // is an array with size of   
-                }
-            },
-            limit?: number,
-        }
+    {
+        remove?: string[],
+        add?: { [key: string]: string }
+        values?: { [key: string]: any },
+        types?: { [key: string]: string },
+        where?: {
+            [key: string]:
+            string |
+            number |
+            boolean |
+            {
+                $lt?: number, // less than
+                $lte?: number, // less than equal to
+                $gt?: number, // greater than
+                $gte?: number, // greater than equal to
+                $ne?: number, // not equal to
+                $in?: number[] | string[], // in an array of
+                $nin?: number[] | string[], // not in an array of 
+                $regex?: string | RegExp, // match regex
+                $size?: number, // is an array with size of   
+            }
+        },
+        limit?: number,
+    }
 }
 
-namespace DATA {
-
-}
-
+ 
 export default DATA;
