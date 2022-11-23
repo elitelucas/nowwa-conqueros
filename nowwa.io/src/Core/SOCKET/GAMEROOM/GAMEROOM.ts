@@ -3,7 +3,7 @@ import LOG, { log } from "../../../UTIL/LOG";
 
 class GAMEROOM
 {
-    private static table: string = "game_rooms";
+    private static table : string = "game_rooms";
 
     /*=============== 
 

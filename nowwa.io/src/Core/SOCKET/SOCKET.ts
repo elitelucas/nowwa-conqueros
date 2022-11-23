@@ -15,16 +15,16 @@ class SOCKET
             httpServer, { cors: { origin: "*" } }
         );
 
-        log("NEW SOCKET SERVER");
+        log( "NEW SOCKET SERVER" );
 
-        io.on("connection", (socket) => 
+        io.on( "connection", (socket) => 
         {
             // log("[SERVER]========================================================== NEW CONNECTION");
             new SocketInstance(socket);
         });
 
         // todo, destroy instance
-        io.on("disconnect", (socket) => {
+        io.on( "disconnect", (socket) => {
             // log("[SERVER] Socket disconnect", socket.id);
         });
 

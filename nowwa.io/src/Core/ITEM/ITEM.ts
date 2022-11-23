@@ -125,7 +125,7 @@ class ITEM
             if( type == "text" )    await ITEM_TEXT.remove({ itemID:itemID });
             if( type == "image" )   await IMAGE.remove({ itemID:itemID });
             if( type == "file" )    await FILE.remove({ itemID:itemID });
-            if( type == "game" )    await FILE.remove({ itemID:itemID });
+            if( type == "game" )    await GAME.remove({ itemID:itemID });
         }
  
         return Promise.resolve();

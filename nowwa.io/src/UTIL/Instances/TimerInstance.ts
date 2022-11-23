@@ -16,10 +16,13 @@ class TimerInstance
     public onSecond         : any;
     public setAuto          : any;
     public setDuration      : any;
+    public remaining        : number = 0;
  
-    constructor( vars:any )
+    constructor( vars?:any )
     {
         var self            = this;
+
+        vars                = vars || {};
  
         var interval        = vars.interval || 1000;
         var duration        = self.duration = vars.duration || vars.seconds * 60000 || 0;
@@ -27,10 +30,14 @@ class TimerInstance
         var elapsed         = 0;
         var startTime       = vars.startTime || 0;
         var isPaused        = false;
+        
+        this.remaining      = duration;
  
         var onTimeUp        = vars.onTimeUp;
         var onUpdate        = vars.onUpdate;
-        
+
+
+
         var intervalID : any;
   
         self.start = function( vars?:any ) 
@@ -105,10 +112,12 @@ class TimerInstance
  
             elapsed         = DATE.now() - startTime;
             self.percent    = elapsed * 100 / duration;
+
+            self.remaining  = duration - elapsed;
   
             if( onUpdate ) onUpdate( self );
    
-            if( elapsed >= duration ) onReach(); 
+            if( self.remaining <= 0 ) onReach(); 
         }
 
         if( autoStart ) self.start();

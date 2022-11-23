@@ -10,6 +10,11 @@ class MATCHMAKING
 
 
     GET  
+
+    {
+        gameID,
+
+    }
     
 
     ================*/
@@ -39,6 +44,7 @@ class MATCHMAKING
         users,
         length,
         level (optional)
+        avatarID
     }
     
 

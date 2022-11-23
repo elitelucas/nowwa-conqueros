@@ -132,7 +132,9 @@ class TRIBE
     public static async remove( query:any ) : Promise<any>
     {
         let remove = await DATA.remove( this.table, query );
-
+        
+        // REMOVE MEMBERS
+        
         return Promise.resolve( remove );
     };
  

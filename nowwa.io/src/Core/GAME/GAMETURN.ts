@@ -19,7 +19,7 @@ class GAMETURN
     {
         // needs a flag to not return turnData
 
-        query = { where:{gameID:1, avatarID:2}, values:{ } };
+        query = { where:{ gameID:1, avatarID:2 }, values:{ } };
 
         let value = await DATA.get( this.table, query );
 

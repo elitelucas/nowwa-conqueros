@@ -360,7 +360,7 @@ class ARRAY
     };
 }
 
-export default ARRAY;
+
  
 export var merge            = ARRAY.merge;
 export var extract          = ARRAY.extract;
@@ -372,6 +372,8 @@ export var removeItem       = ARRAY.removeItem;
 export var shuffle          = ARRAY.shuffle;
 export var copy             = ARRAY.copy;
 export var sort             = ARRAY.sort;
+
+export default ARRAY;
  
  
  

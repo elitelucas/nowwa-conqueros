@@ -3,21 +3,22 @@ import { Socket } from "socket.io"
 import LOG, { log } from "../../UTIL/LOG";
 import AUTH from "../USER/AUTH/AUTH";
 
-class SocketInstance {
+class SocketInstance 
+{
     // Todo, destroy instances on disconnect
 
     public socket: Socket;
     public id: any;
 
-    constructor(socket: Socket) 
+    constructor( socket:Socket ) 
     {
         this.socket = socket;
-        this.id = socket.id;
+        this.id     = socket.id;
 
         // log("[SERVER]: New SOCKET instance", this.id);
 
-        this.socket.on('action', this.onAction.bind(this));
-        this.socket.on("disconnect", this.onDisconnect.bind(this));
+        this.socket.on( 'action', this.onAction.bind(this) );
+        this.socket.on( "disconnect", this.onDisconnect.bind(this) );
     };
 
     public onAction(action: string, vars?: any, callback?: Function) 

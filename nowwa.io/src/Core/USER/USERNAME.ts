@@ -92,9 +92,9 @@ class USERNAME
 
     ================*/
 
-    public static async remove(uID: any): Promise<any> {
+    public static async remove(uID: any): Promise<any> 
+    {
         // remove everything created by this userName
-
 
         // remove userName itself
 
