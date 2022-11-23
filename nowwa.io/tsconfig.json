@@ -24,7 +24,7 @@
         "src/Models/",
         "src/Frontend/",
         "src/Compile.ts",
-        "src/Utils/UTIL",
+        "src/Utils/UTIL", "src/UTIL/Instances/TimerInstance.ts",
     ],
     "exclude": [
         "node_modules"
