@@ -8,7 +8,7 @@ class CRON {
 
         console.log( 'running a task every second-0 minute-0 hourly' );
         cron.schedule( '0 0 * * * *', () => {
-
+            CRON.run();
         } );
 
         this.webhookRunCron();
