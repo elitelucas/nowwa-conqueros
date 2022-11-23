@@ -7,8 +7,8 @@ import ACCOUNT from "./ACCOUNT";
 import TEMPORARY from "./TEMPORARY";
 
 class TEST {
-    
-    public static async Run () :Promise<void> {
+
+    public static async Run (): Promise<void> {
 
         // TESTING
         try {
@@ -53,23 +53,27 @@ class TEST {
 
             await CONQUER.init();
 
-            let resultRegister = await CONQUER.AUTH.register({
+            let resultRegister = await CONQUER.AUTH.register( {
                 username: "garibaldy.mukti@gmail.com",
                 password: "1111"
-            });
-            console.log(`resultRegister`, JSON.stringify(resultRegister, null, 2));
+            } );
+            console.log( `resultRegister`, JSON.stringify( resultRegister, null, 2 ) );
 
-            let resultLogin = await CONQUER.AUTH.username({
+            let resultLogin = await CONQUER.AUTH.username( {
                 username: "garibaldy.mukti@gmail.com",
                 password: "1111"
-            });
-            console.log(`resultLogin`, JSON.stringify(resultLogin, null, 2));
+            } );
+            console.log( `resultLogin`, JSON.stringify( resultLogin, null, 2 ) );
         }
-        catch (error) {
-            console.log(error);
+        catch ( error ) {
+            console.log( error );
         }
 
         return Promise.resolve();
+    }
+
+    public static async Fun ( w: string ) {
+
     }
 }
 

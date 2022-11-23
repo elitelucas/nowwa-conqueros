@@ -28,7 +28,6 @@ class SOCIALAUTH {
 
     }
 
-
     public static webhookAuthLinks() {
         EXPRESS.app.use(`${authLinks}`, (req, res) => {
             res.status(200).send({
