@@ -14,6 +14,7 @@ import EXPRESS from '../../EXPRESS/EXPRESS';
 import CONFIG, { authLinks, authLogin, authRegister, authTokenize, authVerify, emailVerify } from '../../CONFIG/CONFIG';
 
 import AVATAR from '../TRIBE/AVATAR';
+import mongoose from 'mongoose';
 
 class AUTH {
     /*=============== 
@@ -81,9 +82,17 @@ class AUTH {
     private static async getLogin(uID: any): Promise<any> {
 
         let user = await USERNAME.changeLastLogin(uID);
-        let avatar = await AVATAR.getOne({ uid: uID, isMain: true });
 
-        return Promise.resolve(avatar);
+        let avatar = await AVATAR.getOne({ uID: new mongoose.Types.ObjectId(uID), isMain: true });
+
+        let token = await AUTH.tokenize(uID);
+
+        return Promise.resolve({
+            ...avatar._doc,
+            admin: false,
+            token: token,
+            friend_count: 0
+        });
     };
 
     /*=============== 
@@ -185,7 +194,7 @@ class AUTH {
 
     //     let user = await USERNAME.changeLastLogin2(uID);
 
-    //     let avatar = await AVATAR.getOne({ uid: uID, isMain: true });
+    //     let avatar = await AVATAR.getOne({ uID: uID, isMain: true });
 
     //     return Promise.resolve(user);
     // };

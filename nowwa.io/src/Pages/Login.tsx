@@ -75,7 +75,7 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
         });
     };
 
-    let doLogin = () => {
+    let doLogin = async () => {
         if (state.email.length == 0) {
             setWarning('email cannot be empty!');
         } else if (state.password.length == 0) {
@@ -86,27 +86,32 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
                     isBusy: true,
                     warning: '',
                 });
-                CONQUER.SOCIALAUTH.oldUsername({
-                    email: state.email,
+                let res = await CONQUER.AUTH.username({
+                    username: state.email,
                     password: state.password
-                })
-                    .then((res) => {
-                        console.log(res);
-                        if (res.success) {
-                            setIndexState({
-                                display: 'Home',
-                                account: res.account
-                            });
-                        } else {
-                            updateState({
-                                isBusy: false,
-                                warning: res.error,
-                            });
+                });
+                
+                if (res.success) {
+                    setIndexState({
+                        display: 'Home',
+                        account: {
+                            admin: res.result.admin,
+                            friend_count: res.result.friend_count,
+                            id: res.result.uID,
+                            name: res.result.firstName,
+                            token: res.result.token
                         }
                     });
+                } else {
+                    updateState({
+                        isBusy: false,
+                        warning: res.error,
+                    });
+                }
+                console.log(`result`, res);
             }
         }
-    };
+    }
 
     let doTwitter = async () => {
         if (CONQUER.Ready) {

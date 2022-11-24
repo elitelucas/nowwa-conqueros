@@ -2,7 +2,7 @@
     "javascript.format.insertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces": true,
     "typescript.format.insertSpaceBeforeFunctionParenthesis": true,
     "editor.formatOnSave": false,
-    "editor.formatOnPaste": true,
+    "editor.formatOnPaste": false,
     "javascript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets": true,
     "javascript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis": true,
     "javascript.format.insertSpaceBeforeFunctionParenthesis": true,

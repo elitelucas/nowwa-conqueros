@@ -1,7 +1,9 @@
-import mongoose from "mongoose";
+import mongoose, { mongo } from "mongoose";
 import CONQUER from "../../Frontend/CONQUER";
 import DATA from "../DATA/DATA";
+import AUTH from "../USER/AUTH/AUTH";
 import EMAIL from "../USER/EMAIL";
+import AVATAR from "../USER/TRIBE/AVATAR";
 import USERNAME from "../USER/USERNAME";
 import ACCOUNT from "./ACCOUNT";
 import TEMPORARY from "./TEMPORARY";
@@ -59,11 +61,11 @@ class TEST {
             } );
             console.log( `resultRegister`, JSON.stringify( resultRegister, null, 2 ) );
 
-            let resultLogin = await CONQUER.AUTH.username( {
-                username: "garibaldy.mukti@gmail.com",
-                password: "1111"
-            } );
-            console.log( `resultLogin`, JSON.stringify( resultLogin, null, 2 ) );
+            // let resultLogin = await CONQUER.AUTH.username( {
+            //     username: "garibaldy.mukti@gmail.com",
+            //     password: "1111"
+            // } );
+            // console.log( `resultLogin`, JSON.stringify( resultLogin, null, 2 ) );
         }
         catch ( error ) {
             console.log( error );

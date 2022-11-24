@@ -77,6 +77,44 @@ const Register = (state: RegisterState, setState: React.Dispatch<React.SetStateA
         });
     };
 
+    let doRegisterNew = async () => {
+        if (state.email.length == 0) {
+            updateState({ warning: `email cannot be empty` });
+        } else if (state.password.length == 0) {
+            updateState({ warning: `password cannot be empty` });
+        } else if (state.password != state.repassword) {
+            updateState({ warning: `password mismatch` });
+        } else {
+            if (CONQUER.Ready) {
+                updateState({
+                    isBusy: true,
+                    shouldReset: true,
+                    warning: ''
+                });
+
+                let res = await CONQUER.AUTH.register({
+                    username: state.email,
+                    password: state.password
+                })
+                
+                if (res.success) {
+                    updateState({
+                        isBusy: false,
+                        shouldReset: true,
+                        warning: `check your email to verify your account`
+                    });
+                } else {
+                    updateState({
+                        isBusy: false,
+                        shouldReset: true,
+                        warning: res.error
+                    });
+                }
+            }
+        }
+    };
+
+
     let doRegister = () => {
         if (state.email.length == 0) {
             updateState({ warning: `email cannot be empty` });
@@ -173,7 +211,7 @@ const Register = (state: RegisterState, setState: React.Dispatch<React.SetStateA
                     </Grid.Row>
                     <Grid.Row >
                         <Grid.Column>
-                            <Button fluid primary onClick={doRegister} disabled={state.isBusy}><Icon name='signup'></Icon>Register</Button>
+                            <Button fluid primary onClick={doRegisterNew} disabled={state.isBusy}><Icon name='signup'></Icon>Register</Button>
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>

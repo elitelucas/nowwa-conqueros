@@ -28,6 +28,7 @@ class AVATAR
 
     public static async getOne(vars: any): Promise<any> 
     {
+        console.log(`vars`, JSON.stringify(vars, null, 2));
         let avatar = await DATA.getOne(this.table, vars);
         if (!avatar) avatar = await this.set(vars);
 
