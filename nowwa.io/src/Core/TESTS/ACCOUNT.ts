@@ -1,7 +1,5 @@
 import BASE from "./BASE";
 import TEMPORARY from "./TEMPORARY";
-import { RequiredKeys } from "./UTILITIES";
-import { keys } from 'ts-transformer-keys';
 
 type ACCOUNT_TYPE = {
     username: string;
