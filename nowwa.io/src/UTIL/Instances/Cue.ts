@@ -65,7 +65,7 @@ class Cue
         for( n =0; n<chanceValue; n++) this.push( true );
         for( n =chanceValue; n<10; n++) this.push( false );
 
-        return self;
+        return this;
     };
 
     public getLength() : number
