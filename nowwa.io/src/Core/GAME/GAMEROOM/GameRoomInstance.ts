@@ -4,12 +4,12 @@ import TimerInstance from "../../../UTIL/Instances/TimerInstance";
 import { STATUS, ACTIONS } from "../../../Models/ENUM";
 import DATE from "../../../UTIL/DATE";
 import AVATAR from "../../USER/TRIBE/AVATAR";
-import SocketInstance from "../SocketInstance";
+import SocketInstance from "../../SOCKET/SocketInstance";
 import ARRAY, { extract, pushUnique, push } from "../../../UTIL/ARRAY";
+import GameRoomBotsInstance from "./GameRoomBotsInstance";
 
 class GameRoomInstance
 {
-    
     constructor( vars:any )
     {
         /*=========================================
@@ -39,6 +39,7 @@ class GameRoomInstance
         var minPlayers  : number = vars.minPlayers || 2;
         var maxPlayers  : number = vars.maxPlayers || 2;
         var extra       : any = vars.extra || [];
+        var RoomBots    : GameRoomBotsInstance = new GameRoomBotsInstance();
     
         reset();
  
@@ -306,14 +307,9 @@ class GameRoomInstance
                 
                 data.players.push( player );
             }
-  
-            var bots : any = [];
-            var botsAmount = minPlayers - players.length;
 
-           // if( botsAmount ) bots = BOTS.get( botsAmount );
-           // BOTS.get( amount).then(function(bots){ });
-
-            push( bots, data.players );
+            let botsAmount = minPlayers - players.length;
+            if( botsAmount ) push( RoomBots.get( botsAmount ), data.players );
  
             for( let n in data.players ) extract( data.extra[n], data.players[n].vars );
      

@@ -3,17 +3,16 @@ import ARRAY from "../ARRAY";
 class Cue
 {
     public isRandom : boolean;
-
     public _pool :any       = [];
     public data  :any       = [];
     public pool  :any       = [];
     public position     = 0;
     public selected     = null;
     public length       = 0;
-
-    constructor( _isRandom:boolean )
+ 
+    constructor( _isRandom?:boolean )
     {
-        this.isRandom = _isRandom;
+        this.isRandom = _isRandom as boolean;
     }
  
     public push( value:any )
@@ -34,7 +33,7 @@ class Cue
         return value;
     };
 
-    public copy( array:[] )
+    public copy( array:any )
     {
         this._pool = array;
      
@@ -43,7 +42,7 @@ class Cue
         return self;
     };
 
-    public pushArray( array:[] )
+    public pushArray( array:any )
     {
         ARRAY.push( array, this._pool );
         this.getLength();
@@ -56,7 +55,7 @@ class Cue
         return new Cue( this.isRandom ).copy( this._pool );
     };
 
-    public fillChance( chanceValue:number )
+    public fillChance( chanceValue:number ) : Cue
     {
         chanceValue     *= 10;
         this.isRandom   = true;
@@ -69,13 +68,13 @@ class Cue
         return self;
     };
 
-    public getLength()
+    public getLength() : number
     {
         length = this._pool.length;
         return length;
     }
  
-    public add( id:any, value:number )
+    public add( id:any, value:number ) : any
     {
         id += "";
         this.data[id] = value;
@@ -83,7 +82,7 @@ class Cue
         return this.push( value );
     };
  
-    public get( id?:string )
+    public get( id?:string ) : any
     {
         if( id != null ) return this.setSelected( this.data[id] );
  
@@ -92,24 +91,24 @@ class Cue
         return this.setSelected( this.pool.shift() );
     };
 
-    public shift( id:string )
+    public shift( id:string ) : any
     {
         return this.get( id );
     }
  
-    public getNext()
+    public getNext() : any
     {
         return this.pool[0];
     };
 
-    public setSelected( item:any )
+    public setSelected( item:any ) : any
     {
         this.selected = Array.isArray( item ) ? ( this.isRandom ? ARRAY.shuffle( item ) : ARRAY.copy( item ) ) : item;
  
         return this.selected;
     } 
 
-    public consume()
+    public consume() : any
     {
         if( !this.selected ) return;
 
@@ -127,7 +126,7 @@ class Cue
         return value;
     };
 
-    public removeItem( item:any )
+    public removeItem( item:any ) : any
     {
         ARRAY.removeItem( this.pool, item );
 
@@ -149,7 +148,7 @@ class Cue
         this.selected   = null;
     };
 
-    public getPosition( pos:any )
+    public getPosition( pos:any ) : any
     {   
         if( !pos || pos < 0 ) return;
 
@@ -157,8 +156,9 @@ class Cue
 
         while( pos > this._pool.length ) pos -= this.pool.length;
 
-        var value;
+        var value : any;
         while( this.position < pos ) value = this.get(); 
         return value;
     };
 }
+export default Cue;
