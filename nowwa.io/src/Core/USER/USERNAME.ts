@@ -98,7 +98,7 @@ class USERNAME
 
         // remove userName itself
 
-        await DATA.remove(this.table, uID);
+        await DATA.remove(this.table, {_id:uID});
 
         return Promise.resolve();
     }
@@ -122,70 +122,7 @@ class USERNAME
 
         return Promise.resolve();
     }
-
-
-
-    /*===============
-
-
-    STRICT TYPE - IGNORE  
-    
-
-    ================*/
-
-    //#region "STRICT TYPE - IGNORE"
-
-    // public static async changeLastLogin2(uID: any) {
-
-    //     let user = await this.change2(
-    //         { _id: uID, },
-    //         { lastLogin: DATE.now() }
-    //     );
-
-    //     return Promise.resolve(user);
-    // }
-
-    // public static async set2(values: Partial<USERNAME.TYPE>): Promise<USERNAME.DOCUMENT> {
-    //     let user: USERNAME.DOCUMENT = null;
-
-    //     try {
-    //         user = await DATA.getOne2<USERNAME.TYPE>(this.table, {
-    //             username: values.username
-    //         });
-    //     } catch (error) {
-    //         // if user does not exists, then proceed
-    //         console.log(`user does not exists! continue...`);
-    //     }
-
-    //     if (user) return Promise.reject(LOG.msg('user already exists'));
-
-    //     user = await DATA.set2<USERNAME.TYPE>(this.table, values);
-    //     let uID = user!._id;
-
-    //     // Look for previous accounts that have used this email
-    //     // Do merge
-
-    //     await EMAIL.set(
-    //         {
-    //             email: values.username,
-    //             isVerified: values.isVerified,
-    //             uID: uID
-    //         });
-
-    //     await AVATAR.set({ uID: uID, isMain: true });
-
-    //     return Promise.resolve(user);
-    // };
-
-    // public static async change2(where: Partial<USERNAME.TYPE>, values: Partial<USERNAME.TYPE>) {
-    //     return DATA.change2<USERNAME.TYPE>(this.table, where, values);
-    // }
-
-    // public static async get2(vars: Partial<USERNAME.TYPE>): Promise<USERNAME.DOCUMENT> {
-    //     return DATA.getOne2<USERNAME.TYPE>(this.table, vars);
-    // };
-
-    //#endregion "STRICT TYPE - IGNORE"
+ 
 
 };
 
