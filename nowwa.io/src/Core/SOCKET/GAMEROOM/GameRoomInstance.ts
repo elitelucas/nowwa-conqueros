@@ -50,6 +50,7 @@ class GameRoomInstance
                 online 			: {},
                 players 		: [],
                 extra 		 	: extra,
+                onlineCount     : 0,
                 sessionStamp 	: DATE.now() 
             };
 
@@ -59,31 +60,7 @@ class GameRoomInstance
             broadcast( STATUS.RESET );
         }
  
-        /*=========================================
-	
-    
-
-
-        TIMER
-        
-        
-
-
-        ============================================*/
-
-        var countDownTimer = new TimerInstance({ onUpdate:onCountDownStep, onTimeUp:onCountDownFinish, interval:1000 });
  
-        function onCountDownStep( timer:TimerInstance )
-        {
-            broadcast( ACTIONS.SECOND, "Server", { remaining:timer.remaining } ); 
-        }
-
-        function onCountDownFinish( timer:TimerInstance )
-        {
-            sendPlayersReady();	
-        }
- 
-
         /*=========================================
 	
     
@@ -101,6 +78,7 @@ class GameRoomInstance
             self.getPlayer( avatarID ).then( function( player )
             {
                 data.online[ avatarID ] = player;
+                data.onlineCount ++;
 
                 sendToUser( ACTIONS.GAMEDATA, null, avatarID, data );
             });
@@ -109,7 +87,12 @@ class GameRoomInstance
         function onLeave( avatarID:any )
         {
             let user = data.online[ avatarID ];
+
+            if( !user ) return;
+
             delete data.online[ avatarID ];
+
+            data.onlineCount --;
 
             if( data.players.includes( user ) ) user.vars.isBot = true;
  
@@ -139,17 +122,6 @@ class GameRoomInstance
             messagesCue.push({ action:action, senderID:senderID, receiverID:receiverID, data:data });
         }
 
-        function sendStatus( status:any )
-        {
-            if( status === data.status ) return;
-
-            countDownTimer.stop();
-  
-            data.status = status;
- 
-            broadcast( ACTIONS.STATUS, null, data );
-        }
- 
         var sendTimer = new TimerInstance({ onUpdate:doSend, interval:300, autoStart:true });
  
         var sendObj : any = { tick:0 };
@@ -219,20 +191,29 @@ class GameRoomInstance
 
 
 
-        PLAYER STATUS
+        LOBBY
         
         
 
 
         ============================================*/
 
+        // COUNTDOWN
+
+        var countDownTimer = new TimerInstance({ onUpdate:onCountDownStep, onTimeUp:sendPlayersReady, interval:1000 });
+ 
+        function onCountDownStep( timer:TimerInstance )
+        {
+            broadcast( ACTIONS.SECOND, null, { remaining:timer.remaining } ); 
+        }
+
+        // PLAYER STATUS
+
         function checkPlayersStatus()
         {
             var status 			= data.status;
             var count : any     = { Ready:0, Playing:0, Rewarded:0, GameOver:0 };
             var n;
-    
-            var ready 			= [];
      
             for( n in data.online ) 
             {
@@ -243,112 +224,76 @@ class GameRoomInstance
  
             if( status == STATUS.LOBBY )
             {
-                // if people watch a Rewarded ad, set to WAITING
-                // if enough people are ready, start COUNTDOWN
+                if( count.Rewarded ) return sendStatus( STATUS.WAITING );
 
+                if( count.Ready == 1 && data.onlineCount == 1 ) return sendPlayersReady();
+
+                if( count.Ready >= minPlayers || count.Ready >= data.onlineCount )
+                {
+                    data.status = null;
+                    sendStatus( STATUS.COUNTDOWN ); 
+                    countDownTimer.start({ seconds:10 });
+                    return;
+                }
+
+                return;
             }
 
-            if( status == STATUS.WAITING )
+            if( status == STATUS.WAITING ) 
             {
-                // if people are not watching ads anymore, back to LOBBY
-   
+                if( !count.Rewarded ) return sendStatus( STATUS.LOBBY );
+                return;
             }
 
             if( status == STATUS.COUNTDOWN )
             {
-                // if people watch a Rewarded ad, set to WAITING
-                // if not enough people are ready, go back to LOBBY
-
+                if( count.Rewarded ) return sendStatus( STATUS.WAITING );
+                if( count.Ready < minPlayers ) return sendStatus( STATUS.LOBBY );
+                return;
             }
 
             if( status == STATUS.PLAYERSREADY )
             {
-                // waiting for everyone to be Playing, so if anyone is still in Ready, wait (should be a sync?)
-                
-            }
-
-            if( status == STATUS.PLAYING )
-            {
-                // if someone finished the game, switch to GAMEOVER (eg. nobody can come expectate now)
-                
-            }
-
-            if( status == STATUS.GAMEOVER )
-            {
-                // if nobody is in GameOver or Playing, switch to LOBBY
-                
-            }
- 
-
-
-
-
-
-            // WAIT WHILE SOMEONE WATCHES AN AD
-    
-            if(( status == STATUS.LOBBY || status == STATUS.COUNTDOWN ) && count.Rewarded ) return sendStatus( STATUS.WAITING );
-    
-            // WHEN AD IS FINISHED
-    
-            if( status == STATUS.WAITING )
-            {	
-                if( count.Rewarded ) return;
-                if( !count.Ready ) return sendStatus( STATUS.LOBBY );
-
-                status = STATUS.LOBBY;
-            }
-    
-            // READY TO START
-    
-            if( status == STATUS.LOBBY )
-            {	
-                if( !count.Ready ) return;
-                if( count.Ready >= minPlayers || count.Ready >= data.online.length ) return sendPlayersReady();
-    
-                // start countdown
-
-                data.status = null;
-                sendStatus( STATUS.COUNTDOWN ); 
-                countDownTimer.start({ seconds:10 });
-                return;
-            }
-    
-            if( status == STATUS.COUNTDOWN )
-            {
-                if( count.Ready < minPlayers ) sendStatus( STATUS.LOBBY );
-                return;
-            }
-    
-            // PLAY
-    
-            if( status == STATUS.PLAYERSREADY )
-            {
+                // waiting for everyone to be Playing, so if anyone is still in Ready, wait
                 if( count.Ready ) return;
                 return sendStatus( STATUS.PLAYING );
             }
-    
-            // END GAME
-    
+
             if( status == STATUS.PLAYING )
             {
-                if( count.GameOver )	return sendStatus( STATUS.GAMEOVER );
-                if( !count.Playing )	return sendStatus( STATUS.LOBBY );
+                if( count.GameOver ) return sendStatus( STATUS.GAMEOVER );
+
+                if( !count.Playing )
+                {
+                    if( count.Rewarded ) return sendStatus( STATUS.WAITING );
+                    return sendStatus( STATUS.LOBBY );
+                }
+                return;
             }
-     
-            // CAN RESTART GAME
-    
+
             if( status == STATUS.GAMEOVER )
             {
-                //log("STATUS IS GAMEOVER", count, count.GameOver );
-                if( !count.GameOver ) 
-                {
-                    //log("SHOULD SEND STATUS LOBBY" );
-                    return sendStatus( STATUS.LOBBY ); //|| !count.Playing
-                }
+                if( count.GameOver ) return;
+                if( count.Rewarded ) return sendStatus( STATUS.WAITING );
+                return sendStatus( STATUS.LOBBY );
             }
         }
-    
+
+        // SEND STATUS
+
+        function sendStatus( status:any )
+        {
+            if( status === data.status ) return;
+
+            countDownTimer.stop();
+  
+            data.status = status;
  
+            broadcast( ACTIONS.STATUS, null, data );
+        }
+
+        // PLAYERS READY
+
         function sendPlayersReady()
         {
             let player;
@@ -374,7 +319,7 @@ class GameRoomInstance
      
             sendStatus( STATUS.PLAYERSREADY );
         }
- 
+
     }
 
     
