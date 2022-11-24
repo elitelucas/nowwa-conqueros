@@ -58,7 +58,7 @@ class SOCIALAUTH {
             let password: string = req.body.password;
             let err;
             try {
-                await AUTH.set2({
+                await AUTH.set({
                     username: email,
                     password: password
                 });
@@ -86,7 +86,7 @@ class SOCIALAUTH {
             let user, err;
 
             try {
-                user = await AUTH.get2({
+                user = await AUTH.get({
                     username: email,
                     password: password,
                 });

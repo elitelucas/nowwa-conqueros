@@ -156,59 +156,59 @@ class DATA {
 
     //#region "STRICT TYPE - IGNORE"
 
-    public static async get2<T>(tableName: string, where: Partial<T>): Promise<(mongoose.Document<any, any, any> & Partial<T>)[]> {
-        let model = await TABLE_MODEL.get(tableName);
-        let myQuery = model.find(where);
+    // public static async get2<T>(tableName: string, where: Partial<T>): Promise<(mongoose.Document<any, any, any> & Partial<T>)[]> {
+    //     let model = await TABLE_MODEL.get(tableName);
+    //     let myQuery = model.find(where);
 
-        return myQuery.exec();
-    }
+    //     return myQuery.exec();
+    // }
 
 
-    public static async getOne2<T>(tableName: string, where: Partial<T>): Promise<(mongoose.Document<any, any, any> & Partial<T>) | null> {
-        let model = await TABLE_MODEL.get(tableName);
-        let myQuery = model.findOne(where);
+    // public static async getOne2<T>(tableName: string, where: Partial<T>): Promise<(mongoose.Document<any, any, any> & Partial<T>) | null> {
+    //     let model = await TABLE_MODEL.get(tableName);
+    //     let myQuery = model.findOne(where);
 
-        return myQuery.exec();
-    }
+    //     return myQuery.exec();
+    // }
 
-    public static async set2<T>(tableName: string, query: Partial<T>, where?: Partial<T>): Promise<DATA.DOCUMENT<T>> {
-        if (where) return this.change2<T>(tableName, query, where);
+    // public static async set2<T>(tableName: string, query: Partial<T>, where?: Partial<T>): Promise<DATA.DOCUMENT<T>> {
+    //     if (where) return this.change2<T>(tableName, query, where);
 
-        let model = await TABLE_MODEL.get(tableName);
-        let document: mongoose.Document<any, any, any> & Partial<T> = await model.create(query);
+    //     let model = await TABLE_MODEL.get(tableName);
+    //     let document: mongoose.Document<any, any, any> & Partial<T> = await model.create(query);
 
-        return Promise.resolve(document);
-    }
+    //     return Promise.resolve(document);
+    // }
 
-    public static async change2<T>(tableName: string, where: Partial<T>, values: Partial<T>): Promise<DATA.DOCUMENT<T>> {
+    // public static async change2<T>(tableName: string, where: Partial<T>, values: Partial<T>): Promise<DATA.DOCUMENT<T>> {
 
-        let model = await TABLE_MODEL.get(tableName);
-        let myQuery = model.find(where).limit(1);
-        let documents: DATA.DOCUMENT<T>[] = await myQuery.exec();
+    //     let model = await TABLE_MODEL.get(tableName);
+    //     let myQuery = model.find(where).limit(1);
+    //     let documents: DATA.DOCUMENT<T>[] = await myQuery.exec();
 
-        if (!documents || documents.length != 1) return Promise.reject(LOG.msg('entry not found'));
+    //     if (!documents || documents.length != 1) return Promise.reject(LOG.msg('entry not found'));
 
-        let document: DATA.DOCUMENT<T> = documents[0];
+    //     let document: DATA.DOCUMENT<T> = documents[0];
 
-        let fieldNames = Object.keys(values);
+    //     let fieldNames = Object.keys(values);
 
-        for (let i: number = 0; i < fieldNames.length; i++) {
-            let fieldName: string = fieldNames[i];
-            let fieldValue = values[fieldName as keyof T];
+    //     for (let i: number = 0; i < fieldNames.length; i++) {
+    //         let fieldName: string = fieldNames[i];
+    //         let fieldValue = values[fieldName as keyof T];
 
-            document!.set(fieldName, fieldValue);
-            document!.markModified(fieldName);
-        }
+    //         document!.set(fieldName, fieldValue);
+    //         document!.markModified(fieldName);
+    //     }
 
-        await document!.save();
-        return Promise.resolve(document);
-    };
+    //     await document!.save();
+    //     return Promise.resolve(document);
+    // };
 
-    public static async remove2<T>(tableName: string, where: Partial<T>): Promise<DATA.DOCUMENT<T>> {
-        let model = await TABLE_MODEL.get(tableName);
+    // public static async remove2<T>(tableName: string, where: Partial<T>): Promise<DATA.DOCUMENT<T>> {
+    //     let model = await TABLE_MODEL.get(tableName);
 
-        return model.findOneAndDelete(where).exec();
-    };
+    //     return model.findOneAndDelete(where).exec();
+    // };
 
     //#endregion "STRICT TYPE - IGNORE"
 
