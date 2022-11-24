@@ -55,11 +55,11 @@ class TEST {
 
             await CONQUER.init();
 
-            let resultRegister = await CONQUER.AUTH.register( {
-                username: "garibaldy.mukti@gmail.com",
-                password: "1111"
-            } );
-            console.log( `resultRegister`, JSON.stringify( resultRegister, null, 2 ) );
+            // let resultRegister = await CONQUER.AUTH.register({
+            //     username: "garibaldy.mukti@gmail.com",
+            //     password: "1111"
+            // });
+            // console.log( `resultRegister`, JSON.stringify( resultRegister, null, 2 ) );
 
             // let resultLogin = await CONQUER.AUTH.username( {
             //     username: "garibaldy.mukti@gmail.com",

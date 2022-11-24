@@ -16,7 +16,7 @@ import Downloader, { DownloaderState, DownloaderStateDefault } from './Downloade
 
 type IndexDisplay = 'None' | 'Explorer' | 'Build' | 'Test' | 'Login' | 'Register' | 'Home';
 
-type Account = {
+export type Account = {
     id: string,
     token: string,
     name: string,
@@ -62,23 +62,7 @@ const Index = () => {
         setState(newState);
     };
 
-    const loadConquer = (): Promise<void> => {
-        return CONQUER.init();
-
-        // return new Promise((resolve, reject) => {
-        //     let conquerScript = document.createElement('script');
-        //     conquerScript.type = 'text/javascript';
-        //     conquerScript.src = `${window.location.origin}/home/lib/CONQUER.js`;
-        //     conquerScript.async = true;
-        //     conquerScript.defer = true;
-
-        //     conquerScript.onload = () => {
-        //         CONQUER.init();
-        //         resolve();
-        //     }
-        //     document.body.appendChild(conquerScript);
-        // });
-    };
+    const loadConquer = (): Promise<void> => CONQUER.init();
 
     if (!state.initialized) {
         updateState({
@@ -94,11 +78,13 @@ const Index = () => {
                 console.log('done load conquer');
                 console.log(`params`, params);
 
-                if (CONQUER.AUTH.account) {
+                let account = CONQUER.SessionStorage.account;
+
+                if (account) {
                     updateState({
                         initialized: true,
                         display: 'Home',
-                        account: CONQUER.AUTH.account
+                        account: account
                     });
                 }
 
@@ -172,7 +158,7 @@ const Index = () => {
     const [homeState, setHomeState] = useState(HomeStateDefault);
     let home: JSX.Element = <></>;
     if (state.account) {
-        home = Home(homeState, setHomeState, state);
+        home = Home(homeState, setHomeState, state, updateState);
     }
 
     const [downloaderState, setDownloaderState] = useState(DownloaderStateDefault);

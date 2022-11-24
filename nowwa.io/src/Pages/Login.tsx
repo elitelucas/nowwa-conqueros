@@ -1,6 +1,6 @@
 import React from 'react';
 import { Icon, Button, Segment, ButtonGroup, Menu, Header, Input, InputOnChangeData, Card, Grid, Divider, Label, Image, Message, Form } from 'semantic-ui-react';
-import { IndexState, } from './Index';
+import { Account, IndexState, } from './Index';
 import { Hash, UpdateComponentState } from './Utils/Helpers';
 import './Utils/Facebook';
 import CONQUER from '../Frontend/CONQUER';
@@ -92,15 +92,23 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
                 });
                 
                 if (res.success) {
+                    let account:Account = {
+                        admin: res.result.admin,
+                        friend_count: res.result.friend_count,
+                        id: res.result.uID,
+                        name: res.result.firstName,
+                        token: res.result.token
+                    };
+                    await CONQUER.SetSessionStorage({
+                        account: account
+                    });
+                    updateState({
+                        isBusy: false,
+                        warning: '',
+                    });
                     setIndexState({
                         display: 'Home',
-                        account: {
-                            admin: res.result.admin,
-                            friend_count: res.result.friend_count,
-                            id: res.result.uID,
-                            name: res.result.firstName,
-                            token: res.result.token
-                        }
+                        account: account
                     });
                 } else {
                     updateState({
@@ -108,7 +116,6 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
                         warning: res.error,
                     });
                 }
-                console.log(`result`, res);
             }
         }
     }

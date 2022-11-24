@@ -1,5 +1,6 @@
 import React from 'react';
 import { Icon, Button, Segment, ButtonGroup, Menu, Header, Input, InputOnChangeData, Card, Grid, Divider, Label, Image, Message, Form } from 'semantic-ui-react';
+import CONQUER from '../Frontend/CONQUER';
 import { IndexState } from './Index';
 
 export type HomeState = {
@@ -19,7 +20,7 @@ export const HomeInit = (name: string): Promise<HomeState> => {
     });
 };
 
-const Home = (state: HomeState, setState: React.Dispatch<React.SetStateAction<HomeState>>, indexState: IndexState) => {
+const Home = (state: HomeState, setState: React.Dispatch<React.SetStateAction<HomeState>>, indexState: IndexState, setIndexState: (updates: Partial<IndexState>) => void) => {
 
     if (!state.initialized) {
         HomeInit(indexState.account!.name).then(setState);
@@ -29,10 +30,21 @@ const Home = (state: HomeState, setState: React.Dispatch<React.SetStateAction<Ho
         console.log('done!');
     };
 
+    let doLogout = async () => {
+        if (CONQUER.Ready) {
+            await CONQUER.AUTH.logout();
+            setIndexState({
+                account: undefined,
+                display: 'Login'
+            });
+        }
+    };
+
     return (
         <>
             <Segment>
                 Welcome, {indexState.account!.name}! Friends: {indexState.account?.friend_count}
+                <Button fluid primary onClick={doLogout}><Icon name='log out'></Icon>Logout</Button>
             </Segment>
             <iframe
                 src='https://dev.nowwa.io'

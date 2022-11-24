@@ -42,6 +42,12 @@ class AUTH {
         return this.login("Guest");
     };
 
+    public async logout(): Promise<any> {
+        return CONQUER.SetSessionStorage({
+            account: undefined
+        });
+    }
+
     public async username(params: { username: string, password: string }): Promise<any> {
         return CONQUER.do("AUTH.get", params);
     }

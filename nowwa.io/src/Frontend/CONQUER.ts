@@ -10,6 +10,7 @@ class CONQUER
     public static Initialized: boolean = false;
     public static Ready: boolean = false;
     public static SearchParams: { [key: string]: any } = {};
+    public static SessionStorage: { [key: string]: any } = {};
     public static USER: USER = new USER();
     public static AUTH: AUTH = new AUTH();
     public static SOCIALAUTH: SOCIALAUTH = new SOCIALAUTH();
@@ -22,6 +23,7 @@ class CONQUER
         log("client: =============== New ConquerOS");
 
         await this.ParseUrlSearchParams();
+        await this.CheckStorageSession();
         await this.SOCKET.init();
         await this.SOCIALAUTH.init();
         await this.AUTH.init();
@@ -38,6 +40,36 @@ class CONQUER
     public static async do(action: string, vars?: any): Promise<any> 
     {
         return this.SOCKET.do(action, vars);
+    }
+
+    public static async SetSessionStorage(params:{[key:string]:any}):Promise<void> {
+        this.SessionStorage = {
+            ...this.SessionStorage,
+            ...params
+        };
+
+        if (typeof window != 'undefined') {
+            window.sessionStorage.setItem('conquer', JSON.stringify(this.SessionStorage));
+        }
+        return Promise.resolve();
+
+    }
+
+    private static async CheckStorageSession():Promise<void> 
+    {
+
+        let params: { [key: string]: any } = {};
+
+        if (typeof window != 'undefined') {
+
+            let tmp = window.sessionStorage.getItem('conquer');
+            if (tmp != null) {
+                params = JSON.parse(tmp);
+            }
+        }
+
+        this.SessionStorage = params;
+        return Promise.resolve();
     }
 
     private static async ParseUrlSearchParams(): Promise<void> 
