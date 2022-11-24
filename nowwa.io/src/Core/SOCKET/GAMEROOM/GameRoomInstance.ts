@@ -60,31 +60,7 @@ class GameRoomInstance
             broadcast( STATUS.RESET );
         }
  
-        /*=========================================
-	
-    
-
-
-        TIMER
-        
-        
-
-
-        ============================================*/
-
-        var countDownTimer = new TimerInstance({ onUpdate:onCountDownStep, onTimeUp:onCountDownFinish, interval:1000 });
  
-        function onCountDownStep( timer:TimerInstance )
-        {
-            broadcast( ACTIONS.SECOND, "Server", { remaining:timer.remaining } ); 
-        }
-
-        function onCountDownFinish( timer:TimerInstance )
-        {
-            sendPlayersReady();	
-        }
- 
-
         /*=========================================
 	
     
@@ -111,6 +87,9 @@ class GameRoomInstance
         function onLeave( avatarID:any )
         {
             let user = data.online[ avatarID ];
+
+            if( !user ) return;
+
             delete data.online[ avatarID ];
 
             data.onlineCount --;
@@ -143,17 +122,6 @@ class GameRoomInstance
             messagesCue.push({ action:action, senderID:senderID, receiverID:receiverID, data:data });
         }
 
-        function sendStatus( status:any )
-        {
-            if( status === data.status ) return;
-
-            countDownTimer.stop();
-  
-            data.status = status;
- 
-            broadcast( ACTIONS.STATUS, null, data );
-        }
- 
         var sendTimer = new TimerInstance({ onUpdate:doSend, interval:300, autoStart:true });
  
         var sendObj : any = { tick:0 };
@@ -223,12 +191,23 @@ class GameRoomInstance
 
 
 
-        PLAYER STATUS
+        LOBBY
         
         
 
 
         ============================================*/
+
+        // COUNTDOWN
+
+        var countDownTimer = new TimerInstance({ onUpdate:onCountDownStep, onTimeUp:sendPlayersReady, interval:1000 });
+ 
+        function onCountDownStep( timer:TimerInstance )
+        {
+            broadcast( ACTIONS.SECOND, null, { remaining:timer.remaining } ); 
+        }
+
+        // PLAYER STATUS
 
         function checkPlayersStatus()
         {
@@ -299,8 +278,22 @@ class GameRoomInstance
                 return sendStatus( STATUS.LOBBY );
             }
         }
-    
+
+        // SEND STATUS
+
+        function sendStatus( status:any )
+        {
+            if( status === data.status ) return;
+
+            countDownTimer.stop();
+  
+            data.status = status;
  
+            broadcast( ACTIONS.STATUS, null, data );
+        }
+
+        // PLAYERS READY
+
         function sendPlayersReady()
         {
             let player;
@@ -326,7 +319,7 @@ class GameRoomInstance
      
             sendStatus( STATUS.PLAYERSREADY );
         }
- 
+
     }
 
     
