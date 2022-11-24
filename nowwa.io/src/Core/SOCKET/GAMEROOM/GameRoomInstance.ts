@@ -48,7 +48,6 @@ class GameRoomInstance
             {
                 status 			: STATUS.LOBBY,
                 online 			: {},
-                count           : [],
                 players 		: [],
                 extra 		 	: extra,
                 sessionStamp 	: DATE.now() 
@@ -81,15 +80,9 @@ class GameRoomInstance
 
         function onCountDownFinish( timer:TimerInstance )
         {
-           // sendPlayersReady();	
+            sendPlayersReady();	
         }
-
-        function startCountDown( value?:number )
-        {
-            countDownTimer.start({ seconds:value || 10 });
-            broadcast( STATUS.COUNTDOWN ); 
-        }
-   
+ 
 
         /*=========================================
 	
@@ -195,6 +188,8 @@ class GameRoomInstance
         {
             var action = message.action;
             let player = players[ message.senderID ];
+
+            if( message.vars ) extract( message.vars, player.vars );
   
             if( action == ACTIONS.SYNCREQUEST ) 
             {
@@ -205,18 +200,16 @@ class GameRoomInstance
 
             if( action == ACTIONS.PLAYERSTATUS )
             {
-               // checkPlayersStatus();
+                checkPlayersStatus();
             }
-
-            if( message.vars ) extract( message.vars, player.vars );
  
             broadcast( message );
         }
 
         function checkPlayersInSync()
         {
-            for( let n in data.players ) if( !data.players.vars[n].sync ) return;
-            for( let n in data.players ) delete data.players.vars[n].sync;
+            for( let n in data.players ) if( !data.players[n].vars.isBot && !data.players[n].vars.sync ) return;
+            for( let n in data.players ) delete data.players[n].vars.sync;
 
             broadcast( ACTIONS.INSYNC );
         };
@@ -236,39 +229,73 @@ class GameRoomInstance
         function checkPlayersStatus()
         {
             var status 			= data.status;
-            data.count = { Ready:0, Playing:0, Rewarded:0, GameOver:0 };
+            var count : any     = { Ready:0, Playing:0, Rewarded:0, GameOver:0 };
             var n;
     
-            data.ready 			= [];
+            var ready 			= [];
      
             for( n in data.online ) 
             {
-                var player = PLAYERS.get( data.online[n] );
-                if( !player ) continue;
-     
-                var sta = player.vars.status;
+                var sta = data.online[n].vars.status;
                 if( !count[sta] ) count[sta] = 0;
                 count[sta] ++;
             }
-    
-            //log("CHECK SOCKET PLAYERS STATUS", STATUS[ status ], count );
-    
+ 
+            if( status == STATUS.LOBBY )
+            {
+                // if people watch a Rewarded ad, set to WAITING
+                // if enough people are ready, start COUNTDOWN
+
+            }
+
+            if( status == STATUS.WAITING )
+            {
+                // if people are not watching ads anymore, back to LOBBY
+   
+            }
+
+            if( status == STATUS.COUNTDOWN )
+            {
+                // if people watch a Rewarded ad, set to WAITING
+                // if not enough people are ready, go back to LOBBY
+
+            }
+
+            if( status == STATUS.PLAYERSREADY )
+            {
+                // waiting for everyone to be Playing, so if anyone is still in Ready, wait (should be a sync?)
+                
+            }
+
+            if( status == STATUS.PLAYING )
+            {
+                // if someone finished the game, switch to GAMEOVER (eg. nobody can come expectate now)
+                
+            }
+
+            if( status == STATUS.GAMEOVER )
+            {
+                // if nobody is in GameOver or Playing, switch to LOBBY
+                
+            }
+ 
+
+
+
+
+
             // WAIT WHILE SOMEONE WATCHES AN AD
     
-            if( status == STATUS.LOBBY || status == STATUS.COUNTDOWN )
-            {
-                if( count.Rewarded ) return sendStatus( STATUS.WAITING );
-            }
+            if(( status == STATUS.LOBBY || status == STATUS.COUNTDOWN ) && count.Rewarded ) return sendStatus( STATUS.WAITING );
     
             // WHEN AD IS FINISHED
     
             if( status == STATUS.WAITING )
             {	
-                if( !count.Ready ) return sendStatus( STATUS.LOBBY );
                 if( count.Rewarded ) return;
-      
+                if( !count.Ready ) return sendStatus( STATUS.LOBBY );
+
                 status = STATUS.LOBBY;
-                // Drips into status lobby checkup now
             }
     
             // READY TO START
@@ -276,16 +303,19 @@ class GameRoomInstance
             if( status == STATUS.LOBBY )
             {	
                 if( !count.Ready ) return;
-                if( count.Ready >= CONFIG.MULTIPLAYER.maxPlayers || count.Ready >= data.online.length ) return sendPlayersReady();
+                if( count.Ready >= minPlayers || count.Ready >= data.online.length ) return sendPlayersReady();
     
+                // start countdown
+
                 data.status = null;
-                return sendStatus( STATUS.COUNTDOWN );
+                sendStatus( STATUS.COUNTDOWN ); 
+                countDownTimer.start({ seconds:10 });
+                return;
             }
     
             if( status == STATUS.COUNTDOWN )
             {
-                if( !count.Ready ) return sendStatus( STATUS.LOBBY );
-                if( count.Ready >= CONFIG.MULTIPLAYER.maxPlayers || count.Ready >= data.online.length ) return sendPlayersReady();
+                if( count.Ready < minPlayers ) sendStatus( STATUS.LOBBY );
                 return;
             }
     
@@ -336,7 +366,6 @@ class GameRoomInstance
             var botsAmount = minPlayers - players.length;
 
            // if( botsAmount ) bots = BOTS.get( botsAmount );
-
            // BOTS.get( amount).then(function(bots){ });
 
             push( bots, data.players );
