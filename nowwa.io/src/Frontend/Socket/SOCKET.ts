@@ -1,4 +1,5 @@
 import io from 'socket.io-client';
+import CONFIG from '../../Core/CONFIG/CONFIG';
 import LOG, { log } from '../../UTIL/LOG';
  
 class SOCKET
@@ -33,7 +34,8 @@ class SOCKET
         log( "client: Socket Connect" );
 
         var self    = this;
-        var socket  = self.socket = io( self.socketURL );
+        // var socket  = self.socket = io( self.socketURL );
+        var socket  = self.socket = io( CONFIG.vars.PUBLIC_SOCKET_FULL_URL );
 
         socket.on( "disconnect", () => 
         {

@@ -28,7 +28,7 @@ class SOCKET
             // log("[SERVER] Socket disconnect", socket.id);
         });
 
-        io.listen(CONFIG.vars.SOCKET_PORT);
+        io.listen(CONFIG.vars.CORE_SOCKET_PORT);
     }
 }
 

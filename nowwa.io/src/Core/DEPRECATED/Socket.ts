@@ -66,7 +66,7 @@ class Socket {
 
         });
 
-        io.listen(env.SOCKET_PORT);
+        io.listen(env.CORE_SOCKET_PORT);
     }
 }
 

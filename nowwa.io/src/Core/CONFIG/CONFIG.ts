@@ -35,7 +35,15 @@ class CONFIG
         let publicUseSsl: boolean = process.env.PUBLIC_USE_SSL as string == 'true';
         let publicFullUrl: string = this.GetFullUrl(publicPort, publicHost, publicUseSsl);
 
-        console.log(publicFullUrl);
+        let coreSocketPort: number = parseInt(process.env.CORE_SOCKET_PORT as string);
+        let coreSocketHost: string = process.env.CORE_SOCKET_HOST as string;
+        let coreSocketUseSsl: boolean = process.env.CORE_SOCKET_USE_SSL as string == 'true';
+        let coreSocketFullUrl: string = this.GetFullUrl(coreSocketPort, coreSocketHost, coreSocketUseSsl);
+
+        let publicSocketPort: number = parseInt(process.env.PUBLIC_SOCKET_PORT as string);
+        let publicSocketHost: string = process.env.PUBLIC_SOCKET_HOST as string;
+        let publicSocketUseSsl: boolean = process.env.PUBLIC_SOCKET_USE_SSL as string == 'true';
+        let publicSocketFullUrl: string = this.GetFullUrl(publicSocketPort, publicSocketHost, publicSocketUseSsl);
 
         return {
 
@@ -56,8 +64,8 @@ class CONFIG
             CLOUDINARY_KEY: process.env.CLOUDINARY_KEY as string,
             CLOUDINARY_SECRET: process.env.CLOUDINARY_SECRET as string,
 
-            SOCKET_PORT: parseInt(process.env.SOCKET_PORT as string),
-
+            CORE_SOCKET_PORT: coreSocketPort,
+            PUBLIC_SOCKET_FULL_URL: publicSocketFullUrl,
             CORE_PORT: corePort,
             CORE_FULL_URL: coreFullUrl,
             PUBLIC_FULL_URL: publicFullUrl,
@@ -127,11 +135,10 @@ namespace CONFIG
         CLOUDINARY_KEY: string,
         CLOUDINARY_SECRET: string,
 
-        SOCKET_PORT: number,
-
+        CORE_SOCKET_PORT: number,
+        PUBLIC_SOCKET_FULL_URL:string,
         CORE_PORT: number,
         CORE_FULL_URL: string,
-
         PUBLIC_FULL_URL: string,
 
         NAKAMA_HOST: string,
