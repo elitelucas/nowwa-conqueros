@@ -64,13 +64,15 @@ class SOCIALAUTH {
 
             if (authVerifyResponse.success) {
                 if (authVerifyResponse.valid) {
-                    CONQUER.AUTH.account = {
-                        admin: params.admin as string == 'true',
-                        id: params.id,
-                        name: params.name,
-                        token: params.token,
-                        friend_count: parseInt(params.friend_count as string || "0")
-                    }
+                    CONQUER.SetSessionStorage({
+                        account: {
+                            admin: params.admin as string == 'true',
+                            id: params.id,
+                            name: params.name,
+                            token: params.token,
+                            friend_count: parseInt(params.friend_count as string || "0")
+                        }
+                    });
                     return Promise.resolve();
                 } else {
                     return Promise.reject(new Error("invalid credentials"));
