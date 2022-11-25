@@ -1,4 +1,5 @@
 import { authLinks, authLogin, authRegister, authVerify } from "../../Core/CONFIG/CONFIG";
+import AUTH from "./AUTH";
 import { log } from "../../UTIL/LOG";
 import CONQUER from "../CONQUER";
 
@@ -64,7 +65,16 @@ class SOCIALAUTH {
 
             if (authVerifyResponse.success) {
                 if (authVerifyResponse.valid) {
+                    let account:AUTH.Account = {
+                        admin: params.admin as string == 'true',
+                        id: params.id, // AVATAR._id
+                        name: params.name,
+                        token: params.token,
+                        friend_count: parseInt(params.friend_count as string || "0"),
+                        source: params.source
+                    };
                     CONQUER.SetSessionStorage({
+ 
                         account: {
 
                             /*
@@ -79,6 +89,7 @@ class SOCIALAUTH {
                             token: params.token,
                             friend_count: parseInt(params.friend_count as string || "0")
                         }
+ 
                     });
                     return Promise.resolve();
                 } else {
@@ -157,13 +168,17 @@ class SOCIALAUTH {
 
                 let token = await CONQUER.AUTH.tokenize(<string>address);
 
-                CONQUER.AUTH.account = {
+                let account:AUTH.Account = {
                     admin: false,
-                    id: address,
+                    id: address, 
                     name: address,
                     token: token,
-                    friend_count: 0
-                }
+                    friend_count: 0,
+                    source: 'METAMASK'
+                };
+                CONQUER.SetSessionStorage({
+                    account: account
+                });
 
                 return Promise.resolve({
                     success: true,
@@ -248,13 +263,17 @@ class SOCIALAUTH {
             let contactInfo = apiResponse2 as any;
             let token = await CONQUER.AUTH.tokenize(userInfo.email as string);
 
-            CONQUER.AUTH.account = {
+            let account:AUTH.Account = {
                 admin: false,
                 id: userInfo.email,
                 name: userInfo.name,
                 token: token,
-                friend_count: contactInfo.summary.total_count
-            }
+                friend_count: contactInfo.summary.total_count,
+                source: 'FACEBOOK'
+            };
+            CONQUER.SetSessionStorage({
+                account: account
+            });
             resolve({
                 success: true,
                 account: CONQUER.AUTH.account
