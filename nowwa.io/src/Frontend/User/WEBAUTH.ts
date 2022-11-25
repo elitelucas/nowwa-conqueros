@@ -3,7 +3,11 @@ import AUTH from "./AUTH";
 import { log } from "../../UTIL/LOG";
 import CONQUER from "../CONQUER";
 
-class SOCIALAUTH {
+class WEBAUTH {
+
+    public SearchParams: { [key: string]: any } = {};
+    public SessionStorage: { [key: string]: any } = {};
+
     // Move all social stuff here
     private vars: { [key: string]: any } & {
         twitter?: string,
@@ -19,13 +23,67 @@ class SOCIALAUTH {
         If session exists, login via backdoor?
         If session expired, log in as guest
         */
+        await this.ParseUrlSearchParams();
+        await this.CheckSessionStorage();
 
         await this.redirect();
         await this.authLinks();
+        return Promise.resolve();
+    }
 
-        var guestUsername: string = "guest123";
+    public async SetSessionStorage(params:{[key:string]:any}):Promise<void> {
+        this.SessionStorage = {
+            ...this.SessionStorage,
+            ...params
+        };
 
+        if (typeof window != 'undefined') {
+            window.sessionStorage.setItem('conquer', JSON.stringify(this.SessionStorage));
+        }
+        return Promise.resolve();
 
+    }
+
+    private async CheckSessionStorage():Promise<void> 
+    {
+
+        let params: { [key: string]: any } = {};
+
+        if (typeof window != 'undefined') {
+
+            let tmp = window.sessionStorage.getItem('conquer');
+            if (tmp != null) {
+                params = JSON.parse(tmp);
+            }
+        }
+
+        this.SessionStorage = params;
+        return Promise.resolve();
+    }
+
+    private async ParseUrlSearchParams(): Promise<void> 
+    {
+        let params: { [key: string]: any } = {};
+
+        if (typeof window != 'undefined') {
+
+            new URL(window.location.href).searchParams.forEach(function (val, key) 
+            {
+                if (params[key] !== undefined) {
+                    if (!Array.isArray(params[key])) {
+                        params[key] = [params[key]];
+                    }
+                    params[key].push(val);
+                } else {
+                    params[key] = val;
+                }
+            });
+        
+            window.history.pushState(params, "", `${window.location.origin}`);
+
+        }
+
+        this.SearchParams = params;
         return Promise.resolve();
     }
 
@@ -33,7 +91,7 @@ class SOCIALAUTH {
 
         // TODO : actually redirect to specific site after verifying the credentials
         // e.g. redirect to nowwa.io
-        let params = CONQUER.SearchParams;
+        let params = this.SearchParams;
 
         if (params.source) {
 
@@ -67,18 +125,15 @@ class SOCIALAUTH {
                 if (authVerifyResponse.valid) {
                     let account:AUTH.Account = {
                         admin: params.admin as string == 'true',
-                        id: params.id, // AVATAR._id
+                        id: params.id, 
                         name: params.name,
                         token: params.token,
                         friend_count: parseInt(params.friend_count as string || "0"),
                         source: params.source
                     };
-                    CONQUER.SetSessionStorage({
+                    CONQUER.WEBAUTH.SetSessionStorage({
                         account: account
                     });
-                    return Promise.resolve();
-                } else {
-                    return Promise.reject(new Error("invalid credentials"));
                 }
             }
         }
@@ -161,7 +216,7 @@ class SOCIALAUTH {
                     friend_count: 0,
                     source: 'METAMASK'
                 };
-                CONQUER.SetSessionStorage({
+                CONQUER.WEBAUTH.SetSessionStorage({
                     account: account
                 });
 
@@ -256,12 +311,12 @@ class SOCIALAUTH {
                 friend_count: contactInfo.summary.total_count,
                 source: 'FACEBOOK'
             };
-            CONQUER.SetSessionStorage({
+            CONQUER.WEBAUTH.SetSessionStorage({
                 account: account
             });
             resolve({
                 success: true,
-                account: CONQUER.AUTH.account
+                account: account
             });
         });
     }
@@ -325,4 +380,4 @@ class SOCIALAUTH {
 namespace SOCIALAUTH {
 }
 
-export default SOCIALAUTH;
+export default WEBAUTH;

@@ -122,19 +122,19 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
 
     let doTwitter = async () => {
         if (CONQUER.Ready) {
-            CONQUER.SOCIALAUTH.twitter();
+            CONQUER.WEBAUTH.twitter();
         }
     };
 
     let doGoogle = async () => {
         if (CONQUER.Ready) {
-            CONQUER.SOCIALAUTH.google();
+            CONQUER.WEBAUTH.google();
         }
     };
 
     let doFacebook = async () => {
         if (CONQUER.Ready) {
-            CONQUER.SOCIALAUTH.facebook()
+            CONQUER.WEBAUTH.facebook()
                 .then((res) => {
                     if (res.success) {
                         setIndexState({
@@ -153,19 +153,19 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
 
     let doDiscord = async () => {
         if (CONQUER.Ready) {
-            CONQUER.SOCIALAUTH.discord();
+            CONQUER.WEBAUTH.discord();
         }
     };
 
     let doSnapchat = async () => {
         if (CONQUER.Ready) {
-            CONQUER.SOCIALAUTH.snapchat();
+            CONQUER.WEBAUTH.snapchat();
         }
     };
 
     let doMetamask = async () => {
         if (CONQUER.Ready) {
-            CONQUER.SOCIALAUTH.metamask()
+            CONQUER.WEBAUTH.metamask()
                 .then((res) => {
                     console.log(res);
                     if (res.success) {

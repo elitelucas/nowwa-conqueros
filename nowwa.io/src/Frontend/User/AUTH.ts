@@ -43,7 +43,7 @@ class AUTH {
     };
 
     public async logout(): Promise<any> {
-        return CONQUER.SetSessionStorage({
+        return CONQUER.WEBAUTH.SetSessionStorage({
             account: undefined
         });
     }

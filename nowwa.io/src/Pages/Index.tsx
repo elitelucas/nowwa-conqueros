@@ -94,11 +94,11 @@ const Index = () => {
         if (!CONQUER.Initialized) 
         {
             loadConquer().then(() => {
-                let params = CONQUER.SearchParams;
+                let params = CONQUER.WEBAUTH.SearchParams;
                 console.log('done load conquer');
                 console.log(`params`, params);
 
-                let account = CONQUER.SessionStorage.account;
+                let account = CONQUER.WEBAUTH.SessionStorage.account;
 
                 if (account) {
                     updateState({

@@ -3,18 +3,16 @@ import LOG, { log } from "../UTIL/LOG";
 import AUTH from "./User/AUTH";
 import USER from "./User/USER";
 import FILE from "./File/FILE";
-import SOCIALAUTH from "./User/SOCIALAUTH";
+import WEBAUTH from "./User/WEBAUTH";
 import ONESIGNAL from "./Notifications/ONESIGNAL";
 
 class CONQUER 
 {
     public static Initialized: boolean = false;
     public static Ready: boolean = false;
-    public static SearchParams: { [key: string]: any } = {};
-    public static SessionStorage: { [key: string]: any } = {};
     public static USER: USER = new USER();
     public static AUTH: AUTH = new AUTH();
-    public static SOCIALAUTH: SOCIALAUTH = new SOCIALAUTH();
+    public static WEBAUTH: WEBAUTH = new WEBAUTH();
     private static SOCKET: SOCKET = new SOCKET();
     public static FILE: FILE = new FILE();
     public static ONESIGNAL:ONESIGNAL = new ONESIGNAL();
@@ -24,10 +22,8 @@ class CONQUER
         this.Initialized = true;
         log("client: =============== New ConquerOS");
 
-        await this.ParseUrlSearchParams();
-        await this.CheckSessionStorage();
         await this.SOCKET.init();
-        await this.SOCIALAUTH.init();
+        await this.WEBAUTH.init();
         await this.AUTH.init();
         await this.ONESIGNAL.init();
 
@@ -43,62 +39,6 @@ class CONQUER
     public static async do(action: string, vars?: any): Promise<any> 
     {
         return this.SOCKET.do(action, vars);
-    }
-
-    public static async SetSessionStorage(params:{[key:string]:any}):Promise<void> {
-        this.SessionStorage = {
-            ...this.SessionStorage,
-            ...params
-        };
-
-        if (typeof window != 'undefined') {
-            window.sessionStorage.setItem('conquer', JSON.stringify(this.SessionStorage));
-        }
-        return Promise.resolve();
-
-    }
-
-    private static async CheckSessionStorage():Promise<void> 
-    {
-
-        let params: { [key: string]: any } = {};
-
-        if (typeof window != 'undefined') {
-
-            let tmp = window.sessionStorage.getItem('conquer');
-            if (tmp != null) {
-                params = JSON.parse(tmp);
-            }
-        }
-
-        this.SessionStorage = params;
-        return Promise.resolve();
-    }
-
-    private static async ParseUrlSearchParams(): Promise<void> 
-    {
-        let params: { [key: string]: any } = {};
-
-        if (typeof window != 'undefined') {
-
-            new URL(window.location.href).searchParams.forEach(function (val, key) 
-            {
-                if (params[key] !== undefined) {
-                    if (!Array.isArray(params[key])) {
-                        params[key] = [params[key]];
-                    }
-                    params[key].push(val);
-                } else {
-                    params[key] = val;
-                }
-            });
-        
-            window.history.pushState(params, "", `${window.location.origin}`);
-
-        }
-
-        this.SearchParams = params;
-        return Promise.resolve();
     }
 
 

@@ -130,7 +130,7 @@ const Register = (state: RegisterState, setState: React.Dispatch<React.SetStateA
                     warning: ''
                 });
 
-                CONQUER.SOCIALAUTH.oldRegister({
+                CONQUER.WEBAUTH.oldRegister({
                     email: state.email,
                     password: state.password
                 })
