@@ -114,6 +114,14 @@ class AUTH {
     public static async getProxy(vars: any): Promise<any> {
         var uID: any;
 
+        // types
+
+        // Google
+
+        // facebook
+
+        // etc
+
         if (vars.email) uID = await EMAIL.getUID(vars.email);
         if (vars.wallet) uID = await WALLET.getUID(vars.wallet);
 

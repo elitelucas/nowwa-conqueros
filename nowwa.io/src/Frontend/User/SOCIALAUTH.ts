@@ -66,8 +66,15 @@ class SOCIALAUTH {
                 if (authVerifyResponse.valid) {
                     CONQUER.SetSessionStorage({
                         account: {
+
+                            /*
+
+
+
+                            */
+
                             admin: params.admin as string == 'true',
-                            id: params.id,
+                            id: params.id, // avatarID
                             name: params.name,
                             token: params.token,
                             friend_count: parseInt(params.friend_count as string || "0")
