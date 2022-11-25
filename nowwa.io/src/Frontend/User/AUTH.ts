@@ -68,7 +68,8 @@ namespace AUTH {
         token: string,
         name: string,
         admin: boolean,
-        friend_count: number
+        friend_count: number,
+        source: 'DISCORD' | 'FACEBOOK' | 'TWITTER' | 'GOOGLE' | 'SNAPCHAT' | 'CONQUER' | 'METAMASK'
     }
 }
 

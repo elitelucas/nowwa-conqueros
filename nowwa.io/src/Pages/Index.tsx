@@ -53,6 +53,22 @@ const GetUrlSearchParams = (url: string = window.location.href) => {
     return params;
 }
 
+const LoadScript = (src:string) => {
+    return new Promise<void>((resolve, reject) => {
+
+        let script = document.createElement('script');
+        script.type = 'text/javascript';
+        script.src = src;
+        script.async = true;
+        script.defer = true;
+
+        script.onload = () => {
+            resolve();
+        }
+        document.body.appendChild(script);
+    });
+};
+
 const Index = () => {
 
     const [state, setState] = useState(IndexStateDefault);
@@ -70,6 +86,10 @@ const Index = () => {
         });
     }
     if (state.initialized) {
+
+        // TODO : finish load script
+        // load script for onesignal
+        // await LoadScript(window.location.origin);
 
         if (!CONQUER.Initialized) 
         {
