@@ -23,7 +23,7 @@ class CONQUER
         log("client: =============== New ConquerOS");
 
         await this.ParseUrlSearchParams();
-        await this.CheckStorageSession();
+        await this.CheckSessionStorage();
         await this.SOCKET.init();
         await this.SOCIALAUTH.init();
         await this.AUTH.init();
@@ -55,7 +55,7 @@ class CONQUER
 
     }
 
-    private static async CheckStorageSession():Promise<void> 
+    private static async CheckSessionStorage():Promise<void> 
     {
 
         let params: { [key: string]: any } = {};
