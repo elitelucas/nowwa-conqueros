@@ -31,6 +31,8 @@ class AUTH {
     public async get(vars: any): Promise<any> 
     {
         return CONQUER.do("AUTH.get", vars);
+
+        // UserInstance.Friends.get();
     }
 
     public async getSet(vars: any): Promise<any> {
@@ -51,6 +53,9 @@ class AUTH {
     public async username(params: { username: string, password: string }): Promise<any> {
         return CONQUER.do("AUTH.get", params);
     }
+
+    /// CONQUER.AUTH.username( asdada ).then( {} );
+    // SOCIAL AUTH 
 
     public async register(params: { username: string, password: string }): Promise<any> {
         return CONQUER.do("AUTH.set", params);
