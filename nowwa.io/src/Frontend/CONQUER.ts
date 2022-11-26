@@ -23,8 +23,8 @@ class CONQUER
         log("client: =============== New ConquerOS");
 
         await this.SOCKET.init();
-        await this.WEBAUTH.init();
         await this.AUTH.init();
+        await this.WEBAUTH.init();
         await this.ONESIGNAL.init();
 
         log("Okkkk");

@@ -123,7 +123,7 @@ class WEBAUTH {
 
             if (authVerifyResponse.success) {
                 if (authVerifyResponse.valid) {
-                    let account:AUTH.Account = {
+                    let account:WEBAUTH.Account = {
                         admin: params.admin as string == 'true',
                         id: params.id, 
                         name: params.name,
@@ -208,7 +208,7 @@ class WEBAUTH {
 
                 let token = await CONQUER.AUTH.tokenize(<string>address);
 
-                let account:AUTH.Account = {
+                let account:WEBAUTH.Account = {
                     admin: false,
                     id: address, 
                     name: address,
@@ -222,7 +222,7 @@ class WEBAUTH {
 
                 return Promise.resolve({
                     success: true,
-                    account: CONQUER.AUTH.account
+                    account: account
                 });
             } catch (error) {
                 return Promise.resolve({
@@ -303,7 +303,7 @@ class WEBAUTH {
             let contactInfo = apiResponse2 as any;
             let token = await CONQUER.AUTH.tokenize(userInfo.email as string);
 
-            let account:AUTH.Account = {
+            let account:WEBAUTH.Account = {
                 admin: false,
                 id: userInfo.email,
                 name: userInfo.name,
@@ -377,7 +377,16 @@ class WEBAUTH {
     }
 }
 
-namespace SOCIALAUTH {
+namespace WEBAUTH {
+
+    export type Account = {
+        id: string,
+        token: string,
+        name: string,
+        admin: boolean,
+        friend_count: number,
+        source: 'DISCORD' | 'FACEBOOK' | 'TWITTER' | 'GOOGLE' | 'SNAPCHAT' | 'CONQUER' | 'METAMASK'
+    }
 }
 
 export default WEBAUTH;

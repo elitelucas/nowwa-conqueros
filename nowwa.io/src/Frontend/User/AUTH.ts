@@ -3,8 +3,6 @@ import CONQUER from '../CONQUER';
 class AUTH {
     private vars: { [key: string]: any } = {};
 
-    public account?: AUTH.Account;
-
     public async init(): Promise<any> 
     {
         /*
@@ -54,9 +52,6 @@ class AUTH {
         return CONQUER.do("AUTH.get", params);
     }
 
-    /// CONQUER.AUTH.username( asdada ).then( {} );
-    // SOCIAL AUTH 
-
     public async register(params: { username: string, password: string }): Promise<any> {
         return CONQUER.do("AUTH.set", params);
     }
@@ -67,15 +62,6 @@ class AUTH {
 };
 
 namespace AUTH {
-
-    export type Account = {
-        id: string,
-        token: string,
-        name: string,
-        admin: boolean,
-        friend_count: number,
-        source: 'DISCORD' | 'FACEBOOK' | 'TWITTER' | 'GOOGLE' | 'SNAPCHAT' | 'CONQUER' | 'METAMASK'
-    }
 }
 
 export default AUTH;
