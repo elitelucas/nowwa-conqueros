@@ -1,5 +1,6 @@
 import multer from "multer";
 import path from "path";
+import fs from 'fs';
 import { fileUpload } from "../CONFIG/CONFIG";
 import EXPRESS from "../EXPRESS/EXPRESS";
 import DATA from "../DATA/DATA";
@@ -62,6 +63,49 @@ class FILE
 
         });
     }
+
+    public static async upload(params:FILE.UploadParams):Promise<any> {
+        await this.write({
+            filename: params.filename,
+            content: params.content,
+            ownerID: params.ownerID
+        });
+        return Promise.resolve();
+    }
+
+    private static async write (params:{ filename: string, content:any, ownerID:string }):Promise<any> {
+        let folder: string = path.resolve( __dirname, '..', '..', '..', 'items', params.ownerID );
+        if (!fs.existsSync(folder)) {
+            fs.mkdirSync(folder);
+        }
+        fs.writeFileSync(`${folder}/${params.filename}`, params.content as any);
+        return Promise.resolve();
+    }
+
+    public static async list(params:{ ownerID:string }):Promise<any> {
+        console.log(`list`, JSON.stringify(params, null, 2));
+        let folder: string = path.resolve( __dirname, '..', '..', '..', 'items', params.ownerID );
+        if (!fs.existsSync(folder)) {
+            fs.mkdirSync(folder);
+        }
+        let paths:string[] = fs.readdirSync(folder);
+
+        let files: string[] = [];
+        let folders: string[] = [];
+        
+        for (let i:number = 0; i < paths.length; i++) {
+            let content:string = paths[i];
+            var contentPath = path.join(folder, content);
+            var isDirectory: boolean = fs.statSync(contentPath).isDirectory();
+            if (!isDirectory) {
+                files.push(content);
+            } else {
+                folders.push(content);
+            }
+        }
+        let output = {files: files, folders: folders};
+        return Promise.resolve(output);
+    } 
 
     /*=============== 
 
@@ -134,6 +178,16 @@ class FILE
     };
 
  
-};
+}
+
+namespace FILE {
+    export type Ownership = {
+        ownerID: string;
+    };
+    export type UploadParams = Ownership & {
+        filename: string;
+        content: File;
+    };
+}
 
 export default FILE;

@@ -39,11 +39,14 @@ const Downloader = (state: DownloaderState, setState: React.Dispatch<React.SetSt
     if (!state.initialized) {
         DownloaderInit().then((newState: DownloaderState) => {
             updateState(newState);
-            CONQUER.FILE.list()
+            let ownerID:string = indexState.account!.id;
+            CONQUER.FILE.list({
+                ownerID: ownerID
+            })
                 .then((res) => {
                     updateState({
                         isBusy: false,
-                        files: res.files,
+                        files: res.result.files,
                         initialized: true
                     });
                 });
@@ -55,12 +58,14 @@ const Downloader = (state: DownloaderState, setState: React.Dispatch<React.SetSt
             isBusy: true,
             needRefresh: false
         });
-        CONQUER.FILE.list()
+        let ownerID:string = indexState.account!.id;
+        CONQUER.FILE.list({
+            ownerID: ownerID
+        })
             .then((res) => {
-                console.log(res);
                 updateState({
                     isBusy: false,
-                    files: res.files
+                    files: res.result.files
                 });
             });
     };
@@ -103,10 +108,13 @@ const Downloader = (state: DownloaderState, setState: React.Dispatch<React.SetSt
                         </Table.Row>
                     </Table.Header>
                     <Table.Body>
-                        {state.files.map((filename: string) => {
-                            // console.log(`file: ${file}`);
-                            return EntryFile(`${filename}`);
-                        })}
+                        {(state.files && state.files.length > 0) ? 
+                            state.files.map((filename: string) => {
+                                // console.log(`file: ${file}`);
+                                return EntryFile(`${filename}`);
+                            }) :
+                            <></>
+                        }
                     </Table.Body>
                 </Table>
             </Segment>

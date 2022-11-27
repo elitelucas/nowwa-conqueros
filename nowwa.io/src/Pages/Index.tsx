@@ -53,20 +53,23 @@ const GetUrlSearchParams = (url: string = window.location.href) => {
     return params;
 }
 
-const LoadScript = (src:string) => {
-    return new Promise<void>((resolve, reject) => {
-
-        let script = document.createElement('script');
-        script.type = 'text/javascript';
-        script.src = src;
-        script.async = true;
-        script.defer = true;
-
-        script.onload = () => {
-            resolve();
-        }
-        document.body.appendChild(script);
-    });
+const LoadScripts = async (urls:string[]) => {
+    for (let i:number = 0; i < urls.length; i++) {
+        await new Promise<void>((resolve, reject) => {
+    
+            let script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.src = urls[i];
+            script.async = true;
+            script.defer = true;
+    
+            script.onload = () => {
+                console.log(`script: ${urls[i]} loaded!`);
+                resolve();
+            }
+            document.body.appendChild(script);
+        });
+    }
 };
 
 const Index = () => {
@@ -81,6 +84,7 @@ const Index = () => {
     const loadConquer = (): Promise<void> => CONQUER.init();
 
     if (!state.initialized) {
+
         updateState({
             initialized: true
         });
@@ -89,10 +93,16 @@ const Index = () => {
 
         // TODO : finish load script
         // load script for onesignal
-        // await LoadScript(window.location.origin);
 
         if (!CONQUER.Initialized) 
         {
+            let scriptUrls:string[] = [
+                `${window.location.origin}/OneSignalSDK.js`,
+                `${window.location.origin}/onesignal-web.js`,
+            ]
+            LoadScripts(scriptUrls).then(() => {
+                
+            });
             loadConquer().then(() => {
                 let params = CONQUER.WEBAUTH.SearchParams;
                 console.log('done load conquer');
@@ -102,7 +112,6 @@ const Index = () => {
 
                 if (account) {
                     updateState({
-                        initialized: true,
                         display: 'Home',
                         account: account
                     });
@@ -110,7 +119,6 @@ const Index = () => {
 
                 if (params.info == 'verified') {
                     updateState({
-                        initialized: true,
                         message: `email successfully verified!`
                     });
                 }
@@ -183,15 +191,16 @@ const Index = () => {
 
     const [downloaderState, setDownloaderState] = useState(DownloaderStateDefault);
     let downloader: JSX.Element = <></>;
-    downloader = Downloader(downloaderState, setDownloaderState, state);
-    let updateDownloaderState = (updates: Partial<DownloaderState>) => {
-        let newDownloaderState = UpdateComponentState<DownloaderState>(downloaderState, updates);
-        setDownloaderState(newDownloaderState);
-    };
-
     const [uploaderState, setUploaderState] = useState(UploaderStateDefault);
     let uploader: JSX.Element = <></>;
-    uploader = Uploader(uploaderState, setUploaderState, state, updateDownloaderState);
+    if (state.account) {
+        downloader = Downloader(downloaderState, setDownloaderState, state);
+        let updateDownloaderState = (updates: Partial<DownloaderState>) => {
+            let newDownloaderState = UpdateComponentState<DownloaderState>(downloaderState, updates);
+            setDownloaderState(newDownloaderState);
+        };
+        uploader = Uploader(uploaderState, setUploaderState, state, updateDownloaderState);
+    }
 
     return (
         <Segment placeholder>

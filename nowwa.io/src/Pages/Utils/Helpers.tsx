@@ -6,10 +6,6 @@ export type ComponentState = {
     busy: boolean,
 }
 
-export type Partial<T> = {
-    [P in keyof T]?: T[P];
-};
-
 export const ComponentStateDefault: ComponentState = {
     busy: false,
     initialized: false

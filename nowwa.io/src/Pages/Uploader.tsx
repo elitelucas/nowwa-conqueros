@@ -40,22 +40,26 @@ const Uploader = (state: UploaderState, setState: React.Dispatch<React.SetStateA
     let uploadFile = () => {
         var input = document.createElement('input');
         input.type = 'file';
-        input.onchange = (e) => {
+        input.onchange = async (e) => {
             updateState({
                 isBusy: true
             });
             let file = ((e.target) as HTMLInputElement).files![0];
-            CONQUER.FILE.upload(file).then((res1) => {
-                CONQUER.FILE.list()
-                    .then((res2) => {
-                        updateDownloaderState({
-                            isBusy: false,
-                            files: res2.files
-                        });
-                    });
-                updateState({
-                    isBusy: false
-                });
+            let ownerID: string = indexState.account!.id;
+            await CONQUER.FILE.upload({
+                filename: file.name,
+                content: file,
+                ownerID: ownerID
+            })
+            let res = await CONQUER.FILE.list({
+                ownerID: ownerID
+            })
+            updateDownloaderState({
+                isBusy: false,
+                files: res.result.files
+            });
+            updateState({
+                isBusy: false
             });
         }
         input.click();

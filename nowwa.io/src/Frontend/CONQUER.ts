@@ -4,7 +4,6 @@ import AUTH from "./User/AUTH";
 import USER from "./User/USER";
 import FILE from "./File/FILE";
 import WEBAUTH from "./User/WEBAUTH";
-import ONESIGNAL from "./Notifications/ONESIGNAL";
 
 class CONQUER 
 {
@@ -15,7 +14,6 @@ class CONQUER
     public static WEBAUTH: WEBAUTH = new WEBAUTH();
     private static SOCKET: SOCKET = new SOCKET();
     public static FILE: FILE = new FILE();
-    public static ONESIGNAL:ONESIGNAL = new ONESIGNAL();
 
     public static async init(): Promise<void> 
     {
@@ -25,7 +23,7 @@ class CONQUER
         await this.SOCKET.init();
         await this.AUTH.init();
         await this.WEBAUTH.init();
-        await this.ONESIGNAL.init();
+        await this.FILE.init();
 
         log("Okkkk");
 

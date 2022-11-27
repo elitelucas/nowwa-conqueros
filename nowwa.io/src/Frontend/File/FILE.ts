@@ -1,4 +1,6 @@
 import { fileTempPath, fileUpload, storageUrl } from "../../Core/CONFIG/CONFIG";
+import CONQUER from "../CONQUER";
+import COREFILE from '../../Core/CMS/FILE';
 
 class FILE {
 
@@ -8,31 +10,47 @@ class FILE {
         return Promise.resolve();
     }
 
-    public async upload(file: File): Promise<any> {
+    public async upload(params: COREFILE.UploadParams): Promise<any> {
 
-        return new Promise(async (resolve) => {
-            let formData = new FormData();
-            formData.append("files", file);
-            let url: URL = new URL(`${window.location.origin}${fileUpload}`);
-            let init: RequestInit = {
-                method: "POST",
-                body: formData
-            };
-            fetch(url, init)
-                .then(res => res.json())
-                .then((res: any) => {
-                    resolve({
-                        success: res.success,
-                        error: res.error
-                    });
-                })
-                .catch((error: any) => {
-                    console.error(`error: ${error}`);
-                });
-        });
+        // TODO : include conquer user id
+        return CONQUER.do("FILE.upload", params);
+
+        // return new Promise(async (resolve) => {
+        //     let formData = new FormData();
+        //     formData.append("files", file);
+        //     let url: URL = new URL(`${window.location.origin}${fileUpload}`);
+        //     let init: RequestInit = {
+        //         method: "POST",
+        //         body: formData
+        //     };
+        //     fetch(url, init)
+        //         .then(res => res.json())
+        //         .then((res: any) => {
+        //             resolve({
+        //                 success: res.success,
+        //                 error: res.error
+        //             });
+        //         })
+        //         .catch((error: any) => {
+        //             console.error(`error: ${error}`);
+        //         });
+        // });
     }
 
-    public async list(): Promise<any> {
+    public async list(params:COREFILE.Ownership): Promise<any> {
+
+        // TODO : include conquer user id
+        // console.log('list started...');
+        return CONQUER.do("FILE.list", params);
+        // return new Promise(async (resolve) => {
+        //     CONQUER.do("FILE.list").then((outs)=>{
+        //         console.log(`outs`, outs);
+        //         resolve({
+        //             success: true,
+        //             files: []
+        //         });
+        //     });
+        // });
 
         return new Promise(async (resolve) => {
             fetch(`${window.location.origin}${storageUrl}${fileTempPath}`)

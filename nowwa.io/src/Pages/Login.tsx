@@ -99,7 +99,7 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
                         name: res.result.firstName,
                         token: res.result.token
                     };
-                    await CONQUER.SetSessionStorage({
+                    await CONQUER.WEBAUTH.SetSessionStorage({
                         account: account
                     });
                     updateState({

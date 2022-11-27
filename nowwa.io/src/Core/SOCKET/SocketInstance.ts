@@ -1,6 +1,7 @@
 
 import { Socket } from "socket.io"
 import LOG, { log } from "../../UTIL/LOG";
+import FILE from "../CMS/FILE";
 import AUTH from "../USER/AUTH/AUTH";
 
 class SocketInstance 
@@ -28,6 +29,8 @@ class SocketInstance
         if (action == "AUTH.set") return map( AUTH.set(vars) );
         if (action == "AUTH.get") return map(AUTH.get(vars));
         if (action == "AUTH.tokenize") return map(AUTH.tokenize(vars));
+        if (action == "FILE.upload") return map(FILE.upload(vars));
+        if (action == "FILE.list") return map(FILE.list(vars));
 
         // FRIENDS.remove(asdas)
         // this person has permissions to do this 

@@ -43,17 +43,25 @@ const Home = (state: HomeState, setState: React.Dispatch<React.SetStateAction<Ho
     return (
         <>
             <Segment>
-                Welcome, {indexState.account!.name}! Friends: {indexState.account?.friend_count}
-                <Button fluid primary onClick={doLogout}><Icon name='log out'></Icon>Logout</Button>
+                <Grid columns='equal' verticalAlign='middle'>
+                    <Grid.Row>
+                        <Grid.Column>
+                            Welcome, {indexState.account!.name}! Friends: {indexState.account?.friend_count}
+                        </Grid.Column>
+                        <Grid.Column width='2'>
+                            <Button fluid primary onClick={doLogout}><Icon name='log out'></Icon>Logout</Button>
+                        </Grid.Column>
+                    </Grid.Row>
+                </Grid>
             </Segment>
-            <iframe
+            {/* <iframe
                 src='https://dev.nowwa.io'
                 style={{
                     border: '0px',
                     width: '100%',
                     height: '800px'
                 }}
-                onLoad={onLoad}></iframe>
+                onLoad={onLoad}></iframe> */}
         </>
     );
 }
