@@ -1,5 +1,6 @@
 import mongoose, { mongo } from "mongoose";
 import CONQUER from "../../Frontend/CONQUER";
+import WEBAUTH from "../../Frontend/User/WEBAUTH";
 import DATA from "../DATA/DATA";
 import AUTH from "../USER/AUTH/AUTH";
 import EMAIL from "../USER/EMAIL";

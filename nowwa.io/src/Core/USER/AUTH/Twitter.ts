@@ -1,4 +1,5 @@
 import { TwitterApi, UserV2 } from 'twitter-api-v2';
+import WEBAUTH from '../../../Frontend/User/WEBAUTH';
 import CONFIG, { twitterCallbackUrl } from '../../CONFIG/CONFIG';
 import EXPRESS from '../../EXPRESS/EXPRESS';
 import AUTH from './AUTH';
@@ -81,6 +82,15 @@ class Twitter {
                     // console.log(`followers`, followers);
 
                     const token = await AUTH.tokenize(userObject.id);
+                    let account:WEBAUTH.Account = {
+                        admin: false,
+                        friend_count: 0,
+                        username: userObject.id,
+                        firstName: userObject.username,
+                        token: token,
+                        type: 'TWITTER'
+                    };
+                    let searchParams:URLSearchParams = Object.assign(new URLSearchParams(), account);
                     res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?info=loggedin&name=${userObject.username}&token=${token}&admin=false&id=${userObject.id}&friend_count=${followers.length}&source=twitter`);
                 })
                 .catch(() => res.status(403).send('Invalid verifier or access tokens!'));

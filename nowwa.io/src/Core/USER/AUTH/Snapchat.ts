@@ -1,5 +1,6 @@
 import express from 'express';
 import fetch, { RequestInit } from 'node-fetch';
+import WEBAUTH from '../../../Frontend/User/WEBAUTH';
 import CONFIG, { snapchatAuthUrl, snapchatCallbackUrl } from '../../CONFIG/CONFIG';
 import EXPRESS from '../../EXPRESS/EXPRESS';
 import AUTH from './AUTH';
@@ -100,7 +101,16 @@ class Snapchat
                             let name = secondResponse.data.me.displayName;
                             AUTH.tokenize(id)
                                 .then((token) => {
-                                    res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?info=loggedin&name=${name}&token=${token}&admin=false&id=${id}&source=snapchat`);
+                                    let account:WEBAUTH.Account = {
+                                        admin: false,
+                                        friend_count: 0,
+                                        username: id,
+                                        firstName: name,
+                                        token: token,
+                                        type: 'SNAPCHAT'
+                                    };
+                                    let searchParams:URLSearchParams = Object.assign(new URLSearchParams(), account);
+                                    res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?info=loggedin&${searchParams.toString()}`);
                                 })
                                 .catch((error) => {
                                     res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?error=${error.message}`);

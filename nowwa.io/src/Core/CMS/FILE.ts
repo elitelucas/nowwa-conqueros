@@ -39,7 +39,7 @@ class FILE
             }
         });
 
-        this.webhookFileUpload();
+        // this.webhookFileUpload();
         return Promise.resolve();
     }
 
@@ -65,7 +65,6 @@ class FILE
 
         });
     }
-
 
 
     private static async write( params:{ filename: string, content:any, avatarID:string }):Promise<any> 

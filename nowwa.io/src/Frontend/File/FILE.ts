@@ -1,4 +1,4 @@
-import { fileTempPath, fileUpload, storageUrl } from "../../Core/CONFIG/CONFIG";
+import { fileTempPath, storageUrl } from "../../Core/CONFIG/CONFIG";
 import CONQUER from "../CONQUER";
 import COREFILE from '../../Core/CMS/FILE';
 

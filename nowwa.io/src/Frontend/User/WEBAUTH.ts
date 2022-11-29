@@ -6,7 +6,7 @@ import CONQUER from "../CONQUER";
 class WEBAUTH {
 
     public SearchParams: { [key: string]: any } = {};
-    public SessionStorage: { [key: string]: any } = {};
+    public SessionStorage: { [key: string]: any } & { account?: WEBAUTH.Account } = {};
 
     // Move all social stuff here
     private vars: { [key: string]: any } & {
@@ -125,13 +125,13 @@ class WEBAUTH {
                 if (authVerifyResponse.valid) {
                     let account:WEBAUTH.Account = 
                     {
+                        username    : params.id,
+                        friend_count: parseInt(params.friend_count as string || "0"),
                         admin       : params.admin as string == 'true',
-                        username    : params.id, 
                         firstName   : params.name,
                         email       : params.email,
                         wallet      : params.wallet,
                         token       : params.token,
-                        //friend_count: parseInt(params.friend_count as string || "0"),
                         type        : params.source // GOOGLE, DISCORD, SNAPCHAT, TWITTER
 
                         /*
@@ -229,11 +229,11 @@ class WEBAUTH {
 
                 let account:WEBAUTH.Account = {
                     admin: false,
-                    id: address, 
-                    name: address,
+                    username: address, 
+                    firstName: address,
                     token: token,
                     friend_count: 0,
-                    source: 'METAMASK'
+                    type: 'METAMASK'
                 };
 
                 CONQUER.WEBAUTH.SetSessionStorage({
@@ -325,11 +325,12 @@ class WEBAUTH {
 
             let account:WEBAUTH.Account = {
                 admin: false,
-                id: userInfo.email,
-                name: userInfo.name,
+                username: userInfo.email,
+                email: userInfo.email,
+                firstName: userInfo.name,
                 token: token,
                 friend_count: contactInfo.summary.total_count,
-                source: 'FACEBOOK'
+                type: 'FACEBOOK'
             };
             CONQUER.WEBAUTH.SetSessionStorage({
                 account: account
@@ -400,13 +401,22 @@ class WEBAUTH {
 namespace WEBAUTH {
 
     export type Account = {
-        id: string,
+        avatarID?:string,
+        username: string,
         token: string,
-        name: string,
         admin: boolean,
         friend_count: number,
-        source: 'DISCORD' | 'FACEBOOK' | 'TWITTER' | 'GOOGLE' | 'SNAPCHAT' | 'CONQUER' | 'METAMASK'
+        type: 'DISCORD' | 'FACEBOOK' | 'TWITTER' | 'GOOGLE' | 'SNAPCHAT' | 'CONQUER' | 'METAMASK',
+        email?:string,
+        wallet?:string,
+        firstName:string
     }
+    export const CreateSearchParams = (account:Account) => {
+        let tmp = Object.entries(account);
+        let searchParams:URLSearchParams = new URLSearchParams();
+        tmp.forEach(element => searchParams.append(element[0], element[1].toString()));
+        return searchParams;
+    };
 }
 
 export default WEBAUTH;

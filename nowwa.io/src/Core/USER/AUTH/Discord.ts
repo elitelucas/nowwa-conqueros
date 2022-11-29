@@ -1,5 +1,6 @@
 import express from 'express';
 import fetch, { RequestInit } from 'node-fetch';
+import WEBAUTH from '../../../Frontend/User/WEBAUTH';
 import CONFIG, { discordAuthUrl, discordCallbackUrl } from '../../CONFIG/CONFIG';
 import EXPRESS from '../../EXPRESS/EXPRESS';
 import AUTH from './AUTH';
@@ -91,7 +92,16 @@ class Discord
                                     console.log(`thirdResponse`, JSON.stringify(thirdResponse, null, 4));
                                     AUTH.tokenize(secondResponse.email)
                                         .then((token) => {
-                                            res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?info=loggedin&name=${secondResponse.username}&token=${token}&admin=false&id=${secondResponse.email}&friend_count=${thirdResponse.length}&source=discord`);
+                                            let account:WEBAUTH.Account = {
+                                                admin: false,
+                                                friend_count: thirdResponse.length,
+                                                username: secondResponse.email,
+                                                firstName: secondResponse.username,
+                                                token: token,
+                                                type: 'DISCORD'
+                                            };
+                                            let searchParams:URLSearchParams = Object.assign(new URLSearchParams(), account);
+                                            res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?info=loggedin&${searchParams.toString()}`);
                                         })
                                         .catch((error) => {
                                             res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?error=${error.message}`);

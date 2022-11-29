@@ -13,20 +13,13 @@ import Status from '../Core/APPS/Status';
 import CONQUER from '../Frontend/CONQUER';
 import Uploader, { UploaderStateDefault } from './Uploader';
 import Downloader, { DownloaderState, DownloaderStateDefault } from './Downloader';
+import WEBAUTH from '../Frontend/User/WEBAUTH';
 
 type IndexDisplay = 'None' | 'Explorer' | 'Build' | 'Test' | 'Login' | 'Register' | 'Home';
 
-export type Account = {
-    avatarID: string,
-    token: string,
-    firstName: string,
-    admin: boolean,
-    friend_count: number
-}
-
 export type IndexState = ComponentState & {
     display: IndexDisplay,
-    account?: Account,
+    account?: WEBAUTH.Account,
     message: string,
     params?: { [key: string]: any }
 };
@@ -109,9 +102,6 @@ const Index = () => {
                 console.log(`params`, params);
 
                 let account = CONQUER.WEBAUTH.SessionStorage.account;
-
-                // Facebook{ values }
-                // Google { etc }
 
                 if (account) {
                     updateState({

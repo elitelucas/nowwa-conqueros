@@ -1,9 +1,10 @@
 import React from 'react';
 import { Icon, Button, Segment, ButtonGroup, Menu, Header, Input, InputOnChangeData, Card, Grid, Divider, Label, Image, Message, Form } from 'semantic-ui-react';
-import { Account, IndexState, } from './Index';
+import { IndexState, } from './Index';
 import { Hash, UpdateComponentState } from './Utils/Helpers';
 import './Utils/Facebook';
 import CONQUER from '../Frontend/CONQUER';
+import WEBAUTH from '../Frontend/User/WEBAUTH';
 
 export type LoginState = {
     initialized: boolean,
@@ -92,13 +93,15 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
                 });
                 
                 if (res.success) {
-                    let account:Account = 
+                    let account:WEBAUTH.Account = 
                     {
                         admin           : res.result.admin,
                         friend_count    : res.result.friend_count,
                         avatarID        : res.result.avatarID,
                         firstName       : res.result.firstName,
-                        token           : res.result.token
+                        token           : res.result.token,
+                        type            : 'CONQUER',
+                        username        : res.result.avatarID
                     };
                     
                     await CONQUER.WEBAUTH.SetSessionStorage({
