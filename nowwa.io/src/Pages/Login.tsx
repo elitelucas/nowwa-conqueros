@@ -86,19 +86,21 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
                     isBusy: true,
                     warning: '',
                 });
-                let res = await CONQUER.AUTH.username({
+                let res = await CONQUER.AUTH.get({
                     username: state.email,
                     password: state.password
                 });
                 
                 if (res.success) {
-                    let account:Account = {
-                        admin: res.result.admin,
-                        friend_count: res.result.friend_count,
-                        id: res.result.uID,
-                        name: res.result.firstName,
-                        token: res.result.token
+                    let account:Account = 
+                    {
+                        admin           : res.result.admin,
+                        friend_count    : res.result.friend_count,
+                        avatarID        : res.result.avatarID,
+                        firstName       : res.result.firstName,
+                        token           : res.result.token
                     };
+                    
                     await CONQUER.WEBAUTH.SetSessionStorage({
                         account: account
                     });

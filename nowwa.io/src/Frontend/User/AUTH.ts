@@ -25,18 +25,7 @@ class AUTH {
     {
         return CONQUER.do("AUTH.set", vars);
     }
-
-    public async get(vars: any): Promise<any> 
-    {
-        return CONQUER.do("AUTH.get", vars);
-
-        // UserInstance.Friends.get();
-    }
-
-    public async getSet(vars: any): Promise<any> {
-
-    }
-
+ 
     public async guest(): Promise<any> {
 
         return this.login("Guest");
@@ -48,7 +37,7 @@ class AUTH {
         });
     }
 
-    public async username(params: { username: string, password: string }): Promise<any> {
+    public async get(params: { username: string, password: string }): Promise<any> {
         return CONQUER.do("AUTH.get", params);
     }
 

@@ -39,7 +39,7 @@ const Downloader = (state: DownloaderState, setState: React.Dispatch<React.SetSt
     if (!state.initialized) {
         DownloaderInit().then((newState: DownloaderState) => {
             updateState(newState);
-            let ownerID:string = indexState.account!.id;
+            let ownerID:string = indexState.account!.avatarID;
             CONQUER.FILE.list({
                 ownerID: ownerID
             })
@@ -58,7 +58,7 @@ const Downloader = (state: DownloaderState, setState: React.Dispatch<React.SetSt
             isBusy: true,
             needRefresh: false
         });
-        let ownerID:string = indexState.account!.id;
+        let ownerID:string = indexState.account!.avatarID;
         CONQUER.FILE.list({
             ownerID: ownerID
         })

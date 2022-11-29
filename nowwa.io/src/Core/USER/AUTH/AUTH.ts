@@ -81,8 +81,8 @@ class AUTH {
         return this.getLogin(item._id);
     };
 
-    private static async getLogin(uID: any): Promise<any> {
-
+    private static async getLogin(uID: any): Promise<any> 
+    {
         let user = await USERNAME.changeLastLogin(uID);
 
         let avatar = await AVATAR.getOne({ uID: new mongoose.Types.ObjectId(uID), isMain: true });
@@ -90,10 +90,12 @@ class AUTH {
         let token = await AUTH.tokenize(uID);
 
         return Promise.resolve({
-            ...avatar._doc,
-            admin: false,
-            token: token,
-            friend_count: 0
+            //...avatar._doc,
+            avatarID        : avatar._id,
+            firstName       : avatar.firstName,
+            admin           : false,
+            token           : token,
+            friend_count    : 0
         });
     };
 

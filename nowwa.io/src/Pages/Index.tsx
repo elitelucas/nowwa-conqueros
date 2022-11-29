@@ -17,9 +17,9 @@ import Downloader, { DownloaderState, DownloaderStateDefault } from './Downloade
 type IndexDisplay = 'None' | 'Explorer' | 'Build' | 'Test' | 'Login' | 'Register' | 'Home';
 
 export type Account = {
-    id: string,
+    avatarID: string,
     token: string,
-    name: string,
+    firstName: string,
     admin: boolean,
     friend_count: number
 }
@@ -109,6 +109,9 @@ const Index = () => {
                 console.log(`params`, params);
 
                 let account = CONQUER.WEBAUTH.SessionStorage.account;
+
+                // Facebook{ values }
+                // Google { etc }
 
                 if (account) {
                     updateState({

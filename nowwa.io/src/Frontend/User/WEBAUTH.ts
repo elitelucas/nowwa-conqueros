@@ -123,13 +123,32 @@ class WEBAUTH {
 
             if (authVerifyResponse.success) {
                 if (authVerifyResponse.valid) {
-                    let account:WEBAUTH.Account = {
-                        admin: params.admin as string == 'true',
-                        id: params.id, 
-                        name: params.name,
-                        token: params.token,
-                        friend_count: parseInt(params.friend_count as string || "0"),
-                        source: params.source
+                    let account:WEBAUTH.Account = 
+                    {
+                        admin       : params.admin as string == 'true',
+                        username    : params.id, 
+                        firstName   : params.name,
+                        email       : params.email,
+                        wallet      : params.wallet,
+                        token       : params.token,
+                        //friend_count: parseInt(params.friend_count as string || "0"),
+                        type        : params.source // GOOGLE, DISCORD, SNAPCHAT, TWITTER
+
+                        /*
+                            have this contain
+
+                            username (id, can be email, wallet, number id),
+                            firstName ( persons name),
+                            email (if exists),
+                            wallet (if exists),
+                            type ( source, where's this from)
+
+                            GOOGLE username: email
+                            DISCORD username: email
+                            TWITTER username: userID (number)
+                            SNAPCHAT username: accountID (number)
+                            FACEBOOK username: userID
+                        */
                     };
                     CONQUER.WEBAUTH.SetSessionStorage({
                         account: account
@@ -216,8 +235,9 @@ class WEBAUTH {
                     friend_count: 0,
                     source: 'METAMASK'
                 };
+
                 CONQUER.WEBAUTH.SetSessionStorage({
-                    account: account
+                    account: account,
                 });
 
                 return Promise.resolve({

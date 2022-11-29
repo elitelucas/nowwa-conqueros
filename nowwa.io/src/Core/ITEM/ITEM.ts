@@ -8,6 +8,7 @@ import FILE from "../CMS/FILE";
 import IMAGE from "../CMS/IMAGE";
 import GAME from "../GAME/GAME";
 import { ValidatedPurchaseStore } from "@heroiclabs/nakama-js/dist/api.gen";
+import FOLDER from "./INSTANCE/FOLDER";
 class ITEM
 {
     private static table : string = "items";
@@ -60,6 +61,12 @@ class ITEM
 
         delete values.folderID;
         delete values.text;
+
+        if( !folderID ) 
+        {
+           let folder : any = await FOLDER.getOne({ avatarID:query.avatarID, type:"root" });
+           folderID = folder._id;
+        }
  
         let item            = await DATA.set( this.table, query );
         let itemID          = item._id;

@@ -4,6 +4,8 @@ import fs from 'fs';
 import { fileUpload } from "../CONFIG/CONFIG";
 import EXPRESS from "../EXPRESS/EXPRESS";
 import DATA from "../DATA/DATA";
+import { file } from "googleapis/build/src/apis/file";
+import ITEM from "../ITEM/ITEM";
 
 class FILE 
 {
@@ -64,46 +66,49 @@ class FILE
         });
     }
 
-    public static async upload(params:FILE.UploadParams):Promise<any> {
-        await this.write({
-            filename: params.filename,
-            content: params.content,
-            ownerID: params.ownerID
-        });
-        return Promise.resolve();
-    }
 
-    private static async write (params:{ filename: string, content:any, ownerID:string }):Promise<any> {
-        let folder: string = path.resolve( __dirname, '..', '..', '..', 'items', params.ownerID );
-        if (!fs.existsSync(folder)) {
-            fs.mkdirSync(folder);
+
+    private static async write( params:{ filename: string, content:any, avatarID:string }):Promise<any> 
+    {
+        let url: string = path.resolve( __dirname, '..', '..', '..', 'items', params.avatarID );
+
+        if (!fs.existsSync(url)) 
+        {
+            fs.mkdirSync(url);
         }
-        fs.writeFileSync(`${folder}/${params.filename}`, params.content as any);
-        return Promise.resolve();
+
+        fs.writeFileSync(`${url}/${params.filename}`, params.content as any);
+
+        // FIX URL GARY!
+        // 
+
+        return Promise.resolve( url );
     }
 
-    public static async list(params:{ ownerID:string }):Promise<any> {
+    public static async list(params:{ avatarID:string }):Promise<any> 
+    {
         console.log(`list`, JSON.stringify(params, null, 2));
-        let folder: string = path.resolve( __dirname, '..', '..', '..', 'items', params.ownerID );
-        if (!fs.existsSync(folder)) {
-            fs.mkdirSync(folder);
+        let url: string = path.resolve( __dirname, '..', '..', '..', 'items', params.avatarID );
+        if (!fs.existsSync(url)) {
+            fs.mkdirSync(url);
         }
-        let paths:string[] = fs.readdirSync(folder);
+        let paths:string[] = fs.readdirSync(url);
 
         let files: string[] = [];
-        let folders: string[] = [];
+        let urls: string[] = [];
         
         for (let i:number = 0; i < paths.length; i++) {
             let content:string = paths[i];
-            var contentPath = path.join(folder, content);
+            var contentPath = path.join(url, content);
             var isDirectory: boolean = fs.statSync(contentPath).isDirectory();
             if (!isDirectory) {
                 files.push(content);
             } else {
-                folders.push(content);
+                urls.push(content);
             }
         }
-        let output = {files: files, folders: folders};
+
+        let output = {files: files, folders: urls};
         return Promise.resolve(output);
     } 
 
@@ -113,36 +118,75 @@ class FILE
     SET  
 
     {
-        name,
-        location,
+        name (filename),
+        content,
         avatarID
     }
 
-    
- 
     ================*/
 
-    public static async set( query:any ) : Promise<any> 
+    public static async set( params:FILE.UploadParams):Promise<any> 
     {
-       var file = DATA.set( this.table, query );
-       
-       return Promise.resolve( file );
-    };
+        // FILE is uploaded by Avatar id
+        // FILE is stored on the dabase 
+
+        let url = await this.write(
+        {
+            filename    : params.filename,
+            content     : params.content,
+            avatarID    : params.avatarID
+        });
+
+        // CREATE ENTRY IN DATABASE
+
+        // video (mp4?)
+        // image (png, jpg, gif, whatever )
+        // zips
+
+        var file = await DATA.set( this.table, 
+        {
+            name        : params.filename,
+            avatarID    : params.avatarID,
+            url         : url,
+            type        : "file"
+        });
+
+        let instance = ITEM.set( file );
+
+        return Promise.resolve( instance );
+    }
+
+ 
 
     /*=============== 
 
 
     GET  
-    
+ 
 
     ================*/
 
     public static async get( query:any ) : Promise<any> 
     {
+        // If I receive the url, I can composite the web link and return it without consulting mongo
+
         var file = DATA.get( this.table, query );
        
         return Promise.resolve( file );
     };
+
+
+    /*=============== 
+
+    // EXPRESS!!!!!
+    
+    // WEB GET with post variables stuff
+    // that composites the url and returns it so it can cached by the browser  
+  
+
+    ================*/
+
+
 
 
     /*=============== 
@@ -180,10 +224,13 @@ class FILE
  
 }
 
-namespace FILE {
-    export type Ownership = {
-        ownerID: string;
+namespace FILE 
+{
+    export type Ownership = 
+    {
+        avatarID: string;
     };
+
     export type UploadParams = Ownership & {
         filename: string;
         content: File;

@@ -23,7 +23,7 @@ export const HomeInit = (name: string): Promise<HomeState> => {
 const Home = (state: HomeState, setState: React.Dispatch<React.SetStateAction<HomeState>>, indexState: IndexState, setIndexState: (updates: Partial<IndexState>) => void) => {
 
     if (!state.initialized) {
-        HomeInit(indexState.account!.name).then(setState);
+        HomeInit(indexState.account!.firstName).then(setState);
     }
 
     let onLoad = () => {
@@ -46,7 +46,7 @@ const Home = (state: HomeState, setState: React.Dispatch<React.SetStateAction<Ho
                 <Grid columns='equal' verticalAlign='middle'>
                     <Grid.Row>
                         <Grid.Column>
-                            Welcome, {indexState.account!.name}! Friends: {indexState.account?.friend_count}
+                            Welcome, {indexState.account!.firstName}! Friends: {indexState.account?.friend_count}
                         </Grid.Column>
                         <Grid.Column width='2'>
                             <Button fluid primary onClick={doLogout}><Icon name='log out'></Icon>Logout</Button>
