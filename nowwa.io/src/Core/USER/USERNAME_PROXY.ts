@@ -18,7 +18,7 @@ class USERNAME_PROXY
   
     public static async set( vars:any ) : Promise<any>
     {
-        let results     = await DATA.get( USERNAME_PROXY.table, { username:vars.username } ); 
+        let results     = await DATA.get( USERNAME_PROXY.table, { username: vars.username, source: vars.source } ); 
 
         if( results.length > 1 ) return Promise.reject( LOG.msg( 'Username already exists' ) );  
 

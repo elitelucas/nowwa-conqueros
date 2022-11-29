@@ -22,8 +22,11 @@ class CONQUER
 
         await this.SOCKET.init();
         await this.AUTH.init();
-        await this.WEBAUTH.init();
         await this.FILE.init();
+
+        if (typeof window != 'undefined') {
+            await this.WEBAUTH.init();
+        }
 
         log("Okkkk");
 

@@ -70,11 +70,13 @@ class AUTH {
 
         var item: any = await USERNAME.get({ username: vars.username });
 
-        if (!item.isVerified) return Promise.reject(LOG.msg('Email is not verified...'));
+        if (!item) return Promise.reject('User not found');
+
+        if (!item.isVerified) return Promise.reject('Email is not verified...');
 
         let isMatch: boolean = await CRYPT.match(vars.password, item.password);
 
-        if (!isMatch) return Promise.reject(LOG.msg('Incorrect password...'));
+        if (!isMatch) return Promise.reject('Incorrect password...');
 
         return this.getLogin(item._id);
     };
@@ -105,6 +107,7 @@ class AUTH {
     facebook    : name, email
     discord     : username, email
     metamask    : wallet address
+    snapchat    : account id
     guest       : guestID
     
     type
@@ -122,7 +125,9 @@ class AUTH {
 
         // etc
 
+        // email: google, facebook
         if (vars.email) uID = await EMAIL.getUID(vars.email);
+        // wallet: metamask
         if (vars.wallet) uID = await WALLET.getUID(vars.wallet);
 
         let username = vars.username || vars.wallet || vars.email

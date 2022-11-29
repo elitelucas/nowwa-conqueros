@@ -113,7 +113,7 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
                 } else {
                     updateState({
                         isBusy: false,
-                        warning: res.error,
+                        warning: res.result,
                     });
                 }
             }
@@ -186,7 +186,7 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
     return (
         <Segment placeholder>
 
-            <Form warning={state.warning.length > 0}>
+            <Form warning={typeof state.warning != 'undefined' && state.warning.length > 0}>
                 <Grid centered columns='8'>
                     <Grid.Row>
                         <Grid.Column>

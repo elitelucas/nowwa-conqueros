@@ -28,6 +28,7 @@ class SocketInstance
 
         if (action == "AUTH.set") return map( AUTH.set(vars) );
         if (action == "AUTH.get") return map(AUTH.get(vars));
+        if (action == "AUTH.getProxy") return map(AUTH.getProxy(vars));
         if (action == "AUTH.tokenize") return map(AUTH.tokenize(vars));
         if (action == "FILE.upload") return map(FILE.upload(vars));
         if (action == "FILE.list") return map(FILE.list(vars));

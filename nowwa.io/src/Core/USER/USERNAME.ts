@@ -24,7 +24,7 @@ class USERNAME
     {
         let user = await DATA.getOne( this.table, { username: vars.username });
 
-        if( user ) return Promise.reject(LOG.msg('user already exists'));
+        if( user ) return Promise.reject('user already exists');
 
         user = await DATA.set(this.table, vars);
 
@@ -54,11 +54,7 @@ class USERNAME
     ================*/
 
     public static async get(vars: any): Promise<any> {
-        let item = await DATA.getOne(this.table, vars);
-
-        if (!item) return Promise.reject(LOG.msg('User does not exist'));
-
-        return Promise.resolve(item);
+        return DATA.getOne(this.table, vars);
     };
 
     /*=============== 
