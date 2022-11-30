@@ -83,8 +83,8 @@ const Downloader = (state: DownloaderState, setState: React.Dispatch<React.SetSt
             <Table.Row key={filename}>
                 <Table.Cell collapsing>
                 </Table.Cell>
-                <Table.Cell onClick={() => { SelectFile(url); }} selectable>
-                    <a href='#'>
+                <Table.Cell selectable>
+                    <a href='#' onClick={(e) => { e.preventDefault(); SelectFile(url); }} >
                         <Icon color='black' name='file' />
                         {filename}
                     </a>
