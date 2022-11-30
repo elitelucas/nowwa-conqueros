@@ -92,7 +92,9 @@ class Discord
                                     console.log(`thirdResponse`, JSON.stringify(thirdResponse, null, 4));
                                     AUTH.tokenize(secondResponse.email)
                                         .then((token) => {
+                                            // TODO : change 'secondResponse.email' with actual 'avatarID' for proxy login
                                             let account:WEBAUTH.Account = {
+                                                avatarID: secondResponse.email,
                                                 admin: false,
                                                 friend_count: thirdResponse.length,
                                                 username: secondResponse.email,

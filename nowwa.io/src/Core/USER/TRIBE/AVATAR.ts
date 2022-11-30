@@ -78,11 +78,13 @@ class AVATAR
             hidden      : true
         });
  
-        await FOLDER.set(
+        let folder = await FOLDER.set(
         {
             type        : "root",
             avatarID    : avatar._id
         });
+
+        console.log(`folder create`, JSON.stringify(folder, null, 2));
 
         return Promise.resolve( avatar );
     };

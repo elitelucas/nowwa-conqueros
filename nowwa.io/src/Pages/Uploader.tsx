@@ -45,21 +45,22 @@ const Uploader = (state: UploaderState, setState: React.Dispatch<React.SetStateA
                 isBusy: true
             });
             let file = ((e.target) as HTMLInputElement).files![0];
-            let avatarID : string = indexState.account!.avatarID;
+            
+            let avatarID:string = indexState.account!.avatarID;
 
-            await CONQUER.FILE.upload(
+            await CONQUER.FILE.set(
             {
                 fileName: file.name,
                 content: file,
                 avatarID: avatarID
             })
 
-            let res = await CONQUER.FILE.list({
+            let res = await CONQUER.FILE.get({
                 avatarID: avatarID
             })
             updateDownloaderState({
                 isBusy: false,
-                files: res.result.files
+                files: res.result
             });
             updateState({
                 isBusy: false

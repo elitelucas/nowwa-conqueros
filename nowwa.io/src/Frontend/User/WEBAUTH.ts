@@ -123,8 +123,10 @@ class WEBAUTH {
 
             if (authVerifyResponse.success) {
                 if (authVerifyResponse.valid) {
+                    // TODO : change 'params.id' with actual 'avatarID' for proxy login
                     let account:WEBAUTH.Account = 
                     {
+                        avatarID    : params.id,
                         username    : params.id,
                         friend_count: parseInt(params.friend_count as string || "0"),
                         admin       : params.admin as string == 'true',
@@ -227,10 +229,13 @@ class WEBAUTH {
 
                 let token = await CONQUER.AUTH.tokenize(<string>address);
 
+                // TODO : change 'address' with actual 'avatarID' for proxy login
                 let account:WEBAUTH.Account = {
+                    avatarID: address,
                     admin: false,
                     username: address, 
                     firstName: address,
+                    wallet: address,
                     token: token,
                     friend_count: 0,
                     type: 'METAMASK'
@@ -323,7 +328,9 @@ class WEBAUTH {
             let contactInfo = apiResponse2 as any;
             let token = await CONQUER.AUTH.tokenize(userInfo.email as string);
 
+            // TODO : change 'userInfo.email' with actual 'avatarID' for proxy login
             let account:WEBAUTH.Account = {
+                avatarID: userInfo.email,
                 admin: false,
                 username: userInfo.email,
                 email: userInfo.email,
@@ -401,7 +408,7 @@ class WEBAUTH {
 namespace WEBAUTH {
 
     export type Account = {
-        avatarID?:string,
+        avatarID:string,
         username: string,
         token: string,
         admin: boolean,

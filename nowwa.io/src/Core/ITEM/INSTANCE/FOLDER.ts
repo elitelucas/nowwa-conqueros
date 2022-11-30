@@ -25,7 +25,6 @@ class FOLDER
     public static async getOne( query: any ) : Promise<any>
     {
         let value = await DATA.getOne( this.table, query );
-
         return Promise.resolve( value );
     };
 

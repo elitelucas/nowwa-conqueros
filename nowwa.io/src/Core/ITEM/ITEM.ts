@@ -9,6 +9,7 @@ import IMAGE from "../CMS/IMAGE";
 import GAME from "../GAME/GAME";
 import { ValidatedPurchaseStore } from "@heroiclabs/nakama-js/dist/api.gen";
 import FOLDER from "./INSTANCE/FOLDER";
+import mongoose from "mongoose";
 class ITEM
 {
     private static table : string = "items";
@@ -64,12 +65,22 @@ class ITEM
 
         if( !folderID ) 
         {
-           let folder : any = await FOLDER.getOne({ avatarID:query.avatarID, type:"root" });
-           folderID = folder._id;
+            let folder : any = await FOLDER.getOne(
+            { 
+                avatarID:new mongoose.Types.ObjectId(query.values.avatarID), 
+                type:"root" 
+            });
+            folderID = folder._id;
         }
  
-        let item            = await DATA.set( this.table, query );
-        let itemID          = item._id;
+        let item            = await DATA.set( this.table, {
+            url: query.values.url,
+            avatarID: query.values.avatarID,
+            type: query.values.type,
+            folderID: folderID,
+            fileName: query.values.fileName
+        } );
+        let itemID          = item._id; 
  
         if( type == "text" ) await ITEM_TEXT.set(
         {
@@ -87,7 +98,9 @@ class ITEM
         { 
             avatarID    : query.values.avatarID,
             folderID    : folderID,
-            itemID      : itemID 
+            itemID      : itemID,
+            url         : query.values.url,
+            fileName    : query.values.fileName
         });
 
         return Promise.resolve( instance );

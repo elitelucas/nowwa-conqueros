@@ -79,11 +79,14 @@ class Google
                     personFields: 'names,emailAddresses'
                 });
                 let token = await AUTH.tokenize(userInfo.data.email!);
+                // TODO : change ' userInfo.data.email' with actual 'avatarID' for proxy login
                 let account:WEBAUTH.Account = {
+                    avatarID: userInfo.data.email!,
                     admin: false,
                     friend_count: contactInfo.data.totalPeople!,
                     username: userInfo.data.email!,
                     firstName: userInfo.data.name!,
+                    email: userInfo.data.email!,
                     token: token,
                     type: 'GOOGLE'
                 };

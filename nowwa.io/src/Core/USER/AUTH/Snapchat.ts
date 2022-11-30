@@ -101,7 +101,9 @@ class Snapchat
                             let name = secondResponse.data.me.displayName;
                             AUTH.tokenize(id)
                                 .then((token) => {
+                                    // TODO : change 'id' with actual 'avatarID' for proxy login
                                     let account:WEBAUTH.Account = {
+                                        avatarID: id,
                                         admin: false,
                                         friend_count: 0,
                                         username: id,

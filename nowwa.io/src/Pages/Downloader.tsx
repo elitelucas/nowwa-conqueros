@@ -8,7 +8,7 @@ import { UpdateComponentState } from './Utils/Helpers';
 export type DownloaderState = {
     initialized: boolean,
     isBusy: boolean,
-    files: string[],
+    files: ({ url: string, fileName: string } & {[key:string]:any})[],
     needRefresh: boolean
 }
 
@@ -39,14 +39,14 @@ const Downloader = (state: DownloaderState, setState: React.Dispatch<React.SetSt
     if (!state.initialized) {
         DownloaderInit().then((newState: DownloaderState) => {
             updateState(newState);
-            let ownerID:string = indexState.account!.avatarID;
-            CONQUER.FILE.list({
-                ownerID: ownerID
+            let avatarID:string = indexState.account!.avatarID;
+            CONQUER.FILE.get({
+                avatarID: avatarID
             })
                 .then((res) => {
                     updateState({
                         isBusy: false,
-                        files: res.result.files,
+                        files: res.result,
                         initialized: true
                     });
                 });
@@ -58,9 +58,9 @@ const Downloader = (state: DownloaderState, setState: React.Dispatch<React.SetSt
             isBusy: true,
             needRefresh: false
         });
-        let ownerID:string = indexState.account!.avatarID;
-        CONQUER.FILE.list({
-            ownerID: ownerID
+        let avatarID:string = indexState.account!.avatarID;
+        CONQUER.FILE.get({
+            avatarID: avatarID
         })
             .then((res) => {
                 updateState({
@@ -74,16 +74,16 @@ const Downloader = (state: DownloaderState, setState: React.Dispatch<React.SetSt
         refresh();
     }
 
-    const SelectFile = (filename: string) => {
-        CONQUER.FILE.download(filename);
+    const SelectFile = (url: string) => {
+        CONQUER.FILE.download(url);
     };
 
-    const EntryFile = (filename: string) => {
+    const EntryFile = (filename: string, url:string) => {
         return (
             <Table.Row key={filename}>
                 <Table.Cell collapsing>
                 </Table.Cell>
-                <Table.Cell onClick={() => { SelectFile(`${filename}`); }} selectable>
+                <Table.Cell onClick={() => { SelectFile(url); }} selectable>
                     <a href='#'>
                         <Icon color='black' name='file' />
                         {filename}
@@ -109,9 +109,9 @@ const Downloader = (state: DownloaderState, setState: React.Dispatch<React.SetSt
                     </Table.Header>
                     <Table.Body>
                         {(state.files && state.files.length > 0) ? 
-                            state.files.map((filename: string) => {
+                            state.files.map((entry: { url: string, fileName: string }) => {
                                 // console.log(`file: ${file}`);
-                                return EntryFile(`${filename}`);
+                                return EntryFile(entry.fileName, entry.url);
                             }) :
                             <></>
                         }

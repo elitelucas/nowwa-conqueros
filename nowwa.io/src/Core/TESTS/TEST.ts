@@ -2,6 +2,8 @@ import mongoose, { mongo } from "mongoose";
 import CONQUER from "../../Frontend/CONQUER";
 import WEBAUTH from "../../Frontend/User/WEBAUTH";
 import DATA from "../DATA/DATA";
+import FOLDER from "../ITEM/INSTANCE/FOLDER";
+import ITEM from "../ITEM/ITEM";
 import AUTH from "../USER/AUTH/AUTH";
 import EMAIL from "../USER/EMAIL";
 import AVATAR from "../USER/TRIBE/AVATAR";
@@ -56,11 +58,16 @@ class TEST {
 
             await CONQUER.init();
 
-            // let resultRegister = await CONQUER.AUTH.register({
+            // let result1 = await CONQUER.AUTH.set({
             //     username: "garibaldy.mukti@gmail.com",
             //     password: "1111"
             // });
-            // console.log( `resultRegister`, JSON.stringify( resultRegister, null, 2 ) );
+            // console.log( `result1`, JSON.stringify( result1, null, 2 ) );
+
+            // let result2 = await ITEM.get({
+            //     avatarID: new mongoose.Types.ObjectId("6386fde4f62e3f8e2d42ce8b")
+            // });
+            // console.log( `result2`, JSON.stringify( result2, null, 2 ) );
 
             // let resultLogin = await CONQUER.AUTH.username( {
             //     username: "garibaldy.mukti@gmail.com",

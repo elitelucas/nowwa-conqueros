@@ -30,8 +30,8 @@ class SocketInstance
         if (action == "AUTH.get") return map(AUTH.get(vars));
         if (action == "AUTH.getProxy") return map(AUTH.getProxy(vars));
         if (action == "AUTH.tokenize") return map(AUTH.tokenize(vars));
-        if (action == "FILE.upload") return map(FILE.set(vars));
-        if (action == "FILE.list") return map(FILE.list(vars));
+        if (action == "FILE.set") return map(FILE.set(vars));
+        if (action == "FILE.get") return map(FILE.get(vars));
 
         // FRIENDS.remove(asdas)
         // this person has permissions to do this 

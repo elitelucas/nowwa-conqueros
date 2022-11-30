@@ -82,7 +82,9 @@ class Twitter {
                     // console.log(`followers`, followers);
 
                     const token = await AUTH.tokenize(userObject.id);
+                    // TODO : change 'userObject.id' with actual 'avatarID' for proxy login
                     let account:WEBAUTH.Account = {
+                        avatarID: userObject.id,
                         admin: false,
                         friend_count: 0,
                         username: userObject.id,

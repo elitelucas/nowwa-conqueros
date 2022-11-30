@@ -1,4 +1,4 @@
-import { fileTempPath, storageUrl } from "../../Core/CONFIG/CONFIG";
+import { fileGet, fileTempPath, storageUrl } from "../../Core/CONFIG/CONFIG";
 import CONQUER from "../CONQUER";
 import COREFILE from '../../Core/CMS/FILE';
 
@@ -10,10 +10,9 @@ class FILE {
         return Promise.resolve();
     }
 
-    public async upload(params: COREFILE.UploadParams): Promise<any> {
-
-        // TODO : include conquer user id
-        return CONQUER.do("FILE.upload", params);
+    public async set(params: COREFILE.GetParams): Promise<any> 
+    {
+        return CONQUER.do("FILE.set", params);
 
         // return new Promise(async (resolve) => {
         //     let formData = new FormData();
@@ -37,39 +36,13 @@ class FILE {
         // });
     }
 
-    public async list(params:COREFILE.Ownership): Promise<any> {
-
-        // TODO : include conquer user id
-        // console.log('list started...');
-        return CONQUER.do("FILE.list", params);
-        // return new Promise(async (resolve) => {
-        //     CONQUER.do("FILE.list").then((outs)=>{
-        //         console.log(`outs`, outs);
-        //         resolve({
-        //             success: true,
-        //             files: []
-        //         });
-        //     });
-        // });
-
-        return new Promise(async (resolve) => {
-            fetch(`${window.location.origin}${storageUrl}${fileTempPath}`)
-                .then(res => res.json())
-                .then((res: any) => {
-                    resolve({
-                        success: res.success,
-                        files: res.files
-                    });
-                })
-                .catch((error: any) => {
-                    console.error(`error: ${error}`);
-                });
-        });
+    public async get(params:COREFILE.Ownership): Promise<any> {
+        return CONQUER.do("FILE.get", params);
     }
 
-    public download(filename: string): void {
+    public download(url: string): void { 
         var dlink = document.createElement('a');
-        dlink.href = `${window.location.origin}${fileTempPath}/${filename}`;
+        dlink.href = `${window.location.origin}${fileGet}/${url}`;
         dlink.target = '_blank';
         dlink.onclick = function (e) {
 

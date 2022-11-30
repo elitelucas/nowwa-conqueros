@@ -6,6 +6,7 @@ import EXPRESS from "../EXPRESS/EXPRESS";
 import DATA from "../DATA/DATA";
 import { file } from "googleapis/build/src/apis/file";
 import ITEM from "../ITEM/ITEM";
+import mongoose from "mongoose";
 
 class FILE 
 {
@@ -84,19 +85,78 @@ class FILE
         fs.writeFileSync(`${url}/${params.fileName}`, params.content as any);
 
         // FIX URL GARY!
-        let tmp = Object.entries({
-            fileName: params.fileName,
-            avatarID: params.avatarID
-        });
-        let searchParams:URLSearchParams = new URLSearchParams();
-        tmp.forEach(element => searchParams.append(element[0], element[1].toString()));
-        let directUrl:string = `${CONFIG.vars.PUBLIC_FULL_URL}${fileGet}?${searchParams.toString()}`;
+        let directUrl:string = `${params.avatarID}/${params.fileName}`;
 
         return Promise.resolve( directUrl );
     }
 
-    public static async list(params:{ avatarID:string }):Promise<any> 
+    /*=============== 
+
+
+    SET  
+
     {
+        name (filename),
+        content,
+        avatarID
+    }
+
+    ================*/
+
+    public static async set( params:FILE.GetParams):Promise<any> 
+    {
+        // FILE is uploaded by Avatar id
+        // FILE is stored on the dabase 
+
+        let url = await this.write(
+        {
+            fileName    : params.fileName,
+            content     : params.content,
+            avatarID    : params.avatarID
+        });
+
+        // CREATE ENTRY IN DATABASE
+
+        // video (mp4?)
+        // image (png, jpg, gif, whatever )
+        // zips
+
+        let instance = ITEM.set( {
+            avatarID: new mongoose.Types.ObjectId(params.avatarID),
+            url: url,
+            type: "file",
+            fileName: params.fileName
+        } );
+        
+        return Promise.resolve( instance );
+    }
+
+ 
+
+    /*=============== 
+
+
+    GET  
+ 
+
+    ================*/
+
+    // public static async get( query:any ) : Promise<any> 
+    // {
+    //     // If I receive the url, I can composite the web link and return it without consulting mongo
+
+    //     var file = DATA.get( this.table, query );
+       
+    //     return Promise.resolve( file );
+    // };
+
+    public static async get(params:{ avatarID:string }):Promise<any> 
+    {
+        let items = await ITEM.get({
+            avatarID: new mongoose.Types.ObjectId(params.avatarID),
+        });
+        return Promise.resolve(items);
+        /*
         let rootUrl:string = path.resolve(__dirname, '..', '..', '..', 'items');
         if (!fs.existsSync(rootUrl)) {
             fs.mkdirSync(rootUrl);
@@ -124,70 +184,8 @@ class FILE
 
         let output = {files: files, folders: urls};
         return Promise.resolve(output);
+        */
     } 
-
-    /*=============== 
-
-
-    SET  
-
-    {
-        name (filename),
-        content,
-        avatarID
-    }
-
-    ================*/
-
-    public static async set( params:FILE.UploadParams):Promise<any> 
-    {
-        // FILE is uploaded by Avatar id
-        // FILE is stored on the dabase 
-
-        let url = await this.write(
-        {
-            fileName    : params.fileName,
-            content     : params.content,
-            avatarID    : params.avatarID
-        });
-
-        // CREATE ENTRY IN DATABASE
-
-        // video (mp4?)
-        // image (png, jpg, gif, whatever )
-        // zips
-
-        var file = await DATA.set( this.table, 
-        {
-            name        : params.fileName,
-            avatarID    : params.avatarID,
-            url         : url,
-            type        : "file"
-        });
-
-        let instance = ITEM.set( file );
-
-        return Promise.resolve( instance );
-    }
-
- 
-
-    /*=============== 
-
-
-    GET  
- 
-
-    ================*/
-
-    public static async get( query:any ) : Promise<any> 
-    {
-        // If I receive the url, I can composite the web link and return it without consulting mongo
-
-        var file = DATA.get( this.table, query );
-       
-        return Promise.resolve( file );
-    };
 
 
     /*=============== 
@@ -203,9 +201,16 @@ class FILE
     public static webhookFileGet() {
         EXPRESS.app.use(`${fileGet}`, (req, res) => {
 
-            const { fileID, avatarID, fileName } = req.query;
-            let url: string = path.resolve( __dirname, '..', '..', '..', 'items', <string>avatarID, <string>fileName );
-            res.sendFile(url);
+            let paths:string[] = req.url.split('/');
+            if (paths[0] == '') paths.splice(0,1);
+            if (paths[paths.length - 1] == '') paths.splice(paths.length - 1,1);
+
+            let url: string = path.resolve( __dirname, '..', '..', '..', 'items', ...paths );
+            if (fs.existsSync(url)) {
+                res.sendFile(url);
+            } else {
+                res.status(404).send();
+            }
             
         });
     }
@@ -253,7 +258,7 @@ namespace FILE
         avatarID: string;
     };
 
-    export type UploadParams = Ownership & {
+    export type GetParams = Ownership & {
         fileName: string;
         content: File;
     };
