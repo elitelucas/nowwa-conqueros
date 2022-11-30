@@ -11,25 +11,35 @@ import mongoose from 'mongoose';
 import AUTH from './AUTH/AUTH';
 import EXPRESS from '../EXPRESS/EXPRESS';
 
-class EMAIL {
+class EMAIL 
+{
     private static table: string = "username_emails";
 
     private static emailSender: any;
     private static transporter: any;
 
-    public static async init() {
+    /*=============== 
+
+
+    INIT  
+    
+
+    ================*/
+
+    public static async init() 
+    {
         this.webhookEmailVerify();
 
         EMAIL.emailSender = `${CONFIG.vars.VERIFY_EMAIL_SENDER}`;
 
         EMAIL.transporter = nodemailer.createTransport(
-            {
-                service: 'gmail',
-                auth: {
-                    user: `${CONFIG.vars.VERIFY_EMAIL_SENDER}`,
-                    pass: `${CONFIG.vars.VERIFY_EMAIL_PASSWORD}`
-                }
-            });
+        {
+            service: 'gmail',
+            auth: {
+                user: `${CONFIG.vars.VERIFY_EMAIL_SENDER}`,
+                pass: `${CONFIG.vars.VERIFY_EMAIL_PASSWORD}`
+            }
+        });
 
         return Promise.resolve();
     };
@@ -42,7 +52,8 @@ class EMAIL {
 
     ================*/
 
-    public static async set(vars: any): Promise<any> {
+    public static async set(vars: any): Promise<any> 
+    {
         if (!STRING.validateEmail(vars.email)) return Promise.reject(LOG.msg('Email is invalid'));
 
         let email;
@@ -61,7 +72,9 @@ class EMAIL {
         return Promise.resolve(email);
     }
 
-    public static webhookEmailVerify() {
+ 
+    public static webhookEmailVerify() 
+    {
         EXPRESS.app.use(`${emailVerify}`, async (req, res) => {
 
             const { email, token } = req.query;
@@ -93,7 +106,8 @@ class EMAIL {
         });
     }
 
-    public static async requestVerification(email: string) {
+    public static async requestVerification(email: string) 
+    {
         let token = await AUTH.tokenize(email);
 
         console.log(`[Testing] : [EMAIL]: currently not sending any email when registering`);

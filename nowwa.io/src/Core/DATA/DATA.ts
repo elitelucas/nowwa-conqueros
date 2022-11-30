@@ -6,8 +6,12 @@ import LOG, { log, error } from '../../UTIL/LOG';
 import QUERY from '../../UTIL/QUERY';
 import { query } from 'express';
 import ARRAY from '../../UTIL/ARRAY';
+import Authentication from '../DEPRECATED/Authentication';
+ 
+ 
 
-class DATA {
+class DATA 
+{
     /*=============== 
 
 
@@ -16,7 +20,8 @@ class DATA {
 
     ================*/
 
-    public static async init(): Promise<void> {
+    public static async init(): Promise<void> 
+    {
         log(`init database...`);
 
         let uri: string = `mongodb+srv://${CONFIG.vars.MONGODB_USER}:${CONFIG.vars.MONGODB_PASS}@${CONFIG.vars.MONGODB_HOST}/${CONFIG.vars.MONGODB_DB}`;
@@ -56,14 +61,14 @@ class DATA {
 
         if ( vars.limit ) myQuery.limit( vars.limit );
 
-        let documents : mongoose.Document<any, any, any>[] = await myQuery.exec();
+        let documents   = await myQuery.exec();
 
         return Promise.resolve( ARRAY.getFields( documents, vars.values ) );
     }
 
     public static async getOne(tableName: string, query: any): Promise<any> 
     {
-        query = QUERY.get(query);
+        query           = QUERY.get(query);
         let model       = await TABLE_MODEL.get(tableName);
         let myQuery     = model.findOne(query.where);
         let document    = await myQuery.exec();
@@ -124,7 +129,8 @@ class DATA {
         return Promise.resolve(document);
     };
 
-    public static async reparent(tableName: string, newUID: any, oldUID: any): Promise<any> {
+    public static async reparent(tableName: string, newUID: any, oldUID: any): Promise<any> 
+    {
         let results = await DATA.change(tableName, { values: { uID: newUID }, where: { uID: oldUID } });
 
         return Promise.resolve(results);

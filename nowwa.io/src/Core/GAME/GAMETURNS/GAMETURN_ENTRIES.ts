@@ -1,6 +1,6 @@
-import DATA from "../DATA/DATA";
-import LOG, { log } from "../../UTIL/LOG";
-import ARRAY from "../../UTIL/ARRAY";
+import DATA from "../../DATA/DATA";
+import LOG, { log } from "../../../UTIL/LOG";
+import ARRAY from "../../../UTIL/ARRAY";
 import GAMETURN from "./GAMETURN";
 
 class GAMETURN_ENTRIES

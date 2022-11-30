@@ -58,11 +58,11 @@ class TOURNAMENT
         query.cummulative   = query.cummulative || false;
         query.recursive     = query.recursive || false;
  
-        let value           = await DATA.set( this.table, query );
+        let tournament      = await DATA.set( this.table, query );
 
-        let instance        = TOURNAMENT_INSTANCES.get({ tournamentID:value._id });
+        let instance        = TOURNAMENT_INSTANCES.get({ tournamentID:tournament._id });
 
-        return Promise.resolve( value );
+        return Promise.resolve( tournament );
     };
 
     /*=============== 

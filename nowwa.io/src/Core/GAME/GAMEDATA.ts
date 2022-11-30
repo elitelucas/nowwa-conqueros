@@ -9,6 +9,11 @@ class GAMEDATA
 
 
     GET  
+
+    {
+        gameID,
+        avatarID
+    }
     
 
     ================*/
@@ -47,7 +52,7 @@ class GAMEDATA
 
     public static async set( query:any ) : Promise<any>
     {
-        if( query.$vars )
+        if( query.$vars )// {coins:4, shields:4 }
         {
             for( var n in query.$vars ) await this.set({ avatarID:query.avatarID, gameID:query.gameID, name:query.$vars[n].name, value:query.$vars[n].value });
             return Promise.resolve();

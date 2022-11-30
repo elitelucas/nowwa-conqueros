@@ -1,10 +1,10 @@
-import DATA from "../DATA/DATA";
-import LOG, { log } from "../../UTIL/LOG";
-import ARRAY from "../../UTIL/ARRAY";
+import DATA from "../../DATA/DATA";
+import LOG, { log } from "../../../UTIL/LOG";
+import ARRAY from "../../../UTIL/ARRAY";
 
 class GAMETURN
 {
-    private static table: string = "game_turns";
+    private static table : string = "game_turns";
 
     /*=============== 
 
@@ -19,7 +19,7 @@ class GAMETURN
     {
         // needs a flag to not return turnData
 
-        query = { where:{ gameID:1, avatarID:2 }, values:{ } };
+        //query = { where:{ gameID:1, avatarID:2 }, values:{ } };
 
         let value = await DATA.get( this.table, query );
 
@@ -72,6 +72,7 @@ class GAMETURN
 
     CHANGE  
     
+
     {
         turnID,
         avatarID (sender),

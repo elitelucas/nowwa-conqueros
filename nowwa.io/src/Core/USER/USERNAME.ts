@@ -70,7 +70,10 @@ class USERNAME
         return Promise.resolve(results);
     }
 
-    public static async changeLastLogin(uID: any) {
+    // USERLOGIN.change 
+
+    public static async changeLastLogin(uID: any) 
+    {
         let user = await this.change(
             {
                 where: { _id: uID },
@@ -107,7 +110,8 @@ class USERNAME
 
     ================*/
 
-    public static async reparent(newUID: any, oldUID: any): Promise<any> {
+    public static async reparent(newUID: any, oldUID: any): Promise<any> 
+    {
         EMAIL.reparent(newUID, oldUID);
         USERNAME_PROXY.reparent(newUID, oldUID);
         USERNAME_CONTACTS.reparent(newUID, oldUID);
