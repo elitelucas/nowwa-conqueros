@@ -91,7 +91,7 @@ class Twitter {
                         type: 'TWITTER'
                     };
                     let searchParams:URLSearchParams = Object.assign(new URLSearchParams(), account);
-                    res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?info=loggedin&name=${userObject.username}&token=${token}&admin=false&id=${userObject.id}&friend_count=${followers.length}&source=twitter`);
+                    res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?info=loggedin&${searchParams.toString()}`);
                 })
                 .catch(() => res.status(403).send('Invalid verifier or access tokens!'));
         });

@@ -1,7 +1,7 @@
 import multer from "multer";
 import path from "path";
 import fs from 'fs';
-import { fileUpload } from "../CONFIG/CONFIG";
+import CONFIG, { fileGet, fileUpload } from "../CONFIG/CONFIG";
 import EXPRESS from "../EXPRESS/EXPRESS";
 import DATA from "../DATA/DATA";
 import { file } from "googleapis/build/src/apis/file";
@@ -39,36 +39,41 @@ class FILE
             }
         });
 
-        // this.webhookFileUpload();
+        this.webhookFileGet();
         return Promise.resolve();
     }
 
-    private static webhookFileUpload() 
+    // private static webhookFileUpload() 
+    // {
+    //     var upload = multer({ storage: this.storage });
+
+    //     EXPRESS.app.use( `${fileUpload}`, upload.array('files'), async( req, res ) => 
+    //     {
+    //         console.log( `<-- request upload` );
+
+    //         var files = req.files;
+    //         console.log( JSON.stringify(files) );
+
+    //         res.status( 200 ).send({ success: true });
+
+    //         // WRITE ENTRIES FOR FILES
+
+    //         for( let n in files )
+    //         {
+    //             // FILE.set( { } )
+    //         }
+
+    //     });
+    // }
+
+
+    private static async write( params:{ fileName: string, content:any, avatarID:string }):Promise<any> 
     {
-        var upload = multer({ storage: this.storage });
+        let rootUrl:string = path.resolve(__dirname, '..', '..', '..', 'items');
+        if (!fs.existsSync(rootUrl)) {
+            fs.mkdirSync(rootUrl);
+        }
 
-        EXPRESS.app.use( `${fileUpload}`, upload.array('files'), async( req, res ) => 
-        {
-            console.log( `<-- request upload` );
-
-            var files = req.files;
-            console.log( JSON.stringify(files) );
-
-            res.status( 200 ).send({ success: true });
-
-            // WRITE ENTRIES FOR FILES
-
-            for( let n in files )
-            {
-                // FILE.set( { } )
-            }
-
-        });
-    }
-
-
-    private static async write( params:{ filename: string, content:any, avatarID:string }):Promise<any> 
-    {
         let url: string = path.resolve( __dirname, '..', '..', '..', 'items', params.avatarID );
 
         if (!fs.existsSync(url)) 
@@ -76,17 +81,27 @@ class FILE
             fs.mkdirSync(url);
         }
 
-        fs.writeFileSync(`${url}/${params.filename}`, params.content as any);
+        fs.writeFileSync(`${url}/${params.fileName}`, params.content as any);
 
         // FIX URL GARY!
-        // 
+        let tmp = Object.entries({
+            fileName: params.fileName,
+            avatarID: params.avatarID
+        });
+        let searchParams:URLSearchParams = new URLSearchParams();
+        tmp.forEach(element => searchParams.append(element[0], element[1].toString()));
+        let directUrl:string = `${CONFIG.vars.PUBLIC_FULL_URL}${fileGet}?${searchParams.toString()}`;
 
-        return Promise.resolve( url );
+        return Promise.resolve( directUrl );
     }
 
     public static async list(params:{ avatarID:string }):Promise<any> 
     {
-        console.log(`list`, JSON.stringify(params, null, 2));
+        let rootUrl:string = path.resolve(__dirname, '..', '..', '..', 'items');
+        if (!fs.existsSync(rootUrl)) {
+            fs.mkdirSync(rootUrl);
+        }
+
         let url: string = path.resolve( __dirname, '..', '..', '..', 'items', params.avatarID );
         if (!fs.existsSync(url)) {
             fs.mkdirSync(url);
@@ -131,7 +146,7 @@ class FILE
 
         let url = await this.write(
         {
-            filename    : params.filename,
+            fileName    : params.fileName,
             content     : params.content,
             avatarID    : params.avatarID
         });
@@ -144,7 +159,7 @@ class FILE
 
         var file = await DATA.set( this.table, 
         {
-            name        : params.filename,
+            name        : params.fileName,
             avatarID    : params.avatarID,
             url         : url,
             type        : "file"
@@ -185,7 +200,15 @@ class FILE
 
     ================*/
 
+    public static webhookFileGet() {
+        EXPRESS.app.use(`${fileGet}`, (req, res) => {
 
+            const { fileID, avatarID, fileName } = req.query;
+            let url: string = path.resolve( __dirname, '..', '..', '..', 'items', <string>avatarID, <string>fileName );
+            res.sendFile(url);
+            
+        });
+    }
 
 
     /*=============== 
@@ -231,7 +254,7 @@ namespace FILE
     };
 
     export type UploadParams = Ownership & {
-        filename: string;
+        fileName: string;
         content: File;
     };
 }

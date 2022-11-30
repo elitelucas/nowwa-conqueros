@@ -195,6 +195,7 @@ export const authRegister: string = `/authRegister`;
 export const cronRun:string = `/cronRun`;
 
 export const fileUpload: string = `/fileUpload`;
+export const fileGet: string = `/fileGet`;
 export const fileTempPath: string = `/temp`;
 
 export const storageUrl: string = `/storage`;

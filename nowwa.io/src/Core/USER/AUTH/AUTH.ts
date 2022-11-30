@@ -5,13 +5,6 @@ import USERNAME from "../USERNAME";
 
 import WALLET from '../WALLET';
 import USERNAME_PROXY from '../USERNAME_PROXY';
-import LOG, { log } from '../../../UTIL/LOG';
-import Twitter from './Twitter';
-import Snapchat from './Snapchat';
-import Discord from './Discord';
-import Google from './Google';
-import EXPRESS from '../../EXPRESS/EXPRESS';
-import CONFIG, { authLinks, authLogin, authRegister, authTokenize, authVerify, emailVerify } from '../../CONFIG/CONFIG';
 
 import AVATAR from '../TRIBE/AVATAR';
 import mongoose from 'mongoose';

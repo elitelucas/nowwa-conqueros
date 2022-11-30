@@ -49,7 +49,7 @@ const Uploader = (state: UploaderState, setState: React.Dispatch<React.SetStateA
 
             await CONQUER.FILE.upload(
             {
-                filename: file.name,
+                fileName: file.name,
                 content: file,
                 avatarID: avatarID
             })
