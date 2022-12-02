@@ -15,12 +15,11 @@ class AUTH
 
         LOCALSTORAGE.init();
 
-        var guestUsername: string = "guest123";
-
         return Promise.resolve();
     }
 
-    public async login(type: string = "Guest"): Promise<any> {
+    public async login(type: string = "Guest"): Promise<any> 
+    {
         this.vars.type = type;
     };
 
@@ -30,15 +29,14 @@ class AUTH
         return CONQUER.do("AUTH.set", vars);
     }
  
-    public async guest(): Promise<any> {
-
+    public async guest(): Promise<any> 
+    {
         return this.login("Guest");
     };
 
-    public async logout(): Promise<any> {
-        return CONQUER.WEBAUTH.SetSessionStorage({
-            account: undefined
-        });
+    public remove()
+    {
+        LOCALSTORAGE.removeAccount();
     }
 
     public async get(params: { username: string, password: string }): Promise<any> 
@@ -54,7 +52,7 @@ class AUTH
         */
 
 
-        let response = CONQUER.do("AUTH.get", params);
+        let response : any = CONQUER.do("AUTH.get", params );
 
         /* 
         {
@@ -73,10 +71,17 @@ class AUTH
 
         */
 
+        LOCALSTORAGE.setAccount(
+        {
+            avatarID    : response.result.avatarID,
+            token       : response.result.token
+        });
+
         return response;
     }
 
-    public async register(params: { username: string, password: string }): Promise<any> {
+    public async register(params: { username: string, password: string }): Promise<any> 
+    {
         return CONQUER.do("AUTH.set", params);
     }
  

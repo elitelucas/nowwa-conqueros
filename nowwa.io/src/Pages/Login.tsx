@@ -5,6 +5,7 @@ import { Hash, UpdateComponentState } from './Utils/Helpers';
 import './Utils/Facebook';
 import CONQUER from '../Frontend/CONQUER';
 import WEBAUTH from '../Frontend/User/WEBAUTH';
+import LOCALSTORAGE from '../Frontend/UTILS/LOCALSTORAGE';
 
 export type LoginState = {
     initialized: boolean,
@@ -92,8 +93,9 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
                     password: state.password
                 });
                 
-                if (res.success) {
-                    let account:WEBAUTH.Account = 
+                if (res.success) 
+                {
+                    let account:LOCALSTORAGE.Account = 
                     {
                         admin           : res.result.admin,
                         friend_count    : res.result.friend_count,
@@ -104,9 +106,8 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
                         username        : res.result.avatarID
                     };
                     
-                    await CONQUER.WEBAUTH.SetSessionStorage({
-                        account: account
-                    });
+                    LOCALSTORAGE.setAccount( account );
+ 
                     updateState({
                         isBusy: false,
                         warning: '',

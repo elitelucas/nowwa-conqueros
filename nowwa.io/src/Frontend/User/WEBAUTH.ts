@@ -2,101 +2,39 @@ import { authLinks, authLogin, authRegister, authVerify } from "../../Core/CONFI
 import AUTH from "./AUTH";
 import { log } from "../../UTIL/LOG";
 import CONQUER from "../CONQUER";
+import LOCALSTORAGE from "../UTILS/LOCALSTORAGE";
 
 class WEBAUTH 
 {
-    public SearchParams     : { [key: string]: any } = {};
-    public SessionStorage   : { [key: string]: any } & { account?: WEBAUTH.Account } = {};
-
+ 
     // Move all social stuff here
-    private vars: { [key: string]: any } & {
-        twitter?: string,
-        discord?: string,
-        google?: string,
-        snapchat?: string,
-        facebook?: boolean
+    private vars: { [key: string]: any } & 
+    {
+        twitter?    : string,
+        discord?    : string,
+        google?     : string,
+        snapchat?   : string,
+        facebook?   : boolean
     } = {};
 
-    public async init(): Promise<any> {
-        /*
-        Get session, from cookie?
-        If session exists, login via backdoor?
-        If session expired, log in as guest
-        */
-        await this.ParseUrlSearchParams();
-        await this.CheckSessionStorage();
-
+    public async init(): Promise<any> 
+    {
         await this.redirect();
         await this.authLinks();
         return Promise.resolve();
     }
-
-    public async SetSessionStorage(params:{[key:string]:any}):Promise<void> {
-        this.SessionStorage = {
-            ...this.SessionStorage,
-            ...params
-        };
-
-        if (typeof window != 'undefined') {
-            window.sessionStorage.setItem('conquer', JSON.stringify(this.SessionStorage));
-        }
-        return Promise.resolve();
-
-    }
-
-    private async CheckSessionStorage():Promise<void> 
+ 
+    private async redirect(): Promise<void> 
     {
-
-        let params: { [key: string]: any } = {};
-
-        if (typeof window != 'undefined') {
-
-            let tmp = window.sessionStorage.getItem('conquer');
-            if (tmp != null) {
-                params = JSON.parse(tmp);
-            }
-        }
-
-        this.SessionStorage = params;
-        return Promise.resolve();
-    }
-
-    private async ParseUrlSearchParams(): Promise<void> 
-    {
-        let params: { [key: string]: any } = {};
-
-        if (typeof window != 'undefined') {
-
-            new URL(window.location.href).searchParams.forEach(function (val, key) 
-            {
-                if (params[key] !== undefined) {
-                    if (!Array.isArray(params[key])) {
-                        params[key] = [params[key]];
-                    }
-                    params[key].push(val);
-                } else {
-                    params[key] = val;
-                }
-            });
-        
-            window.history.pushState(params, "", `${window.location.origin}`);
-
-        }
-
-        this.SearchParams = params;
-        return Promise.resolve();
-    }
-
-    private async redirect(): Promise<void> {
-
         // TODO : actually redirect to specific site after verifying the credentials
         // e.g. redirect to nowwa.io
-        let params = this.SearchParams;
+        let params = LOCALSTORAGE.searchParams;
 
-        if (params.source) {
-
+        if( params.source ) 
+        {
             log(`[${params.source}] verifying user...`);
-            let authVerifyResponse = await new Promise<any>((resolve, reject) => {
+            let authVerifyResponse = await new Promise<any>((resolve, reject) => 
+            {
                 let authVerifyUrl: URL = new URL(`${window.location.origin}${authVerify}`);
                 let authVerifyRequest: RequestInit = {
                     method: "POST",
@@ -121,20 +59,22 @@ class WEBAUTH
 
             log(`[${params.source}] verified: ${authVerifyResponse && authVerifyResponse.valid}!`);
 
-            if (authVerifyResponse.success) {
-                if (authVerifyResponse.valid) {
+            if (authVerifyResponse.success) 
+            {
+                if (authVerifyResponse.valid) 
+                {
                     // TODO : change 'params.id' with actual 'avatarID' for proxy login
-                    let account:WEBAUTH.Account = 
+                    let account:LOCALSTORAGE.Account = 
                     {
-                        avatarID    : params.id,
-                        username    : params.id,
-                        friend_count: parseInt(params.friend_count as string || "0"),
-                        admin       : params.admin as string == 'true',
-                        firstName   : params.name,
-                        email       : params.email,
-                        wallet      : params.wallet,
-                        token       : params.token, // made by us 
-                        type        : params.source // GOOGLE, DISCORD, SNAPCHAT, TWITTER
+                        avatarID        : params.id,
+                        username        : params.id,
+                        friend_count    : parseInt(params.friend_count as string || "0"),
+                        admin           : params.admin as string == 'true',
+                        firstName       : params.name,
+                        email           : params.email,
+                        wallet          : params.wallet,
+                        token           : params.token, // made by us 
+                        type            : params.source // GOOGLE, DISCORD, SNAPCHAT, TWITTER
 
                         /*
                             have this contain
@@ -152,20 +92,21 @@ class WEBAUTH
                             FACEBOOK username: userID
                         */
                     };
-                    CONQUER.WEBAUTH.SetSessionStorage({
-                        account: account
-                    });
+
+                    LOCALSTORAGE.setAccount( account );
                 }
             }
         }
         return Promise.resolve();
     }
 
-    private async authLinks(): Promise<void> {
-
-        if (typeof window != 'undefined') {
-
-            let authLinkResponse = await new Promise<any>((resolve, reject) => {
+ 
+    private async authLinks(): Promise<void> 
+    {
+        if (typeof window != 'undefined') 
+        {
+            let authLinkResponse = await new Promise<any>((resolve, reject) => 
+            {
                 let authLinksUrl: URL = new URL(`${window.location.origin}${authLinks}`);
                 let authLinksRequest: RequestInit = {
                     method: "POST",
@@ -190,35 +131,43 @@ class WEBAUTH
         }
     }
 
-    public async discord(): Promise<any> {
+    public async discord(): Promise<any> 
+    {
         window.open(this.vars.discord, "_self");
     }
 
-    public async twitter(): Promise<any> {
+    public async twitter(): Promise<any> 
+    {
         window.open(this.vars.twitter, "_self");
     };
 
-    public async snapchat(): Promise<any> {
+    public async snapchat(): Promise<any> 
+    {
         window.open(this.vars.snapchat, "_self");
     };
 
-    public async google(): Promise<any> {
+    public async google(): Promise<any> 
+    {
         window.open(this.vars.google, "_self");
     }
 
-    public async metamask(): Promise<any> {
+    public async metamask(): Promise<any> 
+    {
         let self = this;
         let ethereum = (window as any).ethereum;
         if (!ethereum) {
             alert('install metamask wallet first!');
         } else {
             try {
-                let address = await new Promise<string>((resolve, reject) => {
+                let address = await new Promise<string>((resolve, reject) => 
+                {
                     (window as any).ethereum
-                        .request({
+                        .request(
+                        {
                             method: "eth_requestAccounts",
                         })
-                        .then((accounts: string[]) => {
+                        .then((accounts: string[]) => 
+                        {
                             let address = accounts[0];
                             resolve(address);
                         })
@@ -230,29 +179,32 @@ class WEBAUTH
                 let token = await this.tokenize( <string>address );
 
                 // TODO : change 'address' with actual 'avatarID' for proxy login
-                let account:WEBAUTH.Account = {
-                    avatarID: address,
-                    admin: false,
-                    username: address, 
-                    firstName: address,
-                    wallet: address,
-                    token: token,
-                    friend_count: 0,
-                    type: 'METAMASK'
+                let account:LOCALSTORAGE.Account = 
+                {
+                    avatarID        : address,
+                    admin           : false,
+                    username        : address, 
+                    firstName       : address,
+                    wallet          : address,
+                    token           : token,
+                    friend_count    : 0,
+                    type            : 'METAMASK'
                 };
 
-                CONQUER.WEBAUTH.SetSessionStorage({
-                    account: account,
+                LOCALSTORAGE.setAccount( account );
+
+                return Promise.resolve(
+                {
+                    success : true,
+                    account : account
                 });
 
-                return Promise.resolve({
-                    success: true,
-                    account: account
-                });
-            } catch (error) {
-                return Promise.resolve({
-                    success: false,
-                    account: error
+            } catch (error) 
+            {
+                return Promise.resolve(
+                {
+                    success : false,
+                    account : error
                 });
             }
         }
@@ -329,7 +281,8 @@ class WEBAUTH
             let token = await this.tokenize( userInfo.email as string ); 
 
             // TODO : change 'userInfo.email' with actual 'avatarID' for proxy login
-            let account:WEBAUTH.Account = {
+            let account:LOCALSTORAGE.Account =
+            {
                 avatarID: userInfo.email,
                 admin: false,
                 username: userInfo.email,
@@ -339,9 +292,9 @@ class WEBAUTH
                 friend_count: contactInfo.summary.total_count,
                 type: 'FACEBOOK'
             };
-            CONQUER.WEBAUTH.SetSessionStorage({
-                account: account
-            });
+ 
+            LOCALSTORAGE.setAccount( account );
+ 
             resolve({
                 success: true,
                 account: account
@@ -410,25 +363,5 @@ class WEBAUTH
     }
 }
 
-namespace WEBAUTH {
-
-    export type Account = {
-        avatarID:string,
-        username: string,
-        token: string,
-        admin: boolean,
-        friend_count: number,
-        type: 'DISCORD' | 'FACEBOOK' | 'TWITTER' | 'GOOGLE' | 'SNAPCHAT' | 'CONQUER' | 'METAMASK',
-        email?:string,
-        wallet?:string,
-        firstName:string
-    }
-    export const CreateSearchParams = (account:Account) => {
-        let tmp = Object.entries(account);
-        let searchParams:URLSearchParams = new URLSearchParams();
-        tmp.forEach(element => searchParams.append(element[0], element[1].toString()));
-        return searchParams;
-    };
-}
-
+ 
 export default WEBAUTH;

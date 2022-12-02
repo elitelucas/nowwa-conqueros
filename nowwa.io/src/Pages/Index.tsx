@@ -14,12 +14,13 @@ import CONQUER from '../Frontend/CONQUER';
 import Uploader, { UploaderStateDefault } from './Uploader';
 import Downloader, { DownloaderState, DownloaderStateDefault } from './Downloader';
 import WEBAUTH from '../Frontend/User/WEBAUTH';
+import LOCALSTORAGE from '../Frontend/UTILS/LOCALSTORAGE';
 
 type IndexDisplay = 'None' | 'Explorer' | 'Build' | 'Test' | 'Login' | 'Register' | 'Home';
 
 export type IndexState = ComponentState & {
     display: IndexDisplay,
-    account?: WEBAUTH.Account,
+    account?: LOCALSTORAGE.Account,
     message: string,
     params?: { [key: string]: any }
 };
@@ -96,14 +97,16 @@ const Index = () => {
             LoadScripts(scriptUrls).then(() => {
                 
             });
-            loadConquer().then(() => {
-                let params = CONQUER.WEBAUTH.SearchParams;
+            loadConquer().then(() => 
+            {
+                let params = LOCALSTORAGE.searchParams;
                 console.log('done load conquer');
                 console.log(`params`, params);
 
-                let account = CONQUER.WEBAUTH.SessionStorage.account;
+                let account = LOCALSTORAGE.account;
 
-                if (account) {
+                if (account) 
+                {
                     updateState({
                         display: 'Home',
                         account: account
