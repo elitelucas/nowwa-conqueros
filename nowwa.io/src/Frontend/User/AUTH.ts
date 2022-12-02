@@ -1,6 +1,8 @@
 import CONQUER from '../CONQUER';
+import LOCALSTORAGE from '../UTILS/LOCALSTORAGE';
 
-class AUTH {
+class AUTH 
+{
     private vars: { [key: string]: any } = {};
 
     public async init(): Promise<any> 
@@ -10,6 +12,8 @@ class AUTH {
         If session exists, login via backdoor?
         If session expired, log in as guest
         */
+
+        LOCALSTORAGE.init();
 
         var guestUsername: string = "guest123";
 

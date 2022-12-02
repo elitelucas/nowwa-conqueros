@@ -1,6 +1,30 @@
-class COOKIE
+class LOCALSTORAGE
 {
-    public static load = function( key:string ) : any
+
+    /*=============== 
+
+
+    INIT
+    
+
+    ================*/
+
+    public static async init() : Promise<any>
+    {
+
+        return Promise.resolve();
+    }
+
+
+    /*=============== 
+
+
+    GET
+    
+
+    ================*/
+
+    public static get = function( key:string ) : any
     {	
         var name            = key + "=";
         var ca              = decodeURIComponent( document.cookie ).split(';');
@@ -24,12 +48,23 @@ class COOKIE
  
    		return result;
     };
- 
-    public static save = function( key:string, _value:any ) 
+
+
+    /*=============== 
+
+
+    SET
+    
+
+    ================*/
+
+    public static set = function( key:string, _value:any ) 
     {
         document.cookie = key + "=" + escape( _value ) + ";path=/";
      //   log("SAVE COOKIE", value );
     };
+ 
+
 }
 
-export default COOKIE;
+export default LOCALSTORAGE;

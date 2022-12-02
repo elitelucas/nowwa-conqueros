@@ -3,10 +3,10 @@ import AUTH from "./AUTH";
 import { log } from "../../UTIL/LOG";
 import CONQUER from "../CONQUER";
 
-class WEBAUTH {
-
-    public SearchParams: { [key: string]: any } = {};
-    public SessionStorage: { [key: string]: any } & { account?: WEBAUTH.Account } = {};
+class WEBAUTH 
+{
+    public SearchParams     : { [key: string]: any } = {};
+    public SessionStorage   : { [key: string]: any } & { account?: WEBAUTH.Account } = {};
 
     // Move all social stuff here
     private vars: { [key: string]: any } & {

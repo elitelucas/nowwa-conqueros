@@ -9,7 +9,8 @@ import USERNAME_PROXY from '../USERNAME_PROXY';
 import AVATAR from '../TRIBE/AVATAR';
 import mongoose from 'mongoose';
 
-class AUTH {
+class AUTH 
+{
     /*=============== 
 
 
