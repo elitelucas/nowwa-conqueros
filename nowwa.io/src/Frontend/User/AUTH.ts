@@ -39,7 +39,7 @@ class AUTH
         LOCALSTORAGE.removeAccount();
     }
 
-    public async get(params: { username: string, password: string }): Promise<any> 
+    public async get( params: { username: string, password: string }): Promise<any> 
     {
         /*
 

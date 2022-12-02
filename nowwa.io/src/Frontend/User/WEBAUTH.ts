@@ -33,18 +33,21 @@ class WEBAUTH
         if( params.source ) 
         {
             log(`[${params.source}] verifying user...`);
+
             let authVerifyResponse = await new Promise<any>((resolve, reject) => 
             {
-                let authVerifyUrl: URL = new URL(`${window.location.origin}${authVerify}`);
-                let authVerifyRequest: RequestInit = {
-                    method: "POST",
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(
-                        {
-                            id: params.id,
-                            token: params.token
-                        })
+                let authVerifyUrl       : URL = new URL(`${window.location.origin}${authVerify}`);
+                let authVerifyRequest   : RequestInit = 
+                {
+                    method  : "POST",
+                    headers : { 'Content-Type': 'application/json' },
+                    body    : JSON.stringify(
+                    {
+                        id      : params.id,
+                        token   : params.token
+                    })
                 };
+
                 fetch(authVerifyUrl, authVerifyRequest)
                     .then(authVerifyResponse => authVerifyResponse.json())
                     .then((authVerifyResponse: any) => {
@@ -107,11 +110,11 @@ class WEBAUTH
         {
             let authLinkResponse = await new Promise<any>((resolve, reject) => 
             {
-                let authLinksUrl: URL = new URL(`${window.location.origin}${authLinks}`);
-                let authLinksRequest: RequestInit = {
-                    method: "POST",
-                    headers: { 'Content-Type': 'application/json' },
-                    body: '{}'
+                let authLinksUrl        : URL = new URL(`${window.location.origin}${authLinks}`);
+                let authLinksRequest    : RequestInit = {
+                    method              : "POST",
+                    headers             : { 'Content-Type': 'application/json' },
+                    body                : '{}'
                 };
                 fetch(authLinksUrl, authLinksRequest)
                     .then(authLinkResponse => authLinkResponse.json())
@@ -124,10 +127,10 @@ class WEBAUTH
                     });
 
             });
-            this.vars.twitter = authLinkResponse.twitter;
-            this.vars.discord = authLinkResponse.discord;
-            this.vars.google = authLinkResponse.google;
-            this.vars.snapchat = authLinkResponse.snapchat;
+            this.vars.twitter   = authLinkResponse.twitter;
+            this.vars.discord   = authLinkResponse.discord;
+            this.vars.google    = authLinkResponse.google;
+            this.vars.snapchat  = authLinkResponse.snapchat;
         }
     }
 
@@ -153,9 +156,11 @@ class WEBAUTH
 
     public async metamask(): Promise<any> 
     {
-        let self = this;
-        let ethereum = (window as any).ethereum;
-        if (!ethereum) {
+        let self        = this;
+        let ethereum    = (window as any).ethereum;
+
+        if (!ethereum) 
+        {
             alert('install metamask wallet first!');
         } else {
             try {
@@ -179,7 +184,7 @@ class WEBAUTH
                 let token = await this.tokenize( <string>address );
 
                 // TODO : change 'address' with actual 'avatarID' for proxy login
-                let account:LOCALSTORAGE.Account = 
+                let account : LOCALSTORAGE.Account = 
                 {
                     avatarID        : address,
                     admin           : false,
@@ -199,7 +204,7 @@ class WEBAUTH
                     account : account
                 });
 
-            } catch (error) 
+            } catch( error ) 
             {
                 return Promise.resolve(
                 {
@@ -210,24 +215,26 @@ class WEBAUTH
         }
     }
 
-    public async facebook(): Promise<any> {
-
-        var self = this;
-
-        return new Promise(async (resolve, reject) => {
-            if (!this.vars.facebook) {
-                await new Promise<void>((resolve, reject) => {
-
-                    let facebookScript = document.createElement('script');
-                    facebookScript.type = 'text/javascript';
-                    facebookScript.src = 'https://connect.facebook.net/en_US/sdk.js';
-                    facebookScript.async = true;
-                    facebookScript.defer = true;
+    public async facebook(): Promise<any> 
+    {
+        return new Promise(async (resolve, reject) => 
+        {
+            if (!this.vars.facebook) 
+            {
+                await new Promise<void>((resolve, reject) => 
+                {
+                    let facebookScript      = document.createElement('script');
+                    facebookScript.type     = 'text/javascript';
+                    facebookScript.src      = 'https://connect.facebook.net/en_US/sdk.js';
+                    facebookScript.async    = true;
+                    facebookScript.defer    = true;
 
                     facebookScript.onload = () => {
 
-                        let facebookAppId: string = `2303120786519319`;
-                        FB.init({
+                        let facebookAppId: string = `2303120786519319`
+                        
+                        FB.init(
+                        {
                             appId: facebookAppId,
                             autoLogAppEvents: true,
                             xfbml: true,
@@ -242,8 +249,10 @@ class WEBAUTH
                 this.vars.facebook = true;
             }
 
-            let loginStatus = await new Promise<fb.StatusResponse>((resolve, reject) => {
-                FB.getLoginStatus((loginStatus) => {
+            let loginStatus = await new Promise<fb.StatusResponse>((resolve, reject) => 
+            {
+                FB.getLoginStatus((loginStatus) => 
+                {
                     // console.log(`loginStatus`, JSON.stringify(loginStatus, null, 4));
                     // statusChangeCallback(response);
                     resolve(loginStatus);
@@ -251,53 +260,61 @@ class WEBAUTH
             });
 
             let authResponse = loginStatus.authResponse;
-            if (!authResponse) {
-                authResponse = await new Promise<fb.AuthResponse>((resolve, reject) => {
-                    FB.login((loginResponse: fb.StatusResponse) => {
+
+            if (!authResponse) 
+            {
+                authResponse = await new Promise<fb.AuthResponse>((resolve, reject) => 
+                {
+                    FB.login((loginResponse: fb.StatusResponse) => 
+                    {
                         resolve(loginResponse.authResponse);
                     }, { scope: 'public_profile,email,user_friends' });
                 });
             }
 
-            let fields: string[] = [
+            let fields: string[] = 
+            [
                 'name',
                 'email',
             ];
 
-            let apiResponse1 = await new Promise<fb.StatusResponse>((resolve, reject) => {
+            let apiResponse1 = await new Promise<fb.StatusResponse>((resolve, reject) => 
+            {
                 FB.api('/me', { fields: fields.join(', ') }, (apiResponse1: any) => {
                     resolve(apiResponse1);
                 });
             });
 
-            let apiResponse2 = await new Promise<fb.StatusResponse>((resolve, reject) => {
-                FB.api('/me/friends', {}, (apiResponse2: any) => {
+            let apiResponse2 = await new Promise<fb.StatusResponse>((resolve, reject) => 
+            {
+                FB.api('/me/friends', {}, (apiResponse2: any) => 
+                {
                     resolve(apiResponse2);
                 });
             });
 
-            let userInfo = apiResponse1 as any;
+            let userInfo    = apiResponse1 as any;
             let contactInfo = apiResponse2 as any;
-            let token = await this.tokenize( userInfo.email as string ); 
+            let token       = await this.tokenize( userInfo.email as string ); 
 
             // TODO : change 'userInfo.email' with actual 'avatarID' for proxy login
-            let account:LOCALSTORAGE.Account =
+            let account : LOCALSTORAGE.Account =
             {
-                avatarID: userInfo.email,
-                admin: false,
-                username: userInfo.email,
-                email: userInfo.email,
-                firstName: userInfo.name,
-                token: token,
-                friend_count: contactInfo.summary.total_count,
-                type: 'FACEBOOK'
+                avatarID        : userInfo.email,
+                admin           : false,
+                username        : userInfo.email,
+                email           : userInfo.email,
+                firstName       : userInfo.name,
+                token           : token,
+                friend_count    : contactInfo.summary.total_count,
+                type            : 'FACEBOOK'
             };
  
             LOCALSTORAGE.setAccount( account );
  
             resolve({
-                success: true,
-                account: account
+                success : true,
+                account : account
             });
         });
     }
@@ -306,61 +323,6 @@ class WEBAUTH
     {
         return CONQUER.do( "CRYPT.tokenize", string )
     };
-
-    public async oldUsername(params: { email: string, password: string }): Promise<any> {
-        return new Promise(async (resolve) => {
-            let url: URL = new URL(`${window.location.origin}${authLogin}`);
-            let init: RequestInit = {
-                method: "POST",
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    email: params.email,
-                    password: params.password
-                })
-            };
-            fetch(url, init)
-                .then(res => res.json())
-                .then((res: any) => {
-                    // console.log(`login response: ${JSON.stringify(res)}`);
-                    resolve({
-                        success: res.success,
-                        account: res.account,
-                        error: res.error
-                    });
-                })
-                .catch((error: any) => {
-                    console.error(`error: ${error}`);
-                });
-        });
-    }
-
-    public async oldRegister(params: { email: string, password: string }): Promise<any> {
-        return new Promise((resolve, reject) => {
-            let url: URL = new URL(`${window.location.origin}${authRegister}`);
-            let init: RequestInit = {
-                method: "POST",
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    email: params.email,
-                    password: params.password
-                })
-            };
-            fetch(url, init)
-                .then(res => res.json())
-                .then((res: any) => {
-                    resolve({
-                        success: res.success,
-                        error: res.error
-                    });
-                })
-                .catch((error: any) => {
-                    resolve({
-                        success: false,
-                        error: error.message
-                    });
-                });
-        });
-    }
 }
 
  
