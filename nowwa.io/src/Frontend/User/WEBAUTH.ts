@@ -133,7 +133,7 @@ class WEBAUTH {
                         firstName   : params.name,
                         email       : params.email,
                         wallet      : params.wallet,
-                        token       : params.token,
+                        token       : params.token, // made by us 
                         type        : params.source // GOOGLE, DISCORD, SNAPCHAT, TWITTER
 
                         /*
@@ -227,7 +227,7 @@ class WEBAUTH {
                         });
                 });
 
-                let token = await CONQUER.AUTH.tokenize(<string>address);
+                let token = await this.tokenize( <string>address );
 
                 // TODO : change 'address' with actual 'avatarID' for proxy login
                 let account:WEBAUTH.Account = {
@@ -326,7 +326,7 @@ class WEBAUTH {
 
             let userInfo = apiResponse1 as any;
             let contactInfo = apiResponse2 as any;
-            let token = await CONQUER.AUTH.tokenize(userInfo.email as string);
+            let token = await this.tokenize( userInfo.email as string ); 
 
             // TODO : change 'userInfo.email' with actual 'avatarID' for proxy login
             let account:WEBAUTH.Account = {
@@ -348,6 +348,11 @@ class WEBAUTH {
             });
         });
     }
+
+    private async tokenize( string:string ) : Promise<any> 
+    {
+        return CONQUER.do( "CRYPT.tokenize", string )
+    };
 
     public async oldUsername(params: { email: string, password: string }): Promise<any> {
         return new Promise(async (resolve) => {

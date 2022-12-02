@@ -78,7 +78,7 @@ class EMAIL
         EXPRESS.app.use(`${emailVerify}`, async (req, res) => {
 
             const { email, token } = req.query;
-            let isMatch: boolean = await AUTH.verify(<string>email, <string>token);
+            let isMatch: boolean = await CRYPT.verify(<string>email, <string>token);
 
             if (isMatch) {
                 await this.change({
@@ -108,7 +108,7 @@ class EMAIL
 
     public static async requestVerification(email: string) 
     {
-        let token = await AUTH.tokenize(email);
+        let token = await CRYPT.tokenize(email);
 
         console.log(`[Testing] : [EMAIL]: currently not sending any email when registering`);
         return;
@@ -179,12 +179,14 @@ class EMAIL
 
     ================*/
 
-    public static async change(query: any): Promise<any> {
+    public static async change(query: any): Promise<any> 
+    {
         let results = DATA.change(EMAIL.table, query);
         return Promise.resolve(results);
     }
 
-    public static async reparent(newUID: any, oldUID: any): Promise<any> {
+    public static async reparent(newUID: any, oldUID: any): Promise<any> 
+    {
         let results = await DATA.reparent(EMAIL.table, newUID, oldUID);
 
         return Promise.resolve(results);

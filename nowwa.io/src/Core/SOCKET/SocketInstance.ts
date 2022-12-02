@@ -1,5 +1,6 @@
 
 import { Socket } from "socket.io"
+import CRYPT from "../../UTIL/CRYPT";
 import LOG, { log } from "../../UTIL/LOG";
 import FILE from "../CMS/FILE";
 import AUTH from "../USER/AUTH/AUTH";
@@ -29,7 +30,7 @@ class SocketInstance
         if (action == "AUTH.set") return map( AUTH.set(vars) );
         if (action == "AUTH.get") return map(AUTH.get(vars));
         if (action == "AUTH.getProxy") return map(AUTH.getProxy(vars));
-        if (action == "AUTH.tokenize") return map(AUTH.tokenize(vars));
+        if (action == "CRYPT.tokenize") return map(CRYPT.tokenize(vars));
         if (action == "FILE.set") return map(FILE.set(vars));
         if (action == "FILE.get") return map(FILE.get(vars));
 

@@ -7,6 +7,7 @@ import Snapchat from "./Snapchat";
 import Twitter from "./Twitter";
 
 import dotenv from 'dotenv';
+import CRYPT from "../../../UTIL/CRYPT";
 
 dotenv.config(); 
 
@@ -40,11 +41,13 @@ class SOCIALAUTH {
         });
     }
 
-    public static webhookAuthVerify() {
-        EXPRESS.app.use(`${authVerify}`, async (req, res) => {
-            let id: string = <string>req.body.id;
+    public static webhookAuthVerify() 
+    {
+        EXPRESS.app.use(`${authVerify}`, async (req, res) =>
+        {
+            let avatarID: string = <string>req.body.avatarID;
             let token: string = <string>req.body.token;
-            let isMatch: boolean = await AUTH.verify(id, token);
+            let isMatch: boolean = await CRYPT.verify(avatarID, token);
             res.status(200).send({
                 success: true,
                 valid: isMatch
@@ -100,7 +103,7 @@ class SOCIALAUTH {
                         error: (<Error>err).message
                     });
             } else {
-                let token: string = await AUTH.tokenize(user.username);
+                let token: string = await CRYPT.tokenize(user.username);
                 res.send(
                     {
                         success: true,

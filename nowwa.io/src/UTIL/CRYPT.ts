@@ -26,6 +26,22 @@ class CRYPT
         });
     }
 
+    public static async verify(value: string, token: string): Promise<boolean> 
+    {
+        let secret: string = <string>process.env.EXPRESS_SECRET;
+        let input: string = `${value}|${secret}`;
+
+        return this.match(input, token);
+    }
+
+    public static async tokenize(value: string): Promise<string> 
+    {
+        let secret: string = <string>process.env.EXPRESS_SECRET;
+        let input: string = `${value}|${secret}`;
+
+        return this.hash(input);
+    }
+
     
 };
 

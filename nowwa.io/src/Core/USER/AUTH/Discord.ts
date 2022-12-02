@@ -1,6 +1,7 @@
 import express from 'express';
 import fetch, { RequestInit } from 'node-fetch';
 import WEBAUTH from '../../../Frontend/User/WEBAUTH';
+import CRYPT from '../../../UTIL/CRYPT';
 import CONFIG, { discordAuthUrl, discordCallbackUrl } from '../../CONFIG/CONFIG';
 import EXPRESS from '../../EXPRESS/EXPRESS';
 import AUTH from './AUTH';
@@ -90,7 +91,7 @@ class Discord
                                 .then(result => result.json())
                                 .then(thirdResponse => {
                                     console.log(`thirdResponse`, JSON.stringify(thirdResponse, null, 4));
-                                    AUTH.tokenize(secondResponse.email)
+                                    CRYPT.tokenize(secondResponse.email)
                                         .then((token) => {
                                             // TODO : change 'secondResponse.email' with actual 'avatarID' for proxy login
                                             let account:WEBAUTH.Account = {

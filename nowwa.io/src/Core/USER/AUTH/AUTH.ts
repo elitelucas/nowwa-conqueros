@@ -80,7 +80,7 @@ class AUTH {
 
         let avatar = await AVATAR.getOne({ uID: new mongoose.Types.ObjectId(uID), isMain: true });
 
-        let token = await AUTH.tokenize(uID);
+        let token = await CRYPT.tokenize(uID);
 
         return Promise.resolve({
             //...avatar._doc,
@@ -142,22 +142,7 @@ class AUTH {
 
         return Promise.resolve();
     };
-
-    public static async verify(value: string, token: string): Promise<boolean> {
-        let secret: string = <string>process.env.EXPRESS_SECRET;
-        let input: string = `${value}|${secret}`;
-
-        return CRYPT.match(input, token);
-    }
-
-    public static async tokenize(value: string): Promise<string> {
-        let secret: string = <string>process.env.EXPRESS_SECRET;
-        let input: string = `${value}|${secret}`;
-
-        return CRYPT.hash(input);
-    }
  
-
 };
 
 

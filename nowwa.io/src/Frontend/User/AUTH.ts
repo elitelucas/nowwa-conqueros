@@ -37,17 +37,45 @@ class AUTH {
         });
     }
 
-    public async get(params: { username: string, password: string }): Promise<any> {
-        return CONQUER.do("AUTH.get", params);
+    public async get(params: { username: string, password: string }): Promise<any> 
+    {
+        /*
+
+        check storage (cookie)
+
+        avatarID
+        token
+        firstName
+
+        */
+
+
+        let response = CONQUER.do("AUTH.get", params);
+
+        /* 
+        {
+            success: boolean,
+            result:{
+                avatarID,
+                firstName,
+                token
+            }
+        }
+
+        storage: account
+        token 
+
+        WEBAUTH.SessionStorage.Account.token = lalalala
+
+        */
+
+        return response;
     }
 
     public async register(params: { username: string, password: string }): Promise<any> {
         return CONQUER.do("AUTH.set", params);
     }
-
-    public async tokenize(input: string): Promise<any> {
-        return CONQUER.do("AUTH.tokenize", input);
-    }
+ 
 };
 
 namespace AUTH {

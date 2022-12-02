@@ -4,6 +4,7 @@ import EXPRESS from '../../EXPRESS/EXPRESS';
 import { google } from 'googleapis';
 import AUTH from './AUTH';
 import WEBAUTH from '../../../Frontend/User/WEBAUTH';
+import CRYPT from '../../../UTIL/CRYPT';
 
 class Google 
 {
@@ -78,7 +79,7 @@ class Google
                     resourceName: 'people/me',
                     personFields: 'names,emailAddresses'
                 });
-                let token = await AUTH.tokenize(userInfo.data.email!);
+                let token = await CRYPT.tokenize(userInfo.data.email!);
                 // TODO : change ' userInfo.data.email' with actual 'avatarID' for proxy login
                 let account:WEBAUTH.Account = {
                     avatarID: userInfo.data.email!,

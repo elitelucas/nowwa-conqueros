@@ -1,5 +1,6 @@
 import { TwitterApi, UserV2 } from 'twitter-api-v2';
 import WEBAUTH from '../../../Frontend/User/WEBAUTH';
+import CRYPT from '../../../UTIL/CRYPT';
 import CONFIG, { twitterCallbackUrl } from '../../CONFIG/CONFIG';
 import EXPRESS from '../../EXPRESS/EXPRESS';
 import AUTH from './AUTH';
@@ -81,7 +82,7 @@ class Twitter {
                     }
                     // console.log(`followers`, followers);
 
-                    const token = await AUTH.tokenize(userObject.id);
+                    const token = await CRYPT.tokenize(userObject.id);
                     // TODO : change 'userObject.id' with actual 'avatarID' for proxy login
                     let account:WEBAUTH.Account = {
                         avatarID: userObject.id,

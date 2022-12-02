@@ -1,6 +1,7 @@
 import express from 'express';
 import fetch, { RequestInit } from 'node-fetch';
 import WEBAUTH from '../../../Frontend/User/WEBAUTH';
+import CRYPT from '../../../UTIL/CRYPT';
 import CONFIG, { snapchatAuthUrl, snapchatCallbackUrl } from '../../CONFIG/CONFIG';
 import EXPRESS from '../../EXPRESS/EXPRESS';
 import AUTH from './AUTH';
@@ -99,7 +100,7 @@ class Snapchat
                             // console.log(JSON.stringify(secondResponse, null, "\t"));
                             let id = Buffer.from(secondResponse.data.me.externalId).toString('base64');
                             let name = secondResponse.data.me.displayName;
-                            AUTH.tokenize(id)
+                            CRYPT.tokenize(id)
                                 .then((token) => {
                                     // TODO : change 'id' with actual 'avatarID' for proxy login
                                     let account:WEBAUTH.Account = {

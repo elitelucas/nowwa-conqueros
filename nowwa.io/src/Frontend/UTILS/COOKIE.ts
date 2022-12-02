@@ -5,7 +5,7 @@ class COOKIE
         var name            = key + "=";
         var ca              = decodeURIComponent( document.cookie ).split(';');
         var value           = "";
-        var result          = {};
+        var result : any    = {};
         
         for( var i = 0; i < ca.length; i++ ) 
         {
