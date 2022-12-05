@@ -131,7 +131,7 @@ class AUTH
         {
             if( !usernameID && vars.email )    usernameID = await EMAIL.getUsernameID({ email:vars.email });
             if( !usernameID && vars.wallet )   usernameID = await WALLET.getUsernameID({ wallet:vars.wallet });
-            if( !usernameID && vars.username ) usernameID = await USERNAME.getUsernameID({ username:vars.username });
+            if( !usernameID && vars.username ) usernameID = await USERNAME.getUsernameID({ _id:vars.username });
         }
  
         let user        = await ( usernameID ? USERNAME.get({ where: { _id: usernameID } }) : USERNAME.set({ username:vars.username }) );
