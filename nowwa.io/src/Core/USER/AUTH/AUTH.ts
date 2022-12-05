@@ -75,14 +75,18 @@ class AUTH
 
         if( !isMatch ) return Promise.reject( 'Incorrect password...' );
 
-        return this.getLogin( user._id, user.username );
+        return this.getLogin( user );
     };
 
-    private static async getLogin( usernameID: any, username:any ): Promise<any> 
+    private static async getLogin( user:any ): Promise<any> 
     {
-        let token   = await CRYPT.tokenize( username );
-        let user    = await USERNAME.changeLastLogin( usernameID, token );
-        let avatar  = await AVATAR.getOne({ usernameID: new mongoose.Types.ObjectId( usernameID ), isMain: true });
+        let usernameID  = user._id;
+        let username    = user.username;
+        let token       = await CRYPT.tokenize( username );
+ 
+        await USERNAME.changeLastLogin( usernameID, token );
+        
+        let avatar      = await AVATAR.getOne({ usernameID:new mongoose.Types.ObjectId( usernameID ), isMain: true });
 
         return Promise.resolve(
         {
@@ -125,20 +129,12 @@ class AUTH
             type ( source, where's this from)
         */
 
-        if( vars.token ) 
-        {
-            usernameID = await USERNAME.getUID( { token:vars.token } );
-        }
-
+        if( vars.token ) usernameID = await USERNAME.getUsernameID({ token:vars.token });
+ 
         if( !usernameID )
         {
-            if( type == "GUEST" )
-            {
-
-            }
- 
-            if( !usernameID && vars.email )    usernameID = await EMAIL.getUID( vars.email );
-            if( !usernameID && vars.wallet )   usernameID = await WALLET.getUID( vars.wallet );
+            if( !usernameID && vars.email )    usernameID = await EMAIL.getUsernameID( vars.email );
+            if( !usernameID && vars.wallet )   usernameID = await WALLET.getUsernameID( vars.wallet );
         }
  
         let user        = await ( !usernameID ? USERNAME.set({ username:vars.username }) : USERNAME.get({ where: { _id: usernameID } }));
@@ -146,14 +142,14 @@ class AUTH
 
         await USERNAME_PROXY.getSet( vars );
 
-        return this.getLogin( usernameID , user.username );
+        return this.getLogin( user );
     };
 
-    public static async addProxy( usernameID: any, vars: any ): Promise<any> 
+    public static async addProxy( usernameID : any, vars: any ): Promise<any> 
     {
-        var proxyUser = await AUTH.getProxy(vars);
+        var proxyUser = await AUTH.getProxy( vars );
 
-        if ( usernameID != proxyUser.usernameID) USERNAME.reparent(usernameID, proxyUser.usernameID);
+        if ( usernameID != proxyUser.usernameID ) USERNAME.reparent(usernameID, proxyUser.usernameID);
 
         return Promise.resolve();
     };

@@ -52,7 +52,7 @@ class AVATAR
 
     public static async set( vars:any ): Promise<any> 
     {
-        let avatar      = await DATA.set(this.table, QUERY.set(vars));
+        let avatar      = await DATA.set( this.table, QUERY.set(vars));
         let avatarID    = avatar._id;
 
         let tribe = await TRIBE.set(

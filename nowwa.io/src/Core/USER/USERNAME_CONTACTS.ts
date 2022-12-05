@@ -15,7 +15,7 @@ class USERNAME_CONTACTS
         {
             var email = emails[n];
 
-            friendID = await EMAIL.getUID( email );
+            friendID = await EMAIL.getUsernameID( email );
 
             if( !friendID )
             {

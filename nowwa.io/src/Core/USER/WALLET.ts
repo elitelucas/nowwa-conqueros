@@ -29,7 +29,7 @@ class WALLET
         return Promise.resolve( item );
     }
 
-    public static async getUID( wallet:string  ) : Promise<any>
+    public static async getUsernameID( wallet:string  ) : Promise<any>
     {
         let item = await DATA.getOne( this.table, { wallet:wallet } );
 

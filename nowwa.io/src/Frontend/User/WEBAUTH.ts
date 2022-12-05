@@ -69,7 +69,7 @@ class WEBAUTH
                     // TODO : change 'params.id' with actual 'avatarID' for proxy login
                     let account:LOCALSTORAGE.Account = 
                     {
-                        avatarID        : params.id,
+                        avatarID        : null,
                         username        : params.id,
                         friend_count    : parseInt(params.friend_count as string || "0"),
                         admin           : params.admin as string == 'true',
@@ -170,11 +170,12 @@ class WEBAUTH
                 // TODO : change 'address' with actual 'avatarID' for proxy login
                 let account : LOCALSTORAGE.Account = 
                 {
-                    avatarID        : address,
+                    avatarID        : null,
                     admin           : false,
                     username        : address, 
                     firstName       : address,
                     wallet          : address,
+                    email           : null,
                     token           : token,
                     friend_count    : 0,
                     type            : 'METAMASK'
@@ -284,7 +285,7 @@ class WEBAUTH
             // TODO : change 'userInfo.email' with actual 'avatarID' for proxy login
             let account : LOCALSTORAGE.Account =
             {
-                avatarID        : userInfo.email,
+                avatarID        : null,
                 admin           : false,
                 username        : userInfo.email,
                 email           : userInfo.email,

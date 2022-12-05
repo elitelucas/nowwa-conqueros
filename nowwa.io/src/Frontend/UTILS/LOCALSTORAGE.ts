@@ -125,13 +125,13 @@ namespace LOCALSTORAGE
 {
     export type Account = 
     {
-        avatarID        : string,
+        avatarID        : any,
         username        : string,
         token           : string,
         admin           : boolean,
         friend_count    : number,
         type            : 'DISCORD' | 'FACEBOOK' | 'TWITTER' | 'GOOGLE' | 'SNAPCHAT' | 'CONQUER' | 'METAMASK',
-        email?          : string,
+        email?          : any,
         wallet?         : string,
         firstName       : string
     }

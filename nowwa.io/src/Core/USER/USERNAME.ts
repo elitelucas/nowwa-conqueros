@@ -37,10 +37,10 @@ class USERNAME
         {
             email       : vars.username,
             isVerified  : vars.isVerified,
-            usernameID         : usernameID
+            usernameID  : usernameID
         });
 
-        await AVATAR.set({ usernameID: usernameID, isMain: true, firstName: vars.username });
+        await AVATAR.set({ usernameID:usernameID, isMain:true, firstName:vars.username });
 
         return Promise.resolve(user);
     };
@@ -63,7 +63,7 @@ class USERNAME
         return DATA.getOne( this.table, vars);
     };
 
-    public static async getUID( vars:any  ) : Promise<any>
+    public static async getUsernameID( vars:any  ) : Promise<any>
     {
         let item = await this.getOne( vars );
 
@@ -107,13 +107,13 @@ class USERNAME
 
     ================*/
 
-    public static async remove(usernameID: any): Promise<any> 
+    public static async remove( usernameID : any): Promise<any> 
     {
         // remove everything created by this userName
 
         // remove userName itself
 
-        await DATA.remove(this.table, {_id:usernameID});
+        await DATA.remove( this.table, {_id:usernameID} );
 
         return Promise.resolve();
     }
