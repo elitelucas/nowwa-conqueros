@@ -1,14 +1,10 @@
 import mongoose, { mongo } from 'mongoose';
 import CONFIG from '../CONFIG/CONFIG';
-import { Custom, CustomProperty, CustomType, CustomDocument } from '../../Models/Custom';
 import TABLE_MODEL from './TABLE_MODEL';
 import LOG, { log, error } from '../../UTIL/LOG';
 import QUERY from '../../UTIL/QUERY';
-import { query } from 'express';
 import ARRAY from '../../UTIL/ARRAY';
-import Authentication from '../DEPRECATED/Authentication';
- 
- 
+
 
 class DATA 
 {
@@ -22,24 +18,26 @@ class DATA
 
     public static async init(): Promise<void> 
     {
-        log(`init database...`);
+        log( `init database...` );
 
-        let uri: string = `mongodb+srv://${CONFIG.vars.MONGODB_USER}:${CONFIG.vars.MONGODB_PASS}@${CONFIG.vars.MONGODB_HOST}/${CONFIG.vars.MONGODB_DB}`;
+        let uri : string = `mongodb+srv://${ CONFIG.vars.MONGODB_USER }:${CONFIG.vars.MONGODB_PASS}@${CONFIG.vars.MONGODB_HOST}/${CONFIG.vars.MONGODB_DB}`;
 
         log(`connect to: ${uri}`);
 
-        await mongoose.connect(uri,
-            {
-                ssl: true,
-                sslValidate: false,
-                sslCert: `${CONFIG.vars.MONGODB_CERT}`
+        await mongoose.connect( uri,
+        {
+            ssl         : true,
+            sslValidate : false,
+            sslCert     : `${CONFIG.vars.MONGODB_CERT}`
 
-            }).then((result) => {
-                log("Successfully connect to MongoDB.");
-            }).catch((e: Error) => {
-                error("Connection error", e);
-                throw e;
-            });
+        }).then(( result ) => 
+        {
+            log("Successfully connect to MongoDB.");
+        }).catch((e: Error) => 
+        {
+            error("Connection error", e);
+            throw e;
+        });
 
         return Promise.resolve();
     }
@@ -56,7 +54,7 @@ class DATA
     {
         vars            = QUERY.get( vars );
 
-        let model       = await TABLE_MODEL.get(tableName);
+        let model       = await TABLE_MODEL.get( tableName );
         let myQuery     = model.find( vars.where );
 
         if ( vars.limit ) myQuery.limit( vars.limit );
@@ -66,11 +64,11 @@ class DATA
         return Promise.resolve( ARRAY.getFields( documents, vars.values ) );
     }
 
-    public static async getOne(tableName: string, query: any): Promise<any> 
+    public static async getOne( tableName: string, query: any ): Promise<any> 
     {
-        query           = QUERY.get(query);
-        let model       = await TABLE_MODEL.get(tableName);
-        let myQuery     = model.findOne(query.where);
+        query           = QUERY.get( query );
+        let model       = await TABLE_MODEL.get( tableName );
+        let myQuery     = model.findOne( query.where );
         let document    = await myQuery.exec();
  
         return Promise.resolve( ARRAY.getFields( document, query.values ));
@@ -84,11 +82,11 @@ class DATA
 
     ================*/
 
-    public static async set(tableName: string, query: any): Promise<any> 
+    public static async set( tableName: string, query: any ): Promise<any> 
     {
         query           = QUERY.set( query );
 
-        if (query.where) return this.change( tableName, query );
+        if( query.where ) return this.change( tableName, query );
 
         let model       = await TABLE_MODEL.get( tableName );
         let document    = await model.create( query.values );
@@ -104,34 +102,35 @@ class DATA
 
     ================*/
 
-    public static async change(tableName: string, query: any): Promise<any> {
-        query = QUERY.change(query);
+    public static async change( tableName: string, query: any ): Promise<any> 
+    {
+        query           = QUERY.change( query );
 
-        let model = await TABLE_MODEL.get(tableName);
-        let myQuery = model.find(query.where as any).limit(1);
-        let documents = await myQuery.exec();
+        let model       = await TABLE_MODEL.get( tableName );
+        let myQuery     = model.find( query.where as any ).limit(1);
+        let documents   = await myQuery.exec();
 
-        if (!documents || documents.length != 1) return Promise.reject(LOG.msg('entry not found'));
+        if ( !documents || documents.length != 1 ) return Promise.reject( LOG.msg('entry not found') );
 
-        let document = documents[0];
+        let document    = documents[0];
+        let fieldNames  = Object.keys( query.values! );
 
-        let fieldNames = Object.keys(query.values!);
+        for (let i: number = 0; i < fieldNames.length; i++ ) 
+        {
+            let fieldName   = fieldNames[i];
+            let fieldValue  = query.values![ fieldName ];
 
-        for (let i: number = 0; i < fieldNames.length; i++) {
-            let fieldName = fieldNames[i];
-            let fieldValue = query.values![fieldName];
-
-            document.set(fieldName, fieldValue);
-            document.markModified(fieldName);
+            document.set( fieldName, fieldValue );
+            document.markModified( fieldName );
         }
 
         await document.save();
         return Promise.resolve(document);
     };
 
-    public static async reparent(tableName: string, newUID: any, oldUID: any): Promise<any> 
+    public static async reparent( tableName: string, newUID: any, oldUID: any ) : Promise<any> 
     {
-        let results = await DATA.change(tableName, { values: { usernameID: newUID }, where: { usernameID: oldUID } });
+        let results = await DATA.change( tableName, { values: { usernameID: newUID }, where: { usernameID: oldUID } });
 
         return Promise.resolve(results);
     }
@@ -144,11 +143,11 @@ class DATA
 
     ================*/
 
-    public static async remove(tableName: string, query: any): Promise<void> 
+    public static async remove( tableName: string, query: any ): Promise<void> 
     {
-        let model = await TABLE_MODEL.get(tableName);
+        let model = await TABLE_MODEL.get( tableName );
 
-        await model.findOneAndDelete(QUERY.get(query));
+        await model.findOneAndDelete( QUERY.get( query ) );
 
         return Promise.resolve();
     };
@@ -159,8 +158,8 @@ class DATA
 namespace DATA 
 {
     export type DOCUMENT<T> = (mongoose.Document<any, any, any> & Partial<T>) | null;
-    export type FieldType = string | number | boolean | object | Date;
-    export type Fields = { [key: string]: FieldType }
+    export type FieldType   = string | number | boolean | object | Date;
+    export type Fields      = { [key: string]: FieldType }
 
     export const ReservedSchemaName: string[] =
     [
@@ -180,11 +179,11 @@ namespace DATA
 
     export type MapSchemaTypes =
     {
-        string: string;
-        number: number;
-        boolean: boolean;
-        object: object;
-        date: Date;
+        string      : string;
+        number      : number;
+        boolean     : boolean;
+        object      : object;
+        date        : Date;
     }
 
     export type Query =
