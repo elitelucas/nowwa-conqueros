@@ -57,10 +57,11 @@ class Google
 
             try {
 
-                let googleClient = new google.auth.OAuth2({
-                    clientId: CONFIG.vars.GOOGLE_CLIENT_ID,
-                    clientSecret: CONFIG.vars.GOOGLE_CLIENT_SECRET,
-                    redirectUri: CONFIG.vars.GOOGLE_CALLBACK_URL,
+                let googleClient = new google.auth.OAuth2(
+                {
+                    clientId        : CONFIG.vars.GOOGLE_CLIENT_ID,
+                    clientSecret    : CONFIG.vars.GOOGLE_CLIENT_SECRET,
+                    redirectUri     : CONFIG.vars.GOOGLE_CALLBACK_URL,
                 });
 
                 const { code } = req.query;
@@ -82,15 +83,16 @@ class Google
                 });
                 let token = await CRYPT.tokenize(userInfo.data.email!);
                 // TODO : change ' userInfo.data.email' with actual 'avatarID' for proxy login
-                let account:LOCALSTORAGE.Account = {
-                    avatarID: userInfo.data.email!,
-                    admin: false,
-                    friend_count: contactInfo.data.totalPeople!,
-                    username: userInfo.data.email!,
-                    firstName: userInfo.data.name!,
-                    email: userInfo.data.email!,
-                    token: token,
-                    type: 'GOOGLE'
+                let account:LOCALSTORAGE.Account = 
+                {
+                    avatarID        : "null",
+                    admin           : false,
+                    friend_count    : contactInfo.data.totalPeople!,
+                    username        : userInfo.data.email!,
+                    firstName       : userInfo.data.name!,
+                    email           : userInfo.data.email!,
+                    token           : token,
+                    type            : 'GOOGLE'
                 };
                 let searchParams:URLSearchParams = Object.assign(new URLSearchParams(), account);
                 res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?info=loggedin&${searchParams.toString()}`);

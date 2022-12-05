@@ -35,29 +35,12 @@ class AUTH
         LOCALSTORAGE.removeAccount();
     }
 
-    public async get( params?: { username: string, password: string, type:string }): Promise<any> 
+    public async get( params?: { username: string, password: string, type?:string }): Promise<any> 
     {
         if( params ) params.type = "USERNAME";
  
         let response : any = await CONQUER.do( "AUTH.get", params || LOCALSTORAGE.account );
-
-        /* 
-        {
-            success: boolean,
-            result:{
-                avatarID,
-                firstName,
-                token
-            }
-        }
-
-        storage: account
-        token 
-
-        WEBAUTH.SessionStorage.Account.token = lalalala
-
-        */
-
+ 
         LOCALSTORAGE.setAccount(
         {
             avatarID    : response.result.avatarID,

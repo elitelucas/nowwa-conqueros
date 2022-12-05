@@ -33,7 +33,7 @@ class WALLET
     {
         let item = await DATA.getOne( this.table, { wallet:wallet } );
 
-        if( item ) return Promise.resolve( item.uID );
+        if( item ) return Promise.resolve( item.usernameID );
 
         return Promise.reject( LOG.msg( 'Wallet does not exist' ) ); 
     };   
@@ -80,7 +80,7 @@ class WALLET
             return query;
         }
 
-        if( vars.uID )      where.uID = vars.uID;
+        if( vars.usernameID )      where.usernameID = vars.usernameID;
         if( vars._id )      where._id = vars._id;
 
         return query;

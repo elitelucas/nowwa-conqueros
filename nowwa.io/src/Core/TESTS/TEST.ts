@@ -41,15 +41,15 @@ class TEST {
             //     "username": "garibaldy.mukti@gmail.com"
             // });
             // console.log(document);
-            // let uID = await EMAIL.getUID2(
+            // let usernameID = await EMAIL.getUID2(
             //     {
             //         email: "garibaldy.mukti@gmail.coms"
             //     }
             // );
-            // console.log(`uID`, uID);
+            // console.log(`usernameID`, usernameID);
             // let user = await USERNAME.get2(
             //     {
-            //         _id: new mongoose.Types.ObjectId(uID)
+            //         _id: new mongoose.Types.ObjectId(usernameID)
             //     }
             // );
             // console.log(`user`, JSON.stringify(user, null, 2));

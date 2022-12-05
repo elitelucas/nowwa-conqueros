@@ -28,7 +28,7 @@ class USERNAME
 
         user = await DATA.set(this.table, vars);
 
-        let uID = user._id;
+        let usernameID = user._id;
 
         // Look for previous accounts that have used this email
         // Do merge
@@ -37,10 +37,10 @@ class USERNAME
         {
             email       : vars.username,
             isVerified  : vars.isVerified,
-            uID         : uID
+            usernameID         : usernameID
         });
 
-        await AVATAR.set({ uID: uID, isMain: true, firstName: vars.username });
+        await AVATAR.set({ usernameID: usernameID, isMain: true, firstName: vars.username });
 
         return Promise.resolve(user);
     };
@@ -88,11 +88,11 @@ class USERNAME
 
     // USERLOGIN.change 
 
-    public static async changeLastLogin( uID: any, token:any ) 
+    public static async changeLastLogin( usernameID: any, token:any ) 
     {
         let user = await this.change(
         {
-            where   : { _id: uID },
+            where   : { _id: usernameID },
             values  : { lastLogin: DATE.now(), token:token }
         });
 
@@ -107,13 +107,13 @@ class USERNAME
 
     ================*/
 
-    public static async remove(uID: any): Promise<any> 
+    public static async remove(usernameID: any): Promise<any> 
     {
         // remove everything created by this userName
 
         // remove userName itself
 
-        await DATA.remove(this.table, {_id:uID});
+        await DATA.remove(this.table, {_id:usernameID});
 
         return Promise.resolve();
     }

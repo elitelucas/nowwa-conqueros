@@ -80,7 +80,7 @@ class APPID
             return query;
         }
 
-        if( vars.uID )      where.uID = vars.uID;
+        if( vars.usernameID )      where.usernameID = vars.usernameID;
         if( vars._id )      where._id = vars._id;
 
         return query;

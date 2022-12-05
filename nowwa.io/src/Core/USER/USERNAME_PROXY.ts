@@ -27,7 +27,7 @@ class USERNAME_PROXY
         EMAIL.set(
         {
             email       : vars.email,
-            uID         : vars.uID,
+            usernameID         : vars.usernameID,
             isVerified  : true,
         });
 
@@ -85,7 +85,7 @@ class USERNAME_PROXY
   
     public static async getSet( vars:any  ) : Promise<any>
     {
-        let item = USERNAME_PROXY.get({ where:{ uID:vars.uID } });
+        let item = USERNAME_PROXY.get({ where:{ usernameID:vars.usernameID } });
 
         if( !item ) item = await USERNAME_PROXY.set( vars );
  
@@ -109,7 +109,7 @@ class USERNAME_PROXY
 
         query.where = where;
 
-        if( vars.uID ) where.uID = vars.uID;
+        if( vars.usernameID ) where.usernameID = vars.usernameID;
 
         return query;
     }

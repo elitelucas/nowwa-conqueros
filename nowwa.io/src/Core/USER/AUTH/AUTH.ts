@@ -78,11 +78,11 @@ class AUTH
         return this.getLogin( user._id, user.username );
     };
 
-    private static async getLogin( uID: any, username:any ): Promise<any> 
+    private static async getLogin( usernameID: any, username:any ): Promise<any> 
     {
         let token   = await CRYPT.tokenize( username );
-        let user    = await USERNAME.changeLastLogin( uID, token );
-        let avatar  = await AVATAR.getOne({ uID: new mongoose.Types.ObjectId( uID ), isMain: true });
+        let user    = await USERNAME.changeLastLogin( usernameID, token );
+        let avatar  = await AVATAR.getOne({ usernameID: new mongoose.Types.ObjectId( usernameID ), isMain: true });
 
         return Promise.resolve(
         {
@@ -114,54 +114,46 @@ class AUTH
 
     public static async getProxy( vars : any ) : Promise<any> 
     {
-        var uID : any;
+        var usernameID : any;
         let type = vars.type;
 
         /*
-            have this contain
-
             username (id, can be email, wallet, number id),
             firstName ( persons name),
             email (if exists),
             wallet (if exists),
             type ( source, where's this from)
-
-            GOOGLE username: email
-            DISCORD username: email
-            TWITTER username: userID (number)
-            SNAPCHAT username: accountID (number)
-            FACEBOOK username: userID
-            GUEST: token
         */
 
         if( vars.token ) 
         {
-            uID = await USERNAME.getUID( { token:vars.token } );
+            usernameID = await USERNAME.getUID( { token:vars.token } );
         }
 
-        if( type == "GUEST" )
+        if( !usernameID )
         {
+            if( type == "GUEST" )
+            {
 
+            }
+ 
+            if( !usernameID && vars.email )    usernameID = await EMAIL.getUID( vars.email );
+            if( !usernameID && vars.wallet )   usernameID = await WALLET.getUID( vars.wallet );
         }
  
-        if( vars.email ) uID = await EMAIL.getUID( vars.email );
-        if( vars.wallet ) uID = await WALLET.getUID( vars.wallet );
+        let user        = await ( !usernameID ? USERNAME.set({ username:vars.username }) : USERNAME.get({ where: { _id: usernameID } }));
+        usernameID      = vars.usernameID = user.usernameID;
 
-        let username    = vars.username || vars.wallet || vars.email
+        await USERNAME_PROXY.getSet( vars );
 
-        let user        = await ( !uID ? USERNAME.set({ username:username }) : USERNAME.get({ where: { _id: uID } }));
-        uID             = vars.uID = user.uID;
-
-        await USERNAME_PROXY.getSet(vars);
-
-        return this.getLogin( uID , user.username );
+        return this.getLogin( usernameID , user.username );
     };
 
-    public static async addProxy( uID: any, vars: any ): Promise<any> 
+    public static async addProxy( usernameID: any, vars: any ): Promise<any> 
     {
         var proxyUser = await AUTH.getProxy(vars);
 
-        if ( uID != proxyUser.uID) USERNAME.reparent(uID, proxyUser.uID);
+        if ( usernameID != proxyUser.usernameID) USERNAME.reparent(usernameID, proxyUser.usernameID);
 
         return Promise.resolve();
     };

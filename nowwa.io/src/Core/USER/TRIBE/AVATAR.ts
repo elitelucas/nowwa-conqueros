@@ -42,7 +42,7 @@ class AVATAR
     SET  
 
     {
-        uID,
+        usernameID,
         firstName
         lastName,
         picture,
@@ -114,9 +114,9 @@ class AVATAR
     {
         query = QUERY.get(query);
 
-        if (query.where.uID) 
+        if (query.where.usernameID) 
         {
-            let results: any = this.get({ uId: query.uID });
+            let results: any = this.get({ usernameID: query.usernameID });
             for (let n in results) await this.removeAvatar(results[n]._id);
         }
 

@@ -7,7 +7,7 @@ class USERNAME_CONTACTS
 {
     private static table : string = "username_contacts";
 
-    public static async set( uID:any, emails:[] ) : Promise<any>
+    public static async set( usernameID:any, emails:[] ) : Promise<any>
     {
         let friendID : any;
 
@@ -25,27 +25,27 @@ class USERNAME_CONTACTS
                 EMAIL.set(
                 {
                     email   : email,
-                    uID     : friendID
+                    usernameID     : friendID
                 });
             }
             
-            var contact = await DATA.get( USERNAME_CONTACTS.table, { where:{ uIDs: { $all: [uID, friendID] } } } );
-            if( !contact || contact.length < 1 ) await DATA.set( USERNAME_CONTACTS.table, { uID:[uID, friendID] } );
+            var contact = await DATA.get( USERNAME_CONTACTS.table, { where:{ usernameIDs: { $all: [usernameID, friendID] } } } );
+            if( !contact || contact.length < 1 ) await DATA.set( USERNAME_CONTACTS.table, { usernameID:[usernameID, friendID] } );
         }
     };
 
-    public static async get( uID:any ) : Promise<any>
+    public static async get( usernameID:any ) : Promise<any>
     {
         var output      : any = [];
-        var contacts    : any = await DATA.get( USERNAME_CONTACTS.table, { where:{ uID:[ uID ] }} );
+        var contacts    : any = await DATA.get( USERNAME_CONTACTS.table, { where:{ usernameID:[ usernameID ] }} );
 
         for( var n in contacts )
         {
-            var array = contacts[n].uIDs;
+            var array = contacts[n].usernameIDs;
             for( var i in array ) 
             {
                 var id = array[i];
-                if( id == uID ) continue;
+                if( id == usernameID ) continue;
                 ARRAY.pushUnique( output, id );
             }
         }
@@ -58,21 +58,21 @@ class USERNAME_CONTACTS
         // How to replace an element inside of an array, one by one manually?
 
         // would this work?
-        // await DATA.change( USERNAME_CONTACTS.table, { values:{ uIDs:[newUID] }, where:{ uIDs:oldUID } } );
+        // await DATA.change( USERNAME_CONTACTS.table, { values:{ usernameIDs:[newUID] }, where:{ usernameIDs:oldUID } } );
         // return Promise.resolve();
 
         // if not 
 
-        var contacts    : any = await DATA.get( USERNAME_CONTACTS.table, { where:{ uID:[ oldUID ] }} );
+        var contacts    : any = await DATA.get( USERNAME_CONTACTS.table, { where:{ usernameID:[ oldUID ] }} );
 
         for( var n in contacts )
         {
-            var array = contacts[n].uIDs;
+            var array = contacts[n].usernameIDs;
 
             ARRAY.removeItem( array, oldUID );
             ARRAY.pushUnique( array, newUID );
  
-            await DATA.change( USERNAME_CONTACTS.table, { values:{ uIDs:array }, where:{ _id:contacts[n]._id } } );
+            await DATA.change( USERNAME_CONTACTS.table, { values:{ usernameIDs:array }, where:{ _id:contacts[n]._id } } );
         }
  
         return Promise.resolve();

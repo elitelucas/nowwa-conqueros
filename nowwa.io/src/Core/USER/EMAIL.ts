@@ -170,7 +170,7 @@ class EMAIL
 
         if (!results) return Promise.resolve(null);
 
-        return Promise.resolve(results.uID);
+        return Promise.resolve(results.usernameID);
     };
 
     /*=============== 
@@ -201,9 +201,9 @@ class EMAIL
 
 namespace EMAIL {
     export type TYPE = {
-        email: string,
-        isVerified: boolean,
-        uID: mongoose.Types.ObjectId
+        email       : string,
+        isVerified  : boolean,
+        usernameID         : mongoose.Types.ObjectId
     };
     export type DOCUMENT = (mongoose.Document<any, any, any> & Partial<TYPE>) | null;
 }

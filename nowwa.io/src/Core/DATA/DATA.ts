@@ -131,7 +131,7 @@ class DATA
 
     public static async reparent(tableName: string, newUID: any, oldUID: any): Promise<any> 
     {
-        let results = await DATA.change(tableName, { values: { uID: newUID }, where: { uID: oldUID } });
+        let results = await DATA.change(tableName, { values: { usernameID: newUID }, where: { usernameID: oldUID } });
 
         return Promise.resolve(results);
     }
