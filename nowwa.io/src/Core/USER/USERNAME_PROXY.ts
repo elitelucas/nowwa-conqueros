@@ -1,6 +1,5 @@
 import DATA from "../DATA/DATA";
 import EMAIL from "./EMAIL";
-import DATE from '../../UTIL/DATE';
 import LOG from "../../UTIL/LOG";
 
 class USERNAME_PROXY
@@ -27,7 +26,7 @@ class USERNAME_PROXY
         EMAIL.set(
         {
             email       : vars.email,
-            usernameID         : vars.usernameID,
+            usernameID  : vars.usernameID,
             isVerified  : true,
         });
 
@@ -42,9 +41,9 @@ class USERNAME_PROXY
 
     ================*/
   
-    public static async get( vars:any  ) : Promise<any>
+    public static async get( vars:any ) : Promise<any>
     {
-        let results = await DATA.get( USERNAME_PROXY.table, USERNAME_PROXY.getQuery( vars ) ); 
+        let results = await DATA.get( USERNAME_PROXY.table, vars ); 
 
         let item : any = results[0];
  
@@ -91,28 +90,6 @@ class USERNAME_PROXY
  
         return Promise.resolve( item );
     }; 
-
-    /*=============== 
-
-
-    QUERY  
-    
-
-    ================*/
-
-    private static getQuery( vars:any )
-    {
-        if( vars.where ) return vars;
-
-        var query   : any = { where:{}, values:{} };
-        var where   : any = {};
-
-        query.where = where;
-
-        if( vars.usernameID ) where.usernameID = vars.usernameID;
-
-        return query;
-    }
  
 };
 

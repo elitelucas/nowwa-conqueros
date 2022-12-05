@@ -126,7 +126,7 @@ namespace LOCALSTORAGE
     export type Account = 
     {
         avatarID        : any,
-        username        : string,
+        username        : any,
         token           : string,
         admin           : boolean,
         friend_count    : number,

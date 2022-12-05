@@ -32,20 +32,24 @@ class AUTH
 
     ================*/
 
-    public static async set(vars: any): Promise<any> {
-
+    public static async set(vars: any): Promise<any> 
+    {
         let encryptedPassword = await CRYPT.hash(vars.password);
 
-        try {
+        try 
+        {
             let item = await USERNAME.set(
-                {
-                    username: vars.username,
-                    password: encryptedPassword,
-                    admin: false,
-                    isVerified: vars.isVerified || false
-                });
+            {
+                username    : vars.username,
+                password    : encryptedPassword,
+                admin       : false,
+                isVerified  : vars.isVerified || false
+            });
+
             return Promise.resolve(item);
-        } catch (error) {
+
+        } catch (error) 
+        {
             return Promise.reject(error);
         }
     };
@@ -94,6 +98,7 @@ class AUTH
             avatarID        : avatar._id,
             firstName       : avatar.firstName,
             admin           : false,
+            username        : username,
             token           : token,
             friend_count    : 0
         });
