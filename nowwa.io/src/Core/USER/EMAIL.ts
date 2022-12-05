@@ -162,15 +162,14 @@ class EMAIL
 
         return Promise.resolve(results);
     };
-
-
+ 
     public static async getUsernameID( vars: any ): Promise<any> 
     {
-        let results: any = await DATA.getOne( EMAIL.table, vars);
+        let results: any = await DATA.getOne( EMAIL.table, vars );
 
         if( !results ) return Promise.resolve(null);
 
-        return Promise.resolve( results.usernameID || results.uID );
+        return Promise.resolve( results.usernameID );
     };
 
     /*=============== 

@@ -119,25 +119,17 @@ class AUTH
     public static async getProxy( vars : any ) : Promise<any> 
     {
         var usernameID : any;
-        let type = vars.type;
-
-        /*
-            username (id, can be email, wallet, number id),
-            firstName ( persons name),
-            email (if exists),
-            wallet (if exists),
-            type ( source, where's this from)
-        */
-
+ 
         if( vars.token ) usernameID = await USERNAME.getUsernameID({ token:vars.token });
  
         if( !usernameID )
         {
-            if( !usernameID && vars.email )    usernameID = await EMAIL.getUsernameID( vars.email );
-            if( !usernameID && vars.wallet )   usernameID = await WALLET.getUsernameID( vars.wallet );
+            if( !usernameID && vars.email )    usernameID = await EMAIL.getUsernameID({ email:vars.email });
+            if( !usernameID && vars.wallet )   usernameID = await WALLET.getUsernameID({ wallet:vars.wallet });
+            if( !usernameID && vars.username ) usernameID = await USERNAME.getUsernameID({ username:vars.username });
         }
  
-        let user        = await ( !usernameID ? USERNAME.set({ username:vars.username }) : USERNAME.get({ where: { _id: usernameID } }));
+        let user        = await ( usernameID ? USERNAME.get({ where: { _id: usernameID } }) : USERNAME.set({ username:vars.username }) );
         usernameID      = vars.usernameID = user.usernameID;
 
         await USERNAME_PROXY.getSet( vars );
@@ -157,7 +149,8 @@ class AUTH
 };
 
 
-namespace AUTH {
+namespace AUTH 
+{
     export interface Input {
         email: string;
         password: string;
