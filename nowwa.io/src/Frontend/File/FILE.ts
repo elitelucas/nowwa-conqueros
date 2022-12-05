@@ -2,11 +2,10 @@ import { fileGet, fileTempPath, storageUrl } from "../../Core/CONFIG/CONFIG";
 import CONQUER from "../CONQUER";
 import COREFILE from '../../Core/CMS/FILE';
 
-class FILE {
-
-
-    public async init(): Promise<any> {
-
+class File 
+{
+    public async init(): Promise<any> 
+    {
         return Promise.resolve();
     }
 
@@ -52,4 +51,4 @@ class FILE {
 
 }
 
-export default FILE;
+export default File;

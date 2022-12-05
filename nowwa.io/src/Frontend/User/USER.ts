@@ -1,6 +1,6 @@
 import LOG, { log } from '../../UTIL/LOG';
  
-class USER 
+class User 
 {
     public async init(): Promise<any> 
     {
@@ -8,4 +8,4 @@ class USER
     }
 };
 
-export default USER;
+export default User;

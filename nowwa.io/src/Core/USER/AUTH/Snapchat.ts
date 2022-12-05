@@ -1,6 +1,6 @@
 import express from 'express';
 import fetch, { RequestInit } from 'node-fetch';
-import WEBAUTH from '../../../Frontend/User/WEBAUTH';
+import WebAuth from '../../../Frontend/USER/WebAuth';
 import CRYPT from '../../../UTIL/CRYPT';
 import CONFIG, { snapchatAuthUrl, snapchatCallbackUrl } from '../../CONFIG/CONFIG';
 import EXPRESS from '../../EXPRESS/EXPRESS';

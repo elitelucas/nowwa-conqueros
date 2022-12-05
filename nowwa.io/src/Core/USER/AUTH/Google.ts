@@ -3,7 +3,7 @@ import fetch, { RequestInit } from 'node-fetch';
 import EXPRESS from '../../EXPRESS/EXPRESS';
 import { google } from 'googleapis';
 import AUTH from './AUTH';
-import WEBAUTH from '../../../Frontend/User/WEBAUTH';
+import WebAuth from '../../../Frontend/USER/WebAuth';
 import CRYPT from '../../../UTIL/CRYPT';
 import LOCALSTORAGE from '../../../Frontend/UTILS/LOCALSTORAGE';
 

@@ -1,7 +1,7 @@
 import CONQUER from '../CONQUER';
 import LOCALSTORAGE from '../UTILS/LOCALSTORAGE';
 
-class AUTH 
+class Auth 
 {
     private vars: { [key: string]: any } = {};
 
@@ -60,4 +60,4 @@ class AUTH
 namespace AUTH {
 }
 
-export default AUTH;
+export default Auth;

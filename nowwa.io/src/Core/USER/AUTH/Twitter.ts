@@ -1,5 +1,5 @@
 import { TwitterApi, UserV2 } from 'twitter-api-v2';
-import WEBAUTH from '../../../Frontend/User/WEBAUTH';
+import WebAuth from '../../../Frontend/USER/WebAuth';
 import LOCALSTORAGE from '../../../Frontend/UTILS/LOCALSTORAGE';
 import CRYPT from '../../../UTIL/CRYPT';
 import CONFIG, { twitterCallbackUrl } from '../../CONFIG/CONFIG';

@@ -1,10 +1,10 @@
 import { authLinks, authLogin, authRegister, authVerify } from "../../Core/CONFIG/CONFIG";
-import AUTH from "./AUTH";
+import Auth from "./Auth";
 import { log } from "../../UTIL/LOG";
 import CONQUER from "../CONQUER";
 import LOCALSTORAGE from "../UTILS/LOCALSTORAGE";
 
-class WEBAUTH 
+class WebAuth 
 {
  
     // Move all social stuff here
@@ -311,4 +311,4 @@ class WEBAUTH
 }
 
  
-export default WEBAUTH;
+export default WebAuth;

@@ -1,42 +1,40 @@
-import SOCKET from "./Socket/SOCKET";
+import Socket from "./SOCKET/Socket";
 import LOG, { log } from "../UTIL/LOG";
-import AUTH from "./User/AUTH";
-import USER from "./User/USER";
-import FILE from "./File/FILE";
-import WEBAUTH from "./User/WEBAUTH";
+import Auth from "./USER/Auth";
+import User from "./USER/User";
+import File from "./FILE/File";
+import WebAuth from "./USER/WebAuth";
+import LOCALSTORAGE from "./UTILS/LOCALSTORAGE";
 
 class CONQUER 
 {
-    public static Initialized: boolean = false;
-    public static Ready: boolean = false;
-    public static USER: USER = new USER();
-    public static AUTH: AUTH = new AUTH();
-    public static WEBAUTH: WEBAUTH = new WEBAUTH();
-    private static SOCKET: SOCKET = new SOCKET();
-    public static FILE: FILE = new FILE();
+    public static Initialized   : boolean = false;
+    public static Ready         : boolean = false;
+    public static User          : User = new User();
+    public static Auth          : Auth = new Auth();
+    public static WebAuth       : WebAuth = new WebAuth();
+    private static Socket       : Socket = new Socket();
+    public static File          : File = new File();
 
     public static async init(): Promise<void> 
     {
         this.Initialized = true;
         log("client: =============== New ConquerOS");
 
-        await this.SOCKET.init();
-        await this.AUTH.init();
-        await this.FILE.init();
+        await this.Socket.init();
 
-        if (typeof window != 'undefined') {
-            await this.WEBAUTH.init();
-            if (this.WEBAUTH.SessionStorage.account) {
-                // TODO : Exchange webauth account with real conquer account
-            }
-        }
+        if( typeof window != 'undefined' ) await this.WebAuth.init();
+
+        await this.Auth.init();
+        await this.File.init();
+
         this.Ready = true;
         return Promise.resolve();
     };
 
-    public static async do(action: string, vars?: any): Promise<any> 
+    public static async do( action: string, vars?: any ): Promise<any> 
     {
-        return this.SOCKET.do(action, vars);
+        return this.Socket.do(action, vars);
     }
 }
 export default CONQUER;

@@ -2,7 +2,7 @@ import io from 'socket.io-client';
 import CONFIG from '../../Core/CONFIG/CONFIG';
 import LOG, { log } from '../../UTIL/LOG';
  
-class SOCKET
+class Socket
 {
     // USE THIS FOR LOCAL TEST
     private socketHost: string = '127.0.0.1';
@@ -68,4 +68,4 @@ class SOCKET
  
 };
 
-export default SOCKET;
+export default Socket;
