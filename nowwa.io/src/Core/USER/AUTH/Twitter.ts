@@ -1,5 +1,6 @@
 import { TwitterApi, UserV2 } from 'twitter-api-v2';
 import WEBAUTH from '../../../Frontend/User/WEBAUTH';
+import LOCALSTORAGE from '../../../Frontend/UTILS/LOCALSTORAGE';
 import CRYPT from '../../../UTIL/CRYPT';
 import CONFIG, { twitterCallbackUrl } from '../../CONFIG/CONFIG';
 import EXPRESS from '../../EXPRESS/EXPRESS';
@@ -82,17 +83,19 @@ class Twitter {
                     }
                     // console.log(`followers`, followers);
 
-                    const token = await CRYPT.tokenize(userObject.id);
+                    const token = await CRYPT.tokenize( userObject.id );
                     // TODO : change 'userObject.id' with actual 'avatarID' for proxy login
-                    let account:WEBAUTH.Account = {
-                        avatarID: userObject.id,
-                        admin: false,
+                    let account     : LOCALSTORAGE.Account = 
+                    {
+                        avatarID    : "null",
+                        admin       : false,
                         friend_count: 0,
-                        username: userObject.id,
-                        firstName: userObject.username,
-                        token: token,
-                        type: 'TWITTER'
+                        username    : userObject.id,
+                        firstName   : userObject.username,
+                        token       : token,
+                        type        : 'TWITTER'
                     };
+
                     let searchParams:URLSearchParams = Object.assign(new URLSearchParams(), account);
                     res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?info=loggedin&${searchParams.toString()}`);
                 })

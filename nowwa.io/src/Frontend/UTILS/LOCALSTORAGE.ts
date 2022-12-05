@@ -1,3 +1,6 @@
+import DATE from "../../UTIL/DATE";
+import RANDOM from "../../UTIL/RANDOM";
+
 class LOCALSTORAGE
 {
 
@@ -22,23 +25,27 @@ class LOCALSTORAGE
 
     private static parseUrlSearchParams()
     {
-        let params: { [key: string]: any } = {};
+        let params: { [key: string]: any } = 
+        {
+            username    : "Guest" + DATE.now() + RANDOM.value(1000),
+            type        : "GUEST"
+        };
 
         if ( typeof window != 'undefined' ) 
         {
-            new URL(window.location.href).searchParams.forEach(function (val, key) 
+            new URL( window.location.href ).searchParams.forEach( function (val, key) 
             {
-                if (params[key] !== undefined) {
-                    if (!Array.isArray(params[key])) {
-                        params[key] = [params[key]];
-                    }
+                if ( params[key] !== undefined ) 
+                {
+                    if ( !Array.isArray(params[key]) ) params[key] = [params[key]];
+  
                     params[key].push(val);
                 } else {
                     params[key] = val;
                 }
             });
         
-            window.history.pushState(params, "", `${window.location.origin}`);
+            window.history.pushState( params, "", `${window.location.origin}`);
         }
 
         LOCALSTORAGE.searchParams = params;
@@ -60,8 +67,8 @@ class LOCALSTORAGE
 
     public static getAccount = function() : any
     {	
-        let json = window.localStorage.getItem( "account" );
-        LOCALSTORAGE.account = json ? JSON.parse( json as string ) : {};
+        let json                = window.localStorage.getItem( "account" );
+        LOCALSTORAGE.account    = json ? JSON.parse( json as string ) : {};
 
    		return LOCALSTORAGE.account;
     };

@@ -5,6 +5,7 @@ import { google } from 'googleapis';
 import AUTH from './AUTH';
 import WEBAUTH from '../../../Frontend/User/WEBAUTH';
 import CRYPT from '../../../UTIL/CRYPT';
+import LOCALSTORAGE from '../../../Frontend/UTILS/LOCALSTORAGE';
 
 class Google 
 {
@@ -81,7 +82,7 @@ class Google
                 });
                 let token = await CRYPT.tokenize(userInfo.data.email!);
                 // TODO : change ' userInfo.data.email' with actual 'avatarID' for proxy login
-                let account:WEBAUTH.Account = {
+                let account:LOCALSTORAGE.Account = {
                     avatarID: userInfo.data.email!,
                     admin: false,
                     friend_count: contactInfo.data.totalPeople!,

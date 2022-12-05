@@ -31,9 +31,9 @@ class WALLET
 
     public static async getUID( wallet:string  ) : Promise<any>
     {
-        let item = await WALLET.get( { where:{ wallet:wallet }});
+        let item = await DATA.getOne( this.table, { wallet:wallet } );
 
-        if( item ) return Promise.resolve( item );
+        if( item ) return Promise.resolve( item.uID );
 
         return Promise.reject( LOG.msg( 'Wallet does not exist' ) ); 
     };   

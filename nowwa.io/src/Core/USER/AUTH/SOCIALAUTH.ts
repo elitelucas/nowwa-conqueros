@@ -13,8 +13,8 @@ dotenv.config();
 
 class SOCIALAUTH {
 
-    public static async init():Promise<void> {
-
+    public static async init():Promise<void> 
+    {
         this.webhookAuthLinks();
         this.webhookAuthVerify();
         this.webhookAuthRegister();
@@ -26,11 +26,12 @@ class SOCIALAUTH {
         await Google.init();
 
         return Promise.resolve();
-
     }
 
-    public static webhookAuthLinks() {
-        EXPRESS.app.use(`${authLinks}`, (req, res) => {
+    public static webhookAuthLinks() 
+    {
+        EXPRESS.app.use(`${authLinks}`, (req, res) => 
+        {
             res.status(200).send({
                 success: true,
                 discord: Discord.AuthLink,
@@ -55,8 +56,10 @@ class SOCIALAUTH {
         });
     }
 
-    public static webhookAuthRegister() {
-        EXPRESS.app.use(`${authRegister}`, async (req, res) => {
+    public static webhookAuthRegister() 
+    {
+        EXPRESS.app.use(`${authRegister}`, async (req, res) => 
+        {
             let email: string = req.body.email;
             let password: string = req.body.password;
             let err;
@@ -81,8 +84,10 @@ class SOCIALAUTH {
         });
     }
 
-    public static webhookAuthLogin() {
-        EXPRESS.app.use(`${authLogin}`, async (req, res) => {
+    public static webhookAuthLogin() 
+    {
+        EXPRESS.app.use(`${authLogin}`, async (req, res) => 
+        {
             let email: string = req.body.email;
             let password: string = req.body.password;
 
@@ -102,18 +107,20 @@ class SOCIALAUTH {
                         success: false,
                         error: (<Error>err).message
                     });
-            } else {
-                let token: string = await CRYPT.tokenize(user.username);
+            } else 
+            {
+                let token : string = await CRYPT.tokenize( user.username );
+
                 res.send(
                     {
                         success: true,
                         account:
                         {
-                            id: user.username,
-                            name: user.username,
-                            token: token,
-                            admin: user.admin,
-                            friend_count: 0
+                            id              : user.username,
+                            name            : user.username,
+                            token           : token,
+                            admin           : user.admin,
+                            friend_count    : 0
                         }
                     });
             }
@@ -121,7 +128,8 @@ class SOCIALAUTH {
     }
 }
 
-namespace SOCIALAUTH {
+namespace SOCIALAUTH 
+{
 
 }
 

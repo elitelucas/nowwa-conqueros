@@ -60,9 +60,9 @@ class WEBAUTH
                     });
             });
 
-            log(`[${params.source}] verified: ${authVerifyResponse && authVerifyResponse.valid}!`);
+            log(`[${params.source}] verified: ${ authVerifyResponse && authVerifyResponse.valid }!`);
 
-            if (authVerifyResponse.success) 
+            if( authVerifyResponse.success ) 
             {
                 if (authVerifyResponse.valid) 
                 {
@@ -78,22 +78,6 @@ class WEBAUTH
                         wallet          : params.wallet,
                         token           : params.token, // made by us 
                         type            : params.source // GOOGLE, DISCORD, SNAPCHAT, TWITTER
-
-                        /*
-                            have this contain
-
-                            username (id, can be email, wallet, number id),
-                            firstName ( persons name),
-                            email (if exists),
-                            wallet (if exists),
-                            type ( source, where's this from)
-
-                            GOOGLE username: email
-                            DISCORD username: email
-                            TWITTER username: userID (number)
-                            SNAPCHAT username: accountID (number)
-                            FACEBOOK username: userID
-                        */
                     };
 
                     LOCALSTORAGE.setAccount( account );

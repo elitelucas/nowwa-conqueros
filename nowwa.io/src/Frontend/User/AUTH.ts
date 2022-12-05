@@ -5,15 +5,11 @@ class AUTH
 {
     private vars: { [key: string]: any } = {};
 
-    public async init(): Promise<any> 
+    public async init() : Promise<any> 
     {
-        /*
-        Get session, from cookie?
-        If session exists, login via backdoor?
-        If session expired, log in as guest
-        */
-
         LOCALSTORAGE.init();
+
+        await this.get();
 
         return Promise.resolve();
     }
@@ -26,7 +22,7 @@ class AUTH
  
     public async set(vars: any): Promise<any> 
     {
-        return CONQUER.do("AUTH.set", vars);
+        return CONQUER.do( "AUTH.set", vars);
     }
  
     public async guest(): Promise<any> 
@@ -39,20 +35,11 @@ class AUTH
         LOCALSTORAGE.removeAccount();
     }
 
-    public async get( params: { username: string, password: string }): Promise<any> 
+    public async get( params?: { username: string, password: string, type:string }): Promise<any> 
     {
-        /*
-
-        check storage (cookie)
-
-        avatarID
-        token
-        firstName
-
-        */
-
-
-        let response : any = CONQUER.do("AUTH.get", params );
+        if( params ) params.type = "USERNAME";
+ 
+        let response : any = await CONQUER.do( "AUTH.get", params || LOCALSTORAGE.account );
 
         /* 
         {

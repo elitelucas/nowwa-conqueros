@@ -23,31 +23,32 @@ class SocketInstance
         this.socket.on( "disconnect", this.onDisconnect.bind(this) );
     };
 
-    public onAction(action: string, vars?: any, callback?: Function) 
+    public onAction( action: string, vars?: any, callback?: Function ) 
     {
-        log("[SERVER]: client action requested", action);
+        log( "[SERVER]: client action requested", action );
 
-        if (action == "AUTH.set") return map( AUTH.set(vars) );
-        if (action == "AUTH.get") return map(AUTH.get(vars));
-        if (action == "AUTH.getProxy") return map(AUTH.getProxy(vars));
-        if (action == "CRYPT.tokenize") return map(CRYPT.tokenize(vars));
-        if (action == "FILE.set") return map(FILE.set(vars));
-        if (action == "FILE.get") return map(FILE.get(vars));
+        if( action == "AUTH.set" )          return map( AUTH.set( vars ) );
+        if( action == "AUTH.get" )          return map( AUTH.get( vars ) );
+        if( action == "CRYPT.tokenize" )    return map( CRYPT.tokenize( vars ) );
+        if( action == "FILE.set" )          return map( FILE.set( vars ) );
+        if( action == "FILE.get" )          return map( FILE.get( vars ) );
 
         // FRIENDS.remove(asdas)
         // this person has permissions to do this 
 
         doError();
 
-        function doCallback(vars?: any, isSucess: boolean = true) {
+        function doCallback( vars?: any, isSucess: boolean = true ) 
+        {
             if (callback) callback({ success: isSucess, result: vars || {} });
         }
 
-        function doError(vars?: any) {
-            doCallback(vars, false);
+        function doError( vars?: any ) 
+        {
+            doCallback( vars, false);
         }
 
-        function map(promise: any) 
+        function map( promise: any ) 
         {
             promise.then( doCallback ).catch( doError );
         }

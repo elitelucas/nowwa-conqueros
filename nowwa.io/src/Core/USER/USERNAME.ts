@@ -53,9 +53,24 @@ class USERNAME
 
     ================*/
 
-    public static async get(vars: any): Promise<any> {
-        return DATA.getOne(this.table, vars);
+    public static async get(vars: any): Promise<any> 
+    {
+        return DATA.getOne( this.table, vars);
     };
+
+    public static async getOne(vars: any): Promise<any> 
+    {
+        return DATA.getOne( this.table, vars);
+    };
+
+    public static async getUID( vars:any  ) : Promise<any>
+    {
+        let item = await this.getOne( vars );
+
+        if( item ) return Promise.resolve( item._id );
+
+        return Promise.reject( LOG.msg( 'Username does not exist' ) ); 
+    };   
 
     /*=============== 
 
@@ -65,20 +80,21 @@ class USERNAME
 
     ================*/
 
-    public static async change(query: any) {
+    public static async change(query: any) 
+    {
         let results = DATA.change(this.table, query);
         return Promise.resolve(results);
     }
 
     // USERLOGIN.change 
 
-    public static async changeLastLogin(uID: any) 
+    public static async changeLastLogin( uID: any, token:any ) 
     {
         let user = await this.change(
-            {
-                where: { _id: uID },
-                values: { lastLogin: DATE.now() }
-            });
+        {
+            where   : { _id: uID },
+            values  : { lastLogin: DATE.now(), token:token }
+        });
 
         return Promise.resolve(user);
     }
@@ -110,7 +126,7 @@ class USERNAME
 
     ================*/
 
-    public static async reparent(newUID: any, oldUID: any): Promise<any> 
+    public static async reparent( newUID: any, oldUID: any): Promise<any> 
     {
         EMAIL.reparent(newUID, oldUID);
         USERNAME_PROXY.reparent(newUID, oldUID);

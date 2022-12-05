@@ -1,7 +1,8 @@
 class RANDOM
 {
-    public static value( max:number, min:number=0, avoid?:number ):number
+    public static value( max:number, min?:number, avoid?:number ):number
     {
+        min = min || 0;
         var value = Math.round( Math.random() * ( max - min ) ) + min; 
         return value != avoid ? value : RANDOM.value( max, min, avoid );
     };

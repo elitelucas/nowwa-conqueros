@@ -121,7 +121,8 @@ class EMAIL
             });
     }
 
-    public static async send(vars: any) {
+    public static async send(vars: any) 
+    {
         let mailOptions: MailOptions =
         {
             from: EMAIL.emailSender,
@@ -153,18 +154,19 @@ class EMAIL
     ================*/
 
 
-    public static async get(vars: any): Promise<any> {
+    public static async get( vars: any ): Promise<any> 
+    {
+        let results = await DATA.getOne( EMAIL.table, vars );
 
-        let results = await DATA.getOne(EMAIL.table, vars);
-
-        if (!results) return Promise.reject(LOG.msg('Email does not exist'));
+        if (!results) return Promise.reject( LOG.msg('Email does not exist') );
 
         return Promise.resolve(results);
     };
 
 
-    public static async getUID(vars: any): Promise<any> {
-        let results: any = await DATA.getOne(EMAIL.table, vars);
+    public static async getUID( vars: any ): Promise<any> 
+    {
+        let results: any = await DATA.getOne( EMAIL.table, vars);
 
         if (!results) return Promise.resolve(null);
 
