@@ -16,15 +16,13 @@ class LocalStorage
  
     constructor()
     {   
-        if( typeof window == 'undefined' ) return;
-
         CONQUER.LocalStorage.setAccount( this.loadAccount() );
         this.setAccount( this.parseUrlSearchParams() );
     };
 
     private loadAccount()
     {
-        let json = window.localStorage.getItem( "account" );
+        let json = typeof window != 'undefined' ? window.localStorage.getItem( "account" ) : null;
         var vars = json ? JSON.parse( json as string ) : {};
 
         if( !vars.username ) vars.username = "Guest_" + DATE.now() + RANDOM.value(1000);
