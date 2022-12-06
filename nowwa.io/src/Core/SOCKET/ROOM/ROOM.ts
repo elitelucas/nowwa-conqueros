@@ -1,9 +1,7 @@
 import DATA from "../../DATA/DATA";
 import LOG, { log } from "../../../UTIL/LOG";
 import ROOM_ENTRIES from "./ROOM_ENTRIES";
-import TRIBE from "../../USER/TRIBE/TRIBE/TRIBE";
-import TRIBE_MEMBERS from "../../USER/TRIBE/TRIBE/TRIBE_MEMBERS";
- 
+
 class ROOM
 {
     private static table: string = "rooms";
@@ -39,17 +37,15 @@ class ROOM
     {
         let avatarIDs = query.avatarIDs;
 
-        if( !avatarIDs ) 
-        {
-            let value = await DATA.getOne( this.table, query );
-            return Promise.resolve( value );
-        }
+        if( avatarIDs ) query.avatarIDs = { $all:avatarIDs, $size:avatarIDs.length }
+ 
+        let room = await DATA.getOne( this.table, query );
 
-        let tribe = await TRIBE.getOne({ avatarIDs:avatarIDs, type:"room" });
+        if( room ) return Promise.resolve( room );
 
-        if( tribe ) DATA.getOne( this.table, { _id:tribe.domainID } );
-
-        return this.set({ avatarIDs:avatarIDs });
+        if( avatarIDs ) return this.set({ avatarIDs:avatarIDs, name:query.name });
+  
+        return this.set( query );
     };
 
     /*=============== 
@@ -60,32 +56,16 @@ class ROOM
     {
         name?,
         avatarIDs?:[],
-        capacity?,
-        length
+        capacity? 
     }
  
     ================*/
 
     public static async set( query:any ) : Promise<any>
     {
-        query.length        = 0;
         query.name          = query.name || "Room";
-        let avatarIDs       = query.avatarIDs;
-
-        delete query.avatarIDs;
- 
+   
         let room            = await DATA.set( this.table, query );
-
-        let roomID          = room._id;
-
-        let tribe           = await TRIBE.set(
-        {
-            domainID    : roomID,
-            type        : "room",
-            avatarIDs   : avatarIDs 
-        });
-
-        await this.change({ where:{ _id:roomID }, values:{ tribeID:tribe._id } });
  
         return Promise.resolve( room );
     };
@@ -117,13 +97,7 @@ class ROOM
     {
         let results     = await DATA.get( this.table, query ); 
 
-        for( let n in results ) 
-        {
-            let roomID = results[n]._id;
-
-            await ROOM_ENTRIES.remove({ roomID:roomID });
-            await TRIBE.remove({ domainID:roomID });
-        }
+        for( let n in results ) await ROOM_ENTRIES.remove({ roomID:results[n]._id });
  
         let removed     = await DATA.remove( this.table, query );
 
