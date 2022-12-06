@@ -92,10 +92,10 @@ const Register = (state: RegisterState, setState: React.Dispatch<React.SetStateA
                     warning: ''
                 });
 
-                let res = await CONQUER.AUTH.register({
+                let res = await CONQUER.Auth.set({
                     username: state.email,
                     password: state.password
-                })
+                });
                 
                 if (res.success) {
                     updateState({
@@ -130,8 +130,8 @@ const Register = (state: RegisterState, setState: React.Dispatch<React.SetStateA
                     warning: ''
                 });
 
-                CONQUER.WEBAUTH.oldRegister({
-                    email: state.email,
+                CONQUER.Auth.set({
+                    username: state.email,
                     password: state.password
                 })
                     .then((res) => {
