@@ -44,6 +44,7 @@ class SocketInstance
         if( action == "FRIENDS.set" )       return map( FRIENDS.set( vars ) );
         if( action == "FRIENDS.get" )       return map( FRIENDS.get( vars ) );
         if( action == "FRIENDS.change" )    return map( FRIENDS.change( vars ) );
+        if( action == "FRIENDS.remove" )    return map( FRIENDS.remove( vars ) );
   
         doError();
 

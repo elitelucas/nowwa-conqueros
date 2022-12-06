@@ -8,7 +8,7 @@ import WebAuth from "./USER/WebAuth";
 import LocalStorage from "./UTILS/LocalStorage";
 
 import Friends from "./FRIENDS/Friends";
- class CONQUER 
+class CONQUER 
 {
     public static initialized   : boolean = false;
  
@@ -46,3 +46,4 @@ if (typeof (window) !== 'undefined') {
 }
 export const _global = (w /* browser */ || global /* node */) as any
 _global.CONQUER = CONQUER; 
+
