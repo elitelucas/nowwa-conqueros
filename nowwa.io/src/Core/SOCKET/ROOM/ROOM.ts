@@ -44,7 +44,7 @@ class ROOM
             let value = await DATA.getOne( this.table, query );
             return Promise.resolve( value );
         }
-  
+
         let tribe = await TRIBE.getOne({ avatarIDs:avatarIDs, type:"room" });
 
         if( tribe ) DATA.getOne( this.table, { _id:tribe.domainID } );
