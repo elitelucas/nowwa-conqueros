@@ -1,10 +1,10 @@
-import Socket from "./SOCKET/Socket";
+import Socket from "./SOCKETS/Socket";
 import LOG, { log } from "../UTIL/LOG";
 
-import Auth from "./USER/Auth";
-import User from "./USER/User";
-import File from "./FILE/File";
-import WebAuth from "./USER/WebAuth";
+import Auth from "./USERS/Auth";
+import User from "./USERS/Users";
+import File from "./FILES/Files";
+import WebAuth from "./USERS/WebAuth";
 import { toyBuildUrl } from "../Core/CONFIG/CONFIG";
 import LocalStorage from "./UTILS/LocalStorage";
 
@@ -49,4 +49,3 @@ if (typeof (window) !== 'undefined') {
 }
 export const _global = (w /* browser */ || global /* node */) as any
 _global.CONQUER = CONQUER; 
-
