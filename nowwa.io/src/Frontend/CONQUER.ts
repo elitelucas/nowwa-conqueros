@@ -7,6 +7,7 @@ import File from "./FILE/File";
 import WebAuth from "./USER/WebAuth";
 import LocalStorage from "./UTILS/LocalStorage";
 
+import Friends from "./FRIENDS/Friends";
  class CONQUER 
 {
     public static initialized   : boolean = false;
@@ -16,6 +17,7 @@ import LocalStorage from "./UTILS/LocalStorage";
     public static User          : User = new User();
     public static WebAuth       : WebAuth = new WebAuth();
     public static File          : File = new File();
+    public static Friends       : Friends = new Friends();
 
     private static Socket       : Socket = new Socket();
  

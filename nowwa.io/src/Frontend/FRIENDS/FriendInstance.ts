@@ -1,3 +1,6 @@
+import ARRAY from "../../UTIL/ARRAY";
+import CONQUER from "../CONQUER";
+
 class FriendInstance
 {
     public avatarID     : any;
@@ -18,20 +21,20 @@ class FriendInstance
         this.role           = vars.role;
     };
 
-    public accept()
+    public async accept() : Promise<any>
     {
-        if( this.role == "accepted" ) return;
-        
-    }
+        if( this.role != "invited" ) return;
 
-    public reject()
-    {
+        var membership  = await CONQUER.do( "FRIENDS.change", { membershipID:this.membershipID, status:"active" } );
+        this.status     = membership.status;
 
+        return Promise.resolve( this );
     }
 
     public remove()
     {
-
+        CONQUER.do("FRIENDS.remove", { membershipID:this.membershipID });
+        ARRAY.removeItem( CONQUER.Friends.pool, this );
     }
  
 }
