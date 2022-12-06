@@ -16,7 +16,7 @@ class LocalStorage
  
     constructor()
     {   
-        CONQUER.LocalStorage.setAccount( this.loadAccount() );
+        this.setAccount( this.loadAccount() );
         this.setAccount( this.parseUrlSearchParams() );
     };
 
