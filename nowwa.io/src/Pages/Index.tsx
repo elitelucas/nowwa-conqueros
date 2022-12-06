@@ -13,7 +13,6 @@ import Status from '../Core/APPS/Status';
 import CONQUER from '../Frontend/CONQUER';
 import Uploader, { UploaderStateDefault } from './Uploader';
 import Downloader, { DownloaderState, DownloaderStateDefault } from './Downloader';
-import WEBAUTH from '../Frontend/User/WEBAUTH';
 import LocalStorage from '../Frontend/Utils/LocalStorage';
 
 type IndexDisplay = 'None' | 'Explorer' | 'Build' | 'Test' | 'Login' | 'Register' | 'Home';

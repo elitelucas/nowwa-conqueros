@@ -32,7 +32,7 @@ const Home = (state: HomeState, setState: React.Dispatch<React.SetStateAction<Ho
 
     let doLogout = async () => {
         if (CONQUER.Ready) {
-            await CONQUER.AUTH.remove();
+            await CONQUER.Auth.remove();
             setIndexState({
                 account: undefined,
                 display: 'Login'

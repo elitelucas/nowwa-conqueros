@@ -17,18 +17,18 @@ class Auth
     public async login(type: string = "Guest"): Promise<any> 
     {
         this.vars.type = type;
-    };
+    }
 
  
-    public async set(vars: any): Promise<any> 
+    public async set(params: { username: string, password: string }): Promise<any> 
     {
-        return CONQUER.do( "AUTH.set", vars);
+        return CONQUER.do( "AUTH.set", params);
     }
  
     public async guest(): Promise<any> 
     {
         return this.login("Guest");
-    };
+    }
 
     public remove()
     {
@@ -41,8 +41,7 @@ class Auth
  
         let response : any = await CONQUER.do( "AUTH.get", params || LocalStorage.account );
  
-        LocalStorage.setAccount(
-        {
+        LocalStorage.setAccount({
             avatarID    : response.result.avatarID,
             token       : response.result.token,
             firstName   : response.result.firstName,
@@ -52,15 +51,11 @@ class Auth
 
         return response;
     }
-
-    public async register(params: { username: string, password: string }): Promise<any> 
-    {
-        return CONQUER.do("AUTH.set", params);
-    }
  
 };
 
 namespace Auth {
+
 }
 
 export default Auth;
