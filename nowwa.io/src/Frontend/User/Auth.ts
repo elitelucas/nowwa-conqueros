@@ -16,9 +16,8 @@ class Auth
     {
         this.vars.type = type;
     }
-
  
-    public async set(params: { username: string, password: string }): Promise<any> 
+    public async set( params : { username: string, password: string } ) : Promise<any> 
     {
         return CONQUER.do( "AUTH.set", params);
     }
@@ -33,7 +32,7 @@ class Auth
         CONQUER.LocalStorage.removeAccount();
     }
 
-    public async get( params?: { username: string, password: string, type?:string }): Promise<any> 
+    public async get( params? : { username: string, password: string, type?:string }): Promise<any> 
     {
         if( params ) params.type = "USERNAME";
  

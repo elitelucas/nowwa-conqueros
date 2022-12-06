@@ -123,7 +123,7 @@ namespace LocalStorage
         token           : any,
         admin           : boolean,
         friend_count    : number,
-        type            : 'DISCORD' | 'FACEBOOK' | 'TWITTER' | 'GOOGLE' | 'SNAPCHAT' | 'CONQUER' | 'METAMASK',
+        type            : 'DISCORD' | 'FACEBOOK' | 'TWITTER' | 'GOOGLE' | 'SNAPCHAT' | 'CONQUER' | 'METAMASK' | 'GUEST' | 'USERNAME',
         email?          : any,
         wallet?         : string,
         firstName       : string
