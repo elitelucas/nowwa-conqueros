@@ -1,6 +1,6 @@
 import DATE from "../../UTIL/DATE";
 import RANDOM from "../../UTIL/RANDOM";
-
+import CONQUER from "../CONQUER";
 class LocalStorage
 {
 
@@ -12,42 +12,48 @@ class LocalStorage
 
     ================*/
 
-    public static account       : any = {}
-    public static searchParams  : any;
+    public account       : any = {}
+ 
+    constructor()
+    {   
+        if( typeof window == 'undefined' ) return;
 
-    public static async init() : Promise<any>
+        CONQUER.LocalStorage.setAccount( this.loadAccount() );
+        this.setAccount( this.parseUrlSearchParams() );
+    };
+
+    private loadAccount()
     {
-        this.parseUrlSearchParams();
-        this.getAccount();
+        let json = window.localStorage.getItem( "account" );
+        var vars = json ? JSON.parse( json as string ) : {};
 
-        return Promise.resolve();
-    }
+        if( !vars.username ) vars.username = "Guest_" + DATE.now() + RANDOM.value(1000);
 
-    private static parseUrlSearchParams()
+        return vars;
+    };
+ 
+    private parseUrlSearchParams()
     {
         let params : any = {};
 
-        if ( typeof window != 'undefined' ) 
-        {
-            new URL( window.location.href ).searchParams.forEach( function (val, key) 
-            {
-                if ( params[key] !== undefined ) 
-                {
-                    if ( !Array.isArray(params[key]) ) params[key] = [params[key]];
-  
-                    params[key].push(val);
-                } else {
-                    params[key] = val;
-                }
-            });
+        if ( typeof window == 'undefined' ) return null;
         
-            window.history.pushState( params, "", `${window.location.origin}`);
-        }
+        new URL( window.location.href ).searchParams.forEach( function (val, key) 
+        {
+            if ( params[key] !== undefined ) 
+            {
+                if ( !Array.isArray(params[key]) ) params[key] = [params[key]];
 
-        if( !params.username ) params = null;
-
-        LocalStorage.searchParams = params;
-    }
+                params[key].push(val);
+            } else {
+                params[key] = val;
+            }
+        });
+    
+        window.history.pushState( params, "", `${window.location.origin}`);
+ 
+        return params.username ? params : null;
+    };
 
 
     /*=============== 
@@ -58,24 +64,11 @@ class LocalStorage
 
     ================*/
 
-    public static get = function( key:string ) : any
+    public get = function( key:string ) : any
     {	
    		return typeof window != 'undefined' ? window.localStorage.getItem( key ) : null;
     };
-
-    public static getAccount = function() : any
-    {	
-        if (typeof window != 'undefined') 
-        {
-            let json                = window.localStorage.getItem( "account" );
  
-            LocalStorage.setAccount( json ? JSON.parse( json as string ) : {} );
-            LocalStorage.setAccount( LocalStorage.searchParams );
-
-            return LocalStorage.account;
-        }
-    };
-
     /*=============== 
 
 
@@ -84,13 +77,13 @@ class LocalStorage
 
     ================*/
 
-    public static set = function( key:string, value:any ) 
+    public set = function( key:string, value:any ) 
     {
         if ( typeof window != 'undefined') window.localStorage.setItem( key, JSON.stringify( value ));
         return value;
     };
 
-    public static setAccount( vars?:any ) 
+    public setAccount( vars?:any ) 
     {
         if( !vars ) return;
 
@@ -109,12 +102,12 @@ class LocalStorage
 
     ================*/
 
-    public static remove( key:any ) 
+    public remove( key:any ) 
     {
         return this.set( key, null );
     }
 
-    public static removeAccount() 
+    public removeAccount() 
     {
         this.account = {};
         return this.set( "account", this.account );

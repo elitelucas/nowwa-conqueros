@@ -5,17 +5,20 @@ import Auth from "./USER/Auth";
 import User from "./USER/User";
 import File from "./FILE/File";
 import WebAuth from "./USER/WebAuth";
+import { toyBuildUrl } from "../Core/CONFIG/CONFIG";
+import LocalStorage from "./UTILS/LocalStorage";
 
  class CONQUER 
 {
     public static Initialized   : boolean = false;
     public static Ready         : boolean = false;
-    public static User          : User = new User();
+    public static LocalStorage  : LocalStorage = new LocalStorage();
     public static Auth          : Auth = new Auth();
+    public static User          : User = new User();
     public static WebAuth       : WebAuth = new WebAuth();
     private static Socket       : Socket = new Socket();
     public static File          : File = new File();
-
+ 
     public static async init(): Promise<void> 
     {
         this.Initialized = true;
@@ -46,3 +49,4 @@ if (typeof (window) !== 'undefined') {
 }
 export const _global = (w /* browser */ || global /* node */) as any
 _global.CONQUER = CONQUER; 
+

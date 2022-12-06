@@ -121,23 +121,23 @@ class AUTH
 
     ================*/
 
-    public static async getProxy( vars : any ) : Promise<any> 
+    public static async getProxy( localStorage : any ) : Promise<any> 
     {
         var usernameID : any;
  
-        if( vars.token ) usernameID = await USERNAME.getUsernameID({ token:vars.token });
+        if( localStorage.token ) usernameID = await USERNAME.getUsernameID({ token:localStorage.token });
  
         if( !usernameID )
         {
-            if( !usernameID && vars.email )    usernameID = await EMAIL.getUsernameID({ email:vars.email });
-            if( !usernameID && vars.wallet )   usernameID = await WALLET.getUsernameID({ wallet:vars.wallet });
-            if( !usernameID && vars.username ) usernameID = await USERNAME.getUsernameID({ _id:vars.username });
+            if( !usernameID && localStorage.email )    usernameID = await EMAIL.getUsernameID({ email:localStorage.email });
+            if( !usernameID && localStorage.wallet )   usernameID = await WALLET.getUsernameID({ wallet:localStorage.wallet });
+            if( !usernameID && localStorage.username ) usernameID = await USERNAME.getUsernameID({ _id:localStorage.username });
         }
  
-        let user        = await ( usernameID ? USERNAME.get({ where: { _id: usernameID } }) : USERNAME.set({ username:vars.username }) );
-        usernameID      = vars.usernameID = user.usernameID;
+        let user        = await ( usernameID ? USERNAME.get({ where: { _id: usernameID } }) : USERNAME.set({ username:localStorage.username }) );
+        usernameID      = localStorage.usernameID = user.usernameID;
 
-        await USERNAME_PROXY.getSet( vars );
+        await USERNAME_PROXY.getSet( localStorage );
 
         return this.getLogin( user );
     };

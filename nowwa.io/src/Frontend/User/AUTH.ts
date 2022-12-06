@@ -7,8 +7,6 @@ class Auth
 
     public async init() : Promise<any> 
     {
-        LocalStorage.init();
-
         await this.get();
 
         return Promise.resolve();
@@ -32,16 +30,16 @@ class Auth
 
     public remove()
     {
-        LocalStorage.removeAccount();
+        CONQUER.LocalStorage.removeAccount();
     }
 
     public async get( params?: { username: string, password: string, type?:string }): Promise<any> 
     {
         if( params ) params.type = "USERNAME";
  
-        let response : any = await CONQUER.do( "AUTH.get", params || LocalStorage.account );
+        let response : any = await CONQUER.do( "AUTH.get", params || CONQUER.LocalStorage.account );
  
-        LocalStorage.setAccount(
+        CONQUER.LocalStorage.setAccount(
         {
             avatarID    : response.result.avatarID,
             token       : response.result.token,
