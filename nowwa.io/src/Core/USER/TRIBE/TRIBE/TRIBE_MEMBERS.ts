@@ -35,7 +35,7 @@ class TRIBE_MEMBERS
     {
         avatarID,
         tribeID,
-        status (active, invited, pending ),
+        status ( active, invited, pending, rejected ),
         hidden ( boolean, used for stuff like friends lists ),
         role : 0 Admin, 1 visitor
     }
