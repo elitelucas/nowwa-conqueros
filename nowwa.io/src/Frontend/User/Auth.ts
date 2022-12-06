@@ -19,7 +19,7 @@ class Auth
  
     public async set( params : { username: string, password: string } ) : Promise<any> 
     {
-        return CONQUER.do( "AUTH.set", params);
+        return CONQUER.do( "AUTH.set", params );
     }
  
     public async guest(): Promise<any> 
@@ -39,14 +39,12 @@ class Auth
         let response : any = await CONQUER.do( "AUTH.get", params || CONQUER.LocalStorage.account );
 
         CONQUER.User.set( response.result );
+        CONQUER.do( "SOCKET:Login", response.result );
  
         return response;
     }
  
 };
 
-namespace Auth {
-
-}
 
 export default Auth;

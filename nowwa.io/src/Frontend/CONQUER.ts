@@ -5,13 +5,12 @@ import Auth from "./USER/Auth";
 import User from "./USER/User";
 import File from "./FILE/File";
 import WebAuth from "./USER/WebAuth";
-import { toyBuildUrl } from "../Core/CONFIG/CONFIG";
 import LocalStorage from "./UTILS/LocalStorage";
 
  class CONQUER 
 {
     public static initialized   : boolean = false;
-    public static Ready         : boolean = false;
+ 
     public static LocalStorage  : LocalStorage = new LocalStorage();
     public static Auth          : Auth = new Auth();
     public static User          : User = new User();
@@ -22,16 +21,12 @@ import LocalStorage from "./UTILS/LocalStorage";
  
     public static async init(): Promise<void> 
     {
-        this.initialized = true;
-        log("client: =============== New ConquerOS");
-
+        await this.WebAuth.init();
         await this.Socket.init();
-
-        if( typeof window != 'undefined' ) await this.WebAuth.init();
-
         await this.Auth.init();
  
-        this.Ready = true;
+        this.initialized = true;
+
         return Promise.resolve();
     };
 

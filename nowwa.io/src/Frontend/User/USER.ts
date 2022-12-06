@@ -16,7 +16,7 @@ class User
         this.firstName  = params.firstName;
         this.username   = params.username;
         this.token      = params.token;
-
+ 
         CONQUER.LocalStorage.setAccount( params );
     }
 

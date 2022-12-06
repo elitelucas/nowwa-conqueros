@@ -4,13 +4,14 @@ import CRYPT from "../../UTIL/CRYPT";
 import LOG, { log } from "../../UTIL/LOG";
 import FILE from "../CMS/FILE";
 import AUTH from "../USER/AUTH/AUTH";
-
+import FRIENDS from "../USER/TRIBE/FRIENDS/FRIENDS";
 class SocketInstance 
 {
     // Todo, destroy instances on disconnect
 
-    public socket: Socket;
-    public id: any;
+    public socket   : Socket;
+    public id       : any;
+    public User     : any;
 
     constructor( socket:Socket ) 
     {
@@ -27,20 +28,29 @@ class SocketInstance
     {
         log( "[SERVER]: client action requested", action );
 
+        let self = this;
+
+        // Register and login
+        
         if( action == "AUTH.set" )          return map( AUTH.set( vars ) );
         if( action == "AUTH.get" )          return map( AUTH.get( vars ) );
-        if( action == "CRYPT.tokenize" )    return map( CRYPT.tokenize( vars ) );
-        if( action == "FILE.set" )          return map( FILE.set( vars ) );
+
         if( action == "FILE.get" )          return map( FILE.get( vars ) );
 
-        // FRIENDS.remove(asdas)
-        // this person has permissions to do this 
-
+        vars.avatarID = this.User.avatarID;
+ 
+        if( action == "FILE.set" )          return map( FILE.set( vars ) );
+   
+        if( action == "FRIENDS.set" )       return map( FRIENDS.set( vars ) );
+        if( action == "FRIENDS.get" )       return map( FRIENDS.get( vars ) );
+  
         doError();
 
         function doCallback( vars?: any, isSucess: boolean = true ) 
         {
-            if (callback) callback({ success: isSucess, result: vars || {} });
+            if( action == "AUTH.get" && isSucess && vars ) setUser( vars );
+
+            if( callback ) callback({ success: isSucess, result: vars || {} });
         }
 
         function doError( vars?: any ) 
@@ -52,10 +62,19 @@ class SocketInstance
         {
             promise.then( doCallback ).catch( doError );
         }
+
+        function setUser( vars?:any )
+        {
+            if( !vars ) return;
+            self.User = vars;
+        }
+ 
     }
+ 
 
-
-    public onDisconnect() {
+    public onDisconnect() 
+    {
+        this.User = {};
         // log("[SERVER] socket disconnected", this.id);
     }
 

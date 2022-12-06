@@ -258,7 +258,8 @@ namespace FILE
         avatarID: string;
     };
 
-    export type GetParams = Ownership & {
+    export type GetParams = Ownership & 
+    {
         fileName: string;
         content: File;
     };
