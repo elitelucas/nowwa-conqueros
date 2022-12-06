@@ -81,17 +81,14 @@ class Google
                     resourceName: 'people/me',
                     personFields: 'names,emailAddresses'
                 });
-                let token = await CRYPT.tokenize(userInfo.data.email!);
                 // TODO : change ' userInfo.data.email' with actual 'avatarID' for proxy login
-                let account:LOCALSTORAGE.Account = 
+                let account = 
                 {
-                    avatarID        : "null",
                     admin           : false,
                     friend_count    : contactInfo.data.totalPeople!,
                     username        : userInfo.data.email!,
                     firstName       : userInfo.data.name!,
                     email           : userInfo.data.email!,
-                    token           : token,
                     type            : 'GOOGLE'
                 };
                 let searchParams:URLSearchParams = Object.assign(new URLSearchParams(), account);

@@ -67,7 +67,7 @@ class AUTH
 
     public static async get( vars: any ): Promise<any> 
     {
-        if( vars.type !="USERNAME" ) return this.getProxy( vars );
+        if( vars.type != "USERNAME" ) return this.getProxy( vars );
 
         var user : any = await USERNAME.get({ username: vars.username });
 

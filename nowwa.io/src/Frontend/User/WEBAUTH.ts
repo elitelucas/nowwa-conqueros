@@ -19,74 +19,9 @@ class WebAuth
 
     public async init(): Promise<any> 
     {
-        await this.redirect();
         await this.authLinks();
         return Promise.resolve();
     }
- 
-    private async redirect(): Promise<void> 
-    {
-        // TODO : actually redirect to specific site after verifying the credentials
-        // e.g. redirect to nowwa.io
-        let params = LOCALSTORAGE.searchParams;
-
-        if( params.source ) 
-        {
-            log(`[${params.source}] verifying user...`);
-
-            let authVerifyResponse = await new Promise<any>((resolve, reject) => 
-            {
-                let authVerifyUrl       : URL = new URL(`${window.location.origin}${authVerify}`);
-                let authVerifyRequest   : RequestInit = 
-                {
-                    method  : "POST",
-                    headers : { 'Content-Type': 'application/json' },
-                    body    : JSON.stringify(
-                    {
-                        id      : params.id,
-                        token   : params.token
-                    })
-                };
-
-                fetch(authVerifyUrl, authVerifyRequest)
-                    .then(authVerifyResponse => authVerifyResponse.json())
-                    .then((authVerifyResponse: any) => {
-                        log(`authResponse`, JSON.stringify(authVerifyResponse, null, 4));
-                        resolve(authVerifyResponse);
-                    })
-                    .catch((error: any) => {
-                        console.error(`error: ${error}`);
-                        reject(error);
-                    });
-            });
-
-            log(`[${params.source}] verified: ${ authVerifyResponse && authVerifyResponse.valid }!`);
-
-            if( authVerifyResponse.success ) 
-            {
-                if (authVerifyResponse.valid) 
-                {
-                    // TODO : change 'params.id' with actual 'avatarID' for proxy login
-                    let account:LOCALSTORAGE.Account = 
-                    {
-                        avatarID        : null,
-                        username        : params.id,
-                        friend_count    : parseInt(params.friend_count as string || "0"),
-                        admin           : params.admin as string == 'true',
-                        firstName       : params.name,
-                        email           : params.email,
-                        wallet          : params.wallet,
-                        token           : params.token, // made by us 
-                        type            : params.source // GOOGLE, DISCORD, SNAPCHAT, TWITTER
-                    };
-
-                    LOCALSTORAGE.setAccount( account );
-                }
-            }
-        }
-        return Promise.resolve();
-    }
-
  
     private async authLinks(): Promise<void> 
     {
@@ -165,18 +100,13 @@ class WebAuth
                         });
                 });
 
-                let token = await this.tokenize( <string>address );
-
-                // TODO : change 'address' with actual 'avatarID' for proxy login
-                let account : LOCALSTORAGE.Account = 
+                let account = 
                 {
-                    avatarID        : null,
                     admin           : false,
                     username        : address, 
                     firstName       : address,
                     wallet          : address,
                     email           : null,
-                    token           : token,
                     friend_count    : 0,
                     type            : 'METAMASK'
                 };
@@ -280,17 +210,14 @@ class WebAuth
 
             let userInfo    = apiResponse1 as any;
             let contactInfo = apiResponse2 as any;
-            let token       = await this.tokenize( userInfo.email as string ); 
 
             // TODO : change 'userInfo.email' with actual 'avatarID' for proxy login
-            let account : LOCALSTORAGE.Account =
+            let account =
             {
-                avatarID        : null,
                 admin           : false,
                 username        : userInfo.email,
                 email           : userInfo.email,
                 firstName       : userInfo.name,
-                token           : token,
                 friend_count    : contactInfo.summary.total_count,
                 type            : 'FACEBOOK'
             };
@@ -303,11 +230,6 @@ class WebAuth
             });
         });
     }
-
-    private async tokenize( string:string ) : Promise<any> 
-    {
-        return CONQUER.do( "CRYPT.tokenize", string )
-    };
 }
 
  

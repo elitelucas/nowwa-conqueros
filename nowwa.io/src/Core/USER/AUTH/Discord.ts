@@ -1,6 +1,7 @@
 import express from 'express';
 import fetch, { RequestInit } from 'node-fetch';
 import WebAuth from '../../../Frontend/USER/WebAuth';
+import LOCALSTORAGE from '../../../Frontend/UTILS/LOCALSTORAGE';
 import CRYPT from '../../../UTIL/CRYPT';
 import CONFIG, { discordAuthUrl, discordCallbackUrl } from '../../CONFIG/CONFIG';
 import EXPRESS from '../../EXPRESS/EXPRESS';
@@ -94,14 +95,12 @@ class Discord
                                     CRYPT.tokenize(secondResponse.email)
                                         .then((token) => {
                                             // TODO : change 'secondResponse.email' with actual 'avatarID' for proxy login
-                                            let account:WEBAUTH.Account = {
-                                                avatarID: secondResponse.email,
-                                                admin: false,
-                                                friend_count: thirdResponse.length,
-                                                username: secondResponse.email,
-                                                firstName: secondResponse.username,
-                                                token: token,
-                                                type: 'DISCORD'
+                                            let account = 
+                                            {
+                                                friend_count    : thirdResponse.length,
+                                                username        : secondResponse.email,
+                                                firstName       : secondResponse.username,
+                                                type            : 'DISCORD'
                                             };
                                             let searchParams:URLSearchParams = Object.assign(new URLSearchParams(), account);
                                             res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?info=loggedin&${searchParams.toString()}`);

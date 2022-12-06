@@ -44,7 +44,10 @@ class Auth
         LOCALSTORAGE.setAccount(
         {
             avatarID    : response.result.avatarID,
-            token       : response.result.token
+            token       : response.result.token,
+            firstName   : response.result.firstName,
+            admin       : response.result.admin,
+            username    : response.result.username
         });
 
         return response;

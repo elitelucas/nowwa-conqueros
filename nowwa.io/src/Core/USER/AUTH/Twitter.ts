@@ -81,18 +81,12 @@ class Twitter {
                             pagination_token = tmpFollowers.meta.next_token;
                         }
                     }
-                    // console.log(`followers`, followers);
 
-                    const token = await CRYPT.tokenize( userObject.id );
-                    // TODO : change 'userObject.id' with actual 'avatarID' for proxy login
-                    let account     : LOCALSTORAGE.Account = 
+                    let account = 
                     {
-                        avatarID    : "null",
-                        admin       : false,
                         friend_count: 0,
                         username    : userObject.id,
                         firstName   : userObject.username,
-                        token       : token,
                         type        : 'TWITTER'
                     };
 

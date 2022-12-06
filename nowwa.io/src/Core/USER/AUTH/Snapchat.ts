@@ -100,24 +100,18 @@ class Snapchat
                             // console.log(JSON.stringify(secondResponse, null, "\t"));
                             let id = Buffer.from(secondResponse.data.me.externalId).toString('base64');
                             let name = secondResponse.data.me.displayName;
-                            CRYPT.tokenize(id)
-                                .then((token) => {
-                                    // TODO : change 'id' with actual 'avatarID' for proxy login
-                                    let account:WEBAUTH.Account = {
-                                        avatarID: id,
-                                        admin: false,
-                                        friend_count: 0,
-                                        username: id,
-                                        firstName: name,
-                                        token: token,
-                                        type: 'SNAPCHAT'
-                                    };
-                                    let searchParams:URLSearchParams = Object.assign(new URLSearchParams(), account);
-                                    res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?info=loggedin&${searchParams.toString()}`);
-                                })
-                                .catch((error) => {
-                                    res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?error=${error.message}`);
-                                });
+              
+                            // TODO : change 'id' with actual 'avatarID' for proxy login
+                            let account = 
+                            {
+                                friend_count    : 0,
+                                username        : id,
+                                firstName       : name,
+                                type            : 'SNAPCHAT'
+                            };
+                            let searchParams:URLSearchParams = Object.assign(new URLSearchParams(), account);
+                            res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?info=loggedin&${searchParams.toString()}`);
+                
                         })
                         .catch(console.error);
                 })

@@ -70,6 +70,8 @@ class LOCALSTORAGE
         let json                = window.localStorage.getItem( "account" );
         LOCALSTORAGE.account    = json ? JSON.parse( json as string ) : {};
 
+        LOCALSTORAGE.setAccount( LOCALSTORAGE.searchParams );
+
    		return LOCALSTORAGE.account;
     };
     
@@ -127,7 +129,7 @@ namespace LOCALSTORAGE
     {
         avatarID        : any,
         username        : any,
-        token           : string,
+        token           : any,
         admin           : boolean,
         friend_count    : number,
         type            : 'DISCORD' | 'FACEBOOK' | 'TWITTER' | 'GOOGLE' | 'SNAPCHAT' | 'CONQUER' | 'METAMASK',
