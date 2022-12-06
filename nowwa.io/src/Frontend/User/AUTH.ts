@@ -1,5 +1,5 @@
 import CONQUER from '../CONQUER';
-import LocalStorage from '../Utils/LocalStorage';
+import LocalStorage from '../UTILS/LocalStorage';
 
 class Auth 
 {
