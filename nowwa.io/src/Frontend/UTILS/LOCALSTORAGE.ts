@@ -67,10 +67,11 @@ class LocalStorage
 
     public static getAccount = function() : any
     {	
-        let json                = window.localStorage.getItem( "account" );
-        LocalStorage.account    = json ? JSON.parse( json as string ) : {};
-
-   		return LocalStorage.account;
+        if (typeof window != 'undefined') {
+            let json                = window.localStorage.getItem( "account" );
+            LocalStorage.account    = json ? JSON.parse( json as string ) : {};
+            return LocalStorage.account;
+        }
     };
     
     
