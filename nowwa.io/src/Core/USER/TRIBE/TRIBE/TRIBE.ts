@@ -42,9 +42,8 @@ class TRIBE
             return Promise.resolve( value );
         }
 
-        query.avatarIDs = { $all:avatarIDs };
-        query.length    = avatarIDs.length;
-
+        query.avatarIDs = { $all:avatarIDs, $size:avatarIDs.length }
+ 
         let value       = await DATA.getOne( this.table, query ); 
 
         return Promise.resolve( value );
@@ -59,8 +58,7 @@ class TRIBE
         name,
         type,
         domainID,
-        private (boolean),
-        length
+        private (boolean) 
 
     }
     
@@ -70,9 +68,7 @@ class TRIBE
     {
         let avatarIDs = query.avatarIDs;
         delete query.avatarIDs;
-
-        query.length = avatarIDs ? avatarIDs.length : 0;
-
+  
         let tribe = await DATA.set( this.table, query );
 
         for( let n in avatarIDs )
