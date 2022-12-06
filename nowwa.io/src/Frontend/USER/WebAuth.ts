@@ -110,7 +110,7 @@ class WebAuth
                     type            : 'METAMASK'
                 };
 
-                LocalStorage.setAccount( account );
+                CONQUER.LocalStorage.setAccount( account );
 
                 // TODO: refresh the page
 
@@ -224,7 +224,7 @@ class WebAuth
                 type            : 'FACEBOOK'
             };
  
-            LocalStorage.setAccount( account );
+            CONQUER.LocalStorage.setAccount( account );
 
             // TODO: Refresh page
  

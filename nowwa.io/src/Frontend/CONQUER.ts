@@ -1,4 +1,4 @@
-import Socket from "./SOCKET/Socket";
+import Socket from "./SOCKETS/Socket";
 import LOG, { log } from "../UTIL/LOG";
 
 import Auth from "./USER/Auth";
@@ -44,4 +44,3 @@ if (typeof (window) !== 'undefined') {
 }
 export const _global = (w /* browser */ || global /* node */) as any
 _global.CONQUER = CONQUER; 
-
