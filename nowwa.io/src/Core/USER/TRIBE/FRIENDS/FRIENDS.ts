@@ -3,6 +3,7 @@ import LOG, { log } from "../../../../UTIL/LOG";
 import TRIBE from "../TRIBE/TRIBE";
 import TRIBE_MEMBERS from "../TRIBE/TRIBE_MEMBERS";
 import AVATAR from "../AVATAR";
+import ARRAY from "../../../../UTIL/ARRAY";
 
 class FRIENDS
 {
@@ -21,9 +22,7 @@ class FRIENDS
 
         let tribe : any     = await TRIBE.getOne({ domainID:query.avatarID, type:"friends" });
  
-        // sort alphabetically
-
-        var memberships   = await TRIBE_MEMBERS.get({ tribeID:tribe._id });
+        var memberships     = await TRIBE_MEMBERS.get({ tribeID:tribe._id });
 
         let friends : any = []
 
@@ -47,6 +46,10 @@ class FRIENDS
                 tribeID         : membership.tribeID
             });
         }
+
+        friends = ARRAY.sort( friends, "firstName" );
+
+        friends.reverse();
  
         return Promise.resolve( friends );
     };
