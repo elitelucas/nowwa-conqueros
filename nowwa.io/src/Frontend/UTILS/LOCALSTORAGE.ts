@@ -1,7 +1,7 @@
 import DATE from "../../UTIL/DATE";
 import RANDOM from "../../UTIL/RANDOM";
 
-class LOCALSTORAGE
+class LocalStorage
 {
 
     /*=============== 
@@ -25,11 +25,7 @@ class LOCALSTORAGE
 
     private static parseUrlSearchParams()
     {
-        let params: { [key: string]: any } = 
-        {
-            username    : "Guest" + DATE.now() + RANDOM.value(1000),
-            type        : "GUEST"
-        };
+        let params : any = {};
 
         if ( typeof window != 'undefined' ) 
         {
@@ -48,7 +44,9 @@ class LOCALSTORAGE
             window.history.pushState( params, "", `${window.location.origin}`);
         }
 
-        LOCALSTORAGE.searchParams = params;
+        if( !params.username ) params = null;
+
+        LocalStorage.searchParams = params;
     }
 
 
@@ -67,16 +65,16 @@ class LOCALSTORAGE
 
     public static getAccount = function() : any
     {	
-        let json                = window.localStorage.getItem( "account" );
-        LOCALSTORAGE.account    = json ? JSON.parse( json as string ) : {};
+        if (typeof window != 'undefined') 
+        {
+            let json                = window.localStorage.getItem( "account" );
+ 
+            LocalStorage.setAccount( json ? JSON.parse( json as string ) : {} );
+            LocalStorage.setAccount( LocalStorage.searchParams );
 
-        LOCALSTORAGE.setAccount( LOCALSTORAGE.searchParams );
-
-   		return LOCALSTORAGE.account;
+            return LocalStorage.account;
+        }
     };
-    
-    
-
 
     /*=============== 
 
@@ -92,8 +90,10 @@ class LOCALSTORAGE
         return value;
     };
 
-    public static setAccount( vars:any ) 
+    public static setAccount( vars?:any ) 
     {
+        if( !vars ) return;
+
         this.account = vars;
 
         this.set( "account", this.account );
@@ -123,7 +123,7 @@ class LOCALSTORAGE
 }
 
 
-namespace LOCALSTORAGE 
+namespace LocalStorage 
 {
     export type Account = 
     {
@@ -146,4 +146,4 @@ namespace LOCALSTORAGE
     };
 }
 
-export default LOCALSTORAGE;
+export default LocalStorage;

@@ -3,9 +3,8 @@ import fetch, { RequestInit } from 'node-fetch';
 import EXPRESS from '../../EXPRESS/EXPRESS';
 import { google } from 'googleapis';
 import AUTH from './AUTH';
-import WebAuth from '../../../Frontend/USER/WebAuth';
 import CRYPT from '../../../UTIL/CRYPT';
-import LOCALSTORAGE from '../../../Frontend/UTILS/LOCALSTORAGE';
+import LocalStorage from '../../../Frontend/UTILS/LocalStorage';
 
 class Google 
 {
@@ -82,6 +81,7 @@ class Google
                     personFields: 'names,emailAddresses'
                 });
                 // TODO : change ' userInfo.data.email' with actual 'avatarID' for proxy login
+
                 let account = 
                 {
                     admin           : false,
@@ -91,6 +91,7 @@ class Google
                     email           : userInfo.data.email!,
                     type            : 'GOOGLE'
                 };
+                
                 let searchParams:URLSearchParams = Object.assign(new URLSearchParams(), account);
                 res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?info=loggedin&${searchParams.toString()}`);
             } catch (error: any) {

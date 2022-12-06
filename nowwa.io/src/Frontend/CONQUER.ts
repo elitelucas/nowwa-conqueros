@@ -1,11 +1,12 @@
 import Socket from "./SOCKET/Socket";
 import LOG, { log } from "../UTIL/LOG";
+
 import Auth from "./USER/Auth";
 import User from "./USER/User";
 import File from "./FILE/File";
 import WebAuth from "./USER/WebAuth";
- 
-class CONQUER 
+
+ class CONQUER 
 {
     public static Initialized   : boolean = false;
     public static Ready         : boolean = false;
@@ -36,6 +37,7 @@ class CONQUER
         return this.Socket.do(action, vars);
     }
 }
+
 export default CONQUER;
 
 let w;

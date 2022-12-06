@@ -1,6 +1,6 @@
 import express from 'express';
 import fetch, { RequestInit } from 'node-fetch';
-import WebAuth from '../../../Frontend/USER/WebAuth';
+import LocalStorage from '../../../Frontend/UTILS/LocalStorage';
 import CRYPT from '../../../UTIL/CRYPT';
 import CONFIG, { snapchatAuthUrl, snapchatCallbackUrl } from '../../CONFIG/CONFIG';
 import EXPRESS from '../../EXPRESS/EXPRESS';
@@ -100,6 +100,7 @@ class Snapchat
                             // console.log(JSON.stringify(secondResponse, null, "\t"));
                             let id = Buffer.from(secondResponse.data.me.externalId).toString('base64');
                             let name = secondResponse.data.me.displayName;
+ 
               
                             // TODO : change 'id' with actual 'avatarID' for proxy login
                             let account = 
@@ -111,17 +112,13 @@ class Snapchat
                             };
                             let searchParams:URLSearchParams = Object.assign(new URLSearchParams(), account);
                             res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?info=loggedin&${searchParams.toString()}`);
-                
-                        })
-                        .catch(console.error);
+                 
+                        }).catch(console.error);
                 })
                 .catch(console.error);
         });
     }
 }
-
-namespace Discord {
-
-}
+ 
 
 export default Snapchat;

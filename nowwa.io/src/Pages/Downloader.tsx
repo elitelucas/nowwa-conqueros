@@ -40,7 +40,7 @@ const Downloader = (state: DownloaderState, setState: React.Dispatch<React.SetSt
         DownloaderInit().then((newState: DownloaderState) => {
             updateState(newState);
             let avatarID:string = indexState.account!.avatarID;
-            CONQUER.FILE.get({
+            CONQUER.File.get({
                 avatarID: avatarID
             })
                 .then((res) => {
@@ -59,7 +59,7 @@ const Downloader = (state: DownloaderState, setState: React.Dispatch<React.SetSt
             needRefresh: false
         });
         let avatarID:string = indexState.account!.avatarID;
-        CONQUER.FILE.get({
+        CONQUER.File.get({
             avatarID: avatarID
         })
             .then((res) => {
@@ -75,7 +75,7 @@ const Downloader = (state: DownloaderState, setState: React.Dispatch<React.SetSt
     }
 
     const SelectFile = (url: string) => {
-        CONQUER.FILE.download(url);
+        CONQUER.File.download(url);
     };
 
     const EntryFile = (filename: string, url:string) => {

@@ -4,8 +4,7 @@ import { IndexState, } from './Index';
 import { Hash, UpdateComponentState } from './Utils/Helpers';
 import './Utils/Facebook';
 import CONQUER from '../Frontend/CONQUER';
-import WEBAUTH from '../Frontend/User/WEBAUTH';
-import LOCALSTORAGE from '../Frontend/UTILS/LOCALSTORAGE';
+import LocalStorage from '../Frontend/Utils/LocalStorage';
 
 export type LoginState = {
     initialized: boolean,
@@ -88,14 +87,14 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
                     isBusy: true,
                     warning: '',
                 });
-                let res = await CONQUER.AUTH.get({
+                let res = await CONQUER.Auth.get({
                     username: state.email,
                     password: state.password
                 });
                 
                 if (res.success) 
                 {
-                    let account:LOCALSTORAGE.Account = 
+                    let account:LocalStorage.Account = 
                     {
                         admin           : res.result.admin,
                         friend_count    : res.result.friend_count,
@@ -106,7 +105,7 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
                         username        : res.result.avatarID
                     };
                     
-                    LOCALSTORAGE.setAccount( account );
+                    LocalStorage.setAccount( account );
  
                     updateState({
                         isBusy: false,
@@ -128,19 +127,19 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
 
     let doTwitter = async () => {
         if (CONQUER.Ready) {
-            CONQUER.WEBAUTH.twitter();
+            CONQUER.WebAuth.twitter();
         }
     };
 
     let doGoogle = async () => {
         if (CONQUER.Ready) {
-            CONQUER.WEBAUTH.google();
+            CONQUER.WebAuth.google();
         }
     };
 
     let doFacebook = async () => {
         if (CONQUER.Ready) {
-            CONQUER.WEBAUTH.facebook()
+            CONQUER.WebAuth.facebook()
                 .then((res) => {
                     if (res.success) {
                         setIndexState({
@@ -159,19 +158,19 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
 
     let doDiscord = async () => {
         if (CONQUER.Ready) {
-            CONQUER.WEBAUTH.discord();
+            CONQUER.WebAuth.discord();
         }
     };
 
     let doSnapchat = async () => {
         if (CONQUER.Ready) {
-            CONQUER.WEBAUTH.snapchat();
+            CONQUER.WebAuth.snapchat();
         }
     };
 
     let doMetamask = async () => {
         if (CONQUER.Ready) {
-            CONQUER.WEBAUTH.metamask()
+            CONQUER.WebAuth.metamask()
                 .then((res) => {
                     console.log(res);
                     if (res.success) {

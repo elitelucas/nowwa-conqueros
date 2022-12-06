@@ -1,8 +1,7 @@
 import { authLinks, authLogin, authRegister, authVerify } from "../../Core/CONFIG/CONFIG";
-import Auth from "./Auth";
 import { log } from "../../UTIL/LOG";
 import CONQUER from "../CONQUER";
-import LOCALSTORAGE from "../UTILS/LOCALSTORAGE";
+import LocalStorage from "../UTILS/LocalStorage";
 
 class WebAuth 
 {
@@ -22,7 +21,7 @@ class WebAuth
         await this.authLinks();
         return Promise.resolve();
     }
- 
+
     private async authLinks(): Promise<void> 
     {
         if (typeof window != 'undefined') 
@@ -111,7 +110,9 @@ class WebAuth
                     type            : 'METAMASK'
                 };
 
-                LOCALSTORAGE.setAccount( account );
+                LocalStorage.setAccount( account );
+
+                // TODO: refresh the page
 
                 return Promise.resolve(
                 {
@@ -212,6 +213,7 @@ class WebAuth
             let contactInfo = apiResponse2 as any;
 
             // TODO : change 'userInfo.email' with actual 'avatarID' for proxy login
+
             let account =
             {
                 admin           : false,
@@ -222,9 +224,12 @@ class WebAuth
                 type            : 'FACEBOOK'
             };
  
-            LOCALSTORAGE.setAccount( account );
+            LocalStorage.setAccount( account );
+
+            // TODO: Refresh page
  
-            resolve({
+            resolve(
+            {
                 success : true,
                 account : account
             });
