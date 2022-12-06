@@ -39,8 +39,7 @@ class Auth
         let response : any = await CONQUER.do( "AUTH.get", params || CONQUER.LocalStorage.account );
 
         CONQUER.User.set( response.result );
-        CONQUER.do( "SOCKET:Login", response.result );
- 
+
         return response;
     }
  

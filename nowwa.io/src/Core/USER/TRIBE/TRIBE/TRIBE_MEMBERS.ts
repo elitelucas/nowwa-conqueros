@@ -38,7 +38,6 @@ class TRIBE_MEMBERS
         status (active, invited, pending ),
         hidden ( boolean, used for stuff like friends lists ),
         role : 0 Admin, 1 visitor
-
     }
 
     ================*/

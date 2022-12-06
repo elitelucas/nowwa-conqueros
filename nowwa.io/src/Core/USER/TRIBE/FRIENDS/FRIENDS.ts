@@ -2,6 +2,7 @@ import DATA from "../../../DATA/DATA";
 import LOG, { log } from "../../../../UTIL/LOG";
 import TRIBE from "../TRIBE/TRIBE";
 import TRIBE_MEMBERS from "../TRIBE/TRIBE_MEMBERS";
+import AVATAR from "../AVATAR";
 
 class FRIENDS
 {
@@ -19,13 +20,35 @@ class FRIENDS
         // Mask only avatarIDs
 
         let tribe : any     = await TRIBE.getOne({ domainID:query.avatarID, type:"friends" });
-
-        // ignore HIDDEN ?
+ 
         // sort alphabetically
 
-        var results         = await TRIBE_MEMBERS.get({ tribeID:tribe._id });
+        var memberships   = await TRIBE_MEMBERS.get({ tribeID:tribe._id });
 
-        return Promise.resolve( results );
+        let friends : any = []
+
+        for( var n in memberships )
+        {
+            let membership  : any = memberships[n];
+
+            if( membership.hidden ) continue;
+
+            let avatar      : any = await AVATAR.getOne({ _id:membership.avatarID });
+ 
+            friends.push(
+            {
+                avatarID        : avatar._id,
+                firstName       : avatar.firstName,
+                userPhoto       : avatar.userPhoto,
+ 
+                membershipID    : membership._id,
+                status          : membership.status,
+                role            : membership.role,
+                tribeID         : membership.tribeID
+            });
+        }
+ 
+        return Promise.resolve( friends );
     };
  
     /*=============== 
