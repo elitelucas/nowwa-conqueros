@@ -1,4 +1,4 @@
-import Socket from "./SOCKETS/Socket";
+import Socket from "./SOCKET/Socket";
 import LOG, { log } from "../UTIL/LOG";
 
 import Auth from "./USER/Auth";
