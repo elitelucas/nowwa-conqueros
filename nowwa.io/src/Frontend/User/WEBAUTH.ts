@@ -1,8 +1,7 @@
 import { authLinks, authLogin, authRegister, authVerify } from "../../Core/CONFIG/CONFIG";
-import Auth from "./Auth";
 import { log } from "../../UTIL/LOG";
 import CONQUER from "../CONQUER";
-import LOCALSTORAGE from "../UTILS/LOCALSTORAGE";
+import LocalStorage from "../Utils/LocalStorage";
 
 class WebAuth 
 {
@@ -28,7 +27,7 @@ class WebAuth
     {
         // TODO : actually redirect to specific site after verifying the credentials
         // e.g. redirect to nowwa.io
-        let params = LOCALSTORAGE.searchParams;
+        let params = LocalStorage.searchParams;
 
         if( params.source ) 
         {
@@ -67,7 +66,7 @@ class WebAuth
                 if (authVerifyResponse.valid) 
                 {
                     // TODO : change 'params.id' with actual 'avatarID' for proxy login
-                    let account:LOCALSTORAGE.Account = 
+                    let account:LocalStorage.Account = 
                     {
                         avatarID        : null,
                         username        : params.id,
@@ -80,7 +79,7 @@ class WebAuth
                         type            : params.source // GOOGLE, DISCORD, SNAPCHAT, TWITTER
                     };
 
-                    LOCALSTORAGE.setAccount( account );
+                    LocalStorage.setAccount( account );
                 }
             }
         }
@@ -168,7 +167,7 @@ class WebAuth
                 let token = await this.tokenize( <string>address );
 
                 // TODO : change 'address' with actual 'avatarID' for proxy login
-                let account : LOCALSTORAGE.Account = 
+                let account : LocalStorage.Account = 
                 {
                     avatarID        : null,
                     admin           : false,
@@ -181,7 +180,7 @@ class WebAuth
                     type            : 'METAMASK'
                 };
 
-                LOCALSTORAGE.setAccount( account );
+                LocalStorage.setAccount( account );
 
                 return Promise.resolve(
                 {
@@ -283,7 +282,7 @@ class WebAuth
             let token       = await this.tokenize( userInfo.email as string ); 
 
             // TODO : change 'userInfo.email' with actual 'avatarID' for proxy login
-            let account : LOCALSTORAGE.Account =
+            let account : LocalStorage.Account =
             {
                 avatarID        : null,
                 admin           : false,
@@ -295,7 +294,7 @@ class WebAuth
                 type            : 'FACEBOOK'
             };
  
-            LOCALSTORAGE.setAccount( account );
+            LocalStorage.setAccount( account );
  
             resolve({
                 success : true,

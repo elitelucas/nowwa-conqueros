@@ -1,6 +1,6 @@
 import express from 'express';
 import fetch, { RequestInit } from 'node-fetch';
-import WebAuth from '../../../Frontend/USER/WebAuth';
+import LocalStorage from '../../../Frontend/Utils/LocalStorage';
 import CRYPT from '../../../UTIL/CRYPT';
 import CONFIG, { discordAuthUrl, discordCallbackUrl } from '../../CONFIG/CONFIG';
 import EXPRESS from '../../EXPRESS/EXPRESS';
@@ -94,7 +94,7 @@ class Discord
                                     CRYPT.tokenize(secondResponse.email)
                                         .then((token) => {
                                             // TODO : change 'secondResponse.email' with actual 'avatarID' for proxy login
-                                            let account:WEBAUTH.Account = {
+                                            let account:LocalStorage.Account = {
                                                 avatarID: secondResponse.email,
                                                 admin: false,
                                                 friend_count: thirdResponse.length,

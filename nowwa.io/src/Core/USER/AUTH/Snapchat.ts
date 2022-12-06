@@ -1,6 +1,6 @@
 import express from 'express';
 import fetch, { RequestInit } from 'node-fetch';
-import WebAuth from '../../../Frontend/USER/WebAuth';
+import LocalStorage from '../../../Frontend/Utils/LocalStorage';
 import CRYPT from '../../../UTIL/CRYPT';
 import CONFIG, { snapchatAuthUrl, snapchatCallbackUrl } from '../../CONFIG/CONFIG';
 import EXPRESS from '../../EXPRESS/EXPRESS';
@@ -103,7 +103,7 @@ class Snapchat
                             CRYPT.tokenize(id)
                                 .then((token) => {
                                     // TODO : change 'id' with actual 'avatarID' for proxy login
-                                    let account:WEBAUTH.Account = {
+                                    let account:LocalStorage.Account = {
                                         avatarID: id,
                                         admin: false,
                                         friend_count: 0,

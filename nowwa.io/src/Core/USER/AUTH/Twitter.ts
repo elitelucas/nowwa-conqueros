@@ -1,6 +1,5 @@
 import { TwitterApi, UserV2 } from 'twitter-api-v2';
-import WebAuth from '../../../Frontend/USER/WebAuth';
-import LOCALSTORAGE from '../../../Frontend/UTILS/LOCALSTORAGE';
+import LocalStorage from '../../../Frontend/Utils/LocalStorage';
 import CRYPT from '../../../UTIL/CRYPT';
 import CONFIG, { twitterCallbackUrl } from '../../CONFIG/CONFIG';
 import EXPRESS from '../../EXPRESS/EXPRESS';
@@ -85,7 +84,7 @@ class Twitter {
 
                     const token = await CRYPT.tokenize( userObject.id );
                     // TODO : change 'userObject.id' with actual 'avatarID' for proxy login
-                    let account     : LOCALSTORAGE.Account = 
+                    let account     : LocalStorage.Account = 
                     {
                         avatarID    : "null",
                         admin       : false,

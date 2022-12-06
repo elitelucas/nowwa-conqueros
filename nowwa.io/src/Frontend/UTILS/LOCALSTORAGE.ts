@@ -1,7 +1,7 @@
 import DATE from "../../UTIL/DATE";
 import RANDOM from "../../UTIL/RANDOM";
 
-class LOCALSTORAGE
+class LocalStorage
 {
 
     /*=============== 
@@ -48,7 +48,7 @@ class LOCALSTORAGE
             window.history.pushState( params, "", `${window.location.origin}`);
         }
 
-        LOCALSTORAGE.searchParams = params;
+        LocalStorage.searchParams = params;
     }
 
 
@@ -68,9 +68,9 @@ class LOCALSTORAGE
     public static getAccount = function() : any
     {	
         let json                = window.localStorage.getItem( "account" );
-        LOCALSTORAGE.account    = json ? JSON.parse( json as string ) : {};
+        LocalStorage.account    = json ? JSON.parse( json as string ) : {};
 
-   		return LOCALSTORAGE.account;
+   		return LocalStorage.account;
     };
     
     
@@ -121,7 +121,7 @@ class LOCALSTORAGE
 }
 
 
-namespace LOCALSTORAGE 
+namespace LocalStorage 
 {
     export type Account = 
     {
@@ -144,4 +144,4 @@ namespace LOCALSTORAGE
     };
 }
 
-export default LOCALSTORAGE;
+export default LocalStorage;

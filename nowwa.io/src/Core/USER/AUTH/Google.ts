@@ -3,9 +3,8 @@ import fetch, { RequestInit } from 'node-fetch';
 import EXPRESS from '../../EXPRESS/EXPRESS';
 import { google } from 'googleapis';
 import AUTH from './AUTH';
-import WebAuth from '../../../Frontend/USER/WebAuth';
 import CRYPT from '../../../UTIL/CRYPT';
-import LOCALSTORAGE from '../../../Frontend/UTILS/LOCALSTORAGE';
+import LocalStorage from '../../../Frontend/Utils/LocalStorage';
 
 class Google 
 {
@@ -83,7 +82,7 @@ class Google
                 });
                 let token = await CRYPT.tokenize(userInfo.data.email!);
                 // TODO : change ' userInfo.data.email' with actual 'avatarID' for proxy login
-                let account:LOCALSTORAGE.Account = 
+                let account:LocalStorage.Account = 
                 {
                     avatarID        : "null",
                     admin           : false,

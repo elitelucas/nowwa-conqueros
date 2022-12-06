@@ -14,13 +14,13 @@ import CONQUER from '../Frontend/CONQUER';
 import Uploader, { UploaderStateDefault } from './Uploader';
 import Downloader, { DownloaderState, DownloaderStateDefault } from './Downloader';
 import WEBAUTH from '../Frontend/User/WEBAUTH';
-import LOCALSTORAGE from '../Frontend/UTILS/LOCALSTORAGE';
+import LocalStorage from '../Frontend/Utils/LocalStorage';
 
 type IndexDisplay = 'None' | 'Explorer' | 'Build' | 'Test' | 'Login' | 'Register' | 'Home';
 
 export type IndexState = ComponentState & {
     display: IndexDisplay,
-    account?: LOCALSTORAGE.Account,
+    account?: LocalStorage.Account,
     message: string,
     params?: { [key: string]: any }
 };
@@ -99,11 +99,11 @@ const Index = () => {
             });
             loadConquer().then(() => 
             {
-                let params = LOCALSTORAGE.searchParams;
+                let params = LocalStorage.searchParams;
                 console.log('done load conquer');
                 console.log(`params`, params);
 
-                let account = LOCALSTORAGE.account;
+                let account = LocalStorage.account;
 
                 if (account) 
                 {

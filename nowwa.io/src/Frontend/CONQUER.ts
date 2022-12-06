@@ -1,10 +1,9 @@
-import Socket from "./SOCKET/Socket";
+import Socket from "./Socket/Socket";
 import LOG, { log } from "../UTIL/LOG";
-import Auth from "./USER/Auth";
-import User from "./USER/User";
-import File from "./FILE/File";
-import WebAuth from "./USER/WebAuth";
-import LOCALSTORAGE from "./UTILS/LOCALSTORAGE";
+import File from "./File/File";
+import User from "./User/User";
+import Auth from "./User/Auth";
+import WebAuth from "./User/WebAuth";
 
 class CONQUER 
 {
