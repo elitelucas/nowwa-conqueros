@@ -38,15 +38,8 @@ class Auth
  
         let response : any = await CONQUER.do( "AUTH.get", params || CONQUER.LocalStorage.account );
 
-        CONQUER.LocalStorage.setAccount(
-        {
-            avatarID    : response.result.avatarID,
-            token       : response.result.token,
-            firstName   : response.result.firstName,
-            admin       : response.result.admin,
-            username    : response.result.username
-        });
-
+        CONQUER.User.set( response.result );
+ 
         return response;
     }
  

@@ -10,18 +10,19 @@ import LocalStorage from "./UTILS/LocalStorage";
 
  class CONQUER 
 {
-    public static Initialized   : boolean = false;
+    public static initialized   : boolean = false;
     public static Ready         : boolean = false;
     public static LocalStorage  : LocalStorage = new LocalStorage();
     public static Auth          : Auth = new Auth();
     public static User          : User = new User();
     public static WebAuth       : WebAuth = new WebAuth();
-    private static Socket       : Socket = new Socket();
     public static File          : File = new File();
+
+    private static Socket       : Socket = new Socket();
  
     public static async init(): Promise<void> 
     {
-        this.Initialized = true;
+        this.initialized = true;
         log("client: =============== New ConquerOS");
 
         await this.Socket.init();
@@ -29,15 +30,14 @@ import LocalStorage from "./UTILS/LocalStorage";
         if( typeof window != 'undefined' ) await this.WebAuth.init();
 
         await this.Auth.init();
-        await this.File.init();
-
+ 
         this.Ready = true;
         return Promise.resolve();
     };
 
     public static async do( action: string, vars?: any ): Promise<any> 
     {
-        return this.Socket.do(action, vars);
+        return this.Socket.do( action, vars );
     }
 }
 

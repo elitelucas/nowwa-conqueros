@@ -38,7 +38,7 @@ class LocalStorage
         
         new URL( window.location.href ).searchParams.forEach( function (val, key) 
         {
-            if ( params[key] !== undefined ) 
+            if( params[key] !== undefined ) 
             {
                 if ( !Array.isArray(params[key]) ) params[key] = [params[key]];
 
@@ -77,7 +77,7 @@ class LocalStorage
 
     public set = function( key:string, value:any ) 
     {
-        if ( typeof window != 'undefined') window.localStorage.setItem( key, JSON.stringify( value ));
+        if( typeof window != 'undefined' ) window.localStorage.setItem( key, JSON.stringify( value ));
         return value;
     };
 
