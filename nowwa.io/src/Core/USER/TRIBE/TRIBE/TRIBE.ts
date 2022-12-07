@@ -42,32 +42,11 @@ class TRIBE
             return Promise.resolve( value );
         }
 
-        let tribeIDs : any  = {};
+        query.avatarIDs = { $all:avatarIDs, $size:avatarIDs.length }
  
-        for( let n=0; n<avatarIDs.length; n++ )
-        {
-            let results = await TRIBE_MEMBERS.get({ avatarID:avatarIDs[n] });
+        let value       = await DATA.getOne( this.table, query ); 
 
-            for( let i in results ) 
-            {
-                if( tribeIDs[ results[i].tribeID ] ) tribeIDs[ results[i].tribeID ] = 0;
-                tribeIDs[ results[i].tribeID ] ++;
-            }
-        }
- 
-        for( let tribeID in tribeIDs )
-        {
-            if( tribeIDs[ tribeID ] != avatarIDs.length ) continue;
- 
-            let vars : any = { _id:tribeID };
-            if( query.type ) vars.type = query.type;
-
-            let tribe = await DATA.getOne( this.table, vars );
-
-            if( tribe ) return Promise.resolve( tribe );
-        }
-
-        return Promise.resolve( null );
+        return Promise.resolve( value );
     };
 
     /*=============== 
@@ -79,7 +58,7 @@ class TRIBE
         name,
         type,
         domainID,
-        private (boolean)
+        private (boolean) 
 
     }
     
@@ -89,7 +68,7 @@ class TRIBE
     {
         let avatarIDs = query.avatarIDs;
         delete query.avatarIDs;
-
+  
         let tribe = await DATA.set( this.table, query );
 
         for( let n in avatarIDs )
