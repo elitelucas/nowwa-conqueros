@@ -15,7 +15,6 @@ class Storage
  
     public async init(): Promise<any> 
     {
-        console.log(`this.setAccount`, this.setAccount);
         this.setAccount( this.loadAccount() );
         this.setAccount( this.parseUrlSearchParams() );
         return Promise.resolve();
@@ -113,7 +112,6 @@ class Storage
     }
  
 }
-
 
 namespace Storage 
 {

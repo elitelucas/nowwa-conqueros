@@ -91,34 +91,10 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
                     username: state.email,
                     password: state.password
                 });
-
-                console.log(`res`, res);
-                console.log(`CONQUER.LocalStorage`, CONQUER.Storage);
-                console.log(`CONQUER.LocalStorage.setAccount`, CONQUER.Storage.setAccount);
                 
                 if (res.success) 
                 {
-                    // let account:LocalStorage.Account = 
-                    // {
-                    //     admin           : res.result.admin,
-                    //     friend_count    : res.result.friend_count,
-                    //     avatarID        : res.result.avatarID,
-                    //     firstName       : res.result.firstName,
-                    //     token           : res.result.token,
-                    //     type            : 'CONQUER',
-                    //     username        : res.result.avatarID
-                    // };
-                    
-                    // CONQUER.LocalStorage.setAccount( account );
- 
-                    // updateState({
-                    //     isBusy: false,
-                    //     warning: '',
-                    // });
-                    // setIndexState({
-                    //     display: 'Home',
-                    //     account: account
-                    // });
+                    window.location.reload();
                 } else {
                     updateState({
                         isBusy: false,
@@ -126,6 +102,12 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
                     });
                 }
             }
+        }
+    }
+
+    let doGuest = async () => {
+        if (CONQUER.initialized) {
+            console.log('TODO: Login as guest');
         }
     }
 
@@ -240,6 +222,9 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
                         </Grid.Column>
                         <Grid.Column>
                             <Button fluid primary onClick={goToRegister} disabled={state.isBusy}><Icon name='signup'></Icon>Register</Button>
+                        </Grid.Column>
+                        <Grid.Column>
+                            <Button fluid primary onClick={doGuest} disabled={state.isBusy}><Icon name='user'></Icon>Guest</Button>
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>

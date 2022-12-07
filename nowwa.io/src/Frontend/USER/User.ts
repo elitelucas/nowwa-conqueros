@@ -18,8 +18,7 @@ class User
         this.username   = params.username;
         this.token      = params.token;
  
-        console.log(`CONQUER.LocalStorage.setAccount`, CONQUER.Storage);
-        // CONQUER.LocalStorage.setAccount( params );
+        CONQUER.Storage.setAccount( params );
     }
 
 }

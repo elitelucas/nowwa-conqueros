@@ -100,7 +100,7 @@ const Index = () => {
             {
                 let account = CONQUER.Storage.account;
 
-                if (account) 
+                if (account && typeof account.avatarID != 'undefined') 
                 {
                     updateState({
                         display: 'Home',

@@ -31,7 +31,7 @@ const Home = (state: HomeState, setState: React.Dispatch<React.SetStateAction<Ho
     };
 
     let doLogout = async () => {
-        if (CONQUER.Ready) {
+        if (CONQUER.initialized) {
             await CONQUER.Auth.remove();
             setIndexState({
                 account: undefined,
