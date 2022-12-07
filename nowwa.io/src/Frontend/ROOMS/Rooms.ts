@@ -41,23 +41,35 @@ class Rooms
 
         return Promise.resolve( room );
     };
-
-
-
+ 
     /*=============== 
 
 
-    REMOVE (LEAVE)
+    LEAVE
     
 
     ================*/
 
-    public async remove( room:RoomInstance ) : Promise<any>
+    public async leave( room:RoomInstance ) : Promise<any>
     {
         delete this.pool[ room.roomID ];
 
         return Promise.resolve();
     };
+
+    /*=============== 
+
+
+    ON MESSAGE
+    
+
+    ================*/
+
+    public _onServerMessage( message:any )
+    {
+        let room  = this.pool[ message.roomID ];
+        if( room ) room._onServerMessage( message );
+    }
 }
 
 export default Rooms;

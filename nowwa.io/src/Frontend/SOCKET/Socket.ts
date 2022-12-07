@@ -1,6 +1,7 @@
 import io from 'socket.io-client';
 import CONFIG from '../../Core/CONFIG/CONFIG';
 import LOG, { log } from '../../UTIL/LOG';
+import CONQUER from '../CONQUER';
  
 class Socket
 {
@@ -42,6 +43,8 @@ class Socket
             log( `client: connect status: ${ socket.connected }` );
             self.connect();
         }); 
+
+        socket.on( 'message', CONQUER.Rooms._onServerMessage );
  
         return new Promise((resolve) => 
         {
@@ -51,9 +54,8 @@ class Socket
                 resolve( self.id );
             });
         });
-
-      //  return Promise.resolve("OK I SEE");
  
+      //  return Promise.resolve("OK I SEE");
     }
 
     public async do( action:string, vars?:any ) : Promise<any>

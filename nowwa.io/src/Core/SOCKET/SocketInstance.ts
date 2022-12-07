@@ -5,6 +5,7 @@ import LOG, { log } from "../../UTIL/LOG";
 import FILE from "../CMS/FILE";
 import AUTH from "../USER/AUTH/AUTH";
 import FRIENDS from "../USER/TRIBE/FRIENDS/FRIENDS";
+import ROOM from "./ROOM/ROOM";
 class SocketInstance 
 {
     // Todo, destroy instances on disconnect
@@ -36,6 +37,10 @@ class SocketInstance
         if( action == "AUTH.get" )          return map( AUTH.get( vars ) );
 
         if( action == "FILE.get" )          return map( FILE.get( vars ) );
+
+        if( action == "ROOM.get" )          return map( ROOM.get( vars ) );
+        if( action == "ROOM.getOne" )       return map( ROOM.get( vars ) );
+        if( action == "ROOM.leave" )        return map( ROOM.get( vars ) );
 
         vars.avatarID = this.User.avatarID;
  

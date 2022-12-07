@@ -30,11 +30,10 @@ class CONQUER
         this.Auth       = new Auth();
         this.WebAuth    = new WebAuth();
         this.File       = new File();
+        this.Rooms      = new Rooms();
         this.Socket     = new Socket();
         this.User       = new User();
-        this.Rooms      = new Rooms();
-
-
+ 
         await this.Storage.init();
         await this.WebAuth.init();
         await this.Socket.init();
