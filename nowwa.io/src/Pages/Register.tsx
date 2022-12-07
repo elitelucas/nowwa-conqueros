@@ -77,7 +77,7 @@ const Register = (state: RegisterState, setState: React.Dispatch<React.SetStateA
         });
     };
 
-    let doRegisterNew = async () => {
+    let doRegister = async () => {
         if (state.email.length == 0) {
             updateState({ warning: `email cannot be empty` });
         } else if (state.password.length == 0) {
@@ -85,7 +85,7 @@ const Register = (state: RegisterState, setState: React.Dispatch<React.SetStateA
         } else if (state.password != state.repassword) {
             updateState({ warning: `password mismatch` });
         } else {
-            if (CONQUER.Ready) {
+            if (CONQUER.initialized) {
                 updateState({
                     isBusy: true,
                     shouldReset: true,
@@ -110,45 +110,6 @@ const Register = (state: RegisterState, setState: React.Dispatch<React.SetStateA
                         warning: res.error
                     });
                 }
-            }
-        }
-    };
-
-
-    let doRegister = () => {
-        if (state.email.length == 0) {
-            updateState({ warning: `email cannot be empty` });
-        } else if (state.password.length == 0) {
-            updateState({ warning: `password cannot be empty` });
-        } else if (state.password != state.repassword) {
-            updateState({ warning: `password mismatch` });
-        } else {
-            if (CONQUER.Ready) {
-                updateState({
-                    isBusy: true,
-                    shouldReset: true,
-                    warning: ''
-                });
-
-                CONQUER.Auth.set({
-                    username: state.email,
-                    password: state.password
-                })
-                    .then((res) => {
-                        if (res.success) {
-                            updateState({
-                                isBusy: false,
-                                shouldReset: true,
-                                warning: `check your email to verify your account`
-                            });
-                        } else {
-                            updateState({
-                                isBusy: false,
-                                shouldReset: true,
-                                warning: res.error
-                            });
-                        }
-                    });
             }
         }
     };
@@ -211,7 +172,7 @@ const Register = (state: RegisterState, setState: React.Dispatch<React.SetStateA
                     </Grid.Row>
                     <Grid.Row >
                         <Grid.Column>
-                            <Button fluid primary onClick={doRegisterNew} disabled={state.isBusy}><Icon name='signup'></Icon>Register</Button>
+                            <Button fluid primary onClick={doRegister} disabled={state.isBusy}><Icon name='signup'></Icon>Register</Button>
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>

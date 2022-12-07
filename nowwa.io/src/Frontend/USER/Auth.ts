@@ -1,5 +1,5 @@
 import CONQUER from '../CONQUER';
-import LocalStorage from '../UTILS/LocalStorage';
+import Storage from '../UTILS/Storage';
 
 class Auth 
 {
@@ -29,14 +29,14 @@ class Auth
 
     public remove()
     {
-        CONQUER.LocalStorage.removeAccount();
+        CONQUER.Storage.removeAccount();
     }
 
     public async get( params? : { username: string, password: string, type?:string }): Promise<any> 
     {
         if( params ) params.type = "USERNAME";
  
-        let response : any = await CONQUER.do( "AUTH.get", params || CONQUER.LocalStorage.account );
+        let response : any = await CONQUER.do( "AUTH.get", params || CONQUER.Storage.account );
 
         CONQUER.User.set( response.result );
 

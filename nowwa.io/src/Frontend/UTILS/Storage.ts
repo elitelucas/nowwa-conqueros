@@ -1,7 +1,6 @@
 import DATE from "../../UTIL/DATE";
 import RANDOM from "../../UTIL/RANDOM";
-import CONQUER from "../CONQUER";
-class LocalStorage
+class Storage
 {
 
     /*=============== 
@@ -10,15 +9,17 @@ class LocalStorage
     INIT
     
 
-    ================*/
+    ================*/ 
 
-    public account       : any = {}
+    public account:any = {};
  
-    constructor()
-    {   
+    public async init(): Promise<any> 
+    {
+        console.log(`this.setAccount`, this.setAccount);
         this.setAccount( this.loadAccount() );
         this.setAccount( this.parseUrlSearchParams() );
-    };
+        return Promise.resolve();
+    }
 
     private loadAccount()
     {
@@ -28,7 +29,7 @@ class LocalStorage
         if( !vars.username ) vars.username = "Guest_" + DATE.now() + RANDOM.value(1000);
 
         return vars;
-    };
+    }
  
     private parseUrlSearchParams()
     {
@@ -51,7 +52,7 @@ class LocalStorage
         window.history.pushState( params, "", `${window.location.origin}`);
  
         return params.username ? params : null;
-    };
+    }
 
 
     /*=============== 
@@ -62,10 +63,10 @@ class LocalStorage
 
     ================*/
 
-    public get = function( key:string ) : any
+    public get( key:string ) : any
     {	
    		return typeof window != 'undefined' ? window.localStorage.getItem( key ) : null;
-    };
+    }
  
     /*=============== 
 
@@ -75,11 +76,11 @@ class LocalStorage
 
     ================*/
 
-    public set = function( key:string, value:any ) 
+    public set( key:string, value:any ) 
     {
         if( typeof window != 'undefined' ) window.localStorage.setItem( key, JSON.stringify( value ));
         return value;
-    };
+    }
 
     public setAccount( vars?:any ) 
     {
@@ -114,7 +115,7 @@ class LocalStorage
 }
 
 
-namespace LocalStorage 
+namespace Storage 
 {
     export type Account = 
     {
@@ -137,4 +138,4 @@ namespace LocalStorage
     };
 }
 
-export default LocalStorage;
+export default Storage;

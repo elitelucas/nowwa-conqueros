@@ -4,7 +4,7 @@ import { IndexState, } from './Index';
 import { Hash, UpdateComponentState } from './Utils/Helpers';
 import './Utils/Facebook';
 import CONQUER from '../Frontend/CONQUER';
-import LocalStorage from '../Frontend/Utils/LocalStorage';
+import Storage from '../Frontend/UTILS/Storage';
 
 export type LoginState = {
     initialized: boolean,
@@ -82,7 +82,7 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
         } else if (state.password.length == 0) {
             setWarning('password cannot be empty!');
         } else {
-            if (CONQUER.Ready) {
+            if (CONQUER.initialized) {
                 updateState({
                     isBusy: true,
                     warning: '',
@@ -91,30 +91,34 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
                     username: state.email,
                     password: state.password
                 });
+
+                console.log(`res`, res);
+                console.log(`CONQUER.LocalStorage`, CONQUER.Storage);
+                console.log(`CONQUER.LocalStorage.setAccount`, CONQUER.Storage.setAccount);
                 
                 if (res.success) 
                 {
-                    let account:LocalStorage.Account = 
-                    {
-                        admin           : res.result.admin,
-                        friend_count    : res.result.friend_count,
-                        avatarID        : res.result.avatarID,
-                        firstName       : res.result.firstName,
-                        token           : res.result.token,
-                        type            : 'CONQUER',
-                        username        : res.result.avatarID
-                    };
+                    // let account:LocalStorage.Account = 
+                    // {
+                    //     admin           : res.result.admin,
+                    //     friend_count    : res.result.friend_count,
+                    //     avatarID        : res.result.avatarID,
+                    //     firstName       : res.result.firstName,
+                    //     token           : res.result.token,
+                    //     type            : 'CONQUER',
+                    //     username        : res.result.avatarID
+                    // };
                     
-                    LocalStorage.setAccount( account );
+                    // CONQUER.LocalStorage.setAccount( account );
  
-                    updateState({
-                        isBusy: false,
-                        warning: '',
-                    });
-                    setIndexState({
-                        display: 'Home',
-                        account: account
-                    });
+                    // updateState({
+                    //     isBusy: false,
+                    //     warning: '',
+                    // });
+                    // setIndexState({
+                    //     display: 'Home',
+                    //     account: account
+                    // });
                 } else {
                     updateState({
                         isBusy: false,
@@ -126,19 +130,19 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
     }
 
     let doTwitter = async () => {
-        if (CONQUER.Ready) {
+        if (CONQUER.initialized) {
             CONQUER.WebAuth.twitter();
         }
     };
 
     let doGoogle = async () => {
-        if (CONQUER.Ready) {
+        if (CONQUER.initialized) {
             CONQUER.WebAuth.google();
         }
     };
 
     let doFacebook = async () => {
-        if (CONQUER.Ready) {
+        if (CONQUER.initialized) {
             CONQUER.WebAuth.facebook()
                 .then((res) => {
                     if (res.success) {
@@ -157,19 +161,19 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
     };
 
     let doDiscord = async () => {
-        if (CONQUER.Ready) {
+        if (CONQUER.initialized) {
             CONQUER.WebAuth.discord();
         }
     };
 
     let doSnapchat = async () => {
-        if (CONQUER.Ready) {
+        if (CONQUER.initialized) {
             CONQUER.WebAuth.snapchat();
         }
     };
 
     let doMetamask = async () => {
-        if (CONQUER.Ready) {
+        if (CONQUER.initialized) {
             CONQUER.WebAuth.metamask()
                 .then((res) => {
                     console.log(res);

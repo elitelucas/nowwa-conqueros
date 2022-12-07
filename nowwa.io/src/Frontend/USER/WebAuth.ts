@@ -1,7 +1,7 @@
 import { authLinks, authLogin, authRegister, authVerify } from "../../Core/CONFIG/CONFIG";
 import { log } from "../../UTIL/LOG";
 import CONQUER from "../CONQUER";
-import LocalStorage from "../UTILS/LocalStorage";
+import Storage from "../UTILS/Storage";
 
 class WebAuth 
 {
@@ -110,7 +110,7 @@ class WebAuth
                     type            : 'METAMASK'
                 };
 
-                CONQUER.LocalStorage.setAccount( account );
+                CONQUER.Storage.setAccount( account );
 
                 // TODO: refresh the page
 
@@ -224,7 +224,7 @@ class WebAuth
                 type            : 'FACEBOOK'
             };
  
-            CONQUER.LocalStorage.setAccount( account );
+            CONQUER.Storage.setAccount( account );
 
             // TODO: Refresh page
  

@@ -4,7 +4,7 @@ import EXPRESS from '../../EXPRESS/EXPRESS';
 import { google } from 'googleapis';
 import AUTH from './AUTH';
 import CRYPT from '../../../UTIL/CRYPT';
-import LocalStorage from '../../../Frontend/UTILS/LocalStorage';
+import Storage from '../../../Frontend/UTILS/Storage';
 
 class Google 
 {

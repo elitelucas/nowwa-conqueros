@@ -1,4 +1,3 @@
-import { debug } from 'console';
 import LOG, { log } from '../../UTIL/LOG';
 import CONQUER from '../CONQUER';
  
@@ -17,11 +16,12 @@ class User
         this.firstName  = params.firstName;
         this.username   = params.username;
         this.token      = params.token;
- 
-        console.log(`CONQUER.LocalStorage.setAccount`, CONQUER.Storage);
-        // CONQUER.LocalStorage.setAccount( params );
+
+        CONQUER.Storage.setAccount( params );
     }
 
-}
+ 
+
+};
 
 export default User;

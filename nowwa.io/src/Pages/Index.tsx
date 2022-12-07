@@ -13,13 +13,13 @@ import Status from '../Core/APPS/Status';
 import CONQUER from '../Frontend/CONQUER';
 import Uploader, { UploaderStateDefault } from './Uploader';
 import Downloader, { DownloaderState, DownloaderStateDefault } from './Downloader';
-import LocalStorage from '../Frontend/Utils/LocalStorage';
+import Storage from '../Frontend/UTILS/Storage';
 
 type IndexDisplay = 'None' | 'Explorer' | 'Build' | 'Test' | 'Login' | 'Register' | 'Home';
 
 export type IndexState = ComponentState & {
     display: IndexDisplay,
-    account?: LocalStorage.Account,
+    account?: Storage.Account,
     message: string,
     params?: { [key: string]: any }
 };
@@ -87,7 +87,7 @@ const Index = () => {
         // TODO : finish load script
         // load script for onesignal
 
-        if (!CONQUER.Initialized) 
+        if (!CONQUER.initialized) 
         {
             let scriptUrls:string[] = [
                 `${window.location.origin}/OneSignalSDK.js`,
@@ -98,11 +98,7 @@ const Index = () => {
             });
             loadConquer().then(() => 
             {
-                let params = LocalStorage.searchParams;
-                console.log('done load conquer');
-                console.log(`params`, params);
-
-                let account = LocalStorage.account;
+                let account = CONQUER.Storage.account;
 
                 if (account) 
                 {
@@ -112,7 +108,7 @@ const Index = () => {
                     });
                 }
 
-                if (params.info == 'verified') {
+                if (account && account.info == 'verified') {
                     updateState({
                         message: `email successfully verified!`
                     });

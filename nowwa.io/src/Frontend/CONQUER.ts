@@ -3,26 +3,34 @@ import LOG, { log } from "../UTIL/LOG";
 
 import Auth from "./USER/Auth";
 import User from "./USER/User";
-import File from "./FILE/File";
+import File from "./FILE/File"; 
 import WebAuth from "./USER/WebAuth";
-import LocalStorage from "./UTILS/LocalStorage";
+import Storage from "./UTILS/Storage";
 
 import Friends from "./FRIENDS/Friends";
 class CONQUER 
 {
     public static initialized   : boolean = false;
  
-    public static LocalStorage  : LocalStorage = new LocalStorage();
-    public static Auth          : Auth = new Auth();
-    public static User          : User = new User();
-    public static WebAuth       : WebAuth = new WebAuth();
-    public static File          : File = new File();
-    public static Friends       : Friends = new Friends();
+    public static Storage       : Storage;
+    public static Auth          : Auth;
+    public static User          : User;
+    public static WebAuth       : WebAuth;
+    public static File          : File;
+    public static Friends       : Friends;
 
-    private static Socket       : Socket = new Socket();
+    private static Socket       : Socket;
  
     public static async init(): Promise<void> 
     {
+        this.Storage = new Storage();
+        this.Friends = new Friends();
+        this.Auth = new Auth();
+        this.WebAuth = new WebAuth();
+        this.File = new File();
+        this.Socket = new Socket();
+        this.User = new User();
+        await this.Storage.init();
         await this.WebAuth.init();
         await this.Socket.init();
         await this.Auth.init();
@@ -46,4 +54,3 @@ if (typeof (window) !== 'undefined') {
 }
 export const _global = (w /* browser */ || global /* node */) as any
 _global.CONQUER = CONQUER; 
-
