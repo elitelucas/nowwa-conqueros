@@ -13,6 +13,12 @@ class RoomInstance
         this.avatarIDs  = vars.avatarIDs;
     }
 
+    public join()
+    {
+        this.do( "ROOM.join", { roomID:this.roomID } );
+    };
+
+
     public leave()
     {
         CONQUER.Rooms.leave( this );

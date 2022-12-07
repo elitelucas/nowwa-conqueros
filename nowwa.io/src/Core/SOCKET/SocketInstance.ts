@@ -13,6 +13,7 @@ class SocketInstance
     public socket   : Socket;
     public id       : any;
     public User     : any;
+    public rooms    : any = {};
 
     constructor( socket:Socket ) 
     {
@@ -40,7 +41,15 @@ class SocketInstance
 
         if( action == "ROOM.get" )          return map( ROOM.get( vars ) );
         if( action == "ROOM.getOne" )       return map( ROOM.get( vars ) );
-        if( action == "ROOM.leave" )        return map( ROOM.get( vars ) );
+        
+        /*
+
+        socket.join(room);
+
+        if( action == "ROOM.join" )         return joinRoom( vars );
+        if( action == "ROOM.leave" )        return leaveRoom( vars );
+        if( action == "ROOM.send" )         return leaveRoom( vars );
+        */
 
         vars.avatarID = this.User.avatarID;
  
@@ -56,6 +65,8 @@ class SocketInstance
         function doCallback( vars?: any, isSucess: boolean = true ) 
         {
             if( action == "AUTH.get" && isSucess && vars ) setUser( vars );
+
+            if( action == "ROOM.getOne" )
 
             if( callback ) callback({ success: isSucess, result: vars || {} });
         }
@@ -75,6 +86,19 @@ class SocketInstance
             if( !vars ) return;
             self.User = vars;
         }
+
+
+        /*
+
+        function joinRoom( vars:any )
+        {
+
+        }
+
+        function leaveRoom( vars:any )
+        {
+
+        }*/
  
     }
  
