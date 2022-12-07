@@ -87,14 +87,8 @@ class SocketInstance
         log("SOCKET onConnection", socket.id );
 
         socket.emit("noArg");
-        socket.emit("basicEmit", 1, "2", Buffer.from([3]));
-
-        socket.emit("withAck", "4", (e:any) => 
-        {
-            log(`e: ${e}`);
-        });
-    
-        // works when broadcast to all
+  
+        // works when sending to all
         io.emit("noArg");
     
         // works when broadcasting to a room
@@ -106,18 +100,6 @@ class SocketInstance
             // send echo
             socket.emit('fromServer', args);
             socket.broadcast.emit('fromServer', `[broadcast: ${socket.id}]: ${JSON.stringify(args)}`); // sender does not get the broadcast
-        });
-
-        socket.on( 'login', (args:Authentication.Input) => 
-        {
-            Authentication.Login(args).then((user) => 
-            {
-                socket.to(socket.id).emit('fromServer', { success: true, value: user });
-
-            }).catch((error) => 
-            {
-                socket.emit('fromServer', { success: false, error: error.message || error });
-            });
         });
  
     });

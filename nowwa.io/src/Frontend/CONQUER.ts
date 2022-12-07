@@ -8,6 +8,7 @@ import WebAuth from "./USER/WebAuth";
 import Storage from "./UTILS/Storage";
 
 import Friends from "./FRIENDS/Friends";
+import Rooms from "./ROOMS/Rooms";
 class CONQUER 
 {
     public static initialized   : boolean = false;
@@ -18,18 +19,22 @@ class CONQUER
     public static WebAuth       : WebAuth;
     public static File          : File;
     public static Friends       : Friends;
+    public static Rooms         : Rooms;
 
     private static Socket       : Socket;
  
     public static async init(): Promise<void> 
     {
-        this.Storage = new Storage();
-        this.Friends = new Friends();
-        this.Auth = new Auth();
-        this.WebAuth = new WebAuth();
-        this.File = new File();
-        this.Socket = new Socket();
-        this.User = new User();
+        this.Storage    = new Storage();
+        this.Friends    = new Friends();
+        this.Auth       = new Auth();
+        this.WebAuth    = new WebAuth();
+        this.File       = new File();
+        this.Socket     = new Socket();
+        this.User       = new User();
+        this.Rooms      = new Rooms();
+
+
         await this.Storage.init();
         await this.WebAuth.init();
         await this.Socket.init();
