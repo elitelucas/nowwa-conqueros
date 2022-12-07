@@ -13,13 +13,13 @@ import Status from '../Core/APPS/Status';
 import CONQUER from '../Frontend/CONQUER';
 import Uploader, { UploaderStateDefault } from './Uploader';
 import Downloader, { DownloaderState, DownloaderStateDefault } from './Downloader';
-import Storage from '../Frontend/UTILS/Storage';
+import User from '../Frontend/USER/User';
 
 type IndexDisplay = 'None' | 'Explorer' | 'Build' | 'Test' | 'Login' | 'Register' | 'Home';
 
 export type IndexState = ComponentState & {
     display: IndexDisplay,
-    account?: Storage.Account,
+    account?: User,
     message: string,
     params?: { [key: string]: any }
 };
@@ -98,21 +98,21 @@ const Index = () => {
             });
             loadConquer().then(() => 
             {
-                let account = CONQUER.Storage.account;
+                let account = CONQUER.User;
 
                 if (account && typeof account.avatarID != 'undefined') 
                 {
                     updateState({
                         display: 'Home',
-                        account: account
+                        account: account!
                     });
                 }
 
-                if (account && account.info == 'verified') {
-                    updateState({
-                        message: `email successfully verified!`
-                    });
-                }
+                // if (account && account.info == 'verified') {
+                //     updateState({
+                //         message: `email successfully verified!`
+                //     });
+                // }
                 // else if (params.info == 'notverified') {
                 //     updateState({
                 //         initialized: true,
@@ -146,7 +146,7 @@ const Index = () => {
     }
 
     let top: JSX.Element = <></>;
-    if (state.account && state.account.admin) {
+    if (false) {
         top = Top(updateState);
     }
     const [explorerState, setExplorerState] = useState(ExplorerStateDefault);
