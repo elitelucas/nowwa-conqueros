@@ -23,6 +23,7 @@ class SocketInstance
         // log("[SERVER]: New SOCKET instance", this.id);
 
         this.socket.on( 'action', this.onAction.bind(this) );
+        this.socket.on( 'message', this.onMessage.bind(this) );
         this.socket.on( "disconnect", this.onDisconnect.bind(this) );
     };
 
@@ -41,16 +42,7 @@ class SocketInstance
 
         if( action == "ROOM.get" )          return map( ROOM.get( vars ) );
         if( action == "ROOM.getOne" )       return map( ROOM.get( vars ) );
-        
-        /*
-
-        socket.join(room);
-
-        if( action == "ROOM.join" )         return joinRoom( vars );
-        if( action == "ROOM.leave" )        return leaveRoom( vars );
-        if( action == "ROOM.send" )         return leaveRoom( vars );
-        */
-
+ 
         vars.avatarID = this.User.avatarID;
  
         if( action == "FILE.set" )          return map( FILE.set( vars ) );
@@ -65,9 +57,7 @@ class SocketInstance
         function doCallback( vars?: any, isSucess: boolean = true ) 
         {
             if( action == "AUTH.get" && isSucess && vars ) setUser( vars );
-
-            // if( action == "ROOM.getOne" )
-
+ 
             if( callback ) callback({ success: isSucess, result: vars || {} });
         }
 
@@ -86,7 +76,30 @@ class SocketInstance
             if( !vars ) return;
             self.User = vars;
         }
+ 
+    }
 
+    public onMessage( messages:any ) 
+    {
+        for( var n in messages )
+        {
+            let message = messages[n];
+            let action  = message.action;
+            let data    = message.data;
+            let roomID  = data.roomID;
+
+            if( !roomID ) continue;
+ 
+            /*
+
+        socket.join(room);
+
+        if( action == "ROOM.join" )         return joinRoom( vars );
+        if( action == "ROOM.leave" )        return leaveRoom( vars );
+        if( action == "ROOM.send" )         return leaveRoom( vars );
+        */
+
+ 
 
         /*
 
@@ -99,8 +112,12 @@ class SocketInstance
         {
 
         }*/
+
+
+        }
  
-    }
+    };
+ 
  
 
     public onDisconnect() 

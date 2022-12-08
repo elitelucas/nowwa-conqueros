@@ -1,5 +1,6 @@
 import io from 'socket.io-client';
 import CONFIG from '../../Core/CONFIG/CONFIG';
+import TimerInstance from '../../UTIL/Instances/TimerInstance';
 import LOG, { log } from '../../UTIL/LOG';
 import CONQUER from '../CONQUER';
  
@@ -21,13 +22,24 @@ class Socket
 
     private socket?                 : any;
     private id                      : any;
+    private messagesCue             : any = [];
+    private sendTimer               : any;
 
     public async init() : Promise<any>
     {
         log( "client: Init New Socket Client" );
-        var wut = await this.connect();
 
-        return Promise.resolve("SAY "+wut);
+        let self    = this;
+
+        await this.connect();
+
+        this.sendTimer = new TimerInstance({ onUpdate:function()
+        {
+            self.doSend();
+
+        }, interval:300, autoStart:true });
+ 
+        return Promise.resolve();
     }
  
     private async connect() : Promise<any>
@@ -62,6 +74,21 @@ class Socket
     {
         return new Promise( resolve => this.socket.emit( "action", action, vars, resolve ) ); 
     }
+
+    public send( action:string, data:any )
+    {
+        this.messagesCue.push({ action:action, data:data } );
+    }
+ 
+    private doSend()
+    {
+        if( !this.messagesCue.length ) return;
+
+        this.socket.emit( "message", this.messagesCue ); 
+ 
+        this.messagesCue = [];
+    }
+
 
     public disconnect() 
     {

@@ -49,6 +49,11 @@ class CONQUER
     {
         return this.Socket.do( action, vars );
     }
+
+    public static send( action: string, data: any ) 
+    {
+        return this.Socket.do( action, data );
+    }
 }
 
 export default CONQUER;
