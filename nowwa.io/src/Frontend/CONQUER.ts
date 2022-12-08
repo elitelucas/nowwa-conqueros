@@ -38,8 +38,9 @@ class CONQUER
         await this.WebAuth.init();
         await this.Socket.init();
         await this.Auth.init();
- 
         this.initialized = true;
+
+        console.log('conquer initialized');
 
         return Promise.resolve();
     };

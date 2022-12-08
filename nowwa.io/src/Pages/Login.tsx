@@ -24,7 +24,6 @@ export const LoginStateDefault: LoginState = {
 
 export const LoginInit = async (state: LoginState): Promise<LoginState> => {
     try {
-
         return Promise.resolve({
             email: state.email,
             initialized: true,
@@ -107,7 +106,11 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
 
     let doGuest = async () => {
         if (CONQUER.initialized) {
-            console.log('TODO: Login as guest');
+            setIndexState({
+                display: 'Home',
+                acceptGuest: true,
+                account: CONQUER.User!
+            });
         }
     }
 
@@ -218,13 +221,13 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
                     </Grid.Row>
                     <Grid.Row>
                         <Grid.Column>
-                            <Button fluid primary onClick={doLogin} disabled={state.isBusy}><Icon name='sign in'></Icon>Login</Button>
+                            <Button fluid primary onClick={doLogin} disabled={state.isBusy || indexState.isBusy}><Icon name='sign in'></Icon>Login</Button>
                         </Grid.Column>
                         <Grid.Column>
-                            <Button fluid primary onClick={goToRegister} disabled={state.isBusy}><Icon name='signup'></Icon>Register</Button>
+                            <Button fluid primary onClick={goToRegister} disabled={state.isBusy || indexState.isBusy}><Icon name='signup'></Icon>Register</Button>
                         </Grid.Column>
                         <Grid.Column>
-                            <Button fluid primary onClick={doGuest} disabled={state.isBusy}><Icon name='user'></Icon>Guest</Button>
+                            <Button fluid primary onClick={doGuest} disabled={state.isBusy || indexState.isBusy}><Icon name='user'></Icon>Guest</Button>
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>
@@ -234,22 +237,22 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
                 <Grid centered columns='8'>
                     <Grid.Row>
                         <Grid.Column>
-                            <Button fluid primary onClick={doFacebook}><Icon name='facebook'></Icon>Facebook</Button>
+                            <Button fluid primary onClick={doFacebook} disabled={state.isBusy || indexState.isBusy}><Icon name='facebook'></Icon>Facebook</Button>
                         </Grid.Column>
                         <Grid.Column>
-                            <Button fluid primary onClick={doTwitter}><Icon name='twitter'></Icon>Twitter</Button>
+                            <Button fluid primary onClick={doTwitter} disabled={state.isBusy || indexState.isBusy}><Icon name='twitter'></Icon>Twitter</Button>
                         </Grid.Column>
                         <Grid.Column>
-                            <Button fluid primary onClick={doGoogle}><Icon name='google'></Icon>Google</Button>
+                            <Button fluid primary onClick={doGoogle} disabled={state.isBusy || indexState.isBusy}><Icon name='google'></Icon>Google</Button>
                         </Grid.Column>
                         <Grid.Column>
-                            <Button fluid primary onClick={doDiscord}><Icon name='discord'></Icon>Discord</Button>
+                            <Button fluid primary onClick={doDiscord} disabled={state.isBusy || indexState.isBusy}><Icon name='discord'></Icon>Discord</Button>
                         </Grid.Column>
                         <Grid.Column>
-                            <Button fluid primary onClick={doSnapchat}><Icon name='snapchat'></Icon>Snapchat</Button>
+                            <Button fluid primary onClick={doSnapchat} disabled={state.isBusy || indexState.isBusy}><Icon name='snapchat'></Icon>Snapchat</Button>
                         </Grid.Column>
                         <Grid.Column>
-                            <Button fluid primary onClick={doMetamask}><Icon className='metamask'></Icon>Metamask</Button>
+                            <Button fluid primary onClick={doMetamask} disabled={state.isBusy || indexState.isBusy}><Icon className='metamask'></Icon>Metamask</Button>
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>

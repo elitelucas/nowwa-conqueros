@@ -101,11 +101,8 @@ class Snapchat
                             let id = Buffer.from(secondResponse.data.me.externalId).toString('base64');
                             let name = secondResponse.data.me.displayName;
  
-              
-                            // TODO : change 'id' with actual 'avatarID' for proxy login
                             let account = 
                             {
-                                friend_count    : 0,
                                 username        : id,
                                 firstName       : name,
                                 type            : 'SNAPCHAT'

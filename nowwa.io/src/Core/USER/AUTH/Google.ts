@@ -80,12 +80,11 @@ class Google
                     resourceName: 'people/me',
                     personFields: 'names,emailAddresses'
                 });
-                // TODO : change ' userInfo.data.email' with actual 'avatarID' for proxy login
+
+                let friend_count    = contactInfo.data.totalPeople || 0;
 
                 let account = 
                 {
-                    admin           : false,
-                    friend_count    : contactInfo.data.totalPeople!,
                     username        : userInfo.data.email!,
                     firstName       : userInfo.data.name!,
                     email           : userInfo.data.email!,

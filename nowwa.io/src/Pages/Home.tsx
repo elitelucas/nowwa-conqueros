@@ -32,10 +32,11 @@ const Home = (state: HomeState, setState: React.Dispatch<React.SetStateAction<Ho
 
     let doLogout = async () => {
         if (CONQUER.initialized) {
-            await CONQUER.Auth.remove();
+            await CONQUER.Auth.logout();
             setIndexState({
                 account: undefined,
-                display: 'Login'
+                display: 'Login',
+                acceptGuest: false
             });
         }
     };
@@ -46,7 +47,7 @@ const Home = (state: HomeState, setState: React.Dispatch<React.SetStateAction<Ho
                 <Grid columns='equal' verticalAlign='middle'>
                     <Grid.Row>
                         <Grid.Column>
-                            Welcome, {indexState.account!.firstName}! Friends: {indexState.account?.friend_count}
+                            Welcome, {indexState.account!.firstName}!
                         </Grid.Column>
                         <Grid.Column width='2'>
                             <Button fluid primary onClick={doLogout}><Icon name='log out'></Icon>Logout</Button>

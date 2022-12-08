@@ -83,7 +83,6 @@ class Twitter {
 
                     let account = 
                     {
-                        friend_count: 0,
                         username    : userObject.id,
                         firstName   : userObject.username,
                         type        : 'TWITTER'

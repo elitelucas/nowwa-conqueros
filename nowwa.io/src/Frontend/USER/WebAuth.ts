@@ -71,7 +71,7 @@ class WebAuth
     {
         window.open(this.vars.google, "_self");
     }
-
+    
     public async metamask(): Promise<any> 
     {
         let self        = this;
@@ -101,139 +101,123 @@ class WebAuth
 
                 let account = 
                 {
-                    admin           : false,
                     username        : address, 
                     firstName       : address,
                     wallet          : address,
                     email           : null,
-                    friend_count    : 0,
                     type            : 'METAMASK'
                 };
 
                 CONQUER.Storage.setAccount( account );
 
-                // TODO: refresh the page
-
-                return Promise.resolve(
-                {
-                    success : true,
-                    account : account
-                });
+                if (typeof window != 'undefined') {
+                    window.location.reload();
+                }
 
             } catch( error ) 
             {
-                return Promise.resolve(
-                {
+                return Promise.resolve({
                     success : false,
                     account : error
                 });
             }
         }
     }
-
+    
     public async facebook(): Promise<any> 
     {
-        return new Promise(async (resolve, reject) => 
+        if (!this.vars.facebook) 
         {
-            if (!this.vars.facebook) 
+            await new Promise<void>((resolve, reject) => 
             {
-                await new Promise<void>((resolve, reject) => 
-                {
-                    let facebookScript      = document.createElement('script');
-                    facebookScript.type     = 'text/javascript';
-                    facebookScript.src      = 'https://connect.facebook.net/en_US/sdk.js';
-                    facebookScript.async    = true;
-                    facebookScript.defer    = true;
+                let facebookScript      = document.createElement('script');
+                facebookScript.type     = 'text/javascript';
+                facebookScript.src      = 'https://connect.facebook.net/en_US/sdk.js';
+                facebookScript.async    = true;
+                facebookScript.defer    = true;
 
-                    facebookScript.onload = () => {
+                facebookScript.onload = () => {
 
-                        let facebookAppId: string = `2303120786519319`
-                        
-                        FB.init(
-                        {
-                            appId: facebookAppId,
-                            autoLogAppEvents: true,
-                            xfbml: true,
-                            version: 'v15.0'
-                        });
-
-                        FB.AppEvents.logPageView();
-                        resolve();
-                    }
-                    document.body.appendChild(facebookScript);
-                });
-                this.vars.facebook = true;
-            }
-
-            let loginStatus = await new Promise<fb.StatusResponse>((resolve, reject) => 
-            {
-                FB.getLoginStatus((loginStatus) => 
-                {
-                    // console.log(`loginStatus`, JSON.stringify(loginStatus, null, 4));
-                    // statusChangeCallback(response);
-                    resolve(loginStatus);
-                });
-            });
-
-            let authResponse = loginStatus.authResponse;
-
-            if (!authResponse) 
-            {
-                authResponse = await new Promise<fb.AuthResponse>((resolve, reject) => 
-                {
-                    FB.login((loginResponse: fb.StatusResponse) => 
+                    let facebookAppId: string = `2303120786519319`
+                    
+                    FB.init(
                     {
-                        resolve(loginResponse.authResponse);
-                    }, { scope: 'public_profile,email,user_friends' });
-                });
-            }
+                        appId: facebookAppId,
+                        autoLogAppEvents: true,
+                        xfbml: true,
+                        version: 'v15.0'
+                    });
 
-            let fields: string[] = 
-            [
-                'name',
-                'email',
-            ];
-
-            let apiResponse1 = await new Promise<fb.StatusResponse>((resolve, reject) => 
-            {
-                FB.api('/me', { fields: fields.join(', ') }, (apiResponse1: any) => {
-                    resolve(apiResponse1);
-                });
+                    FB.AppEvents.logPageView();
+                    resolve();
+                }
+                document.body.appendChild(facebookScript);
             });
+            this.vars.facebook = true;
+        }
 
-            let apiResponse2 = await new Promise<fb.StatusResponse>((resolve, reject) => 
+        let loginStatus = await new Promise<fb.StatusResponse>((resolve, reject) => 
+        {
+            FB.getLoginStatus((loginStatus) => 
             {
-                FB.api('/me/friends', {}, (apiResponse2: any) => 
-                {
-                    resolve(apiResponse2);
-                });
-            });
-
-            let userInfo    = apiResponse1 as any;
-            let contactInfo = apiResponse2 as any;
-
-            // TODO : change 'userInfo.email' with actual 'avatarID' for proxy login
-
-            let account =
-            {
-                admin           : false,
-                username        : userInfo.email,
-                email           : userInfo.email,
-                firstName       : userInfo.name,
-                friend_count    : contactInfo.summary.total_count,
-                type            : 'FACEBOOK'
-            };
- 
-            CONQUER.Storage.setAccount( account );
-
-            // TODO: Refresh page
- 
-            resolve(
-            {
-                success : true,
-                account : account
+                // console.log(`loginStatus`, JSON.stringify(loginStatus, null, 4));
+                // statusChangeCallback(response);
+                resolve(loginStatus);
             });
         });
+
+        let authResponse = loginStatus.authResponse;
+
+        if (!authResponse) 
+        {
+            authResponse = await new Promise<fb.AuthResponse>((resolve, reject) => 
+            {
+                FB.login((loginResponse: fb.StatusResponse) => 
+                {
+                    resolve(loginResponse.authResponse);
+                }, { scope: 'public_profile,email,user_friends' });
+            });
+        }
+
+        let fields: string[] = 
+        [
+            'name',
+            'email',
+        ];
+
+        let apiResponse1 = await new Promise<fb.StatusResponse>((resolve, reject) => 
+        {
+            FB.api('/me', { fields: fields.join(', ') }, (apiResponse1: any) => {
+                resolve(apiResponse1);
+            });
+        });
+
+        let apiResponse2 = await new Promise<fb.StatusResponse>((resolve, reject) => 
+        {
+            FB.api('/me/friends', {}, (apiResponse2: any) => 
+            {
+                resolve(apiResponse2);
+            });
+        });
+
+        let userInfo    = apiResponse1 as any;
+        let contactInfo = apiResponse2 as any;
+
+        let friend_count    = contactInfo.summary.total_count;
+
+        let account =
+        {
+            username        : userInfo.email,
+            email           : userInfo.email,
+            firstName       : userInfo.name,
+            type            : 'FACEBOOK'
+        };
+
+        CONQUER.Storage.setAccount( account );
+
+        if (typeof window != 'undefined') {
+            window.location.reload();
+        }
     }
 }
 

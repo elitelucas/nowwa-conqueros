@@ -54,7 +54,10 @@ class EMAIL
 
     public static async set(vars: any): Promise<any> 
     {
-        if (!STRING.validateEmail(vars.email)) return Promise.reject(LOG.msg('Email is invalid'));
+        if (!STRING.validateEmail(vars.email)) {
+            LOG.msg('Email is invalid');
+            return Promise.resolve();
+        }
 
         let email;
         try {
@@ -63,7 +66,10 @@ class EMAIL
             // if email does not exists, then proceed
         }
 
-        if (email) return Promise.reject(LOG.msg('Email already exists'));
+        if (email)  {
+            LOG.msg('Email already exists');
+            return Promise.resolve();
+        }
 
         email = await DATA.set(EMAIL.table, vars);
 

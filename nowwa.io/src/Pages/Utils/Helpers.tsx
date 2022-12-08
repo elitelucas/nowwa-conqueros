@@ -3,11 +3,11 @@ import { authTokenize } from '../../Core/CONFIG/CONFIG';
 
 export type ComponentState = {
     initialized: boolean,
-    busy: boolean,
+    isBusy: boolean,
 }
 
 export const ComponentStateDefault: ComponentState = {
-    busy: false,
+    isBusy: false,
     initialized: false
 }
 

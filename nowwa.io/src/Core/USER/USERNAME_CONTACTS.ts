@@ -22,10 +22,10 @@ class USERNAME_CONTACTS
                 var friend  = await USERNAME.set( {} );
                 friendID    = friend._id;
 
-                EMAIL.set(
+                await EMAIL.set(
                 {
-                    email   : email,
-                    usernameID     : friendID
+                    email       : email,
+                    usernameID  : friendID
                 });
             }
             

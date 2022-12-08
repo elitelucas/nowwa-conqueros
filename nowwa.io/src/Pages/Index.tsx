@@ -21,13 +21,15 @@ export type IndexState = ComponentState & {
     display: IndexDisplay,
     account?: User,
     message: string,
+    acceptGuest: boolean,
     params?: { [key: string]: any }
 };
 
 export const IndexStateDefault: IndexState = {
     display: 'Login',
     initialized: false,
-    busy: false,
+    isBusy: false,
+    acceptGuest: false,
     message: ``
 }
 
@@ -87,8 +89,11 @@ const Index = () => {
         // TODO : finish load script
         // load script for onesignal
 
-        if (!CONQUER.initialized) 
+        if (!CONQUER.initialized && !state.isBusy) 
         {
+            updateState({
+                isBusy: true
+            });
             let scriptUrls:string[] = [
                 `${window.location.origin}/OneSignalSDK.js`,
                 `${window.location.origin}/onesignal-web.js`,
@@ -98,13 +103,19 @@ const Index = () => {
             });
             loadConquer().then(() => 
             {
+
                 let account = CONQUER.User;
 
-                if (account && typeof account.avatarID != 'undefined') 
+                if (account && typeof account.avatarID != 'undefined' && (account.username.indexOf('Guest_') < 0 || state.acceptGuest)) 
                 {
                     updateState({
                         display: 'Home',
-                        account: account!
+                        account: account!,
+                        isBusy: false
+                    });
+                } else {
+                    updateState({
+                        isBusy: false
                     });
                 }
 

@@ -123,6 +123,7 @@ class AUTH
 
     public static async getProxy( localStorage : any ) : Promise<any> 
     {
+        console.log(`[AUTH] getProxy localStorage`, JSON.stringify(localStorage, null, 2));
         var usernameID : any;
  
         if( localStorage.token ) usernameID = await USERNAME.getUsernameID({ token:localStorage.token });
@@ -131,11 +132,11 @@ class AUTH
         {
             if( !usernameID && localStorage.email )    usernameID = await EMAIL.getUsernameID({ email:localStorage.email });
             if( !usernameID && localStorage.wallet )   usernameID = await WALLET.getUsernameID({ wallet:localStorage.wallet });
-            if( !usernameID && localStorage.username ) usernameID = await USERNAME.getUsernameID({ _id:localStorage.username });
+            if( !usernameID && localStorage.username ) usernameID = await USERNAME.getUsernameID({ username:localStorage.username });
         }
  
         let user        = await ( usernameID ? USERNAME.get({ where: { _id: usernameID } }) : USERNAME.set({ username:localStorage.username }) );
-        usernameID      = localStorage.usernameID = user.usernameID;
+        usernameID      = localStorage.usernameID = user._id;
 
         await USERNAME_PROXY.getSet( localStorage );
 

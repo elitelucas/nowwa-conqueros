@@ -69,7 +69,7 @@ class USERNAME
 
         if( item ) return Promise.resolve( item._id );
 
-        return Promise.reject( LOG.msg( 'Username does not exist' ) ); 
+        return Promise.resolve(null);
     };   
 
     /*=============== 

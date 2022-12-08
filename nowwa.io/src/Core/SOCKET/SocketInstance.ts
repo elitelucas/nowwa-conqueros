@@ -66,7 +66,7 @@ class SocketInstance
         {
             if( action == "AUTH.get" && isSucess && vars ) setUser( vars );
 
-            if( action == "ROOM.getOne" )
+            // if( action == "ROOM.getOne" )
 
             if( callback ) callback({ success: isSucess, result: vars || {} });
         }

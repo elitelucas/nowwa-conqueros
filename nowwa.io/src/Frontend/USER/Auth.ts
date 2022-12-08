@@ -8,28 +8,21 @@ class Auth
     public async init() : Promise<any> 
     {
         await this.get();
-
+        
         return Promise.resolve();
-    }
-
-    public async login(type: string = "Guest"): Promise<any> 
-    {
-        this.vars.type = type;
     }
  
     public async set( params : { username: string, password: string } ) : Promise<any> 
     {
         return CONQUER.do( "AUTH.set", params );
     }
- 
-    public async guest(): Promise<any> 
-    {
-        return this.login("Guest");
-    }
 
-    public remove()
+    public async logout()
     {
         CONQUER.Storage.removeAccount();
+        CONQUER.User.set({});
+        await this.get();
+        return Promise.resolve();
     }
 
     public async get( params? : { username: string, password: string, type?:string }): Promise<any> 
@@ -38,9 +31,11 @@ class Auth
  
         let response : any = await CONQUER.do( "AUTH.get", params || CONQUER.Storage.account );
 
+        console.log(`response`, response);
+
         CONQUER.User.set( response.result );
 
-        return response;
+        return Promise.resolve(response);
     }
  
 };

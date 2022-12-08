@@ -90,10 +90,11 @@ class Discord
                                 .then(result => result.json())
                                 .then(thirdResponse => {
                                     console.log(`thirdResponse`, JSON.stringify(thirdResponse, null, 4));
+
+                                    let friend_count = thirdResponse.length;
                                     
                                     let account = 
                                     {
-                                        friend_count    : thirdResponse.length,
                                         username        : secondResponse.email,
                                         firstName       : secondResponse.username,
                                         type            : 'DISCORD'

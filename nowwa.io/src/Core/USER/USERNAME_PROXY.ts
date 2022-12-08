@@ -23,7 +23,7 @@ class USERNAME_PROXY
 
         let item : any  = await DATA.set( USERNAME_PROXY.table, vars );
  
-        EMAIL.set(
+        await EMAIL.set(
         {
             email       : vars.email,
             usernameID  : vars.usernameID,
