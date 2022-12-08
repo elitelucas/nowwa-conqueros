@@ -26,6 +26,20 @@ class Entries
     {
         this.roomInstance.entry( text );
     }
+
+    public async change( vars:any ) : Promise<any>
+    {
+        let value : any = await CONQUER.do( "ROOM_ENTRIES.change", vars );
+ 
+        return Promise.resolve( value ); 
+    }
+
+    public async remove( vars:any ) : Promise<any>
+    {
+        await CONQUER.do( "ROOM_ENTRIES.remove", vars );
+ 
+        return Promise.resolve(); 
+    }
  
 
 }

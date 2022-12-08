@@ -40,27 +40,29 @@ class SocketInstance
 
         // Register and login
         
-        if( action == "AUTH.set" )          return map( AUTH.set( vars ) );
-        if( action == "AUTH.get" )          return map( AUTH.get( vars ) );
+        if( action == "AUTH.set" )              return map( AUTH.set( vars ) );
+        if( action == "AUTH.get" )              return map( AUTH.get( vars ) );
 
-        if( action == "FILE.get" )          return map( FILE.get( vars ) );
+        if( action == "FILE.get" )              return map( FILE.get( vars ) );
 
-        if( action == "ROOM.get" )          return map( ROOM.get( vars ) );
-        if( action == "ROOM.getOne" )       return map( ROOM.get( vars ) );
+        if( action == "ROOM.get" )              return map( ROOM.get( vars ) );
+        if( action == "ROOM.getOne" )           return map( ROOM.get( vars ) );
 
-        if( action == "ROOM_ENTRIES.get" )  return map( ROOM_ENTRIES.get( vars ) );  
+        if( action == "ROOM_ENTRIES.get" )      return map( ROOM_ENTRIES.get( vars ) );  
 
-        if( action == "FRIENDS.change" )    return map( FRIENDS.change( vars ) );
-        if( action == "FRIENDS.remove" )    return map( FRIENDS.remove( vars ) );
+        if( action == "FRIENDS.change" )        return map( FRIENDS.change( vars ) );
+        if( action == "FRIENDS.remove" )        return map( FRIENDS.remove( vars ) );
 
         vars.avatarID = this.User.avatarID;
 
-        if( action == "ROOM_ENTRIES.set" )  return map( ROOM_ENTRIES.set( vars ) ); 
+        if( action == "ROOM_ENTRIES.set" )      return map( ROOM_ENTRIES.set( vars ) ); 
+        if( action == "ROOM_ENTRIES.change" )   return map( ROOM_ENTRIES.change( vars ) );  
+        if( action == "ROOM_ENTRIES.remove" )   return map( ROOM_ENTRIES.remove( vars ) );  
  
-        if( action == "FILE.set" )          return map( FILE.set( vars ) );
+        if( action == "FILE.set" )              return map( FILE.set( vars ) );
    
-        if( action == "FRIENDS.set" )       return map( FRIENDS.set( vars ) );
-        if( action == "FRIENDS.get" )       return map( FRIENDS.get( vars ) );
+        if( action == "FRIENDS.set" )           return map( FRIENDS.set( vars ) );
+        if( action == "FRIENDS.get" )           return map( FRIENDS.get( vars ) );
  
         doError();
 
