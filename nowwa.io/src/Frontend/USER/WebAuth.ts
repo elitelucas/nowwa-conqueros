@@ -1,4 +1,4 @@
-import { authLinks, authLogin, authRegister, authVerify } from "../../Core/CONFIG/CONFIG";
+import CONFIG, { authLinks, authLogin, authRegister, authVerify } from "../../Core/CONFIG/CONFIG";
 import { log } from "../../UTIL/LOG";
 import CONQUER from "../CONQUER";
 import Storage from "../UTILS/Storage";
@@ -111,7 +111,7 @@ class WebAuth
                 let searchParams:string = Object.keys(redirectParams).map(key => key + '=' + redirectParams[key]).join('&');
 
                 if (typeof window != 'undefined') {
-                    window.location.replace(`${window.location.href}?${searchParams}`);
+                    window.location.replace(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?${searchParams}`);
                 }
 
             } catch( error ) 
@@ -216,7 +216,7 @@ class WebAuth
         let searchParams:string = Object.keys(redirectParams).map(key => key + '=' + redirectParams[key]).join('&');
 
         if (typeof window != 'undefined') {
-            window.location.replace(`${window.location.href}?${searchParams}`);
+            window.location.replace(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?${searchParams}`);
         }
 
     }
