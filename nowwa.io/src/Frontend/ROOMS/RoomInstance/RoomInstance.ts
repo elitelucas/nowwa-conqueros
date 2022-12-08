@@ -1,5 +1,6 @@
-import CONQUER from "../CONQUER";
-import { STATUS, ACTIONS } from "../../Models/ENUM";
+import CONQUER from "../../CONQUER";
+import { STATUS, ACTIONS } from "../../../Models/ENUM";
+import Entries from "./Entries";
 
 class RoomInstance
 {
@@ -8,11 +9,15 @@ class RoomInstance
     public avatarIDs    : any;
     public onMessage    : Function = function(e:any){};
 
+    public Entries      : Entries;
+
     constructor( vars:any )
     {
         this.roomID     = vars._id;
         this.name       = vars.name;
         this.avatarIDs  = vars.avatarIDs;
+
+        this.Entries    = new Entries( this );
     }
 
     public join()

@@ -1,5 +1,5 @@
 import CONQUER from "../CONQUER";
-import RoomInstance from "./RoomInstance";
+import RoomInstance from "./RoomInstance/RoomInstance";
 
 class Rooms
 {
@@ -18,7 +18,7 @@ class Rooms
 
     public async get( vars:any ) : Promise<any>
     {
-        let values : any = CONQUER.do( "ROOM.get", vars );
+        let values : any = await CONQUER.do( "ROOM.get", vars );
 
         for( var n in values )
         {
@@ -34,7 +34,7 @@ class Rooms
         if( Array.isArray( vars ) )     vars = { avatarIDs:vars };
         if( typeof vars == 'string' )   vars = { roomID:vars };
 
-        let value   = CONQUER.do( "ROOM.getOne", vars );
+        let value   = await CONQUER.do( "ROOM.getOne", vars );
         let room    = new RoomInstance( value );
 
         this.pool[ room.roomID ] = room;

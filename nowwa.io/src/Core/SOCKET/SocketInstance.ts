@@ -8,6 +8,7 @@ import GameRoomInstance from "../GAME/GAMEROOM/GameRoomInstance";
 import AUTH from "../USER/AUTH/AUTH";
 import FRIENDS from "../USER/TRIBE/FRIENDS/FRIENDS";
 import ROOM from "./ROOM/ROOM";
+import ROOM_ENTRIES from "./ROOM/ROOM_ENTRIES";
 class SocketInstance 
 {
     // Todo, destroy instances on disconnect
@@ -46,16 +47,21 @@ class SocketInstance
 
         if( action == "ROOM.get" )          return map( ROOM.get( vars ) );
         if( action == "ROOM.getOne" )       return map( ROOM.get( vars ) );
- 
+
+        if( action == "ROOM_ENTRIES.get" )  return map( ROOM_ENTRIES.get( vars ) );  
+
+        if( action == "FRIENDS.change" )    return map( FRIENDS.change( vars ) );
+        if( action == "FRIENDS.remove" )    return map( FRIENDS.remove( vars ) );
+
         vars.avatarID = this.User.avatarID;
+
+        if( action == "ROOM_ENTRIES.set" )  return map( ROOM_ENTRIES.set( vars ) ); 
  
         if( action == "FILE.set" )          return map( FILE.set( vars ) );
    
         if( action == "FRIENDS.set" )       return map( FRIENDS.set( vars ) );
         if( action == "FRIENDS.get" )       return map( FRIENDS.get( vars ) );
-        if( action == "FRIENDS.change" )    return map( FRIENDS.change( vars ) );
-        if( action == "FRIENDS.remove" )    return map( FRIENDS.remove( vars ) );
-  
+ 
         doError();
 
         function doCallback( vars?: any, isSucess: boolean = true ) 
