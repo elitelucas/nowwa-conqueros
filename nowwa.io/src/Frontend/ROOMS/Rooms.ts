@@ -65,10 +65,17 @@ class Rooms
 
     ================*/
 
-    public _onServerMessage( message:any )
+    public _onServerMessage( object:any )
     {
-        let room  = this.pool[ message.roomID ];
-        if( room ) room._onServerMessage( message );
+        for( let n in object.messages )
+        {
+            let message = object.messages[n];
+            if( message.avatarID == CONQUER.User.avatarID ) return;
+
+            let room  = this.pool[ message.roomID ];
+            if( room ) room._onServerMessage( message );
+        }
+ 
     }
 }
 

@@ -6,6 +6,7 @@ class RoomInstance
     public roomID       : any;
     public name         : any;
     public avatarIDs    : any;
+    public onMessage    : Function = function(e:any){};
 
     constructor( vars:any )
     {
@@ -47,6 +48,12 @@ class RoomInstance
     private doSend( action:any, data?:any )
     {
         CONQUER.send( action, this.roomID, data || {} );
+    }
+
+    public _onServerMessage( message:any )
+    {
+ 
+        this.onMessage( message );
     }
 }
 
