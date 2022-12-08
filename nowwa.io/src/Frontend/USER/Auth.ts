@@ -20,7 +20,6 @@ class Auth
     public async logout()
     {
         CONQUER.Storage.removeAccount();
-        CONQUER.User.set({});
         await this.get();
         return Promise.resolve();
     }

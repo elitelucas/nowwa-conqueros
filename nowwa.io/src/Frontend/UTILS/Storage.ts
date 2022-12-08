@@ -20,12 +20,16 @@ class Storage
         return Promise.resolve();
     }
 
+    private generateUsername() {
+        return "Guest_" + DATE.now() + RANDOM.value(1000);
+    }
+
     private loadAccount()
     {
         let json = typeof window != 'undefined' ? window.localStorage.getItem( "account" ) : null;
         var vars = json ? JSON.parse( json as string ) : {};
 
-        if( !vars.username ) vars.username = "Guest_" + DATE.now() + RANDOM.value(1000);
+        if( !vars.username ) vars.username = this.generateUsername();
 
         return vars;
     }
@@ -49,6 +53,8 @@ class Storage
         });
     
         window.history.pushState( params, "", `${window.location.origin}`);
+
+        console.log(`params`, JSON.stringify(params,null, 2));
  
         return params.username ? params : null;
     }
@@ -77,7 +83,9 @@ class Storage
 
     public set( key:string, value:any ) 
     {
-        if( typeof window != 'undefined' ) window.localStorage.setItem( key, JSON.stringify( value ));
+        if( typeof window != 'undefined' ) {
+            window.localStorage.setItem( key, JSON.stringify( value ));
+        }
         return value;
     }
 
@@ -107,8 +115,12 @@ class Storage
 
     public removeAccount() 
     {
-        this.account = {};
-        return this.set( "account", this.account );
+
+        this.remove( "account" );
+        let account = {
+            username: this.generateUsername()
+        };
+        return this.setAccount( account );
     }
  
 }

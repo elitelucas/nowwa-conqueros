@@ -2,6 +2,7 @@ import React from 'react';
 import { Icon, Button, Segment, ButtonGroup, Menu, Header, Input, InputOnChangeData, Card, Grid, Divider, Label, Image, Message, Form } from 'semantic-ui-react';
 import CONQUER from '../Frontend/CONQUER';
 import { IndexState } from './Index';
+import { UpdateComponentState } from './Utils/Helpers';
 
 export type HomeState = {
     initialized: boolean,
@@ -26,13 +27,24 @@ const Home = (state: HomeState, setState: React.Dispatch<React.SetStateAction<Ho
         HomeInit(indexState.account!.firstName).then(setState);
     }
 
+    const updateState = (updates: Partial<HomeState>) => {
+        let newState = UpdateComponentState<HomeState>(state, updates);
+        setState(newState);
+    };
+
     let onLoad = () => {
         console.log('done!');
     };
 
     let doLogout = async () => {
         if (CONQUER.initialized) {
+            updateState({
+                isBusy: true
+            });
             await CONQUER.Auth.logout();
+            updateState({
+                isBusy: false
+            });
             setIndexState({
                 account: undefined,
                 display: 'Login',
@@ -50,7 +62,7 @@ const Home = (state: HomeState, setState: React.Dispatch<React.SetStateAction<Ho
                             Welcome, {indexState.account!.firstName}!
                         </Grid.Column>
                         <Grid.Column width='2'>
-                            <Button fluid primary onClick={doLogout}><Icon name='log out'></Icon>Logout</Button>
+                            <Button fluid primary onClick={doLogout} disabled={state.isBusy}><Icon name='log out'></Icon>Logout</Button>
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>

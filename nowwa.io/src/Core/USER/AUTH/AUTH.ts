@@ -123,7 +123,6 @@ class AUTH
 
     public static async getProxy( localStorage : any ) : Promise<any> 
     {
-        console.log(`[AUTH] getProxy localStorage`, JSON.stringify(localStorage, null, 2));
         var usernameID : any;
  
         if( localStorage.token ) usernameID = await USERNAME.getUsernameID({ token:localStorage.token });
