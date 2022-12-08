@@ -70,12 +70,12 @@ class Socket
       //  return Promise.resolve("OK I SEE");
     }
 
-    public async do( action:string, data?:any ) : Promise<any>
+    public async do( action:any, data?:any ) : Promise<any>
     {
         return new Promise( resolve => this.socket.emit( "action", action, data, resolve ) ); 
     }
 
-    public send( action:string, roomID:any, data?:any )
+    public send( action:any, roomID:any, data?:any )
     {
         this.messagesCue.push({ action:action, roomID:roomID, data:data } );
     }

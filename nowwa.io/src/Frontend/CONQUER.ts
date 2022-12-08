@@ -47,12 +47,12 @@ class CONQUER
         return Promise.resolve();
     };
 
-    public static async do( action:string, data?:any ): Promise<any> 
+    public static async do( action:any, data?:any ): Promise<any> 
     {
         return this.Socket.do( action, data );
     }
 
-    public static send( action:string, roomID:any, data:any ) 
+    public static send( action:any, roomID:any, data:any ) 
     {
         return this.Socket.send( action, roomID, data );
     }

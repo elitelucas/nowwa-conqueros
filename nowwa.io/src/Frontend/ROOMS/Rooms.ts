@@ -31,8 +31,8 @@ class Rooms
 
     public async getOne( vars:any ) : Promise<any>
     {
-        if( Array.isArray( vars ) ) vars    	= { avatarIDs:vars };
-        if( typeof vars == 'string' ) vars      = { roomID:vars };
+        if( Array.isArray( vars ) )     vars = { avatarIDs:vars };
+        if( typeof vars == 'string' )   vars = { roomID:vars };
 
         let value   = CONQUER.do( "ROOM.getOne", vars );
         let room    = new RoomInstance( value );

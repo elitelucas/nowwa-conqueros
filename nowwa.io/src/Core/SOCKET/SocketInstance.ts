@@ -1,5 +1,6 @@
 
 import { Socket } from "socket.io"
+import { ACTIONS } from "../../Models/ENUM";
 import CRYPT from "../../UTIL/CRYPT";
 import LOG, { log } from "../../UTIL/LOG";
 import FILE from "../CMS/FILE";
@@ -16,6 +17,7 @@ class SocketInstance
     public socket           : Socket;
     public id               : any;
     public User             : any;
+    public myGameRooms      : any = {};
  
     constructor( socket:Socket ) 
     {
@@ -29,7 +31,7 @@ class SocketInstance
         this.socket.on( "disconnect", this.onDisconnect.bind(this) );
     };
 
-    public onAction( action: string, vars?: any, callback?: Function ) 
+    public onAction( action:any, vars?: any, callback?: Function ) 
     {
         log( "[SERVER]: client action requested", action );
 
@@ -92,21 +94,49 @@ class SocketInstance
 
             if( !roomID ) continue;
 
-            if( !SocketInstance.gameRooms[ roomID ] ) SocketInstance.gameRooms[ roomID ] = new GameRoomInstance({ socket:this.socket, roomID:roomID });
+            if( !SocketInstance.gameRooms[ roomID ] ) SocketInstance.gameRooms[ roomID ] = new GameRoomInstance({ socketInstance:this, roomID:roomID });
 
             let gameRoom : GameRoomInstance     = SocketInstance.gameRooms[ roomID ];
+
+            this.myGameRooms[ roomID ]          = true;
+ 
             message.avatarID                    = this.User.avatarID;
+
+            if( message.action == ACTIONS.PLAYERJOIN ) 
+            {
+                this.socket.join( roomID );
+                message.data = this.User;
+            }
+
+            if( message.action == ACTIONS.PLAYERLEFT ) return this.leaveRoom( roomID );
 
             gameRoom.onMessage( message );
         }
     };
- 
- 
-
+  
     public onDisconnect() 
     {
+        this.leaveRoom();
         this.User = {};
-        // log("[SERVER] socket disconnected", this.id);
+    }
+
+    public leaveRoom( roomID?:any )
+    {
+        if( !roomID )
+        {
+            for( let roomID in this.myGameRooms ) this.leaveRoom( roomID );
+            return;
+        }
+
+        this.socket.leave( roomID );
+
+        let gameRoom : GameRoomInstance;
+
+        let message = { action:ACTIONS.PLAYERLEFT, avatarID:this.User.avatarID };
+        gameRoom    = SocketInstance.gameRooms[ roomID ];
+
+        delete this.myGameRooms[ roomID ];
+        gameRoom.onMessage( message );
     }
  
 }

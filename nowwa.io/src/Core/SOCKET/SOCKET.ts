@@ -7,28 +7,30 @@ import SocketInstance from './SocketInstance';
 
 class SOCKET 
 {
+    public static io : SocketIO.Server;
+
     public static async init(): Promise<void> 
     {
         var httpServer = createServer();
 
-        var io: SocketIO.Server = new SocketIO.Server<SOCKET.ClientToServerEvents, SOCKET.ServerToClientEvents, SOCKET.InterServerEvents, SOCKET.SocketData>(
+        this.io = new SocketIO.Server<SOCKET.ClientToServerEvents, SOCKET.ServerToClientEvents, SOCKET.InterServerEvents, SOCKET.SocketData>(
             httpServer, { cors: { origin: "*" } }
         );
 
         log( "NEW SOCKET SERVER" );
 
-        io.on( "connection", (socket) => 
+        this.io.on( "connection", (socket) => 
         {
             // log("[SERVER]========================================================== NEW CONNECTION");
             new SocketInstance(socket);
         });
 
         // todo, destroy instance
-        io.on( "disconnect", (socket) => {
+        this.io.on( "disconnect", (socket) => {
             // log("[SERVER] Socket disconnect", socket.id);
         });
 
-        io.listen(CONFIG.vars.CORE_SOCKET_PORT);
+        this.io.listen(CONFIG.vars.CORE_SOCKET_PORT);
     }
 }
 

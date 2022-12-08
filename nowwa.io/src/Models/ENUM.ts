@@ -14,7 +14,11 @@ export const enum ACTIONS
     TIMER 			= 11,
     LOADING 		= 12,
     PLAYERSTATE		= 13,
-    INSYNC		    = 14
+    INSYNC		    = 14,
+    ENTRY           = 15,
+    CALL            = 16,
+    ACCEPT_CALL     = 17,
+    REJECT_CALL     = 18
 }
 
 export const enum STATUS

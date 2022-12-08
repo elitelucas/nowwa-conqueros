@@ -1,4 +1,5 @@
 import CONQUER from "../CONQUER";
+import { STATUS, ACTIONS } from "../../Models/ENUM";
 
 class RoomInstance
 {
@@ -15,36 +16,35 @@ class RoomInstance
 
     public join()
     {
-        this.doSend( "ROOM.join", { roomID:this.roomID } );
+        this.doSend( ACTIONS.PLAYERJOIN );
     };
-
 
     public leave()
     {
         CONQUER.Rooms.leave( this );
     };
 
-    public send( text:string )
+    public entry( text:any )
     {
-        this.doSend( "ROOM.send", { message:text } );
+        this.doSend( ACTIONS.ENTRY, text );
     }
 
     public call( signal:any )
     {
-        this.doSend( "ROOM.call", { signal:signal } );
+        this.doSend( ACTIONS.CALL, signal );
     }
 
-    public accept()
+    public accept( signal:any )
     {
-        this.doSend( "ROOM.accept" );
+        this.doSend( ACTIONS.ACCEPT_CALL, signal );
     }
 
     public reject()
     {
-        this.doSend( "ROOM.reject" );
+        this.doSend( ACTIONS.REJECT_CALL );
     }
 
-    private doSend( action:string, data?:any )
+    private doSend( action:any, data?:any )
     {
         CONQUER.send( action, this.roomID, data || {} );
     }

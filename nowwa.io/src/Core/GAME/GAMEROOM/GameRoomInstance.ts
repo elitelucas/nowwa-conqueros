@@ -7,6 +7,8 @@ import AVATAR from "../../USER/TRIBE/AVATAR";
 import SocketInstance from "../../SOCKET/SocketInstance";
 import ARRAY, { extract, pushUnique, push } from "../../../UTIL/ARRAY";
 import GameRoomBotsInstance from "./GameRoomBotsInstance";
+import SOCKET from "../../SOCKET/SOCKET";
+
 
 class GameRoomInstance
 {
@@ -32,16 +34,17 @@ class GameRoomInstance
 
         ============================================*/
 
-        var self        = this;
-        var roomID      = params.roomID;
-        var data        : any;
-        var messagesCue : any = [];
-        var socket      : SocketInstance = params.socket;
-        var players     : any = {};
-        var minPlayers  : number = params.minPlayers || 2;
-        var maxPlayers  : number = params.maxPlayers || 2;
-        var extra       : any = params.extra || [];
-        var RoomBots    : GameRoomBotsInstance;
+        var self                = this;
+        var roomID              = params.roomID;
+
+        var data                : any;
+        var messagesCue         : any = [];
+        var socketInstance      : SocketInstance = params.socketInstance;
+        var players             : any = {};
+        var minPlayers          : number = params.minPlayers || 2;
+        var maxPlayers          : number = params.maxPlayers || 2;
+        var extra               : any = params.extra || [];
+        var RoomBots            : GameRoomBotsInstance;
     
         reset();
  
@@ -63,46 +66,7 @@ class GameRoomInstance
             broadcast( STATUS.RESET );
         }
  
- 
-        /*=========================================
-	
-    
 
-
-        JOINS / LEAVES
-        
-        
-
-
-        ============================================*/
- 
-        function onJoin( avatarID:any )
-        {
-            self.getPlayer( avatarID ).then( function( player )
-            {
-                data.online[ avatarID ] = player;
-                data.onlineCount ++;
-
-                sendToUser( ACTIONS.GAMEDATA, null, avatarID, data );
-            });
-        }
-
-        function onLeave( avatarID:any )
-        {
-            let user = data.online[ avatarID ];
-
-            if( !user ) return;
-
-            delete data.online[ avatarID ];
-
-            data.onlineCount --;
-
-            if( data.players.includes( user ) ) user.vars.isBot = true;
- 
-            broadcast( ACTIONS.PLAYERLEFT, avatarID, data );
-            checkPlayersInSync();
-        }
- 
         /*=========================================
 
 
@@ -133,9 +97,9 @@ class GameRoomInstance
         {
             if( !messagesCue.length ) return;
             sendObj.messages = messagesCue;
-
-            // do send 
-
+ 
+            SOCKET.io.to( roomID ).emit( "message", sendObj );
+  
             sendObj.tick ++;
             messagesCue = [];
         }
@@ -152,38 +116,121 @@ class GameRoomInstance
 
 
         ============================================*/
-
-        /*
-        io.on( "connection", (socket) => 
-        {
-            log("SOCKET onConnection", socket.id );
-
-            socket.emit("noArg");
-    
-            // works when sending to all
-            io.emit("noArg");
-        
-            // works when broadcasting to a room
-            io.to("room1").emit("basicEmit", 1, "2", Buffer.from([3]));
-
-            socket.on( 'fromClient', (args:any) => 
-            {
-                log( `[socket] [client:${socket.id}]: ${JSON.stringify(args)}`); 
-                // send echo
-                socket.emit('fromServer', args);
-                socket.broadcast.emit('fromServer', `[broadcast: ${socket.id}]: ${JSON.stringify(args)}`); // sender does not get the broadcast
-            });
-        });
-        */
-
+ 
         function onMessage( message:any )
         {
-            var action  = message.action;
-            let player  = players[ message.avatarID ];
-            let data    = message.data;
+            var action          = message.action;
+            let avatarID        = message.avatarID;
+            let player          = players[ avatarID ];
+            let messageData     = message.data;
+            let vars            = data.vars;
+ 
+            /*=========== 
 
-            if( message.vars ) extract( message.vars, player.vars );
-  
+            JOIN
+
+            ============*/
+
+            if( action == ACTIONS.PLAYERJOIN )
+            {
+                let player  = extract( messageData );
+                player.vars = { avatarID:avatarID };
+
+                data.online[ avatarID ] = player;
+                data.onlineCount ++;
+
+                sendToUser( ACTIONS.GAMEDATA, null, avatarID, data ); 
+
+                return reBroadcast( player );
+            }
+ 
+
+            /*=========== 
+
+            LEAVE
+
+            ============*/
+
+            if( action == ACTIONS.PLAYERLEFT )
+            {
+                let player = data.online[ avatarID ];
+
+                if( !player ) return;
+
+                delete data.online[ avatarID ];
+                data.onlineCount --;
+
+                if( data.players.includes( player ) ) player.vars.isBot = true;
+    
+                reBroadcast( data );
+                checkPlayersInSync();
+           
+                return;
+            }
+
+ 
+            /*=========== 
+
+            PLAYERVARS
+
+            ============*/
+
+
+            if( action == ACTIONS.PLAYERVARS )
+            {
+                extract( messageData, player.vars );
+                return reBroadcast();
+            }
+ 
+
+            /*=========== 
+
+
+            PLAYERSTATUS
+
+
+            ============*/
+
+            if( action == ACTIONS.PLAYERSTATUS )
+            {
+                extract( messageData, player.vars );
+                reBroadcast();
+                return checkPlayersStatus();
+            }
+
+            /*=========== 
+
+
+            CALL
+
+
+            ============*/
+
+            /*=========== 
+
+
+            ACCEPT CALL
+
+
+            ============*/
+
+            /*=========== 
+
+
+            REJECT CALL
+
+
+            ============*/
+
+
+            /*=========== 
+
+
+            SYNCQREQUEST
+
+
+            ============*/
+
             if( action == ACTIONS.SYNCREQUEST ) 
             {
                 player.vars.sync = player.vars.sync || true;
@@ -191,12 +238,13 @@ class GameRoomInstance
                 return checkPlayersInSync();
             }
 
-            if( action == ACTIONS.PLAYERSTATUS )
+          //  broadcast( message );
+       
+            function reBroadcast( myData?:any )
             {
-                checkPlayersStatus();
+                broadcast( action, avatarID, myData || messageData );
             }
- 
-            broadcast( message );
+       
         }
 
         this.onMessage = onMessage;
