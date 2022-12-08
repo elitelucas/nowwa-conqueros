@@ -35,7 +35,7 @@ class WALLET
 
         if( item ) return Promise.resolve( item.usernameID );
 
-        return Promise.reject( LOG.msg( 'Wallet does not exist' ) ); 
+        return Promise.resolve(null);
     };   
  
     /*=============== 

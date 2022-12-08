@@ -171,11 +171,11 @@ class EMAIL
  
     public static async getUsernameID( vars: any ): Promise<any> 
     {
-        let results: any = await DATA.getOne( EMAIL.table, vars );
+        let item: any = await DATA.getOne( EMAIL.table, vars );
 
-        if( !results ) return Promise.resolve(null);
+        if( item ) return Promise.resolve(item.usernameID);
 
-        return Promise.resolve( results.usernameID );
+        return Promise.resolve(null);
     };
 
     /*=============== 
