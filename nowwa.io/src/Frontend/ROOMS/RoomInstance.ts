@@ -52,7 +52,6 @@ class RoomInstance
 
     public _onServerMessage( message:any )
     {
- 
         this.onMessage( message );
     }
 }
