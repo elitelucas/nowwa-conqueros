@@ -51,10 +51,10 @@ class Storage
                 params[key] = val;
             }
         });
+
+        console.log(`params`, params);
     
         window.history.pushState( params, "", `${window.location.origin}`);
-
-        console.log(`params`, JSON.stringify(params,null, 2));
  
         return params.username ? params : null;
     }
@@ -139,13 +139,6 @@ namespace Storage
         wallet?         : string,
         firstName       : string
     }
-    export const CreateSearchParams = (account:Account) => 
-    {
-        let tmp = Object.entries(account);
-        let searchParams:URLSearchParams = new URLSearchParams();
-        tmp.forEach(element => searchParams.append(element[0], element[1].toString()));
-        return searchParams;
-    };
 }
 
 export default Storage;

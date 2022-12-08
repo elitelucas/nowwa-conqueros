@@ -101,14 +101,14 @@ class Snapchat
                             let id = Buffer.from(secondResponse.data.me.externalId).toString('base64');
                             let name = secondResponse.data.me.displayName;
  
-                            let account = 
+                            let account:{[key:string]:any} = 
                             {
                                 username        : id,
                                 firstName       : name,
                                 type            : 'SNAPCHAT'
                             };
-                            let searchParams:URLSearchParams = Object.assign(new URLSearchParams(), account);
-                            res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?info=loggedin&${searchParams.toString()}`);
+                            let searchParams:string = Object.keys(account).map(key => key + '=' + account[key]).join('&');
+                            res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?info=loggedin&${searchParams}`);
                  
                         }).catch(console.error);
                 })

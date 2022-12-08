@@ -12,6 +12,7 @@ import Rooms from "./ROOMS/Rooms";
 class CONQUER 
 {
     public static initialized   : boolean = false;
+    public static initializing   : boolean = false;
  
     public static Storage       : Storage;
     public static Auth          : Auth;
@@ -25,6 +26,7 @@ class CONQUER
  
     public static async init(): Promise<void> 
     {
+        this.initializing = true;
         this.Storage    = new Storage();
         this.Friends    = new Friends();
         this.Auth       = new Auth();

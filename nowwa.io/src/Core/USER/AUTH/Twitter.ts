@@ -81,15 +81,15 @@ class Twitter {
                         }
                     }
 
-                    let account = 
+                    let account:{[key:string]:any} = 
                     {
                         username    : userObject.id,
                         firstName   : userObject.username,
                         type        : 'TWITTER'
                     };
 
-                    let searchParams:URLSearchParams = Object.assign(new URLSearchParams(), account);
-                    res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?info=loggedin&${searchParams.toString()}`);
+                    let searchParams:string = Object.keys(account).map(key => key + '=' + account[key]).join('&');
+                    res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?info=loggedin&${searchParams}`);
                 })
                 .catch(() => res.status(403).send('Invalid verifier or access tokens!'));
         });
