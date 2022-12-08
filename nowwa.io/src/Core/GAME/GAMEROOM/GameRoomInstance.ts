@@ -8,6 +8,7 @@ import SocketInstance from "../../SOCKET/SocketInstance";
 import ARRAY, { extract, pushUnique, push } from "../../../UTIL/ARRAY";
 import GameRoomBotsInstance from "./GameRoomBotsInstance";
 import SOCKET from "../../SOCKET/SOCKET";
+import ROOM_ENTRIES from "../../SOCKET/ROOM/ROOM_ENTRIES";
 
 
 class GameRoomInstance
@@ -112,8 +113,7 @@ class GameRoomInstance
 
         ON MESSAGE
         
-        
-
+  
 
 
 
@@ -168,49 +168,26 @@ class GameRoomInstance
                 reBroadcast();
                 return checkPlayersStatus();
             }
-
-            /*=========== 
-
-
-            CALL
-
-
-            ============*/
-
-            /*=========== 
-
-
-            ACCEPT CALL
-
-
-            ============*/
-
-            /*=========== 
-
-
-            REJECT CALL
-
-
-            ============*/
-
-
-            /*=========== 
-
-
-            SYNCQREQUEST
-
-
-            ============*/
-
+  
             if( action == ACTIONS.SYNCREQUEST ) 
             {
                 player.vars.sync = player.vars.sync || true;
-
                 return checkPlayersInSync();
             }
 
-          //  broadcast( message );
-       
+            if( action == ACTIONS.ENTRY )
+            {
+                ROOM_ENTRIES.set({ where:{ roomID:roomID }, values:{ text:messageData, avatarID:avatarID } });
+            }
+
+            /*=========== 
+
+            DEFAULT, REBROADCAST MESSAGE TO ALL USERS
+
+            ============*/
+
+            return reBroadcast();
+
             function reBroadcast( myData?:any )
             {
                 broadcast( action, avatarID, myData || messageData );
@@ -363,35 +340,7 @@ class GameRoomInstance
         }
 
     }
-
-    
-
  
-
-    /*=========================================
-
-
-
-
-    PLAYER
-    
-    
-
-
-    ============================================*/
-
-    private async getPlayer( avatarID:any ) : Promise<any>
-    {
-        let avatar = await AVATAR.get({ _id:avatarID });
-        
-        return Promise.resolve(
-        {
-            avatarID    : avatarID,
-            userPhoto   : avatar.userPhoto,
-            firstName   : avatar.firstName,
-            vars        : { avatarID : avatarID }
-        });
-    }
 };
 
 export default GameRoomInstance;
