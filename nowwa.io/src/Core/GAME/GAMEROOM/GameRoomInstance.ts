@@ -10,7 +10,9 @@ import GameRoomBotsInstance from "./GameRoomBotsInstance";
 
 class GameRoomInstance
 {
-    constructor( vars:any )
+    public onMessage : Function;
+
+    constructor( params:any )
     {
         /*=========================================
 	
@@ -31,15 +33,15 @@ class GameRoomInstance
         ============================================*/
 
         var self        = this;
-        var roomName    = vars.roomName;
+        var roomID      = params.roomID;
         var data        : any;
         var messagesCue : any = [];
-        var socket      : SocketInstance = vars.socket;
+        var socket      : SocketInstance = params.socket;
         var players     : any = {};
-        var minPlayers  : number = vars.minPlayers || 2;
-        var maxPlayers  : number = vars.maxPlayers || 2;
-        var extra       : any = vars.extra || [];
-        var RoomBots    : GameRoomBotsInstance = new GameRoomBotsInstance();
+        var minPlayers  : number = params.minPlayers || 2;
+        var maxPlayers  : number = params.maxPlayers || 2;
+        var extra       : any = params.extra || [];
+        var RoomBots    : GameRoomBotsInstance;
     
         reset();
  
@@ -113,14 +115,14 @@ class GameRoomInstance
 
         ============================================*/
 
-        function broadcast( action:any, senderID?:any, data?:any )
+        function broadcast( action:any, avatarID?:any, data?:any )
         {
-            messagesCue.push({ action:action, sender:senderID, data:data });
+            messagesCue.push({ action:action, avatarID:avatarID, data:data });
         }
 
-        function sendToUser( action:any, senderID?:any, receiverID?:any, data?:any )
+        function sendToUser( action:any, avatarID?:any, receiverID?:any, data?:any )
         {
-            messagesCue.push({ action:action, senderID:senderID, receiverID:receiverID, data:data });
+            messagesCue.push({ action:action, avatarID:avatarID, receiverID:receiverID, data:data });
         }
 
         var sendTimer = new TimerInstance({ onUpdate:doSend, interval:300, autoStart:true });
@@ -130,7 +132,6 @@ class GameRoomInstance
         function doSend()
         {
             if( !messagesCue.length ) return;
-            
             sendObj.messages = messagesCue;
 
             // do send 
@@ -152,15 +153,34 @@ class GameRoomInstance
 
         ============================================*/
 
+        /*
+        io.on( "connection", (socket) => 
+        {
+            log("SOCKET onConnection", socket.id );
+
+            socket.emit("noArg");
+    
+            // works when sending to all
+            io.emit("noArg");
+        
+            // works when broadcasting to a room
+            io.to("room1").emit("basicEmit", 1, "2", Buffer.from([3]));
+
+            socket.on( 'fromClient', (args:any) => 
+            {
+                log( `[socket] [client:${socket.id}]: ${JSON.stringify(args)}`); 
+                // send echo
+                socket.emit('fromServer', args);
+                socket.broadcast.emit('fromServer', `[broadcast: ${socket.id}]: ${JSON.stringify(args)}`); // sender does not get the broadcast
+            });
+        });
+        */
+
         function onMessage( message:any )
         {
-            for( var n in message.messages ) receiveMessage( message.messages[n] );
-        }
-
-        function receiveMessage( message:any )
-        {
-            var action = message.action;
-            let player = players[ message.senderID ];
+            var action  = message.action;
+            let player  = players[ message.avatarID ];
+            let data    = message.data;
 
             if( message.vars ) extract( message.vars, player.vars );
   
@@ -178,6 +198,8 @@ class GameRoomInstance
  
             broadcast( message );
         }
+
+        this.onMessage = onMessage;
 
         function checkPlayersInSync()
         {
@@ -309,7 +331,12 @@ class GameRoomInstance
             }
 
             let botsAmount = minPlayers - players.length;
-            if( botsAmount ) push( RoomBots.get( botsAmount ), data.players );
+
+            if( botsAmount )
+            {
+                if( !RoomBots ) RoomBots = new GameRoomBotsInstance();
+                push( RoomBots.get( botsAmount ), data.players );
+            }
  
             for( let n in data.players ) extract( data.extra[n], data.players[n].vars );
      

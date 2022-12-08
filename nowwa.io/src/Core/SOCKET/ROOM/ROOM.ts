@@ -4,6 +4,8 @@ import ROOM_ENTRIES from "./ROOM_ENTRIES";
 
 class ROOM
 {
+    public static pool : any = {};
+
     private static table: string = "rooms";
 
     /*=============== 

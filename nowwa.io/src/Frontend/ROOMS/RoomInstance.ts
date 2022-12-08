@@ -15,7 +15,7 @@ class RoomInstance
 
     public join()
     {
-        this.do( "ROOM.join", { roomID:this.roomID } );
+        this.doSend( "ROOM.join", { roomID:this.roomID } );
     };
 
 
@@ -26,30 +26,27 @@ class RoomInstance
 
     public send( text:string )
     {
-        this.do( "ROOM.send", { message:text } );
+        this.doSend( "ROOM.send", { message:text } );
     }
 
     public call( signal:any )
     {
-        this.do( "ROOM.call", { signal:signal } );
+        this.doSend( "ROOM.call", { signal:signal } );
     }
 
     public accept()
     {
-        this.do( "ROOM.accept" );
+        this.doSend( "ROOM.accept" );
     }
 
     public reject()
     {
-        this.do( "ROOM.reject" );
+        this.doSend( "ROOM.reject" );
     }
 
-    private do( action:string, vars?:any )
+    private doSend( action:string, data?:any )
     {
-        if( !vars ) vars    = {};
-        vars.roomID         = this.roomID;
-
-        CONQUER.do( action, vars );
+        CONQUER.send( action, this.roomID, data || {} );
     }
 }
 

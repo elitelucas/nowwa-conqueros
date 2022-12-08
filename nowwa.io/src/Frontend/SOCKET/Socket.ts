@@ -70,14 +70,14 @@ class Socket
       //  return Promise.resolve("OK I SEE");
     }
 
-    public async do( action:string, vars?:any ) : Promise<any>
+    public async do( action:string, data?:any ) : Promise<any>
     {
-        return new Promise( resolve => this.socket.emit( "action", action, vars, resolve ) ); 
+        return new Promise( resolve => this.socket.emit( "action", action, data, resolve ) ); 
     }
 
-    public send( action:string, data:any )
+    public send( action:string, roomID:any, data?:any )
     {
-        this.messagesCue.push({ action:action, data:data } );
+        this.messagesCue.push({ action:action, roomID:roomID, data:data } );
     }
  
     private doSend()

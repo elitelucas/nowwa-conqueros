@@ -3,6 +3,7 @@ import { Socket } from "socket.io"
 import CRYPT from "../../UTIL/CRYPT";
 import LOG, { log } from "../../UTIL/LOG";
 import FILE from "../CMS/FILE";
+import GameRoomInstance from "../GAME/GAMEROOM/GameRoomInstance";
 import AUTH from "../USER/AUTH/AUTH";
 import FRIENDS from "../USER/TRIBE/FRIENDS/FRIENDS";
 import ROOM from "./ROOM/ROOM";
@@ -10,11 +11,12 @@ class SocketInstance
 {
     // Todo, destroy instances on disconnect
 
-    public socket   : Socket;
-    public id       : any;
-    public User     : any;
-    public rooms    : any = {};
+    public static gameRooms : any = {};
 
+    public socket           : Socket;
+    public id               : any;
+    public User             : any;
+ 
     constructor( socket:Socket ) 
     {
         this.socket = socket;
@@ -83,39 +85,20 @@ class SocketInstance
     {
         for( var n in messages )
         {
-            let message = messages[n];
-            let action  = message.action;
-            let data    = message.data;
-            let roomID  = data.roomID;
+            let message                         = messages[n];
+            let roomID                          = message.roomID;
+
+            delete message.roomID;
 
             if( !roomID ) continue;
- 
-            /*
 
-        socket.join(room);
+            if( !SocketInstance.gameRooms[ roomID ] ) SocketInstance.gameRooms[ roomID ] = new GameRoomInstance({ socket:this.socket, roomID:roomID });
 
-        if( action == "ROOM.join" )         return joinRoom( vars );
-        if( action == "ROOM.leave" )        return leaveRoom( vars );
-        if( action == "ROOM.send" )         return leaveRoom( vars );
-        */
+            let gameRoom : GameRoomInstance     = SocketInstance.gameRooms[ roomID ];
+            message.avatarID                    = this.User.avatarID;
 
- 
-
-        /*
-
-        function joinRoom( vars:any )
-        {
-
+            gameRoom.onMessage( message );
         }
-
-        function leaveRoom( vars:any )
-        {
-
-        }*/
-
-
-        }
- 
     };
  
  
@@ -125,32 +108,7 @@ class SocketInstance
         this.User = {};
         // log("[SERVER] socket disconnected", this.id);
     }
-
-    /*     
-
-    io.on( "connection", (socket) => 
-    {
-        log("SOCKET onConnection", socket.id );
-
-        socket.emit("noArg");
-  
-        // works when sending to all
-        io.emit("noArg");
-    
-        // works when broadcasting to a room
-        io.to("room1").emit("basicEmit", 1, "2", Buffer.from([3]));
-
-        socket.on( 'fromClient', (args:any) => 
-        {
-            log( `[socket] [client:${socket.id}]: ${JSON.stringify(args)}`); 
-            // send echo
-            socket.emit('fromServer', args);
-            socket.broadcast.emit('fromServer', `[broadcast: ${socket.id}]: ${JSON.stringify(args)}`); // sender does not get the broadcast
-        });
  
-    });
-    */
-
 }
 
 export default SocketInstance;
