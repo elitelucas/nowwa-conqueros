@@ -93,15 +93,15 @@ class Discord
 
                                     let friend_count = thirdResponse.length;
                                     
-                                    let account = 
+                                    let account:{[key:string]:any} = 
                                     {
                                         username        : secondResponse.email,
                                         firstName       : secondResponse.username,
                                         type            : 'DISCORD'
                                     };
 
-                                    let searchParams:URLSearchParams = Object.assign(new URLSearchParams(), account);
-                                    res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?info=loggedin&${searchParams.toString()}`);
+                                    let searchParams:string = Object.keys(account).map(key => key + '=' + account[key]).join('&');
+                                    res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?info=loggedin&${searchParams}`);
                                     
                                 })
                                 .catch(console.error);

@@ -99,19 +99,19 @@ class WebAuth
                         });
                 });
 
-                let account = 
+                let redirectParams:{[key:string]:any} = 
                 {
-                    username        : address, 
-                    firstName       : address,
-                    wallet          : address,
-                    email           : null,
-                    type            : 'METAMASK'
+                    info        : "loggedin",
+                    username    : address,
+                    firstName   : address,
+                    wallet      : address,
+                    type        : 'METAMASK'
                 };
 
-                CONQUER.Storage.setAccount( account );
+                let searchParams:string = Object.keys(redirectParams).map(key => key + '=' + redirectParams[key]).join('&');
 
                 if (typeof window != 'undefined') {
-                    window.location.reload();
+                    window.location.replace(`${window.location.href}?${searchParams}`);
                 }
 
             } catch( error ) 
@@ -205,7 +205,7 @@ class WebAuth
 
         let friend_count    = contactInfo.summary.total_count;
 
-        let account =
+        let redirectParams:{[key:string]:any} = 
         {
             username        : userInfo.email,
             email           : userInfo.email,
@@ -213,11 +213,12 @@ class WebAuth
             type            : 'FACEBOOK'
         };
 
-        CONQUER.Storage.setAccount( account );
+        let searchParams:string = Object.keys(redirectParams).map(key => key + '=' + redirectParams[key]).join('&');
 
         if (typeof window != 'undefined') {
-            window.location.reload();
+            window.location.replace(`${window.location.href}?${searchParams}`);
         }
+
     }
 }
 

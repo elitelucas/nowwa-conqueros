@@ -33,21 +33,6 @@ export const IndexStateDefault: IndexState = {
     message: ``
 }
 
-const GetUrlSearchParams = (url: string = window.location.href) => {
-    let params: { [key: string]: any } = {};
-    new URL(url).searchParams.forEach(function (val, key) {
-        if (params[key] !== undefined) {
-            if (!Array.isArray(params[key])) {
-                params[key] = [params[key]];
-            }
-            params[key].push(val);
-        } else {
-            params[key] = val;
-        }
-    });
-    return params;
-}
-
 const LoadScripts = async (urls:string[]) => {
     for (let i:number = 0; i < urls.length; i++) {
         await new Promise<void>((resolve, reject) => {
@@ -76,33 +61,16 @@ const Index = () => {
         setState(newState);
     };
 
-    const loadConquer = (): Promise<void> => CONQUER.init();
-
     if (!state.initialized) {
-
         updateState({
-            initialized: true
+            initialized: true,
+            isBusy: true
         });
     }
     if (state.initialized) {
 
-        // TODO : finish load script
-        // load script for onesignal
-
-        if (!CONQUER.initialized && !state.isBusy) 
-        {
-            updateState({
-                isBusy: true
-            });
-            let scriptUrls:string[] = [
-                `${window.location.origin}/OneSignalSDK.js`,
-                `${window.location.origin}/onesignal-web.js`,
-            ]
-            LoadScripts(scriptUrls).then(() => {
-                
-            });
-            loadConquer().then(() => 
-            {
+        if (!CONQUER.initializing && !CONQUER.initialized) {
+            CONQUER.init().then(() => {
 
                 let account = CONQUER.User;
 

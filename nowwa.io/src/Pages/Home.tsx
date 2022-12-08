@@ -14,7 +14,7 @@ export const HomeStateDefault: HomeState = {
     isBusy: false
 }
 
-export const HomeInit = (name: string): Promise<HomeState> => {
+export const HomeInit = (): Promise<HomeState> => {
     return Promise.resolve({
         initialized: true,
         isBusy: false
@@ -24,16 +24,12 @@ export const HomeInit = (name: string): Promise<HomeState> => {
 const Home = (state: HomeState, setState: React.Dispatch<React.SetStateAction<HomeState>>, indexState: IndexState, setIndexState: (updates: Partial<IndexState>) => void) => {
 
     if (!state.initialized) {
-        HomeInit(indexState.account!.firstName).then(setState);
+        HomeInit().then(setState);
     }
 
     const updateState = (updates: Partial<HomeState>) => {
         let newState = UpdateComponentState<HomeState>(state, updates);
         setState(newState);
-    };
-
-    let onLoad = () => {
-        console.log('done!');
     };
 
     let doLogout = async () => {

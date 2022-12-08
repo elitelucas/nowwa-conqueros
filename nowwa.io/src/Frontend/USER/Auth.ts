@@ -27,10 +27,12 @@ class Auth
     public async get( params? : { username: string, password: string, type?:string }): Promise<any> 
     {
         if( params ) params.type = "USERNAME";
+
+        console.log(`[Auth] get CONQUER.Storage.account`, CONQUER.Storage.account);
  
         let response : any = await CONQUER.do( "AUTH.get", params || CONQUER.Storage.account );
 
-        console.log(`response`, response);
+        console.log(`[Auth] get response`, response);
 
         CONQUER.User.set( response.result );
 
