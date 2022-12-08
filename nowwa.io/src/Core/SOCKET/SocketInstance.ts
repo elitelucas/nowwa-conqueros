@@ -94,7 +94,7 @@ class SocketInstance
 
             if( !roomID ) continue;
 
-            if( !SocketInstance.gameRooms[ roomID ] ) SocketInstance.gameRooms[ roomID ] = new GameRoomInstance({ socketInstance:this, roomID:roomID });
+            if( !SocketInstance.gameRooms[ roomID ] ) SocketInstance.gameRooms[ roomID ] = new GameRoomInstance({ roomID:roomID });
 
             let gameRoom : GameRoomInstance     = SocketInstance.gameRooms[ roomID ];
 

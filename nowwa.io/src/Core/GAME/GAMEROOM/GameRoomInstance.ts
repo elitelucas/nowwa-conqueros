@@ -36,10 +36,8 @@ class GameRoomInstance
 
         var self                = this;
         var roomID              = params.roomID;
-
         var data                : any;
         var messagesCue         : any = [];
-        var socketInstance      : SocketInstance = params.socketInstance;
         var players             : any = {};
         var minPlayers          : number = params.minPlayers || 2;
         var maxPlayers          : number = params.maxPlayers || 2;
@@ -110,9 +108,13 @@ class GameRoomInstance
 
 
 
-        RECEIVE MESSAGES
+
+
+        ON MESSAGE
         
         
+
+
 
 
         ============================================*/
@@ -123,14 +125,7 @@ class GameRoomInstance
             let avatarID        = message.avatarID;
             let player          = players[ avatarID ];
             let messageData     = message.data;
-            let vars            = data.vars;
- 
-            /*=========== 
-
-            JOIN
-
-            ============*/
-
+   
             if( action == ACTIONS.PLAYERJOIN )
             {
                 let player  = extract( messageData );
@@ -144,13 +139,6 @@ class GameRoomInstance
                 return reBroadcast( player );
             }
  
-
-            /*=========== 
-
-            LEAVE
-
-            ============*/
-
             if( action == ACTIONS.PLAYERLEFT )
             {
                 let player = data.online[ avatarID ];
@@ -168,32 +156,15 @@ class GameRoomInstance
                 return;
             }
 
- 
-            /*=========== 
-
-            PLAYERVARS
-
-            ============*/
-
-
             if( action == ACTIONS.PLAYERVARS )
             {
                 extract( messageData, player.vars );
                 return reBroadcast();
             }
  
-
-            /*=========== 
-
-
-            PLAYERSTATUS
-
-
-            ============*/
-
             if( action == ACTIONS.PLAYERSTATUS )
             {
-                extract( messageData, player.vars );
+                player.vars.status = messageData;
                 reBroadcast();
                 return checkPlayersStatus();
             }
