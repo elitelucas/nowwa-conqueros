@@ -21,9 +21,8 @@ class Rooms
  
     ================*/
 
-    public async get( instance:CONQUER, vars:any ) : Promise<any>
+    public async get( vars:any ) : Promise<any>
     {
-        this.conquer = instance;
         
         let values : any = await this.conquer.do( "ROOM.get", vars );
 
