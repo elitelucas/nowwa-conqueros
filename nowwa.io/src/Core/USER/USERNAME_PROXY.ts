@@ -17,11 +17,11 @@ class USERNAME_PROXY
   
     public static async set( vars:any ) : Promise<any>
     {
-        let results     = await DATA.get( USERNAME_PROXY.table, { username: vars.username, source: vars.source } ); 
+        let results     = await DATA.get( this.table, { username: vars.username, source: vars.source } ); 
 
         if( results.length > 1 ) return Promise.reject( LOG.msg( 'Username already exists' ) );  
 
-        let item : any  = await DATA.set( USERNAME_PROXY.table, vars );
+        let item : any  = await DATA.set( this.table, vars );
  
         await EMAIL.set(
         {
@@ -43,7 +43,7 @@ class USERNAME_PROXY
   
     public static async get( vars:any ) : Promise<any>
     {
-        let results = await DATA.get( USERNAME_PROXY.table, vars ); 
+        let results = await DATA.get( this.table, vars ); 
 
         let item : any = results[0];
  
@@ -51,6 +51,15 @@ class USERNAME_PROXY
  
         return Promise.resolve( item );
     }; 
+
+    public static async getUsernameID( vars:any  ) : Promise<any>
+    {
+        let item = await DATA.getOne( this.table, vars ); 
+
+        if( item ) return Promise.resolve( item.usernameID );
+
+        return Promise.resolve(null);
+    };  
 
     /*=============== 
 
@@ -62,14 +71,14 @@ class USERNAME_PROXY
 
     public static async change( query:any )
     {
-        var item = await DATA.change( USERNAME_PROXY.table, query );
+        var item = await DATA.change( this.table, query );
 
         return Promise.resolve( item );
     }
 
     public static async reparent( newUID:any, oldUID:any ) : Promise<any>
     {
-        let results = await DATA.reparent( USERNAME_PROXY.table, newUID, oldUID );
+        let results = await DATA.reparent( this.table, newUID, oldUID );
 
         return Promise.resolve( results );
     }
@@ -86,7 +95,7 @@ class USERNAME_PROXY
     {
         let item = await DATA.getOne( this.table, { usernameID:vars.usernameID });
 
-        if( !item ) item = await USERNAME_PROXY.set( vars );
+        if( !item ) item = await this.set( vars );
  
         return Promise.resolve( item );
     }; 

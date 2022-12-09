@@ -13,10 +13,9 @@ import EXPRESS from '../EXPRESS/EXPRESS';
 
 class EMAIL 
 {
-    private static table: string = "username_emails";
-
-    private static emailSender: any;
-    private static transporter: any;
+    private static table        : string = "username_emails";
+    private static emailSender  : any;
+    private static transporter  : any;
 
     /*=============== 
 
@@ -54,7 +53,8 @@ class EMAIL
 
     public static async set(vars: any): Promise<any> 
     {
-        if (!STRING.validateEmail(vars.email)) {
+        if ( !STRING.validateEmail(vars.email) ) 
+        {
             LOG.msg('Email is invalid');
             return Promise.resolve();
         }

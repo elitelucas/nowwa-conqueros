@@ -103,7 +103,6 @@ class WebAuth
                 {
                     info        : "loggedin",
                     username    : address,
-                    firstName   : address,
                     wallet      : address,
                     type        : 'METAMASK'
                 };

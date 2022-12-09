@@ -8,6 +8,7 @@ import USERNAME_PROXY from '../USERNAME_PROXY';
 
 import AVATAR from '../TRIBE/AVATAR';
 import mongoose from 'mongoose';
+import DATE from '../../../UTIL/DATE';
 
 class AUTH 
 {
@@ -116,8 +117,15 @@ class AUTH
     metamask    : wallet address
     snapchat    : account id
     guest       : guestID
-    
     type
+
+    {
+        username,
+        email,
+        wallet,
+        firstName,
+        token
+    }
 
     ================*/
 
@@ -127,14 +135,12 @@ class AUTH
  
         if( localStorage.token ) usernameID = await USERNAME.getUsernameID({ token:localStorage.token });
  
-        if( !usernameID )
-        {
-            if( !usernameID && localStorage.email )    usernameID = await EMAIL.getUsernameID({ email:localStorage.email });
-            if( !usernameID && localStorage.wallet )   usernameID = await WALLET.getUsernameID({ wallet:localStorage.wallet });
-            if( !usernameID && localStorage.username ) usernameID = await USERNAME.getUsernameID({ username:localStorage.username });
-        }
+        if( !usernameID && localStorage.username ) usernameID = await USERNAME.getUsernameID({ username:localStorage.username });
+        if( !usernameID && localStorage.username ) usernameID = await USERNAME_PROXY.getUsernameID({ username:localStorage.username });
+        if( !usernameID && localStorage.email )    usernameID = await EMAIL.getUsernameID({ email:localStorage.email });
+        if( !usernameID && localStorage.wallet )   usernameID = await WALLET.getUsernameID({ wallet:localStorage.wallet });
  
-        let user        = await ( usernameID ? USERNAME.get({ where: { _id: usernameID } }) : USERNAME.set({ username:localStorage.username }) );
+        let user        = await ( usernameID ? USERNAME.get({ where: { _id: usernameID } }) : USERNAME.set({ username:localStorage.username + DATE.now(), firstName:localStorage.firstName }) );
         usernameID      = localStorage.usernameID = user._id;
 
         await USERNAME_PROXY.getSet( localStorage );
