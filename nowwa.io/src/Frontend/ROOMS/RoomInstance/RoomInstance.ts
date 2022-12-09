@@ -9,6 +9,7 @@ class RoomInstance
     public name         : any;
     public avatarIDs    : any;
     public onMessage    : Function = function(e:any){};
+    public data         : any = {};
 
     public Entries      : Entries;
 
@@ -59,6 +60,10 @@ class RoomInstance
 
     public _onServerMessage( message:any )
     {
+        let action = message.action;
+
+        if( action == ACTIONS.GAMEDATA ) this.data = message.data;
+
         this.onMessage( message );
     }
 }

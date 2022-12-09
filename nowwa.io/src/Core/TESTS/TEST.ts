@@ -43,12 +43,10 @@ class TEST {
             }
     
             room1.join();
-            //room2.join();
-
-
-
-          //  room1.entry( "Hello user2!")
-         //   room2.Entries.set( "Hello user1!")
+            room2.join();
+ 
+            room1.entry( "Hello Im am USER 1")
+            room2.entry( "Hello and Im USER 2!")
 
 
         }

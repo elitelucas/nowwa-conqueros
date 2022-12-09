@@ -1,4 +1,5 @@
 
+import { extract } from "node-7z";
 import { Socket } from "socket.io"
 import { ACTIONS } from "../../Models/ENUM";
 import CRYPT from "../../UTIL/CRYPT";
@@ -19,14 +20,14 @@ class SocketInstance
     public static gameRooms : any = {};
 
     public socket           : Socket;
-    public id               : any;
-    public User             : any;
+    public socketID         : any;
+    public User             : any = {};
     public myGameRooms      : any = {};
  
     constructor( socket:Socket ) 
     {
         this.socket = socket;
-        this.id     = socket.id;
+        this.socketID     = socket.id;
 
         // log("[SERVER]: New SOCKET instance", this.id);
 
@@ -91,7 +92,10 @@ class SocketInstance
         function setUser( vars?:any )
         {
             if( !vars ) return;
-            self.User = vars;
+
+            vars.socketID = self.socketID; 
+            extract( vars, self.User );
+            delete self.User.token;
         }
  
     }

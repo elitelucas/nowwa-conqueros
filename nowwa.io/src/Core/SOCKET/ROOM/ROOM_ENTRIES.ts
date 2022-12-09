@@ -1,5 +1,6 @@
 import DATA from "../../DATA/DATA";
 import LOG, { log } from "../../../UTIL/LOG";
+import QUERY from "../../../UTIL/QUERY";
 
 class ROOM_ENTRIES
 {

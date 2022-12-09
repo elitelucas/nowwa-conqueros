@@ -87,7 +87,9 @@ class GameRoomInstance
 
         function sendToUser( action:any, avatarID?:any, receiverID?:any, data?:any )
         {
-            messagesCue.push({ action:action, avatarID:avatarID, receiverID:receiverID, data:data, roomID:roomID });
+            if( !receiverID ) return;
+
+            SOCKET.io.to( data.online[ receiverID ].socketID ).emit( "message", { messages:[{ action:action, avatarID:avatarID, data:data, roomID:roomID }] });
         }
 
         var sendTimer = new TimerInstance({ onUpdate:doSend, interval:300, autoStart:true });
@@ -184,7 +186,7 @@ class GameRoomInstance
 
             if( action == ACTIONS.ENTRY )
             {
-                ROOM_ENTRIES.set({ where:{ roomID:roomID }, values:{ text:messageData, avatarID:avatarID } });
+                ROOM_ENTRIES.set({ roomID:roomID, text:messageData, avatarID:avatarID });
             }
 
             /*=========== 

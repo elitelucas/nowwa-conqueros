@@ -47,8 +47,6 @@ class Rooms
 
         this.pool[ room.roomID ] = room;
 
-        log("GOT ROOM, POOL", this.pool );
-
         return Promise.resolve( room );
     };
  
@@ -77,23 +75,14 @@ class Rooms
 
     public _onServerMessage( object:any )
     {
-
-        log("CLIENT GOT MESSAGES FROM SERVER", object.messages.length, object.messages );
-
-        log("ROOMS", this.pool );
-
         for( let n in object.messages )
         {
             let message = object.messages[n];
 
-            log(n,"MESSAGE", message );
-
-            log("HAS A ROOM?", message.roomID, this.pool[ message.roomID ] );
-                /*
             if( message.avatarID == this.conquer.User.avatarID ) continue;
 
             let room  = this.pool[ message.roomID ];
-            if( room ) room._onServerMessage( message );*/
+            if( room ) room._onServerMessage( message );
         }
  
     }
