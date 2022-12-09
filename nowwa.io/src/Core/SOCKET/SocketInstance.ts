@@ -3,6 +3,7 @@ import { Socket } from "socket.io"
 import { ACTIONS } from "../../Models/ENUM";
 import CRYPT from "../../UTIL/CRYPT";
 import LOG, { log } from "../../UTIL/LOG";
+import QUERY from "../../UTIL/QUERY";
 import FILE from "../CMS/FILE";
 import GameRoomInstance from "../GAME/GAMEROOM/GameRoomInstance";
 import AUTH from "../USER/AUTH/AUTH";
@@ -99,7 +100,7 @@ class SocketInstance
     {
         for( var n in messages )
         {
-            let message                         = messages[n];
+            let message                         = messages[n];//QUERY.fixIDs(  );
             let roomID                          = message.roomID;
 
             delete message.roomID;

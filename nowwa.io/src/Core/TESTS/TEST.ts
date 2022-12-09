@@ -10,6 +10,7 @@ import USERNAME from "../USER/USERNAME";
 import ACCOUNT from "./ACCOUNT";
 import TEMPORARY from "./TEMPORARY";
 import LOG, { log } from "../../UTIL/LOG";
+import RoomInstance from "../../Frontend/ROOMS/RoomInstance/RoomInstance";
 
 class TEST {
 
@@ -27,13 +28,28 @@ class TEST {
             log('==========================');
             log( conquer1.User.avatarID, "AND", conquer2.User.avatarID );
 
-            let room1 = await conquer1.Rooms.getOne( [ conquer2.User.avatarID ] );
+            let room1 : RoomInstance = await conquer1.Rooms.getOne( [ conquer2.User.avatarID ] );
+            let room2 : RoomInstance = await conquer2.Rooms.getOne( [ conquer1.User.avatarID ] );
 
-            log( "room1 test", room1 ); 
 
-            let room2 = await conquer2.Rooms.getOne( [ conquer1.User.avatarID ] );
+            room1.onMessage = function( message:any )
+            {
+                log("ROOM 1 GOT MESSAGE", message );
+            }
 
-            log( "room2 test", room2 ); 
+            room2.onMessage = function( message:any )
+            {
+                log("ROOM 2 GOT MESSAGE", message );
+            }
+    
+            room1.join();
+            //room2.join();
+
+
+
+          //  room1.entry( "Hello user2!")
+         //   room2.Entries.set( "Hello user1!")
+
 
         }
         catch ( error ) {

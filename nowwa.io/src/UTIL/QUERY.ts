@@ -52,7 +52,7 @@ class QUERY
         return value;
     };
 
-    public static fixIDs( vars?:any )
+    public static fixIDs( vars?:any ) : any
     {
         if( !vars ) return;
 
@@ -60,6 +60,8 @@ class QUERY
         {
             vars[ varName ] = this.toObjectID( vars[ varName ] );
         }
+
+        return vars;
     }
 
 

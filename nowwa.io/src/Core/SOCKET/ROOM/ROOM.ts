@@ -45,15 +45,10 @@ class ROOM
             if( query.avatarID ) avatarIDs.push( query.avatarID )
             delete query.avatarID;
 
-            avatarIDs = QUERY.toObjectID( avatarIDs );
-
-            log( "AVATAR IDS ROOM", avatarIDs );
- 
+            avatarIDs       = QUERY.toObjectID( avatarIDs );
             query.avatarIDs = { $all:avatarIDs, $size:avatarIDs.length };
         }
 
-        log( "ROOM.ts Get one query", query );
- 
         let room = await DATA.getOne( this.table, query );
 
         if( room ) return Promise.resolve( room );

@@ -44,7 +44,10 @@ class GameRoomInstance
         var maxPlayers          : number = params.maxPlayers || 2;
         var extra               : any = params.extra || [];
         var RoomBots            : GameRoomBotsInstance;
+        var countDownTimer      : TimerInstance = new TimerInstance({ onUpdate:onCountDownStep, onTimeUp:sendPlayersReady, interval:1000 });
     
+        log( "NEW GAME ROOM INSTANCE", roomID );
+
         reset();
  
         function reset()
@@ -60,7 +63,6 @@ class GameRoomInstance
             };
 
             countDownTimer.stop();
-            sendTimer.stop(); 
 
             broadcast( STATUS.RESET );
         }
@@ -121,9 +123,10 @@ class GameRoomInstance
  
         function onMessage( message:any )
         {
+            log("GAMEROOM ON MESSAGE", message );
+
             var action          = message.action;
             let avatarID        = message.avatarID;
-            let player          = players[ avatarID ];
             let messageData     = message.data;
    
             if( action == ACTIONS.PLAYERJOIN )
@@ -133,6 +136,8 @@ class GameRoomInstance
 
                 data.online[ avatarID ] = player;
                 data.onlineCount ++;
+
+                log("PLAYER JOIN", data );
 
                 sendToUser( ACTIONS.GAMEDATA, null, avatarID, data ); 
 
@@ -155,6 +160,8 @@ class GameRoomInstance
            
                 return;
             }
+
+            let player = data.online[ avatarID ];
 
             if( action == ACTIONS.PLAYERVARS )
             {
@@ -218,8 +225,6 @@ class GameRoomInstance
         ============================================*/
 
         // COUNTDOWN
-
-        var countDownTimer = new TimerInstance({ onUpdate:onCountDownStep, onTimeUp:sendPlayersReady, interval:1000 });
  
         function onCountDownStep( timer:TimerInstance )
         {

@@ -61,7 +61,10 @@ class Socket
             self.connect();
         }); 
 
-        socket.on( 'message', this.conquer.Rooms._onServerMessage );
+        socket.on( 'message', function( obj:any )
+        {
+            self.conquer.Rooms._onServerMessage( obj );
+        });
  
         return new Promise((resolve) => 
         {
