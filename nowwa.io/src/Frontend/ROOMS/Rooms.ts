@@ -3,6 +3,11 @@ import RoomInstance from "./RoomInstance/RoomInstance";
 
 class Rooms
 {
+    private conquer: CONQUER;
+    public constructor(instance:CONQUER) {
+        this.conquer = instance;
+    }
+
     public pool : any = {};
 
     /*=============== 
@@ -16,13 +21,15 @@ class Rooms
  
     ================*/
 
-    public async get( vars:any ) : Promise<any>
+    public async get( instance:CONQUER, vars:any ) : Promise<any>
     {
-        let values : any = await CONQUER.do( "ROOM.get", vars );
+        this.conquer = instance;
+        
+        let values : any = await this.conquer.do( "ROOM.get", vars );
 
         for( var n in values )
         {
-            let room = new RoomInstance( values[n] );
+            let room = new RoomInstance( this.conquer, values[n] );
             this.pool[ room.roomID ] = room;
         }
  
@@ -34,8 +41,8 @@ class Rooms
         if( Array.isArray( vars ) )     vars = { avatarIDs:vars };
         if( typeof vars == 'string' )   vars = { roomID:vars };
 
-        let value   = await CONQUER.do( "ROOM.getOne", vars );
-        let room    = new RoomInstance( value );
+        let value   = await this.conquer.do( "ROOM.getOne", vars );
+        let room    = new RoomInstance( this.conquer, value );
 
         this.pool[ room.roomID ] = room;
 
@@ -70,7 +77,7 @@ class Rooms
         for( let n in object.messages )
         {
             let message = object.messages[n];
-            if( message.avatarID == CONQUER.User.avatarID ) return;
+            if( message.avatarID == this.conquer.User.avatarID ) return;
 
             let room  = this.pool[ message.roomID ];
             if( room ) room._onServerMessage( message );

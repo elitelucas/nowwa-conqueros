@@ -6,6 +6,11 @@ import CONQUER from '../CONQUER';
  
 class Socket
 {
+    private conquer: CONQUER;
+    public constructor(instance:CONQUER) {
+        this.conquer = instance;
+    }
+
     // USE THIS FOR LOCAL TEST
     private socketHost: string = '127.0.0.1';
     private socketPort: number = 9003;
@@ -56,7 +61,7 @@ class Socket
             self.connect();
         }); 
 
-        socket.on( 'message', CONQUER.Rooms._onServerMessage );
+        socket.on( 'message', this.conquer.Rooms._onServerMessage );
  
         return new Promise((resolve) => 
         {

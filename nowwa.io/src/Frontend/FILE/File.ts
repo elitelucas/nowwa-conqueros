@@ -4,14 +4,19 @@ import COREFILE from '../../Core/CMS/FILE';
 
 class File 
 {
+    private conquer: CONQUER;
+    public constructor(instance:CONQUER) {
+        this.conquer = instance;
+    }
+
     public async set( params:COREFILE.GetParams ): Promise<any> 
     {
-        return CONQUER.do( "FILE.set", params );
+        return this.conquer.do( "FILE.set", params );
     }
 
     public async get( params:COREFILE.Ownership ) : Promise<any> 
     {
-        return CONQUER.do( "FILE.get", params );
+        return this.conquer.do( "FILE.get", params );
     }
 
     public download( url:string ): void 

@@ -3,11 +3,13 @@ import RoomInstance from "./RoomInstance";
 
 class Entries
 {
+    private conquer: CONQUER;
     private roomInstance    : RoomInstance;
     private roomID          : any;
 
-    constructor( roomInstance:RoomInstance )
+    constructor( instance:CONQUER, roomInstance:RoomInstance )
     {
+        this.conquer = instance;
         this.roomInstance   = roomInstance;
         this.roomID         = roomInstance.roomID;
     }
@@ -17,7 +19,7 @@ class Entries
         vars        = vars || {};
         vars.roomID = this.roomID;
 
-        let values : any = await CONQUER.do( "ROOM_ENTRIES.get", vars );
+        let values : any = await this.conquer.do( "ROOM_ENTRIES.get", vars );
  
         return Promise.resolve(  values );
     };
@@ -29,14 +31,14 @@ class Entries
 
     public async change( vars:any ) : Promise<any>
     {
-        let value : any = await CONQUER.do( "ROOM_ENTRIES.change", vars );
+        let value : any = await this.conquer.do( "ROOM_ENTRIES.change", vars );
  
         return Promise.resolve( value ); 
     }
 
     public async remove( vars:any ) : Promise<any>
     {
-        await CONQUER.do( "ROOM_ENTRIES.remove", vars );
+        await this.conquer.do( "ROOM_ENTRIES.remove", vars );
  
         return Promise.resolve(); 
     }

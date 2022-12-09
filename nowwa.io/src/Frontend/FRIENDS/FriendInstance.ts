@@ -3,6 +3,7 @@ import CONQUER from "../CONQUER";
 
 class FriendInstance
 {
+    private conquer: CONQUER;
     public avatarID     : any;
     public firstName    : any;
     public userPhoto    : any;
@@ -10,8 +11,10 @@ class FriendInstance
     public status       : any;
     public role         : any;
  
-    constructor( vars:any )
+    constructor( instance:CONQUER, vars:any )
     {
+        this.conquer = instance;
+
         this.avatarID       = vars.avatarID;
         this.firstName      = vars.firstName;
         this.userPhoto      = vars.userPhoto;
@@ -25,7 +28,7 @@ class FriendInstance
     {
         if( this.role != "invited" ) return;
 
-        var membership  = await CONQUER.do( "FRIENDS.change", { membershipID:this.membershipID, status:"active" } );
+        var membership  = await this.conquer.do( "FRIENDS.change", { membershipID:this.membershipID, status:"active" } );
         this.status     = membership.status;
 
         return Promise.resolve( this );
@@ -33,8 +36,8 @@ class FriendInstance
 
     public remove()
     {
-        CONQUER.do("FRIENDS.remove", { membershipID:this.membershipID });
-        ARRAY.removeItem( CONQUER.Friends.pool, this );
+        this.conquer.do("FRIENDS.remove", { membershipID:this.membershipID });
+        ARRAY.removeItem( this.conquer.Friends.pool, this );
     }
  
 }

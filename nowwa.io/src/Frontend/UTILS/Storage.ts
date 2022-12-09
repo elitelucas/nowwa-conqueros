@@ -3,6 +3,12 @@ import RANDOM from "../../UTIL/RANDOM";
 class Storage
 {
 
+    private presetAccount: { username?:string };
+    public constructor( username?:string ) {
+        this.presetAccount = {
+            username: username
+        };
+    }
     /*=============== 
 
 
@@ -13,8 +19,14 @@ class Storage
 
     public account:any = {};
  
-    public async init(): Promise<any> 
+    public async init( ): Promise<any> 
     {
+        if (typeof this.presetAccount != 'undefined') {
+            console.log(`has preset username: ${this.presetAccount}`);
+            this.set("account", {
+                username: this.presetAccount
+            });
+        }
         this.setAccount( this.loadAccount() );
         this.setAccount( this.parseUrlSearchParams() );
         return Promise.resolve();
@@ -27,7 +39,7 @@ class Storage
     private loadAccount()
     {
         let json = typeof window != 'undefined' ? window.localStorage.getItem( "account" ) : null;
-        var vars = json ? JSON.parse( json as string ) : {};
+        var vars = json ? JSON.parse( json as string ) : this.presetAccount;
 
         if( !vars.username ) vars.username = this.generateUsername();
 

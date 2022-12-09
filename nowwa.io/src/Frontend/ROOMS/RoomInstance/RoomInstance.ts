@@ -4,6 +4,7 @@ import Entries from "./Entries";
 
 class RoomInstance
 {
+    private conquer     : CONQUER;
     public roomID       : any;
     public name         : any;
     public avatarIDs    : any;
@@ -11,13 +12,14 @@ class RoomInstance
 
     public Entries      : Entries;
 
-    constructor( vars:any )
+    constructor( instance:CONQUER, vars:any )
     {
+        this.conquer    = instance;
         this.roomID     = vars._id;
         this.name       = vars.name;
         this.avatarIDs  = vars.avatarIDs;
 
-        this.Entries    = new Entries( this );
+        this.Entries    = new Entries( this.conquer, this );
     }
 
     public join()
@@ -27,7 +29,7 @@ class RoomInstance
 
     public leave()
     {
-        CONQUER.Rooms.leave( this );
+        this.conquer.Rooms.leave( this );
     };
 
     public entry( text:any )
@@ -52,7 +54,7 @@ class RoomInstance
 
     private doSend( action:any, data?:any )
     {
-        CONQUER.send( action, this.roomID, data || {} );
+        this.conquer.send( action, this.roomID, data || {} );
     }
 
     public _onServerMessage( message:any )

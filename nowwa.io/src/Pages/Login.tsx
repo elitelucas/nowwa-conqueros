@@ -81,12 +81,12 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
         } else if (state.password.length == 0) {
             setWarning('password cannot be empty!');
         } else {
-            if (CONQUER.initialized) {
+            if (indexState.conquer!.initialized) {
                 updateState({
                     isBusy: true,
                     warning: '',
                 });
-                let res = await CONQUER.Auth.get({
+                let res = await indexState.conquer!.Auth.get({
                     username: state.email,
                     password: state.password
                 });
@@ -105,30 +105,30 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
     }
 
     let doGuest = async () => {
-        if (CONQUER.initialized) {
+        if (indexState.conquer!.initialized) {
             setIndexState({
                 display: 'Home',
                 acceptGuest: true,
-                account: CONQUER.User!
+                account: indexState.conquer!.User!
             });
         }
     }
 
     let doTwitter = async () => {
-        if (CONQUER.initialized) {
-            CONQUER.WebAuth.twitter();
+        if (indexState.conquer!.initialized) {
+            indexState.conquer!.WebAuth.twitter();
         }
     };
 
     let doGoogle = async () => {
-        if (CONQUER.initialized) {
-            CONQUER.WebAuth.google();
+        if (indexState.conquer!.initialized) {
+            indexState.conquer!.WebAuth.google();
         }
     };
 
     let doFacebook = async () => {
-        if (CONQUER.initialized) {
-            CONQUER.WebAuth.facebook()
+        if (indexState.conquer!.initialized) {
+            indexState.conquer!.WebAuth.facebook()
                 .then((res) => {
                     if (res.success) {
                         setIndexState({
@@ -146,20 +146,20 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
     };
 
     let doDiscord = async () => {
-        if (CONQUER.initialized) {
-            CONQUER.WebAuth.discord();
+        if (indexState.conquer!.initialized) {
+            indexState.conquer!.WebAuth.discord();
         }
     };
 
     let doSnapchat = async () => {
-        if (CONQUER.initialized) {
-            CONQUER.WebAuth.snapchat();
+        if (indexState.conquer!.initialized) {
+            indexState.conquer!.WebAuth.snapchat();
         }
     };
 
     let doMetamask = async () => {
-        if (CONQUER.initialized) {
-            CONQUER.WebAuth.metamask()
+        if (indexState.conquer!.initialized) {
+            indexState.conquer!.WebAuth.metamask()
                 .then((res) => {
                     console.log(res);
                     if (res.success) {

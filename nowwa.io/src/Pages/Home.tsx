@@ -33,11 +33,11 @@ const Home = (state: HomeState, setState: React.Dispatch<React.SetStateAction<Ho
     };
 
     let doLogout = async () => {
-        if (CONQUER.initialized) {
+        if (indexState.conquer!.initialized) {
             updateState({
                 isBusy: true
             });
-            await CONQUER.Auth.logout();
+            await indexState.conquer!.Auth.logout();
             updateState({
                 isBusy: false
             });

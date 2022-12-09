@@ -22,7 +22,8 @@ export type IndexState = ComponentState & {
     account?: User,
     message: string,
     acceptGuest: boolean,
-    params?: { [key: string]: any }
+    params?: { [key: string]: any },
+    conquer?: CONQUER
 };
 
 export const IndexStateDefault: IndexState = {
@@ -64,15 +65,16 @@ const Index = () => {
     if (!state.initialized) {
         updateState({
             initialized: true,
-            isBusy: true
+            isBusy: true,
+            conquer: new CONQUER
         });
     }
     if (state.initialized) {
 
-        if (!CONQUER.initializing && !CONQUER.initialized) {
-            CONQUER.init().then(() => {
+        if (!state.conquer!.initializing && !state.conquer!.initialized) {
+            state.conquer!.init().then(() => {
 
-                let account = CONQUER.User;
+                let account = state.conquer!.User;
 
                 if (account && typeof account.avatarID != 'undefined' && (account.username.indexOf('Guest_') < 0 || state.acceptGuest)) 
                 {

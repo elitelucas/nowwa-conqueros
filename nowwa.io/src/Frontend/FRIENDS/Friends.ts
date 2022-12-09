@@ -3,6 +3,11 @@ import FriendInstance from "./FriendInstance";
 
 class Friends
 {
+    private conquer: CONQUER;
+    public constructor(instance:CONQUER) {
+        this.conquer = instance;
+    }
+
     public pool : any = [];
 
     /*=============== 
@@ -17,10 +22,10 @@ class Friends
     {
         if( this.pool.length && !force ) return Promise.resolve( this.pool );
 
-        let array   = await CONQUER.do( "FRIENDS.get" );
+        let array   = await this.conquer.do( "FRIENDS.get" );
         this.pool   = [];
 
-        for( var n in array ) this.pool.push( new FriendInstance( array[n] ));
+        for( var n in array ) this.pool.push( new FriendInstance(this.conquer, array[n] ));
  
         return Promise.resolve( this.pool );
     };
@@ -35,7 +40,7 @@ class Friends
 
     public async set( friendID:any ) : Promise<any>
     {
-        var friendship = await CONQUER.do("FRIENDS.set", { friendID:friendID } );
+        var friendship = await this.conquer.do("FRIENDS.set", { friendID:friendID } );
 
         return Promise.resolve( friendship );
     };

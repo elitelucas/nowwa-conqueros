@@ -9,50 +9,55 @@ import Storage from "./UTILS/Storage";
 
 import Friends from "./FRIENDS/Friends";
 import Rooms from "./ROOMS/Rooms";
+
 class CONQUER 
 {
-    public static initialized   : boolean = false;
-    public static initializing   : boolean = false;
+    public initialized   : boolean = false;
+    public initializing   : boolean = false;
  
-    public static Storage       : Storage;
-    public static Auth          : Auth;
-    public static User          : User;
-    public static WebAuth       : WebAuth;
-    public static File          : File;
-    public static Friends       : Friends;
-    public static Rooms         : Rooms;
+    public Storage       : Storage;
+    public Auth          : Auth;
+    public User          : User;
+    public WebAuth       : WebAuth;
+    public File          : File;
+    public Friends       : Friends;
+    public Rooms         : Rooms;
 
-    private static Socket       : Socket;
+    private Socket       : Socket;
  
-    public static async init(): Promise<void> 
+    public constructor(username?:string)
     {
-        this.initializing = true;
-        this.Storage    = new Storage();
-        this.Friends    = new Friends();
-        this.Auth       = new Auth();
+        this.Storage    = new Storage(username);
+        this.Friends    = new Friends(this);
+        this.Auth       = new Auth(this);
         this.WebAuth    = new WebAuth();
-        this.File       = new File();
-        this.Rooms      = new Rooms();
-        this.Socket     = new Socket();
-        this.User       = new User();
+        this.File       = new File(this);
+        this.Rooms      = new Rooms(this);
+        this.Socket     = new Socket(this);
+        this.User       = new User(this);
+    };
+
+    public async init (): Promise<void> {
+        this.initializing = true;
  
         await this.Storage.init();
         await this.WebAuth.init();
         await this.Socket.init();
         await this.Auth.init();
+
         this.initialized = true;
 
         console.log('conquer initialized');
 
         return Promise.resolve();
-    };
+    }
 
-    public static async do( action:any, data?:any ): Promise<any> 
+    public async do( action:any, data?:any ): Promise<any> 
     {
         return this.Socket.do( action, data );
     }
 
-    public static send( action:any, roomID:any, data:any ) 
+    public send( action:any, roomID:any, data:any ) 
     {
         return this.Socket.send( action, roomID, data );
     }

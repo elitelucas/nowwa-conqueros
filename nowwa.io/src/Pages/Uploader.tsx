@@ -48,14 +48,14 @@ const Uploader = (state: UploaderState, setState: React.Dispatch<React.SetStateA
             
             let avatarID:string = indexState.account!.avatarID;
 
-            await CONQUER.File.set(
+            await indexState.conquer!.File.set(
             {
                 fileName: file.name,
                 content: file,
                 avatarID: avatarID
             })
 
-            let res = await CONQUER.File.get({
+            let res = await indexState.conquer!.File.get({
                 avatarID: avatarID
             })
             updateDownloaderState({

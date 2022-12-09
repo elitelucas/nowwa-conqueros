@@ -3,6 +3,11 @@ import Storage from '../UTILS/Storage';
 
 class Auth 
 {
+    private conquer: CONQUER;
+    public constructor(instance:CONQUER) {
+        this.conquer = instance;
+    }
+
     private vars: { [key: string]: any } = {};
 
     public async init() : Promise<any> 
@@ -14,12 +19,12 @@ class Auth
  
     public async set( params : { username: string, password: string } ) : Promise<any> 
     {
-        return CONQUER.do( "AUTH.set", params );
+        return this.conquer.do( "AUTH.set", params );
     }
 
     public async logout()
     {
-        CONQUER.Storage.removeAccount();
+        this.conquer.Storage.removeAccount();
         await this.get();
         return Promise.resolve();
     }
@@ -28,13 +33,13 @@ class Auth
     {
         if( params ) params.type = "USERNAME";
 
-        console.log(`[Auth] get CONQUER.Storage.account`, CONQUER.Storage.account);
+        console.log(`[Auth] get CONQUER.Storage.account`, this.conquer.Storage.account);
  
-        let response : any = await CONQUER.do( "AUTH.get", params || CONQUER.Storage.account );
+        let response : any = await this.conquer.do( "AUTH.get", params || this.conquer.Storage.account );
 
         console.log(`[Auth] get response`, response);
 
-        CONQUER.User.set( response.result );
+        this.conquer.User.set( response.result );
 
         return Promise.resolve(response);
     }

@@ -4,6 +4,11 @@ import CONQUER from '../CONQUER';
  
 class User 
 {
+    private conquer: CONQUER;
+    public constructor(instance:CONQUER) {
+        this.conquer = instance;
+    }
+
     public avatarID     : any = null;
     public firstName    : any = null;
     public username     : any = null;
@@ -18,7 +23,7 @@ class User
         this.username   = params.username;
         this.token      = params.token;
  
-        CONQUER.Storage.setAccount( params );
+        this.conquer.Storage.setAccount( params );
     }
 
 }

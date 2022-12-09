@@ -85,14 +85,14 @@ const Register = (state: RegisterState, setState: React.Dispatch<React.SetStateA
         } else if (state.password != state.repassword) {
             updateState({ warning: `password mismatch` });
         } else {
-            if (CONQUER.initialized) {
+            if (indexState.conquer!.initialized) {
                 updateState({
                     isBusy: true,
                     shouldReset: true,
                     warning: ''
                 });
 
-                let res = await CONQUER.Auth.set({
+                let res = await indexState.conquer!.Auth.set({
                     username: state.email,
                     password: state.password
                 });
