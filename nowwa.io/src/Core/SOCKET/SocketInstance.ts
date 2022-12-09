@@ -13,6 +13,8 @@ class SocketInstance
 {
     // Todo, destroy instances on disconnect
 
+    // OUR ROOM [ myAvatarID, yourAvatarID ] 
+
     public static gameRooms : any = {};
 
     public socket           : Socket;
@@ -46,7 +48,7 @@ class SocketInstance
         if( action == "FILE.get" )              return map( FILE.get( vars ) );
 
         if( action == "ROOM.get" )              return map( ROOM.get( vars ) );
-        if( action == "ROOM.getOne" )           return map( ROOM.get( vars ) );
+        
 
         if( action == "ROOM_ENTRIES.get" )      return map( ROOM_ENTRIES.get( vars ) );  
 
@@ -54,6 +56,8 @@ class SocketInstance
         if( action == "FRIENDS.remove" )        return map( FRIENDS.remove( vars ) );
 
         vars.avatarID = this.User.avatarID;
+
+        if( action == "ROOM.getOne" )           return map( ROOM.getOne( vars ) );
 
         if( action == "ROOM_ENTRIES.set" )      return map( ROOM_ENTRIES.set( vars ) ); 
         if( action == "ROOM_ENTRIES.change" )   return map( ROOM_ENTRIES.change( vars ) );  
@@ -70,7 +74,7 @@ class SocketInstance
         {
             if( action == "AUTH.get" && isSucess && vars ) setUser( vars );
  
-            if( callback ) callback({ success: isSucess, result: vars || {} });
+            if( callback ) callback( vars || isSucess );
         }
 
         function doError( vars?: any ) 

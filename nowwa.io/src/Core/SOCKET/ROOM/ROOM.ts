@@ -1,12 +1,13 @@
 import DATA from "../../DATA/DATA";
 import LOG, { log } from "../../../UTIL/LOG";
+import QUERY from "../../../UTIL/QUERY";
 import ROOM_ENTRIES from "./ROOM_ENTRIES";
 
 class ROOM
 {
     public static pool : any = {};
 
-    private static table: string = "rooms";
+    private static table : string = "rooms";
 
     /*=============== 
 
@@ -39,7 +40,19 @@ class ROOM
     {
         let avatarIDs = query.avatarIDs;
 
-        if( avatarIDs ) query.avatarIDs = { $all:avatarIDs, $size:avatarIDs.length }
+        if( avatarIDs ) 
+        {
+            if( query.avatarID ) avatarIDs.push( query.avatarID )
+            delete query.avatarID;
+
+            avatarIDs = QUERY.toObjectID( avatarIDs );
+
+            log( "AVATAR IDS ROOM", avatarIDs );
+ 
+            query.avatarIDs = { $all:avatarIDs, $size:avatarIDs.length };
+        }
+
+        log( "ROOM.ts Get one query", query );
  
         let room = await DATA.getOne( this.table, query );
 

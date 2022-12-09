@@ -5,42 +5,62 @@ class QUERY
 {
     public static get( vars:any ) 
     {
-        return vars.where ? vars : { where: vars };
-    };
+        vars = vars.where ? vars : { where: vars };
 
-    public static get2<T>(vars: Partial<T>): { where: Partial<T> } 
-    {
-        return { where: vars };
+        this.fixIDs( vars.where );
+        
+        return vars;
     };
  
     public static set( vars:any ) 
     {
         let query: any = vars.values ? vars : { values: vars };
         if( query.values._id ) delete ( query.values._id );
-        if( !query.values.timestamp ) query.values.timestamp = DATE.now();
 
+        this.fixIDs( query.where );
+        this.fixIDs( query.values );
+
+        if( !query.values.timestamp ) query.values.timestamp = DATE.now();
+ 
         return query;
     };
-
-
-    public static set2<T>(vars: Partial<T>): { values: Partial<T> & { timestamp: number } } 
-    {
-        return {
-            values: {
-                ...vars,
-                timestamp: DATE.now()
-            }
-        };
-    };
-
-    public static change(vars: any) 
+ 
+    public static change( vars: any ) 
     {
         let query: any = vars.values ? vars : { values: vars };
-        if (query.values._id) delete (query.values._id);
+        if (query.values._id) delete ( query.values._id );
+
+        this.fixIDs( query.where );
+        this.fixIDs( query.values );
+
         if (!query.values.lastChange) query.values.lastChange = DATE.now();
 
         return query;
     };
+
+
+    public static toObjectID( value:any )
+    {
+        if( Array.isArray( value ) ) 
+        {
+            for( let n in value ) if( typeof value[n] == "string" ) value[n] = new mongoose.Types.ObjectId( value[n] );
+            return value;
+        }
+                 
+        if( typeof value == "string" ) return new mongoose.Types.ObjectId( value );
+ 
+        return value;
+    };
+
+    public static fixIDs( vars?:any )
+    {
+        if( !vars ) return;
+
+        for( var varName in vars ) if( varName == "_id" || varName.includes( "ID" ) )
+        {
+            vars[ varName ] = this.toObjectID( vars[ varName ] );
+        }
+    }
 
 
 }

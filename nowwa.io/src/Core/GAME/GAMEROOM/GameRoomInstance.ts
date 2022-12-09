@@ -80,12 +80,12 @@ class GameRoomInstance
 
         function broadcast( action:any, avatarID?:any, data?:any )
         {
-            messagesCue.push({ action:action, avatarID:avatarID, data:data });
+            messagesCue.push({ action:action, avatarID:avatarID, data:data, roomID:roomID });
         }
 
         function sendToUser( action:any, avatarID?:any, receiverID?:any, data?:any )
         {
-            messagesCue.push({ action:action, avatarID:avatarID, receiverID:receiverID, data:data });
+            messagesCue.push({ action:action, avatarID:avatarID, receiverID:receiverID, data:data, roomID:roomID });
         }
 
         var sendTimer = new TimerInstance({ onUpdate:doSend, interval:300, autoStart:true });

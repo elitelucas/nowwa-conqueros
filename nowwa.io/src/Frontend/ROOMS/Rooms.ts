@@ -1,10 +1,13 @@
 import CONQUER from "../CONQUER";
 import RoomInstance from "./RoomInstance/RoomInstance";
+import LOG, { log } from "../../UTIL/LOG";
 
 class Rooms
 {
-    private conquer: CONQUER;
-    public constructor(instance:CONQUER) {
+    private conquer:CONQUER;
+
+    public constructor( instance:CONQUER ) 
+    {
         this.conquer = instance;
     }
 
@@ -21,10 +24,8 @@ class Rooms
  
     ================*/
 
-    public async get( instance:CONQUER, vars:any ) : Promise<any>
+    public async get( vars:any ) : Promise<any>
     {
-        this.conquer = instance;
-        
         let values : any = await this.conquer.do( "ROOM.get", vars );
 
         for( var n in values )
@@ -42,6 +43,9 @@ class Rooms
         if( typeof vars == 'string' )   vars = { roomID:vars };
 
         let value   = await this.conquer.do( "ROOM.getOne", vars );
+
+        log("GOT ROOMS value", value );
+
         let room    = new RoomInstance( this.conquer, value );
 
         this.pool[ room.roomID ] = room;

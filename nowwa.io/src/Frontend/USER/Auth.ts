@@ -4,7 +4,9 @@ import Storage from '../UTILS/Storage';
 class Auth 
 {
     private conquer: CONQUER;
-    public constructor(instance:CONQUER) {
+
+    public constructor(instance:CONQUER) 
+    {
         this.conquer = instance;
     }
 
@@ -39,7 +41,7 @@ class Auth
 
         console.log(`[Auth] get response`, response);
 
-        this.conquer.User.set( response.result );
+        this.conquer.User.set( response );
 
         return Promise.resolve(response);
     }
