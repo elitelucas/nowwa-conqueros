@@ -44,31 +44,31 @@ class SocketInstance
 
         // Register and login
         
-        if( action == "AUTH.set" )              return map( AUTH.set( vars ) );
-        if( action == "AUTH.get" )              return map( AUTH.get( vars ) );
+        if( action == ACTIONS.AUTH_SET )                return map( AUTH.set( vars ) );
+        if( action == ACTIONS.AUTH_GET )                return map( AUTH.get( vars ) );
 
-        if( action == "FILE.get" )              return map( FILE.get( vars ) );
+        if( action == ACTIONS.FILE_GET)                 return map( FILE.get( vars ) );
 
-        if( action == "ROOM.get" )              return map( ROOM.get( vars ) );
+        if( action == ACTIONS.ROOM_GET )                return map( ROOM.get( vars ) );
         
 
-        if( action == "ROOM_ENTRIES.get" )      return map( ROOM_ENTRIES.get( vars ) );  
+        if( action == ACTIONS.ROOM_ENTRIES_GET )        return map( ROOM_ENTRIES.get( vars ) );  
 
-        if( action == "FRIENDS.change" )        return map( FRIENDS.change( vars ) );
-        if( action == "FRIENDS.remove" )        return map( FRIENDS.remove( vars ) );
+        if( action == ACTIONS.FRIENDS_CHANGE )          return map( FRIENDS.change( vars ) );
+        if( action == ACTIONS.FRIENDS_REMOVE )          return map( FRIENDS.remove( vars ) );
 
         vars.avatarID = this.User.avatarID;
 
-        if( action == "ROOM.getOne" )           return map( ROOM.getOne( vars ) );
+        if( action == ACTIONS.ROOM_GETONE )             return map( ROOM.getOne( vars ) );
 
-        if( action == "ROOM_ENTRIES.set" )      return map( ROOM_ENTRIES.set( vars ) ); 
-        if( action == "ROOM_ENTRIES.change" )   return map( ROOM_ENTRIES.change( vars ) );  
-        if( action == "ROOM_ENTRIES.remove" )   return map( ROOM_ENTRIES.remove( vars ) );  
+        if( action == ACTIONS.ROOM_ENTRIES_SET )        return map( ROOM_ENTRIES.set( vars ) ); 
+        if( action == ACTIONS.ROOM_ENTRIES_CHANGE )     return map( ROOM_ENTRIES.change( vars ) );  
+        if( action == ACTIONS.ROOM_ENTRIES_REMOVE )     return map( ROOM_ENTRIES.remove( vars ) );  
  
-        if( action == "FILE.set" )              return map( FILE.set( vars ) );
+        if( action == ACTIONS.FILE_SET )                return map( FILE.set( vars ) );
    
-        if( action == "FRIENDS.set" )           return map( FRIENDS.set( vars ) );
-        if( action == "FRIENDS.get" )           return map( FRIENDS.get( vars ) );
+        if( action == ACTIONS.FRIENDS_SET )             return map( FRIENDS.set( vars ) );
+        if( action == ACTIONS.FRIENDS_GET )             return map( FRIENDS.get( vars ) );
  
         doError();
 

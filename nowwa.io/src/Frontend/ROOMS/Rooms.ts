@@ -1,6 +1,7 @@
 import CONQUER from "../CONQUER";
 import RoomInstance from "./RoomInstance/RoomInstance";
 import LOG, { log } from "../../UTIL/LOG";
+import { ACTIONS } from "../../Models/ENUM";
 
 class Rooms
 {
@@ -25,7 +26,7 @@ class Rooms
 
     public async get( vars:any ) : Promise<any>
     {
-        let values : any = await this.conquer.do( "ROOM.get", vars );
+        let values : any = await this.conquer.do( ACTIONS.ROOM_GET, vars );
 
         for( var n in values )
         {
@@ -41,7 +42,7 @@ class Rooms
         if( Array.isArray( vars ) )     vars = { avatarIDs:vars };
         if( typeof vars == 'string' )   vars = { roomID:vars };
 
-        let value   = await this.conquer.do( "ROOM.getOne", vars );
+        let value   = await this.conquer.do( ACTIONS.ROOM_GETONE, vars );
 
         let room    = new RoomInstance( this.conquer, value );
 

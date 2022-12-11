@@ -1,10 +1,13 @@
+import { ACTIONS } from "../../Models/ENUM";
 import CONQUER from "../CONQUER";
 import FriendInstance from "./FriendInstance";
 
 class Friends
 {
-    private conquer: CONQUER;
-    public constructor(instance:CONQUER) {
+    private conquer : CONQUER;
+
+    public constructor( instance:CONQUER ) 
+    {
         this.conquer = instance;
     }
 
@@ -22,10 +25,10 @@ class Friends
     {
         if( this.pool.length && !force ) return Promise.resolve( this.pool );
 
-        let array   = await this.conquer.do( "FRIENDS.get" );
+        let array   = await this.conquer.do( ACTIONS.FRIENDS_GET );
         this.pool   = [];
 
-        for( var n in array ) this.pool.push( new FriendInstance(this.conquer, array[n] ));
+        for( var n in array ) this.pool.push( new FriendInstance( this.conquer, array[n] ));
  
         return Promise.resolve( this.pool );
     };
@@ -40,7 +43,7 @@ class Friends
 
     public async set( friendID:any ) : Promise<any>
     {
-        var friendship = await this.conquer.do("FRIENDS.set", { friendID:friendID } );
+        var friendship = await this.conquer.do( ACTIONS.FRIENDS_SET, { friendID:friendID } );
 
         return Promise.resolve( friendship );
     };

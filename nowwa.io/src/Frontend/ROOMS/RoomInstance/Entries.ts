@@ -1,3 +1,4 @@
+import { ACTIONS } from "../../../Models/ENUM";
 import CONQUER from "../../CONQUER";
 import RoomInstance from "./RoomInstance";
 
@@ -19,7 +20,7 @@ class Entries
         vars        = vars || {};
         vars.roomID = this.roomID;
 
-        let values : any = await this.conquer.do( "ROOM_ENTRIES.get", vars );
+        let values : any = await this.conquer.do( ACTIONS.ROOM_ENTRIES_GET, vars );
  
         return Promise.resolve(  values );
     };
@@ -31,14 +32,14 @@ class Entries
 
     public async change( vars:any ) : Promise<any>
     {
-        let value : any = await this.conquer.do( "ROOM_ENTRIES.change", vars );
+        let value : any = await this.conquer.do( ACTIONS.ROOM_ENTRIES_CHANGE, vars );
  
         return Promise.resolve( value ); 
     }
 
     public async remove( vars:any ) : Promise<any>
     {
-        await this.conquer.do( "ROOM_ENTRIES.remove", vars );
+        await this.conquer.do( ACTIONS.ROOM_ENTRIES_REMOVE, vars );
  
         return Promise.resolve(); 
     }

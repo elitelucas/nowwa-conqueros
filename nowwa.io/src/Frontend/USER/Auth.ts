@@ -1,3 +1,4 @@
+import { ACTIONS } from '../../Models/ENUM';
 import CONQUER from '../CONQUER';
 import Storage from '../UTILS/Storage';
 
@@ -21,7 +22,7 @@ class Auth
  
     public async set( params : { username: string, password: string } ) : Promise<any> 
     {
-        return this.conquer.do( "AUTH.set", params );
+        return this.conquer.do( ACTIONS.AUTH_SET, params );  
     }
 
     public async logout()
@@ -37,7 +38,7 @@ class Auth
 
         console.log(`[Auth] get CONQUER.Storage.account`, this.conquer.Storage.account);
  
-        let response : any = await this.conquer.do( "AUTH.get", params || this.conquer.Storage.account );
+        let response : any = await this.conquer.do( ACTIONS.AUTH_GET, params || this.conquer.Storage.account );
 
         console.log(`[Auth] get response`, response);
 
