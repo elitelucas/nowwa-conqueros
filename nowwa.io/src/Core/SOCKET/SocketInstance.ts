@@ -1,5 +1,4 @@
-
-import { extract } from "node-7z";
+ 
 import { Socket } from "socket.io"
 import { ACTIONS } from "../../Models/ENUM";
 import CRYPT from "../../UTIL/CRYPT";
@@ -11,6 +10,7 @@ import AUTH from "../USER/AUTH/AUTH";
 import FRIENDS from "../USER/TRIBE/FRIENDS/FRIENDS";
 import ROOM from "./ROOM/ROOM";
 import ROOM_ENTRIES from "./ROOM/ROOM_ENTRIES";
+import ARRAY, { extract } from "../../UTIL/ARRAY";
 class SocketInstance 
 {
     // Todo, destroy instances on disconnect
@@ -91,8 +91,6 @@ class SocketInstance
 
         function setUser( vars?:any )
         {
-            log("AUTH GET GAVE ME AN USER", vars );
-
             if( !vars ) return;
 
             vars.socketID = self.socketID; 
