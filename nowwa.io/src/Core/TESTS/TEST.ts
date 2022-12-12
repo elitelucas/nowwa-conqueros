@@ -24,12 +24,27 @@ class TEST {
 
             await conquer1.init();
             await conquer2.init();
-            /*
-            var list = conquer1.Friends.get();
 
- 
+            log(conquer1.User.avatarID,'===========VS=============', conquer2.User.avatarID );
+
+            //var newfriend = await conquer1.Friends.set( "6392e07491358963557a2d92" );
+
+            /*
+            //////================= FRIENDS
+
+            var list = await conquer1.Friends.get();    
+            var list2 = await conquer2.Friends.get();
             log("GOT FRIENDS LIST USER1", list );
- 
+            log("GOT FRIENDS LIST USER2", list2 );
+
+            var myFriendship = list2[0];
+
+            log( myFriendship );
+
+           // myFriendship.set();
+           */
+
+            /*
             log('==========================');
  
             let room1 : RoomInstance = await conquer1.Rooms.getOne( [ conquer2.User.avatarID ] );

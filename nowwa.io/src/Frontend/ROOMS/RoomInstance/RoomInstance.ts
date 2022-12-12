@@ -33,6 +33,11 @@ class RoomInstance
         this.conquer.Rooms.leave( this );
     };
 
+    public chat( text:any )
+    {
+        this.doSend( ACTIONS.CHAT, text );
+    }
+
     public entry( text:any )
     {
         this.doSend( ACTIONS.ENTRY, text );

@@ -40,7 +40,8 @@ class SocketInstance
     {
         log( "[SERVER]: client action requested", action );
 
-        let self = this;
+        vars        = vars || {};
+        let self    = this;
 
         // Register and login
         
@@ -91,6 +92,7 @@ class SocketInstance
 
         function setUser( vars?:any )
         {
+            log("====================== SET USER" );
             if( !vars ) return;
 
             vars.socketID = self.socketID; 

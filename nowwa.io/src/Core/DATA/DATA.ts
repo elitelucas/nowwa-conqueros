@@ -83,9 +83,9 @@ class DATA
     ================*/
 
     public static async set( tableName: string, query: any ): Promise<any> 
-    {
+    { 
         query           = QUERY.set( query );
-
+ 
         if( query.where ) return this.change( tableName, query );
 
         let model       = await TABLE_MODEL.get( tableName );

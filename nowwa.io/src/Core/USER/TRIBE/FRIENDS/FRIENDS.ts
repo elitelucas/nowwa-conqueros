@@ -21,7 +21,7 @@ class FRIENDS
         // Mask only avatarIDs
 
         let tribe : any     = await TRIBE.getOne({ domainID:query.avatarID, type:"friends" });
- 
+
         var memberships     = await TRIBE_MEMBERS.get({ tribeID:tribe._id });
 
         let friends : any = []
@@ -70,22 +70,35 @@ class FRIENDS
 
     public static async set( query:any ) : Promise<any>
     {
-        // Sends request to join
-
+        // friend
+ 
         let tribe : any     = await TRIBE.getOne({ domainID:query.friendID, type:"friends" });
-
-        //status (active, invited, pending ) 
-
+ 
         let vars : any = 
         {
-            status      : query.status || "pending",
+            status      : "pending",
             tribeID     : tribe._id,
-            avatarID    : query.avatarID
+            avatarID    : query.avatarID,
+            role        : 1
         }
 
         var membership      = await TRIBE_MEMBERS.getSet( vars )
 
-        return Promise.resolve( membership );
+        // my tribe
+
+        tribe      = await TRIBE.getOne({ domainID:query.avatarID, type:"friends" });
+
+        vars = 
+        {
+            status      : "invited",
+            tribeID     : tribe._id,
+            avatarID    : query.friendID,
+            role        : 1
+        }
+
+        var membership2      = await TRIBE_MEMBERS.getSet( vars )
+ 
+        return Promise.resolve( membership2 );
     };
 
 
@@ -105,12 +118,12 @@ class FRIENDS
 
         var membership = await TRIBE_MEMBERS.change( { where:{ _id:query.membershipID }, values:vars });
 
-        // add friend too
+        // update friend too
  
         if( status == "active" )
         {
-            var myFriends = await TRIBE.getOne({ domainID:query.avatarID, type:"friends" });
-            TRIBE_MEMBERS.set( { tribeID:myFriends._id, avatarID:membership.avatarID, status:"active" })
+            var tribe = await TRIBE.getOne({ domainID:query.avatarID, type:"friends" });
+            TRIBE_MEMBERS.change( { where:{ tribeID:tribe._id, avatarID:query.avatarID, status:"invited" }, values:{ status:"active"} });
         }
         
         return Promise.resolve( membership );

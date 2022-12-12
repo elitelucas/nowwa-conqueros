@@ -22,6 +22,8 @@ class TRIBE_MEMBERS
 
     public static async getOne( query:any ) : Promise<any>
     {
+        log("TRIBE MEMBERS getOne, query", query );
+
         let value = await DATA.getOne( this.table, query );
 
         return Promise.resolve( value );
@@ -44,8 +46,7 @@ class TRIBE_MEMBERS
 
     public static async set( query:any ) : Promise<any>
     {
-        if( typeof query.role == undefined ) query.role = 1;
-        query.status = query.status || "active";
+        if( typeof query.role == "undefined" ) query.role = 1;
 
         let value = await DATA.set( this.table, query );
 
@@ -55,11 +56,12 @@ class TRIBE_MEMBERS
     public static async getSet( query:any ) : Promise<any>
     {
         var vars : any      = { avatarID:query.avatarID, tribeID:query.tribeID };
+
         var entry           = await this.getOne( vars );
 
-        if( entry ) return this.change( { where:{ _id:entry._id }, values:vars } );
+        if( entry ) return Promise.resolve( entry );//this.change( { where:{ _id:entry._id }, values:{s} } );
  
-        if( !entry ) entry  = this.set( vars );
+        if( !entry ) entry  = this.set( query );
 
         return Promise.resolve( entry );
     };

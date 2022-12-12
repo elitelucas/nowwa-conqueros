@@ -17,21 +17,36 @@ class FriendInstance
     {
         this.conquer        = instance;
 
-        this.avatarID       = vars.avatarID;
-        this.firstName      = vars.firstName;
-        this.userPhoto      = vars.userPhoto;
+        this.fill( vars );
+    };
+
+    private fill( vars:any )
+    {
+        this.avatarID       = vars.avatarID || this.avatarID;
+        this.firstName      = vars.firstName || this.firstName;
+        this.userPhoto      = vars.userPhoto || this.userPhoto;
 
         this.membershipID   = vars.membershipID;
         this.status         = vars.status;
         this.role           = vars.role;
-    };
+    }
 
-    public async accept() : Promise<any>
+    public async set() : Promise<any>
     {
-        if( this.role != "invited" ) return;
+        let membership;
 
-        var membership  = await this.conquer.do( ACTIONS.FRIENDS_CHANGE, { membershipID:this.membershipID, status:"active" } );
-        this.status     = membership.status;
+        if( !this.membershipID )
+        {
+            membership      = await this.conquer.Friends.set( this.avatarID );
+
+            return Promise.resolve( this );
+        } 
+ 
+        if( this.status != "pending" ) return;
+
+        membership      = await this.conquer.do( ACTIONS.FRIENDS_CHANGE, { membershipID:this.membershipID, status:"active" } );
+ 
+        this.fill( membership );
 
         return Promise.resolve( this );
     }
