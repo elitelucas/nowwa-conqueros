@@ -25,7 +25,7 @@ class CONQUER
 
     private Socket       : Socket;
  
-    public constructor(username?:string)
+    public constructor( username?:string )
     {
         this.Storage    = new Storage(username);
         this.Friends    = new Friends(this);

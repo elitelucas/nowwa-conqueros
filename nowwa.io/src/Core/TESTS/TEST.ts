@@ -24,14 +24,17 @@ class TEST {
 
             await conquer1.init();
             await conquer2.init();
+            /*
+            var list = conquer1.Friends.get();
 
+ 
+            log("GOT FRIENDS LIST USER1", list );
+ 
             log('==========================');
-            log( conquer1.User.avatarID, "AND", conquer2.User.avatarID );
-
+ 
             let room1 : RoomInstance = await conquer1.Rooms.getOne( [ conquer2.User.avatarID ] );
             let room2 : RoomInstance = await conquer2.Rooms.getOne( [ conquer1.User.avatarID ] );
-
-
+ 
             room1.onMessage = function( message:any )
             {
                 log("ROOM 1 GOT MESSAGE", message );
@@ -47,7 +50,7 @@ class TEST {
  
             room1.entry( "Hello Im am USER 1")
             room2.entry( "Hello and Im USER 2!")
-
+            */      
 
         }
         catch ( error ) {

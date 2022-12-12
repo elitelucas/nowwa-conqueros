@@ -38,6 +38,8 @@ export const enum ACTIONS
     FRIENDS_CHANGE          = 31,
     FRIENDS_REMOVE          = 32,
 
+    CHAT                    = 33,
+
 }
 
 export const enum STATUS

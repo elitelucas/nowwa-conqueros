@@ -74,7 +74,7 @@ class SocketInstance
 
         function doCallback( vars?: any, isSucess: boolean = true ) 
         {
-            if( action == "AUTH.get" && isSucess && vars ) setUser( vars );
+            if( action == ACTIONS.AUTH_GET && isSucess && vars ) setUser( vars );
  
             if( callback ) callback( vars || isSucess );
         }
@@ -91,6 +91,8 @@ class SocketInstance
 
         function setUser( vars?:any )
         {
+            log("AUTH GET GAVE ME AN USER", vars );
+
             if( !vars ) return;
 
             vars.socketID = self.socketID; 

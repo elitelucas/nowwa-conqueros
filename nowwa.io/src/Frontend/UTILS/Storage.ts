@@ -4,6 +4,7 @@ class Storage
 {
 
     private presetAccount: { username?:string };
+
     public constructor( username?:string ) {
         this.presetAccount = {
             username: username
@@ -32,7 +33,8 @@ class Storage
         return Promise.resolve();
     }
 
-    private generateUsername() {
+    private generateUsername()
+    {
         return "Guest_" + DATE.now() + RANDOM.value(1000);
     }
 

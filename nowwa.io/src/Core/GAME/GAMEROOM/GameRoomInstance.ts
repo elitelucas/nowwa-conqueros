@@ -187,6 +187,8 @@ class GameRoomInstance
             if( action == ACTIONS.ENTRY )
             {
                 ROOM_ENTRIES.set({ roomID:roomID, text:messageData, avatarID:avatarID });
+
+                return broadcast( ACTIONS.CHAT, avatarID, messageData );
             }
 
             /*=========== 
