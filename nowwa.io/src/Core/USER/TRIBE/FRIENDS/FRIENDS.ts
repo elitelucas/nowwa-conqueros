@@ -139,16 +139,20 @@ class FRIENDS
 
     public static async remove( query:any ) : Promise<any>
     {
+
         // remove someone from YOUR FRIENDS
 
-        var membership = await TRIBE_MEMBERS.getOne( { _id:query.membershipID } );
-        await TRIBE_MEMBERS.remove({ _id:query.membershipID });
+        log("REMOVE FRIEND, query", query );
 
+        var membership = await TRIBE_MEMBERS.getOne( { _id:query.membershipID } );
+        log("REMOVE FRIEND, membership", membership );
+        await TRIBE_MEMBERS.remove({ _id:membership._id });
+ 
         // remove yourself from THEIR FRIENDS too 
 
-        let theirFriends = await TRIBE.getOne({ domainID:membership.avatarID, type:"friends" });
+        let tribe = await TRIBE.getOne({ domainID:query.avatarID, type:"friends" });
 
-        await TRIBE_MEMBERS.remove({ tribeID:theirFriends, avatarID:query.avatarID });
+        await TRIBE_MEMBERS.remove({ tribeID:tribe._id, avatarID:query.avatarID });
 
         return Promise.resolve();
     };

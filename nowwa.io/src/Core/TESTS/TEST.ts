@@ -26,11 +26,22 @@ class TEST {
             await conquer2.init();
 
             log(conquer1.User.avatarID,'===========VS=============', conquer2.User.avatarID );
+ 
+            var list2 = await conquer2.Friends.get();
+            var myFriendship = list2[0];
+            myFriendship.remove();
 
-            //var newfriend = await conquer1.Friends.set( "6392e07491358963557a2d92" );
+            log("FRIEND REMOVED ")
+
+            var list = await conquer1.Friends.get();    
+            var list2 = await conquer2.Friends.get();
+            log("GOT FRIENDS LIST USER1", list );
+            log("GOT FRIENDS LIST USER2", list2 );
 
             /*
             //////================= FRIENDS
+
+            //var newfriend = await conquer1.Friends.set( "6392e07491358963557a2d92" );
 
             var list = await conquer1.Friends.get();    
             var list2 = await conquer2.Friends.get();

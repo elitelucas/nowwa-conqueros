@@ -147,9 +147,11 @@ class DATA
     {
         let model = await TABLE_MODEL.get( tableName );
 
-        await model.findOneAndDelete( QUERY.get( query ) );
+        query = QUERY.get( query );
 
-        return Promise.resolve();
+        let result = await model.findOneAndDelete( query.where );
+
+        return Promise.resolve( result );
     };
  
 
