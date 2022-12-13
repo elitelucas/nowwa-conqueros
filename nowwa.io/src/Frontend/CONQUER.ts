@@ -10,6 +10,7 @@ import Storage from "./UTILS/Storage";
 import Friends from "./FRIENDS/Friends";
 import Rooms from "./ROOMS/Rooms";
 import Analytics from "./ANALYTICS/Analytics";
+import Followers from "./FOLLOWERS/Followers";
 
 class CONQUER 
 {
@@ -24,6 +25,7 @@ class CONQUER
     public Friends       : Friends;
     public Rooms         : Rooms;
     public Analytics     : Analytics;
+    public Followers     : Followers
 
     private Socket       : Socket;
  
@@ -38,6 +40,7 @@ class CONQUER
         this.Socket     = new Socket(this);
         this.User       = new User(this);
         this.Analytics  = new Analytics(this);
+        this.Followers  = new Followers( this );
     };
 
     public async init (): Promise<void> 

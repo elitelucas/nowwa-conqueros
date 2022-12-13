@@ -43,6 +43,10 @@ export const enum ACTIONS
     ANALYTICS_SET           = 34,
     ANALYTICS_GET           = 35,
 
+    FOLLOWERS_GET           = 36,
+    FOLLOWERS_SET           = 37,
+    FOLLOWERS_REMOVE        = 38,
+
 }
 
 export const enum STATUS

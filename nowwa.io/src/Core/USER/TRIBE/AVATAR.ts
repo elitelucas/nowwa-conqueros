@@ -69,9 +69,23 @@ class AVATAR
             private     : true
         });
 
+        let followers = await TRIBE.set(
+        {
+            type        : "followers",
+            domainID    : avatarID
+        });
+
         await TRIBE_MEMBERS.set(
         {
             tribeID     : friends._id,
+            avatarID    : avatarID,
+            role        : 0,
+            hidden      : true
+        });
+
+        await TRIBE_MEMBERS.set(
+        {
+            tribeID     : followers._id,
             avatarID    : avatarID,
             role        : 0,
             hidden      : true

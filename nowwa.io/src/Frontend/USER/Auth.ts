@@ -44,6 +44,8 @@ class Auth
 
         this.conquer.User.set( response );
 
+        this.conquer.Analytics.onEntryPoint();
+
         return Promise.resolve(response);
     }
  
