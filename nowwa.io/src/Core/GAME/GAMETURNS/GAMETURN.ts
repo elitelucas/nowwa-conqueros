@@ -1,6 +1,7 @@
 import DATA from "../../DATA/DATA";
 import LOG, { log } from "../../../UTIL/LOG";
 import ARRAY from "../../../UTIL/ARRAY";
+import QUERY from "../../../UTIL/QUERY";
 
 class GAMETURN
 {
@@ -17,18 +18,21 @@ class GAMETURN
 
     public static async get( query:any ) : Promise<any>
     {
-        // needs a flag to not return turnData
+        let avatarID    = query.avatarID;
+        delete query.avatarID;
 
-        //query = { where:{ gameID:1, avatarID:2 }, values:{ } };
+        query.avatarIDs = [ avatarID ];
+        query           = QUERY.get( query );
+        query.values    = [ "avatarIDs", "currentTurn", "finished", "viewedResults", "status", "lastChange" ];
+   
+        let values      = await DATA.get( this.table, query );
 
-        let value = await DATA.get( this.table, query );
-
-        return Promise.resolve( value );
+        return Promise.resolve( values );
     };
 
     public static async getOne( query:any ) : Promise<any>
     {
-        let value = await DATA.getOne( this.table, query );
+        let value = await DATA.getOne( this.table, { _id:query.turnsID } );
 
         return Promise.resolve( value );
     };

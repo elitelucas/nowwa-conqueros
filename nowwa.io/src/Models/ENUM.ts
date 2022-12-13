@@ -48,8 +48,7 @@ export const enum ACTIONS
     FOLLOWERS_REMOVE        = 38,
 
     GAME_GETONE             = 39,
-    GAMETURNS_GET           = 40,
-    GAMETURNS_CHANGE        = 41,
+ 
     GAMEDATA_GET            = 43,
     GAMEDATA_SET            = 44,
 
@@ -62,8 +61,12 @@ export const enum ACTIONS
  
     MATCHMAKING             = 51,
     TOURNAMENT_GET          = 52,
-    TOURNAMENT_ENTRIES_GET  = 53
+    TOURNAMENT_ENTRIES_GET  = 53,
 
+    GAMETURN_SET            = 54,
+    GAMETURN_GET            = 55,
+    GAMETURN_GETONE         = 56,
+    GAMETURN_CHANGE         = 57,
 }
 
 export const enum STATUS

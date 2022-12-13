@@ -50,7 +50,7 @@ class DATA
 
     ================*/
 
-    public static async get( tableName: string, vars: any): Promise<any> 
+    public static async get( tableName: string, vars: any ): Promise<any> 
     {
         vars            = QUERY.get( vars );
 

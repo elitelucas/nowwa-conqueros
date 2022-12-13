@@ -40,7 +40,7 @@ class ARRAY
         return output;  
     };
 
-    public static getFields( from?:any, fields?:[] ) : any
+    public static getFields( from?:any, fields?:any ) : any
     {
         if( !from || !fields ) return from;
 
@@ -55,7 +55,12 @@ class ARRAY
         function doGetFields( from:any )
         {
             var item    : any = {};
-            for( let field in fields ) if( typeof from[ field ] != undefined ) item[ field ] = from[ field ];
+            
+            for( let n=0; n< fields.length; n++ ) 
+            {
+                let field = fields[n];
+                if( typeof from[ field ] != undefined ) item[ field ] = from[ field ];
+            }
             return item;
         }
     }
