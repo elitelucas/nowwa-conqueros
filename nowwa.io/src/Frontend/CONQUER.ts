@@ -11,6 +11,7 @@ import Friends from "./FRIENDS/Friends";
 import Rooms from "./ROOMS/Rooms";
 import Analytics from "./ANALYTICS/Analytics";
 import Followers from "./FOLLOWERS/Followers";
+import Games from "./GAMES/Games";
 
 class CONQUER 
 {
@@ -25,22 +26,24 @@ class CONQUER
     public Friends       : Friends;
     public Rooms         : Rooms;
     public Analytics     : Analytics;
-    public Followers     : Followers
+    public Followers     : Followers;
+    public Games         : Games;
 
     private Socket       : Socket;
  
     public constructor( username?:string )
     {
-        this.Storage    = new Storage(username);
-        this.Friends    = new Friends(this);
-        this.Auth       = new Auth(this);
+        this.Storage    = new Storage( username );
+        this.Friends    = new Friends( this );
+        this.Auth       = new Auth( this );
         this.WebAuth    = new WebAuth();
-        this.Files      = new Files(this);
-        this.Rooms      = new Rooms(this);
-        this.Socket     = new Socket(this);
-        this.User       = new User(this);
+        this.Files      = new Files( this );
+        this.Rooms      = new Rooms( this );
+        this.Socket     = new Socket( this );
+        this.User       = new User( this );
         this.Analytics  = new Analytics(this);
         this.Followers  = new Followers( this );
+        this.Games      = new Games( this );
     };
 
     public async init (): Promise<void> 

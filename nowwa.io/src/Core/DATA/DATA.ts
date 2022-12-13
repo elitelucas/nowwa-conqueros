@@ -67,6 +67,7 @@ class DATA
     public static async getOne( tableName: string, query: any ): Promise<any> 
     {
         query           = QUERY.get( query );
+
         let model       = await TABLE_MODEL.get( tableName );
         let myQuery     = model.findOne( query.where );
         let document    = await myQuery.exec();

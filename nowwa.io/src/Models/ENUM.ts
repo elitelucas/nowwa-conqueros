@@ -47,6 +47,14 @@ export const enum ACTIONS
     FOLLOWERS_SET           = 37,
     FOLLOWERS_REMOVE        = 38,
 
+    GAME_GETONE             = 39,
+    GAMETURNS_GET           = 40,
+    GAMETURNS_CHANGE        = 41,
+    GAMEDATA_GET            = 43,
+    GAMEDATA_SET            = 44,
+    GAMESCORE_SET           = 45,
+    GAMESCORE_GET           = 46
+
 }
 
 export const enum STATUS

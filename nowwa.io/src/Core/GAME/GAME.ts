@@ -10,7 +10,7 @@ import GAMETURN from "./GAMETURNS/GAMETURN";
 
 class GAME
 {
-    private static table: string = "games";
+    private static table : string = "games";
 
     /*=============== 
 
@@ -22,15 +22,21 @@ class GAME
 
     public static async get( query: any ) : Promise<any>
     {
-        let value = await DATA.get( this.table, query );
+        let values = await DATA.get( this.table, query );
 
-        return Promise.resolve( value );
+        return Promise.resolve( values );
     };
 
     public static async getOne( query: any ) : Promise<any>
     {
         let value = await DATA.getOne( this.table, query );
 
+        if( !value ) 
+        {
+            // HACK FOR NOW
+            value = await this.set({ gameKey:query.gameKey });
+        }
+ 
         return Promise.resolve( value );
     };
 
@@ -78,7 +84,7 @@ class GAME
 
         for( let n in items ) 
         {
-            let vars : any = { gameID:items[n].gameID };
+            let vars : any = { gameID:items[n]._id };
    
             await TOURNAMENT.remove( vars );
             await GAMEDATA.remove( vars );

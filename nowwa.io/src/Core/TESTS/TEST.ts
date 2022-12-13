@@ -23,10 +23,18 @@ class TEST {
             let conquer2 = new CONQUER('user002');
 
             await conquer1.init();
-            await conquer2.init();
 
-            log(conquer1.User.avatarID,'===========VS=============', conquer2.User.avatarID );
+
+            let gameInstance = await conquer1.Games.getOne("Bowling");
+
+            log("GAME INSTANCE", gameInstance );
+
+
+           // await conquer2.init();
+           // log(conquer1.User.avatarID,'===========VS=============', conquer2.User.avatarID );
+
  
+            /*
             var list2 = await conquer2.Friends.get();
             var myFriendship = list2[0];
             myFriendship.remove();
@@ -37,6 +45,7 @@ class TEST {
             var list2 = await conquer2.Friends.get();
             log("GOT FRIENDS LIST USER1", list );
             log("GOT FRIENDS LIST USER2", list2 );
+            */
 
             /*
             //////================= FRIENDS

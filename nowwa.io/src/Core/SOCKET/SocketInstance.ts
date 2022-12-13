@@ -13,6 +13,7 @@ import ROOM_ENTRIES from "./ROOM/ROOM_ENTRIES";
 import ARRAY, { extract } from "../../UTIL/ARRAY";
 import ANALYTICS from "../ANALYTICS/ANALYTICS";
 import FOLLOWERS from "../USER/TRIBE/FRIENDS/FOLLOWERS";
+import GAME from "../GAME/GAME";
 class SocketInstance 
 {
     // Todo, destroy instances on disconnect
@@ -53,13 +54,14 @@ class SocketInstance
         if( action == ACTIONS.FILE_GET)                 return map( FILE.get( vars ) );
 
         if( action == ACTIONS.ROOM_GET )                return map( ROOM.get( vars ) );
-        
 
         if( action == ACTIONS.ROOM_ENTRIES_GET )        return map( ROOM_ENTRIES.get( vars ) );  
 
         if( action == ACTIONS.FRIENDS_CHANGE )          return map( FRIENDS.change( vars ) );
         if( action == ACTIONS.FRIENDS_REMOVE )          return map( FRIENDS.remove( vars ) );
         if( action == ACTIONS.ANALYTICS_GET )           return map( ANALYTICS.get( vars ) );
+
+        if( action == ACTIONS.GAME_GETONE )             return map( GAME.getOne( vars ) );
  
         vars.avatarID = this.User.avatarID;
 
@@ -100,8 +102,6 @@ class SocketInstance
 
         function setUser( vars?:any )
         {
-            log("====================== SET USER" );
-
             if( !vars ) return;
 
             vars.socketID = self.socketID; 

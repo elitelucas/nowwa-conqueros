@@ -46,7 +46,7 @@ class ITEM
         type,
         name,
         description,
-        gameID
+        gameKey
     }
 
     ================*/
@@ -67,19 +67,22 @@ class ITEM
         {
             let folder : any = await FOLDER.getOne(
             { 
-                avatarID:new mongoose.Types.ObjectId(query.values.avatarID), 
-                type:"root" 
+                avatarID    : new mongoose.Types.ObjectId(query.values.avatarID), 
+                type        : "root" 
             });
+
             folderID = folder._id;
         }
  
-        let item            = await DATA.set( this.table, {
-            url: query.values.url,
-            avatarID: query.values.avatarID,
-            type: query.values.type,
-            folderID: folderID,
-            fileName: query.values.fileName
+        let item            = await DATA.set( this.table, 
+        {
+            url         : query.values.url,
+            avatarID    : query.values.avatarID,
+            type        : query.values.type,
+            folderID    : folderID,
+            fileName    : query.values.fileName
         } );
+
         let itemID          = item._id; 
  
         if( type == "text" ) await ITEM_TEXT.set(
@@ -91,7 +94,7 @@ class ITEM
         if( type == "game" ) await GAME.set(
         {
             itemID      : itemID,
-            gameID      : values.gameID
+            gameKey     : values.gameKey
         });
   
         let instance    = await INSTANCE.set( 
