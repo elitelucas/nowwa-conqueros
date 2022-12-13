@@ -11,6 +11,12 @@ class Analytics
         this.conquer = conquer;
     };
 
+    public async get( vars:any ) : Promise<any>
+    {
+        let values = await this.conquer.do( ACTIONS.ANALYTICS_GET, vars );
+        return Promise.resolve( values );
+    }
+
     public set( label:string, value?:any )
     {
         this.vars.label = label;

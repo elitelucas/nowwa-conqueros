@@ -40,7 +40,8 @@ export const enum ACTIONS
 
     CHAT                    = 33,
 
-    ANALYTICS_SET           = 34
+    ANALYTICS_SET           = 34,
+    ANALYTICS_GET           = 35,
 
 }
 

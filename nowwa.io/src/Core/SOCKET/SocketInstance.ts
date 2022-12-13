@@ -11,6 +11,7 @@ import FRIENDS from "../USER/TRIBE/FRIENDS/FRIENDS";
 import ROOM from "./ROOM/ROOM";
 import ROOM_ENTRIES from "./ROOM/ROOM_ENTRIES";
 import ARRAY, { extract } from "../../UTIL/ARRAY";
+import ANALYTICS from "../ANALYTICS/ANALYTICS";
 class SocketInstance 
 {
     // Todo, destroy instances on disconnect
@@ -57,8 +58,11 @@ class SocketInstance
 
         if( action == ACTIONS.FRIENDS_CHANGE )          return map( FRIENDS.change( vars ) );
         if( action == ACTIONS.FRIENDS_REMOVE )          return map( FRIENDS.remove( vars ) );
+        if( action == ACTIONS.ANALYTICS_GET )           return map( ANALYTICS.get( vars ) );
 
         vars.avatarID = this.User.avatarID;
+
+        if( action == ACTIONS.ANALYTICS_SET )           return map( ANALYTICS.set( vars ) );
 
         if( action == ACTIONS.ROOM_GETONE )             return map( ROOM.getOne( vars ) );
 
