@@ -3,7 +3,7 @@ import CONQUER from "../CONQUER";
 import COREFILE from '../../Core/CMS/FILE';
 import { ACTIONS } from "../../Models/ENUM";
 
-class File 
+class Files 
 {
     private conquer: CONQUER;
     public constructor(instance:CONQUER) {
@@ -31,4 +31,4 @@ class File
 
 }
 
-export default File;
+export default Files;

@@ -3,12 +3,13 @@ import LOG, { log } from "../UTIL/LOG";
 
 import Auth from "./USER/Auth";
 import User from "./USER/User";
-import File from "./FILE/File"; 
+import Files from "./FILE/Files"; 
 import WebAuth from "./USER/WebAuth";
 import Storage from "./UTILS/Storage";
 
 import Friends from "./FRIENDS/Friends";
 import Rooms from "./ROOMS/Rooms";
+import Analytics from "./ANALYTICS/Analytics";
 
 class CONQUER 
 {
@@ -19,9 +20,10 @@ class CONQUER
     public Auth          : Auth;
     public User          : User;
     public WebAuth       : WebAuth;
-    public File          : File;
+    public Files         : Files;
     public Friends       : Friends;
     public Rooms         : Rooms;
+    public Analytics     : Analytics;
 
     private Socket       : Socket;
  
@@ -31,13 +33,15 @@ class CONQUER
         this.Friends    = new Friends(this);
         this.Auth       = new Auth(this);
         this.WebAuth    = new WebAuth();
-        this.File       = new File(this);
+        this.Files      = new Files(this);
         this.Rooms      = new Rooms(this);
         this.Socket     = new Socket(this);
         this.User       = new User(this);
+        this.Analytics  = new Analytics(this);
     };
 
-    public async init (): Promise<void> {
+    public async init (): Promise<void> 
+    {
         this.initializing = true;
  
         await this.Storage.init();

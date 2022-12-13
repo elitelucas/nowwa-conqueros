@@ -1,9 +1,9 @@
 import DATA from "../DATA/DATA";
 import LOG, { log } from "../../UTIL/LOG";
 
-class TRACKING
+class ANALYTICS
 {
-    private static table: string = "trackings";
+    private static table: string = "analytics";
 
     /*=============== 
 
@@ -75,4 +75,4 @@ class TRACKING
  
 };
 
-export default TRACKING;
+export default ANALYTICS;
