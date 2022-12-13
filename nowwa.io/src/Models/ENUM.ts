@@ -52,8 +52,17 @@ export const enum ACTIONS
     GAMETURNS_CHANGE        = 41,
     GAMEDATA_GET            = 43,
     GAMEDATA_SET            = 44,
-    GAMESCORE_SET           = 45,
-    GAMESCORE_GET           = 46
+
+    GAMESCORE_SET               = 45,
+    GAMESCORE_GET               = 46,
+    GAMESCORE_GETALLTIME        = 47,
+    GAMESCORE_GETTODAY          = 48,
+    GAMESCORE_GETFRIENDSALLTIME = 49,
+    GAMESCORE_GETFRIENDSTODAY   = 50,
+ 
+    MATCHMAKING             = 51,
+    TOURNAMENT_GET          = 52,
+    TOURNAMENT_ENTRIES_GET  = 53
 
 }
 

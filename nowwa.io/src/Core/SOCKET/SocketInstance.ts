@@ -14,6 +14,7 @@ import ARRAY, { extract } from "../../UTIL/ARRAY";
 import ANALYTICS from "../ANALYTICS/ANALYTICS";
 import FOLLOWERS from "../USER/TRIBE/FRIENDS/FOLLOWERS";
 import GAME from "../GAME/GAME";
+import GAMESCORE from "../GAME/GAMESCORE";
 class SocketInstance 
 {
     // Todo, destroy instances on disconnect
@@ -62,8 +63,15 @@ class SocketInstance
         if( action == ACTIONS.ANALYTICS_GET )           return map( ANALYTICS.get( vars ) );
 
         if( action == ACTIONS.GAME_GETONE )             return map( GAME.getOne( vars ) );
+
+        if( action == ACTIONS.GAMESCORE_GETALLTIME )    return map( GAMESCORE.getAllTime( vars ) );
+        if( action == ACTIONS.GAMESCORE_GETTODAY )      return map( GAMESCORE.getToday( vars ) );
  
         vars.avatarID = this.User.avatarID;
+
+        if( action == ACTIONS.GAMESCORE_SET )                   return map( GAMESCORE.set( vars ) );
+        if( action == ACTIONS.GAMESCORE_GETFRIENDSALLTIME )     return map( GAMESCORE.getFriendsAllTime( vars ) );
+        if( action == ACTIONS.GAMESCORE_GETFRIENDSTODAY )       return map( GAMESCORE.getFriendsToday( vars ) );
 
         if( action == ACTIONS.ANALYTICS_SET )           return map( ANALYTICS.set( vars ) );
 

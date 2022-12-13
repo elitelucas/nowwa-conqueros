@@ -2,6 +2,9 @@ import DATA from "../DATA/DATA";
 import LOG, { log } from "../../UTIL/LOG";
 import TOURNAMENT_ENTRIES from "./TOURNAMENTS/TOURNAMENT_ENTRIES";
 import FRIENDS from "../USER/TRIBE/FRIENDS/FRIENDS";
+import QUERY from "../../UTIL/QUERY";
+import AVATAR from "../USER/TRIBE/AVATAR";
+import ARRAY from "../../UTIL/ARRAY";
 
 class GAMESCORE
 {
@@ -43,48 +46,96 @@ class GAMESCORE
 
     ================*/
 
-    public static async getAllTime() : Promise<any>
+    public static async getAllTime( query:any ) : Promise<any>
     {
-        // Get max 100 entries that have gameID, sorted down by maxScore
+        query       = QUERY.get( query );
+        query.limit = 100;
 
-        let query : any = {};
-        let value = await this.get( query );
+        // query.where ? maxScore > highest values, sorted down
+        // TODO, get 100 results based on maxScore
 
-        return Promise.resolve( value );
+        let values  = await this.get( query );
+
+        values      = ARRAY.sort( values, "maxScore" );
+
+        values.reverse();
+
+        return AVATAR.fill( values );
     };
 
-    public static async getToday() : Promise<any>
+    public static async getToday( query:any ) : Promise<any>
     {
-        // Get max 100 entries that have gameID, sorted down by score, when lastEdit happened in the last day
+        query       = QUERY.get( query );
+        query.limit = 100;
 
-        let query : any = {};
-        let value = await this.get( query );
+        // query.where ?  lastChange < DATE.now() less than one day?
+        // TODO, get 100 results when lastChange happened in the last day, sorted by score
 
-        return Promise.resolve( value );
+        let values  = await this.get( query );
+
+        values      = ARRAY.sort( values, "score" );
+
+        values.reverse();
+
+        return AVATAR.fill( values );
     };
 
-    public static async getFriendsAllTime( avatarID:any ) : Promise<any>
+    public static async getFriendsAllTime( query:any ) : Promise<any>
     { 
-        let friends     = FRIENDS.get( { avatarID:avatarID } );
-        
-        // make list of max 100 friends including avatarID that play this game
-        // Get max 100 entries that have gameID, sorted down by maxScore
+        let friends : any       = FRIENDS.get({ avatarID:query.avatarID });
+        let values  : any       = [];
 
-        let query : any = {};
-        let value       = await this.get( query );
+        for( let n in friends )
+        {
+            let friend      = friends[n];
+            let scoreObject = await this.getOne({ gameID:query.gameID, avatarID:friend.avatarID });
 
-        return Promise.resolve( value );
+            if( scoreObject )
+            {
+                values.push(
+                {
+                    avatarID    : friend.avatarID,
+                    userPhoto   : friend.userPhoto,
+                    firstName   : friend.firstName,
+                    score       : scoreObject.score,
+                    maxScore    : scoreObject.maxScore
+                });
+            }
+        }
+ 
+        values      = ARRAY.sort( values, "maxScore" );
+
+        values.reverse();
+
+        return Promise.resolve( values );
     };
 
-    public static async getFriendsToday( avatarID:any ) : Promise<any>
+    public static async getFriendsToday( query:any ) : Promise<any>
     {
-        let friends     = FRIENDS.get( { avatarID:avatarID } );
+        let friends : any       = FRIENDS.get({ avatarID:query.avatarID });
+        let values  : any       = [];
 
-        // make list of max 100 friends including avatarID that play this game
-        // Get max 100 entries that have gameID, sorted down by score, when lastEdit happened in the last day
+        for( let n in friends )
+        {
+            let friend      = friends[n];
+            let scoreObject = await this.getOne({ gameID:query.gameID, avatarID:friend.avatarID });
 
-        let query : any = {};
-        let values      = await this.get( query );
+            if( scoreObject )
+            {
+                values.push(
+                {
+                    avatarID    : friend.avatarID,
+                    userPhoto   : friend.userPhoto,
+                    firstName   : friend.firstName,
+                    score       : scoreObject.score,
+                    maxScore    : scoreObject.maxScore
+                });
+            }
+        }
+ 
+        values      = ARRAY.sort( values, "score" );
+
+        values.reverse();
 
         return Promise.resolve( values );
     };
@@ -109,7 +160,7 @@ class GAMESCORE
 
     public static async set( query:any ) : Promise<any>
     {
-        let entry   = await this.getSet( query );
+        let entry   = await this.getSet({ gameID:query.gameID, avatarID:query.avatarID });
 
         if( query.score > entry.maxScore ) entry.maxScore = query.score;
  

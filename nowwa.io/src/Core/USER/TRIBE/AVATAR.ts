@@ -34,6 +34,24 @@ class AVATAR
         return Promise.resolve(avatar);
     };
 
+    public static async fill( array:any ): Promise<any> 
+    {
+        for( var n in array )
+        {
+            let item = array[n];
+
+            if( item.avatarID )
+            {
+                let avatarData = await this.get( { _id:item.avatarID });
+
+                item.firstname = avatarData.firstName;
+                item.userPhoto  = avatarData.userPhoto;
+            }
+        }
+ 
+        return Promise.resolve( array );
+    };
+
 
     /*=============== 
 
