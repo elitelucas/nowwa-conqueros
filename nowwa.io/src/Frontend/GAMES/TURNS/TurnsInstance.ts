@@ -46,7 +46,7 @@ class TurnsInstance
 
     public async set( turnData:any, finishTurn?:boolean, finishGame?:boolean, viewResults?:boolean ) : Promise<any>
     {
-        return this.do( { turnData:turnData, finishTurn:finishTurn, finishGame:finishGame, viewResults:viewResults } );
+        return this.do({ turnData:turnData, finishTurn:finishTurn, finishGame:finishGame, viewResults:viewResults });
     }
 
     public async finishGame() : Promise<any>
