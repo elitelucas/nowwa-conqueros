@@ -15,6 +15,10 @@ class ShopTabInstance
         for( let n in data.items )
         {
             let shopItem = new ShopItem( conquer, data.items[n] );
+
+            this.data[ shopItem.key ] = shopItem;
+            
+            this.pool.push( shopItem );
         }
 
     }

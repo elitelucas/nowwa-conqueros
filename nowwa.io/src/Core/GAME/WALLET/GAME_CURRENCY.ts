@@ -55,7 +55,7 @@ class GAME_CURRENCY
     {
         let entry = await this.get( { _id:query._id } );
 
-        entry.value += query.increase;
+        entry.value += query.increase || 0;
 
         let value = await DATA.change( this.table, { where:{ _id:query._id }, values:{ value:entry.value } } );
 

@@ -74,11 +74,15 @@ class SocketInstance
 
         if( action == ACTIONS.GAMETURN_GETONE )         return map( GAMETURN.getOne( vars ) );
         if( action == ACTIONS.GAME_SHOPTAB_GET )        return map( GAME_SHOPTAB.get( vars ) );
+
+        if( action == ACTIONS.GAME_PLAYERINVENTORY_CHANGE )     return map( GAME_PLAYERINVENTORY.change( vars ) );
+        if( action == ACTIONS.GAME_PLAYERINVENTORY_REMOVE )     return map( GAME_PLAYERINVENTORY.remove( vars ) );
+        if( action == ACTIONS.GAME_CURRENCY_CHANGE )            return map( GAME_CURRENCY.change( vars ) );
  
         vars.avatarID = this.User.avatarID;
 
-        if( action == ACTIONS.GAME_CURRENCY_GET )        return map( GAME_CURRENCY.get( vars ) );
-        if( action == ACTIONS.GAME_CURRENCY_GETONE )     return map( GAME_CURRENCY.getOne( vars ) );
+        if( action == ACTIONS.GAME_CURRENCY_GET )               return map( GAME_CURRENCY.get( vars ) );
+        if( action == ACTIONS.GAME_CURRENCY_GETONE )            return map( GAME_CURRENCY.getOne( vars ) );
 
         if( action == ACTIONS.GAME_PLAYERINVENTORY_GET )        return map( GAME_PLAYERINVENTORY.get( vars ) );
 

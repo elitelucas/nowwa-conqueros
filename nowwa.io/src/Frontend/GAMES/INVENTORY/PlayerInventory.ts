@@ -6,12 +6,12 @@ import ARRAY from "../../../UTIL/ARRAY";
 
 class PlayerInventory
 {
-    private conquer : CONQUER;
-    private gameID  : any;
+    private conquer     : CONQUER;
+    private gameID      : any;
 
-    public pool : any;
-    public tabs : any;
-    public selected : any;
+    public pool         : any;
+    public tabs         : any;
+    public selected     : any;
 
     constructor( conquer:CONQUER, gameID:any )
     {
