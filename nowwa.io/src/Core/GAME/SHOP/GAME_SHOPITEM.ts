@@ -47,7 +47,8 @@ class GAME_SHOPITEM
         key,
         name (title),
         amount : 0,
-        price
+        price,
+        ad,
         metadata
     }
 
