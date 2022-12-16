@@ -38,21 +38,14 @@ class GAME_PLAYERINVENTORY
             }
 
             ARRAY.extract( inventoryItem, shopItem );
-            delete shopItem.key;
+            delete shopItem.shopItemKey;
 
             output.push( shopItem );
         }
  
         return Promise.resolve( output );
     };
-
-    public static async getOne( query: any ) : Promise<any>
-    {
-        let value = await DATA.getOne( this.table, query );
-
-        return Promise.resolve( value );
-    };
-
+ 
  
     /*=============== 
 

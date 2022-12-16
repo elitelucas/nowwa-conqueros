@@ -5,6 +5,7 @@ import CONQUER from "../CONQUER";
 import LOG, { log } from "../../UTIL/LOG";
 import Score from "./Score";
 import Turns from "./TURNS/Turns";
+import Shop from "./SHOP/Shop";
 
 class GameInstance
 {
@@ -13,6 +14,7 @@ class GameInstance
     public gameKey      : any;
     private Score       : Score
     private Turns       : Turns;
+    public Shop         : Shop;
  
     constructor( instance:CONQUER, vars:any )
     {
@@ -22,6 +24,8 @@ class GameInstance
 
         this.Score          = new Score( this.conquer, this.gameID );
         this.Turns          = new Turns( this.conquer, this.gameID );
+
+        this.Shop           = new Shop( this.conquer, this.gameID );
  
  
     };

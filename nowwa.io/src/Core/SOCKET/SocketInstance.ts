@@ -16,6 +16,9 @@ import FOLLOWERS from "../USER/TRIBE/FRIENDS/FOLLOWERS";
 import GAME from "../GAME/GAME";
 import GAMESCORE from "../GAME/GAMESCORE";
 import GAMETURN from "../GAME/GAMETURNS/GAMETURN";
+import GAME_SHOPITEM from "../GAME/SHOP/GAME_SHOPITEM";
+import GAME_SHOPTAB from "../GAME/SHOP/GAME_SHOPTAB";
+import GAME_PLAYERINVENTORY from "../GAME/SHOP/GAME_PLAYERINVENTORY";
 class SocketInstance 
 {
     // Todo, destroy instances on disconnect
@@ -69,8 +72,11 @@ class SocketInstance
         if( action == ACTIONS.GAMESCORE_GETTODAY )      return map( GAMESCORE.getToday( vars ) );
 
         if( action == ACTIONS.GAMETURN_GETONE )         return map( GAMETURN.getOne( vars ) );
+        if( action == ACTIONS.GAME_SHOPTAB_GET )        return map( GAME_SHOPTAB.get( vars ) );
  
         vars.avatarID = this.User.avatarID;
+
+        if( action == ACTIONS.GAME_PLAYERINVENTORY_GET )        return map( GAME_PLAYERINVENTORY.get( vars ) );
 
         if( action == ACTIONS.GAMESCORE_SET )                   return map( GAMESCORE.set( vars ) );
         if( action == ACTIONS.GAMESCORE_GETFRIENDSALLTIME )     return map( GAMESCORE.getFriendsAllTime( vars ) );

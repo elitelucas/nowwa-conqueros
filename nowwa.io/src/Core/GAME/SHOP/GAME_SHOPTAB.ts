@@ -14,21 +14,25 @@ class GAME_SHOPTAB
     GET  
 
     {
-        gameID,
-        avatarID
+        gameID 
     }
     
 
     ================*/
 
-    public static async get( query: any ) : Promise<any>
+    public static async get( query:any ) : Promise<any>
     {
-        let results : any   = await DATA.get( this.table, query );
-        let vars : any      = {};
+        let tabs : any          = await DATA.get( this.table, { gameID:query.gameID });
+        let output : any        = {};
 
-        for( var n in results ) vars[ results[n].name ] = results[n].value;
+        for( let n in tabs )
+        {
+            let tab             = tabs[n];
+            output[ tab.key ]   = tab;
+            tab.items           = await GAME_SHOPITEM.get({ gameID:query.gameID, tabKey:tab.key });
+        }
  
-        return Promise.resolve( vars );
+        return Promise.resolve( output );
     };
 
     public static async getOne( query: any ) : Promise<any>

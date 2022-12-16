@@ -67,6 +67,10 @@ export const enum ACTIONS
     GAMETURN_GET            = 55,
     GAMETURN_GETONE         = 56,
     GAMETURN_CHANGE         = 57,
+
+    GAME_SHOPTAB_GET            = 58,
+    GAME_SHOPITEM_GET           = 59,
+    GAME_PLAYERINVENTORY_GET    = 60
 }
 
 export const enum STATUS
