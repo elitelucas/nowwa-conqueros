@@ -1,4 +1,6 @@
+import { ACTIONS } from "../../../Models/ENUM";
 import CONQUER from "../../CONQUER";
+import GameInstance from "../GameInstance";
 
 class ShopItem
 {
@@ -27,8 +29,7 @@ class ShopItem
         this.metadata   = data.metadata;
         this.id         = data._id;
     }
-
-
+ 
 }
 
 export default ShopItem;

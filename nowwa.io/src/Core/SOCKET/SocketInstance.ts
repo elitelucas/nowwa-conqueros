@@ -85,7 +85,8 @@ class SocketInstance
         if( action == ACTIONS.GAME_CURRENCY_GETONE )            return map( GAME_CURRENCY.getOne( vars ) );
 
         if( action == ACTIONS.GAME_PLAYERINVENTORY_GET )        return map( GAME_PLAYERINVENTORY.get( vars ) );
-
+        if( action == ACTIONS.GAME_PLAYERINVENTORY_BUY )        return map( GAME_PLAYERINVENTORY.buy( vars ) );
+ 
         if( action == ACTIONS.GAMESCORE_SET )                   return map( GAMESCORE.set( vars ) );
         if( action == ACTIONS.GAMESCORE_GETFRIENDSALLTIME )     return map( GAMESCORE.getFriendsAllTime( vars ) );
         if( action == ACTIONS.GAMESCORE_GETFRIENDSTODAY )       return map( GAMESCORE.getFriendsToday( vars ) );

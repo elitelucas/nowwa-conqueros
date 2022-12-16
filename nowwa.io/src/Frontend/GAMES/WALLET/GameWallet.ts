@@ -50,7 +50,12 @@ class GameWallet
     public async getCurrency( currencyName:any ) : Promise<any>
     {
         let currencyInstance : GameCurrency = this.currencies[ currencyName ];
-        if( currencyInstance ) return Promise.resolve( currencyInstance );
+
+        if( currencyInstance ) 
+        {
+            await currencyInstance.get();
+            return Promise.resolve( currencyInstance );
+        }
 
         let currencyData = await this.conquer.do( ACTIONS.GAME_CURRENCY_GETONE, { gameID:this.vars.gameID, name:currencyName } );
  

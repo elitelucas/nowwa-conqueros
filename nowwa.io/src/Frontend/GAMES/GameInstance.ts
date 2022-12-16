@@ -31,7 +31,7 @@ class GameInstance
 
         this.Shop           = new Shop( this.conquer, this.gameID );
         this.Wallet         = new GameWallet( this.conquer, this.gameID );
-        this.Inventory      = new PlayerInventory( this.conquer, this.gameID );
+        this.Inventory      = new PlayerInventory( this.conquer, this, this.gameID );
  
     };
 

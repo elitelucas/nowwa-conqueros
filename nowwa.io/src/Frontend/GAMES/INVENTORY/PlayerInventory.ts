@@ -3,6 +3,7 @@ import CONQUER from "../../CONQUER";
 import { ACTIONS } from "../../../Models/ENUM";
 import InventoryItem from "./InventoryItem";
 import ARRAY from "../../../UTIL/ARRAY";
+import GameInstance from "../GameInstance";
 
 class PlayerInventory
 {
@@ -13,10 +14,13 @@ class PlayerInventory
     public tabs         : any;
     public selected     : any;
 
-    constructor( conquer:CONQUER, gameID:any )
+    private gameInstance : GameInstance;
+
+    constructor( conquer:CONQUER, gameInstance:GameInstance, gameID:any )
     {
-        this.conquer = conquer;
-        this.gameID = gameID; 
+        this.conquer        = conquer;
+        this.gameInstance   = gameInstance;
+        this.gameID         = gameID; 
 
         this.get();
     }
@@ -31,19 +35,23 @@ class PlayerInventory
         this.tabs = {};
         this.selected = {};
 
-        for( let n in data )
-        {
-            let item = new InventoryItem( this.conquer, this, data[n] );
-
-            this.pool.push( item );
-
-            if( !this.tabs[ item.tabKey ] ) this.tabs[ item.tabKey ] = [];
-            this.tabs[ item.tabKey ].push( item );
-
-            if( item.selected ) this.selected[ item.tabKey ] = item;
-        }
-
+        for( let n in data ) this.push( data[n] );
+ 
         return Promise.resolve( this.pool );
+    }
+
+    private push( itemData:any )
+    {
+        let item = new InventoryItem( this.conquer, this, itemData );
+
+        this.pool.push( item );
+
+        if( !this.tabs[ item.tabKey ] ) this.tabs[ item.tabKey ] = [];
+        this.tabs[ item.tabKey ].push( item );
+
+        if( item.selected ) this.selected[ item.tabKey ] = item;
+
+        return item;
     }
 
     public remove( inventoryItem:InventoryItem )
@@ -65,6 +73,17 @@ class PlayerInventory
     public unset( inventoryItem:InventoryItem )
     {
         if( this.selected[ inventoryItem.tabKey ] == inventoryItem ) delete this.selected[ inventoryItem.tabKey ];
+    }
+ 
+    public async buy( shopItemKey:any ) : Promise<any>
+    {
+        let itemData = await this.conquer.do( ACTIONS.GAME_PLAYERINVENTORY_BUY, { gameID:this.gameID, shopItemKey:shopItemKey });
+
+        if( !itemData ) return Promise.resolve( null );
+
+        this.gameInstance.Wallet.getCurrency( this.gameInstance.Shop.data[ shopItemKey ].currency );
+
+        return Promise.resolve( this.push( itemData ) );
     }
 }
 

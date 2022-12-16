@@ -2,6 +2,7 @@ import DATA from "../../DATA/DATA";
 import LOG, { log } from "../../../UTIL/LOG";
 import GAME_SHOPITEM from "./GAME_SHOPITEM";
 import ARRAY from "../../../UTIL/ARRAY";
+import GAME_CURRENCY from "../WALLET/GAME_CURRENCY";
 
 class GAME_PLAYERINVENTORY
 {
@@ -65,6 +66,21 @@ class GAME_PLAYERINVENTORY
         let entry = await DATA.set( this.table, query );
 
         return Promise.resolve( entry );
+    };
+
+    public static async buy( query:any ) : Promise<any>
+    {
+        let shopItem = await GAME_SHOPITEM.getOne({ gameID:query.gameID, key:query.shopItemKey });
+
+        let currency = await GAME_CURRENCY.getOne({ name:shopItem.currency, gameID:query.gameID, avatarID:query.avatarID });
+
+        if( shopItem.price > currency.value ) return Promise.resolve( null );
+
+        GAME_CURRENCY.change( { where:{ _id:currency.id }, values:{ increase:-shopItem.price }});
+
+        let inventoryItem = await this.set( { avatarID:query.avatarID, shopItemKey:query.key, gameID:query.gameID });
+ 
+        return Promise.resolve( inventoryItem );
     };
 
 
