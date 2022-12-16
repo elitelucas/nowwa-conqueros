@@ -6,6 +6,8 @@ import LOG, { log } from "../../UTIL/LOG";
 import Score from "./Score";
 import Turns from "./TURNS/Turns";
 import Shop from "./SHOP/Shop";
+import GameWallet from "./WALLET/GameWallet";
+import PlayerInventory from "./INVENTORY/PlayerInventory";
 
 class GameInstance
 {
@@ -15,6 +17,8 @@ class GameInstance
     private Score       : Score
     private Turns       : Turns;
     public Shop         : Shop;
+    public Wallet       : GameWallet;
+    public Inventory    : PlayerInventory;
  
     constructor( instance:CONQUER, vars:any )
     {
@@ -26,7 +30,8 @@ class GameInstance
         this.Turns          = new Turns( this.conquer, this.gameID );
 
         this.Shop           = new Shop( this.conquer, this.gameID );
- 
+        this.Wallet         = new GameWallet( this.conquer, this.gameID );
+        this.Inventory      = new PlayerInventory( this.conquer, this.gameID );
  
     };
 

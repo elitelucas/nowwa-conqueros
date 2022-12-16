@@ -2,7 +2,7 @@ import DATA from "../../DATA/DATA";
 
 class GAME_CURRENCY
 {
-    private static table: string = "game_currencies";
+    private static table : string = "game_currencies";
 
     /*=============== 
 
@@ -23,6 +23,8 @@ class GAME_CURRENCY
     {
         let value = await DATA.getOne( this.table, query );
 
+        if( !value ) value = await DATA.set( this.table, { gameID:query.gameID, name:query.name, value:0, avatarID:query.avatarID } );
+ 
         return Promise.resolve( value );
     };
 
@@ -51,7 +53,11 @@ class GAME_CURRENCY
 
     public static async change( query:any ) : Promise<any>
     {
-        let value = await DATA.change( this.table, query );
+        let entry = await this.get( { _id:query._id } );
+
+        entry.value += query.increase;
+
+        let value = await DATA.change( this.table, { where:{ _id:query._id }, values:{ value:entry.value } } );
 
         return Promise.resolve( value );
     };
