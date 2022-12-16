@@ -150,9 +150,9 @@ class DATA
 
         query = QUERY.get( query );
 
-        let result = await model.findOneAndDelete( query.where );
+        await model.deleteMany( query.where );
 
-        return Promise.resolve( result );
+        return Promise.resolve();
     };
  
 

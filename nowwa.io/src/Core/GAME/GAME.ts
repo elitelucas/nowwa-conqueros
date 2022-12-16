@@ -7,6 +7,8 @@ import GAMESCORE from "./GAMESCORE";
 import GAMEROOM from "./GAMEROOM/GAMEROOM";
 import MATCHMAKING from "./MATCHMAKING";
 import GAMETURN from "./GAMETURNS/GAMETURN";
+import GAME_SHOPITEM from "./SHOP/GAME_SHOPITEM";
+import GAME_SHOPTAB from "./SHOP/GAME_SHOPTAB";
 
 class GAME
 {
@@ -93,6 +95,7 @@ class GAME
             await GAMEROOM.remove( vars );
             await MATCHMAKING.remove( vars );
             await GAMETURN.remove( vars );
+            await GAME_SHOPTAB.remove( vars );
         }
  
         let removed = await DATA.remove( this.table, query );
