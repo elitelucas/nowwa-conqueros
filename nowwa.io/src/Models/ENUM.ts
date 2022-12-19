@@ -82,7 +82,6 @@ export const enum ACTIONS
 
     GAME_DAILYREWARDS_GET   = 67,
     GAME_DAILYREWARDS_SET   = 68,
-
 }
 
 export const enum STATUS
