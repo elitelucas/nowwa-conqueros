@@ -53,14 +53,19 @@ class GAME_CURRENCY
 
     public static async change( query:any ) : Promise<any>
     {
-        let entry = await this.getOne( { _id:query._id } );
+        return this.increase( { _id:query._id }, query.increase );
+    };
 
-        entry.value += query.increase || 0;
+    public static async increase( query:any, amount?:number )
+    {
+        let entry = await this.getOne( query );
+
+        entry.value += amount || 0;
 
         let value = await DATA.change( this.table, { where:{ _id:query._id }, values:{ value:entry.value } } );
 
         return Promise.resolve( value );
-    };
+    }
 
     /*=============== 
 

@@ -8,6 +8,7 @@ import Turns from "./TURNS/Turns";
 import Shop from "./SHOP/Shop";
 import GameWallet from "./WALLET/GameWallet";
 import PlayerInventory from "./INVENTORY/PlayerInventory";
+import DailyRewards from "./DailyRewards";
 
 class GameInstance
 {
@@ -19,6 +20,7 @@ class GameInstance
     public Shop         : Shop;
     public Wallet       : GameWallet;
     public Inventory    : PlayerInventory;
+    public DailyRewards : DailyRewards;
  
     constructor( instance:CONQUER, vars:any )
     {
@@ -32,6 +34,8 @@ class GameInstance
         this.Shop           = new Shop( this.conquer, this.gameID );
         this.Wallet         = new GameWallet( this.conquer, this.gameID );
         this.Inventory      = new PlayerInventory( this.conquer, this, this.gameID );
+
+        this.DailyRewards   = new DailyRewards( this.conquer, this.gameID );
  
     };
 
