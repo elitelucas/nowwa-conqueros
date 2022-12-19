@@ -82,6 +82,19 @@ export const enum ACTIONS
 
     GAME_DAILYREWARDS_GET   = 67,
     GAME_DAILYREWARDS_SET   = 68,
+
+    INSTANCE_GETONE         = 69,
+    INSTANCE_GET            = 70,
+
+    TAG_ASSOCIATIONS_GET    = 71,
+    TAG_ASSOCIATIONS_SET    = 72,
+
+    AWESOME_GETONE          = 73,
+    AWESOME_SET             = 74,
+
+    STATS_GETONE            = 75
+
+
 }
 
 export const enum STATUS

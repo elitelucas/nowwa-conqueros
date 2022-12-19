@@ -21,6 +21,10 @@ import GAME_SHOPTAB from "../GAME/SHOP/GAME_SHOPTAB";
 import GAME_PLAYERINVENTORY from "../GAME/SHOP/GAME_PLAYERINVENTORY";
 import GAME_CURRENCY from "../GAME/WALLET/GAME_CURRENCY";
 import DAILYREWARDS from "../GAME/DAILYREWARDS/DAILYREWARDS";
+import STATS from "../ITEM/INSTANCE/STATS";
+import TAG from "../ITEM/INSTANCE/TAG/TAG";
+import AWESOME from "../ITEM/INSTANCE/AWESOME";
+import INSTANCE from "../ITEM/INSTANCE/INSTANCE";
 class SocketInstance 
 {
     // Todo, destroy instances on disconnect
@@ -55,32 +59,40 @@ class SocketInstance
 
         // Register and login
         
-        if( action == ACTIONS.AUTH_SET )                return map( AUTH.set( vars ) );
-        if( action == ACTIONS.AUTH_GET )                return map( AUTH.get( vars ) );
+        if( action == ACTIONS.AUTH_SET )                        return map( AUTH.set( vars ) );
+        if( action == ACTIONS.AUTH_GET )                        return map( AUTH.get( vars ) );
 
-        if( action == ACTIONS.FILE_GET)                 return map( FILE.get( vars ) );
+        if( action == ACTIONS.FILE_GET)                         return map( FILE.get( vars ) );
 
-        if( action == ACTIONS.ROOM_GET )                return map( ROOM.get( vars ) );
+        if( action == ACTIONS.ROOM_GET )                        return map( ROOM.get( vars ) );
 
-        if( action == ACTIONS.ROOM_ENTRIES_GET )        return map( ROOM_ENTRIES.get( vars ) );  
+        if( action == ACTIONS.ROOM_ENTRIES_GET )                return map( ROOM_ENTRIES.get( vars ) );  
 
-        if( action == ACTIONS.FRIENDS_CHANGE )          return map( FRIENDS.change( vars ) );
-        if( action == ACTIONS.FRIENDS_REMOVE )          return map( FRIENDS.remove( vars ) );
-        if( action == ACTIONS.ANALYTICS_GET )           return map( ANALYTICS.get( vars ) );
+        if( action == ACTIONS.FRIENDS_CHANGE )                  return map( FRIENDS.change( vars ) );
+        if( action == ACTIONS.FRIENDS_REMOVE )                  return map( FRIENDS.remove( vars ) );
+        if( action == ACTIONS.ANALYTICS_GET )                   return map( ANALYTICS.get( vars ) );
 
-        if( action == ACTIONS.GAME_GETONE )             return map( GAME.getOne( vars ) );
+        if( action == ACTIONS.GAME_GETONE )                     return map( GAME.getOne( vars ) );
 
-        if( action == ACTIONS.GAMESCORE_GETALLTIME )    return map( GAMESCORE.getAllTime( vars ) );
-        if( action == ACTIONS.GAMESCORE_GETTODAY )      return map( GAMESCORE.getToday( vars ) );
+        if( action == ACTIONS.GAMESCORE_GETALLTIME )            return map( GAMESCORE.getAllTime( vars ) );
+        if( action == ACTIONS.GAMESCORE_GETTODAY )              return map( GAMESCORE.getToday( vars ) );
 
-        if( action == ACTIONS.GAMETURN_GETONE )         return map( GAMETURN.getOne( vars ) );
-        if( action == ACTIONS.GAME_SHOPTAB_GET )        return map( GAME_SHOPTAB.get( vars ) );
+        if( action == ACTIONS.GAMETURN_GETONE )                 return map( GAMETURN.getOne( vars ) );
+        if( action == ACTIONS.GAME_SHOPTAB_GET )                return map( GAME_SHOPTAB.get( vars ) );
 
         if( action == ACTIONS.GAME_PLAYERINVENTORY_CHANGE )     return map( GAME_PLAYERINVENTORY.change( vars ) );
         if( action == ACTIONS.GAME_PLAYERINVENTORY_REMOVE )     return map( GAME_PLAYERINVENTORY.remove( vars ) );
         if( action == ACTIONS.GAME_CURRENCY_CHANGE )            return map( GAME_CURRENCY.change( vars ) );
- 
+
+        if( action == ACTIONS.STATS_GETONE )                    return map( STATS.getOne( vars ) );
+        if( action == ACTIONS.TAG_ASSOCIATIONS_GET )            return map( TAG.get( vars ) );
+        if( action == ACTIONS.AWESOME_GETONE )                  return map( AWESOME.getOne( vars ) );
+        if( action == ACTIONS.INSTANCE_GETONE )                 return map( INSTANCE.getOne( vars ) );
+     
         vars.avatarID = this.User.avatarID;
+
+        if( action == ACTIONS.AWESOME_SET )                     return map( AWESOME.set( vars ) );
+        if( action == ACTIONS.TAG_ASSOCIATIONS_SET )            return map( TAG.set( vars ) );
 
         if( action == ACTIONS.GAME_DAILYREWARDS_GET )           return map( DAILYREWARDS.get( vars ) );
         if( action == ACTIONS.GAME_DAILYREWARDS_SET )           return map( DAILYREWARDS.set( vars ) );
@@ -95,25 +107,25 @@ class SocketInstance
         if( action == ACTIONS.GAMESCORE_GETFRIENDSALLTIME )     return map( GAMESCORE.getFriendsAllTime( vars ) );
         if( action == ACTIONS.GAMESCORE_GETFRIENDSTODAY )       return map( GAMESCORE.getFriendsToday( vars ) );
 
-        if( action == ACTIONS.GAMETURN_GET )            return map( GAMETURN.get( vars ) );
-        if( action == ACTIONS.GAMETURN_SET )            return map( GAMETURN.set( vars ) );
-        if( action == ACTIONS.GAMETURN_CHANGE )         return map( GAMETURN.change( vars ) );
+        if( action == ACTIONS.GAMETURN_GET )                    return map( GAMETURN.get( vars ) );
+        if( action == ACTIONS.GAMETURN_SET )                    return map( GAMETURN.set( vars ) );
+        if( action == ACTIONS.GAMETURN_CHANGE )                 return map( GAMETURN.change( vars ) );
 
-        if( action == ACTIONS.ANALYTICS_SET )           return map( ANALYTICS.set( vars ) );
+        if( action == ACTIONS.ANALYTICS_SET )                   return map( ANALYTICS.set( vars ) );
 
-        if( action == ACTIONS.FOLLOWERS_SET )           return map( FOLLOWERS.set( vars ) );
-        if( action == ACTIONS.FOLLOWERS_GET )           return map( FOLLOWERS.get( vars ) );
+        if( action == ACTIONS.FOLLOWERS_SET )                   return map( FOLLOWERS.set( vars ) );
+        if( action == ACTIONS.FOLLOWERS_GET )                   return map( FOLLOWERS.get( vars ) );
 
-        if( action == ACTIONS.ROOM_GETONE )             return map( ROOM.getOne( vars ) );
+        if( action == ACTIONS.ROOM_GETONE )                     return map( ROOM.getOne( vars ) );
 
-        if( action == ACTIONS.ROOM_ENTRIES_SET )        return map( ROOM_ENTRIES.set( vars ) ); 
-        if( action == ACTIONS.ROOM_ENTRIES_CHANGE )     return map( ROOM_ENTRIES.change( vars ) );  
-        if( action == ACTIONS.ROOM_ENTRIES_REMOVE )     return map( ROOM_ENTRIES.remove( vars ) );  
+        if( action == ACTIONS.ROOM_ENTRIES_SET )                return map( ROOM_ENTRIES.set( vars ) ); 
+        if( action == ACTIONS.ROOM_ENTRIES_CHANGE )             return map( ROOM_ENTRIES.change( vars ) );  
+        if( action == ACTIONS.ROOM_ENTRIES_REMOVE )             return map( ROOM_ENTRIES.remove( vars ) );  
  
-        if( action == ACTIONS.FILE_SET )                return map( FILE.set( vars ) );
+        if( action == ACTIONS.FILE_SET )                        return map( FILE.set( vars ) );
    
-        if( action == ACTIONS.FRIENDS_SET )             return map( FRIENDS.set( vars ) );
-        if( action == ACTIONS.FRIENDS_GET )             return map( FRIENDS.get( vars ) );
+        if( action == ACTIONS.FRIENDS_SET )                     return map( FRIENDS.set( vars ) );
+        if( action == ACTIONS.FRIENDS_GET )                     return map( FRIENDS.get( vars ) );
  
         doError();
 

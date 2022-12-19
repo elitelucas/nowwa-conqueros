@@ -1,11 +1,10 @@
-import DATA from "../DATA/DATA";
-import LOG, { log } from "../../UTIL/LOG";
-import QUERY from "../../UTIL/QUERY";
-import TAG from "./TAG";
+import DATA from "../../../DATA/DATA";
+import LOG, { log } from "../../../../UTIL/LOG";
+ 
 
-class TAG_ASSOCIATIONS
+class TAG
 {
-    private static table : string = "tag_associations";
+    private static table : string = "item_instance_tags";
 
     /*=============== 
 
@@ -29,7 +28,7 @@ class TAG_ASSOCIATIONS
         return Promise.resolve( value );
     };
 
-    public static async getSet( query: any ) : Promise<any>
+    public static async getSet( query:any ) : Promise<any>
     {
         let value = await this.get( query );
         if( !value ) value = await this.set( query );
@@ -37,35 +36,23 @@ class TAG_ASSOCIATIONS
         return Promise.resolve( value );
     };
 
-
     /*=============== 
 
 
     SET  
-    
-    {
-        instanceID,
-        tagID,
 
-        tags[]
+    {
+        name
     }
+    
 
     ================*/
 
     public static async set( query:any ) : Promise<any>
     {
-        if( query.tagID ) return DATA.set( this.table, query );
+        var item = await DATA.set( this.table, query );
  
-        await this.remove( { instanceID:query.instanceID } );
-
-        for( var n in query.tags )
-        {
-            let tagItem : any = await TAG.getSet( { name:query.tags[n] } );
- 
-            await this.getSet( { instanceID:query.instanceID, tagID: tagItem._id } );
-        }
- 
-        return Promise.resolve();
+        return Promise.resolve( item );
     };
 
     /*=============== 
@@ -100,4 +87,4 @@ class TAG_ASSOCIATIONS
  
 };
 
-export default TAG_ASSOCIATIONS;
+export default TAG;

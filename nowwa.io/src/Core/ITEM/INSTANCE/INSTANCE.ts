@@ -4,7 +4,7 @@ import QUERY from "../../../UTIL/QUERY";
 import FOLDER from "./FOLDER";
 import STATS from "./STATS";
 import AWESOME from "./AWESOME";
-import TAG_ASSOCIATIONS from "../../TAG/TAG_ASSOCIATIONS";
+import TAG_ASSOCIATIONS from "./TAG/TAG_ASSOCIATIONS";
  
 class INSTANCE
 {

@@ -12,6 +12,8 @@ import Rooms from "./ROOMS/Rooms";
 import Analytics from "./ANALYTICS/Analytics";
 import Followers from "./FOLLOWERS/Followers";
 import Games from "./GAMES/Games";
+import Tags from "./ITEM/Tags";
+import Instances from "./ITEM/Instances";
 
 class CONQUER 
 {
@@ -29,6 +31,8 @@ class CONQUER
     public Followers     : Followers;
     public Games         : Games;
 
+    public Instances     : Instances;
+ 
     private Socket       : Socket;
  
     public constructor( username?:string )
@@ -44,6 +48,7 @@ class CONQUER
         this.Analytics  = new Analytics(this);
         this.Followers  = new Followers( this );
         this.Games      = new Games( this );
+        this.Instances  = new Instances( this );
     };
 
     public async init (): Promise<void> 
