@@ -20,6 +20,7 @@ import GAME_SHOPITEM from "../GAME/SHOP/GAME_SHOPITEM";
 import GAME_SHOPTAB from "../GAME/SHOP/GAME_SHOPTAB";
 import GAME_PLAYERINVENTORY from "../GAME/SHOP/GAME_PLAYERINVENTORY";
 import GAME_CURRENCY from "../GAME/WALLET/GAME_CURRENCY";
+import DAILYREWARDS from "../GAME/DAILYREWARDS/DAILYREWARDS";
 class SocketInstance 
 {
     // Todo, destroy instances on disconnect
@@ -80,6 +81,9 @@ class SocketInstance
         if( action == ACTIONS.GAME_CURRENCY_CHANGE )            return map( GAME_CURRENCY.change( vars ) );
  
         vars.avatarID = this.User.avatarID;
+
+        if( action == ACTIONS.GAME_DAILYREWARDS_GET )           return map( DAILYREWARDS.get( vars ) );
+        if( action == ACTIONS.GAME_DAILYREWARDS_SET )           return map( DAILYREWARDS.set( vars ) );
 
         if( action == ACTIONS.GAME_CURRENCY_GET )               return map( GAME_CURRENCY.get( vars ) );
         if( action == ACTIONS.GAME_CURRENCY_GETONE )            return map( GAME_CURRENCY.getOne( vars ) );
