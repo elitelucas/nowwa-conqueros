@@ -70,13 +70,11 @@ class GAMESCORE
 
     public static async getToday( query:any ) : Promise<any>
     {
-        let now = new Date(Date.now());
-        let today = new Date(now.getTime() - now.getHours()*3600000 - now.getMinutes()*60000 - now.getSeconds()*1000 - now.getMilliseconds());
         query       = QUERY.get( query );
         query.limit = 100;
         query.where = {
             lastChange: {
-                $gte: today
+                $gte: DATE.today()
             }
         };
         query.sort = {
