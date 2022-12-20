@@ -14,26 +14,28 @@ import Followers from "./FOLLOWERS/Followers";
 import Games from "./GAMES/Games";
 import Tags from "./ITEM/Tags";
 import Instances from "./ITEM/Instances";
+import Wallets from "./WALLET/Wallets";
 
 class CONQUER 
 {
-    public initialized   : boolean = false;
-    public initializing   : boolean = false;
+    public initialized  : boolean = false;
+    public initializing : boolean = false;
  
-    public Storage       : Storage;
-    public Auth          : Auth;
-    public User          : User;
-    public WebAuth       : WebAuth;
-    public Files         : Files;
-    public Friends       : Friends;
-    public Rooms         : Rooms;
-    public Analytics     : Analytics;
-    public Followers     : Followers;
-    public Games         : Games;
+    public Storage      : Storage;
+    public Auth         : Auth;
+    public User         : User;
+    public WebAuth      : WebAuth;
+    public Files        : Files;
+    public Friends      : Friends;
+    public Rooms        : Rooms;
+    public Analytics    : Analytics;
+    public Followers    : Followers;
+    public Games        : Games;
+    public Wallets      : Wallets;
 
-    public Instances     : Instances;
+    public Instances    : Instances;
  
-    private Socket       : Socket;
+    private Socket      : Socket;
  
     public constructor( username?:string )
     {
@@ -49,6 +51,7 @@ class CONQUER
         this.Followers  = new Followers( this );
         this.Games      = new Games( this );
         this.Instances  = new Instances( this );
+        this.Wallets    = new Wallets( this );
     };
 
     public async init (): Promise<void> 

@@ -1,7 +1,7 @@
 import CONQUER from "../../CONQUER";
 import WalletInstance from "./WalletInstance";
 
-class WalletHistory
+class WalletAssets
 {
     private conquer         : CONQUER;
     private walletInstance  : WalletInstance;
@@ -13,4 +13,4 @@ class WalletHistory
     }
 }
 
-export default WalletHistory;
+export default WalletAssets;
