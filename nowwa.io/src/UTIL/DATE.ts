@@ -150,12 +150,6 @@ class DATE
     {
         return Math.ceil( milliseconds / 60000 );
     };
-
-    public static today (): number {
-        
-        let now = new Date(Date.now());
-        return now.getTime() - now.getHours()*3600000 - now.getMinutes()*60000 - now.getSeconds()*1000 - now.getMilliseconds();
-    }
 };
 
 export default DATE;
