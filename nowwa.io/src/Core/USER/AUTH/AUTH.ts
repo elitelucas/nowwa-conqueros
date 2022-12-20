@@ -3,7 +3,7 @@ import CRYPT from '../../../UTIL/CRYPT';
 import EMAIL from '../EMAIL';
 import USERNAME from "../USERNAME";
 
-import WALLET from '../WALLET';
+import WALLET from '../WALLET/WALLET';
 import USERNAME_PROXY from '../USERNAME_PROXY';
 
 import AVATAR from '../TRIBE/AVATAR';
