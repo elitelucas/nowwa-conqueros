@@ -20,8 +20,8 @@ class DATE
 
     public static today()
     {
-        let now     = new Date( this.now() );
-        return new Date(now.getTime() - now.getHours()*3600000 - now.getMinutes()*60000 - now.getSeconds()*1000 - now.getMilliseconds());
+        let now = new Date( this.now() );
+        return now.getTime() - now.getHours()*3600000 - now.getMinutes()*60000 - now.getSeconds()*1000 - now.getMilliseconds();
     }
 
     public static daysFrom( timestamp:number )
