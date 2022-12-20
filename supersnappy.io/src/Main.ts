@@ -52,7 +52,7 @@ class Main {
                     });
 
             app.all('/', (req, res, next) => {
-                req.url = req.url + 'Index.html';
+                req.url = req.url + 'index.html';
                 next();
             });
 
