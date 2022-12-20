@@ -13,6 +13,42 @@ class RoomInstance
 
     public Entries      : Entries;
 
+
+    /*
+ 
+    conquer.Avatars.get().then( array ){} <--- for now this has all of the users registered 
+
+    conquer.Rooms.get( { avatarIDs:[myID, yourID] } ).then( function( roomInstance )
+    {
+        roomInstance.onMessage = function( message )
+        {
+            log("DO something with that message now!", message );
+        }
+
+        roomInstance.join().then( function()
+        {   
+            roomInstance.Entries.get().then( function(array)
+            {
+                // put this on the website
+            }) // you get all of the entries sent previously in the chat 
+
+
+            roomInstance.chat("sending this text");
+            roomInstance.entry("this text gets recorded to the database");
+
+            roomInstance.call( YOUR_SIGNAL ); // you're calling the room
+            
+            roomInstance.reject();
+        });
+
+        // I WANT TO GET THE PAST ENTRIES OF THE CONVERSATION
+
+
+    });
+
+
+
+    */
     constructor( instance:CONQUER, vars:any )
     {
         this.conquer    = instance;

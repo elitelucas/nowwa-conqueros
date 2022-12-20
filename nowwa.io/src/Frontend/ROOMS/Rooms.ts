@@ -17,7 +17,7 @@ class Rooms
  
     GET (JOIN)
     {
-        avatarIDs?:[ avatarID ]
+        avatarIDs?:[ avatarID ] // [ yohamiID, JID ] 
     }
 
     [ avatarID1, avatarID2, etc ]

@@ -20,11 +20,12 @@ class TEST {
         try {
 
             let conquer1 = new CONQUER('user001');
+            await conquer1.init();    
+ 
+
+            /*
             let conquer2 = new CONQUER('user002');
-
-            await conquer1.init();
-
-
+ 
             let gameInstance = await conquer1.Games.getOne("Bowling");
 
             log("GAME INSTANCE", gameInstance );

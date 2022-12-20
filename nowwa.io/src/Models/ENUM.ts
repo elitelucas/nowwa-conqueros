@@ -92,9 +92,11 @@ export const enum ACTIONS
     AWESOME_GETONE          = 73,
     AWESOME_SET             = 74,
 
-    STATS_GETONE            = 75
+    STATS_GETONE            = 75,
 
-
+    AVATAR_GET              = 76,
+    AVATAR_GETONE           = 77
+ 
 }
 
 export const enum STATUS

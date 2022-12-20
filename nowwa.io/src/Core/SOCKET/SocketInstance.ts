@@ -25,6 +25,7 @@ import STATS from "../ITEM/INSTANCE/STATS";
 import TAG from "../ITEM/INSTANCE/TAG/TAG";
 import AWESOME from "../ITEM/INSTANCE/AWESOME";
 import INSTANCE from "../ITEM/INSTANCE/INSTANCE";
+import AVATAR from "../USER/TRIBE/AVATAR";
 class SocketInstance 
 {
     // Todo, destroy instances on disconnect
@@ -88,7 +89,10 @@ class SocketInstance
         if( action == ACTIONS.TAG_ASSOCIATIONS_GET )            return map( TAG.get( vars ) );
         if( action == ACTIONS.AWESOME_GETONE )                  return map( AWESOME.getOne( vars ) );
         if( action == ACTIONS.INSTANCE_GETONE )                 return map( INSTANCE.getOne( vars ) );
-     
+
+        if( action == ACTIONS.AVATAR_GET )                      return map( AVATAR.get( vars ) );
+        if( action == ACTIONS.AVATAR_GETONE )                   return map( AVATAR.getOne( vars ) );
+ 
         vars.avatarID = this.User.avatarID;
 
         if( action == ACTIONS.AWESOME_SET )                     return map( AWESOME.set( vars ) );
@@ -129,11 +133,11 @@ class SocketInstance
  
         doError();
 
-        function doCallback( vars?: any, isSucess: boolean = true ) 
+        function doCallback( vars?: any, isSuccess: boolean = true ) 
         {
-            if( action == ACTIONS.AUTH_GET && isSucess && vars ) setUser( vars );
+            if( action == ACTIONS.AUTH_GET && isSuccess && vars ) setUser( vars );
  
-            if( callback ) callback( vars || isSucess );
+            if( callback ) callback( vars || isSuccess );
         }
 
         function doError( vars?: any ) 
