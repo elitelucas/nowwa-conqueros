@@ -52,18 +52,9 @@ class GAMESCORE
         query       = QUERY.get( query );
         query.limit = 100;
 
-        query.sort = {
-            maxScore: 1 // 1 for ascending, -1 for descending
-        };
-
-        // query.where ? maxScore > highest values, sorted down
-        // TODO, get 100 results based on maxScore
+        query.sort  = { maxScore: 1 }; // 1 for ascending, -1 for descending
 
         let values  = await this.get( query );
-
-        // values      = ARRAY.sort( values, "maxScore" );
-
-        // values.reverse();
 
         return AVATAR.fill( values );
     };
@@ -72,23 +63,11 @@ class GAMESCORE
     {
         query       = QUERY.get( query );
         query.limit = 100;
-        query.where = {
-            lastChange: {
-                $gte: DATE.today()
-            }
-        };
-        query.sort = {
-            score: 1 // 1 for ascending, -1 for descending
-        };
 
-        // query.where ?  lastChange < DATE.now() less than one day?
-        // TODO, get 100 results when lastChange happened in the last day, sorted by score
-
+        query.where = { lastChange: { $gte: DATE.today() }};
+        query.sort  = { score : 1 };  // 1 for ascending, -1 for descending
+ 
         let values  = await this.get( query );
-
-        // values      = ARRAY.sort( values, "score" );
-
-        // values.reverse();
 
         return AVATAR.fill( values );
     };

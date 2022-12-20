@@ -18,6 +18,12 @@ class DATE
         return DATE.getNow();
     }
 
+    public static today()
+    {
+        let now = new Date( this.now() );
+        return now.getTime() - now.getHours()*3600000 - now.getMinutes()*60000 - now.getSeconds()*1000 - now.getMilliseconds();
+    }
+
     public static daysFrom( timestamp:number )
  	{
         return Math.floor( DATE.millisecondsFrom( timestamp ) / 86400000 ); 
