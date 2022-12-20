@@ -95,6 +95,14 @@ class DATA
         return Promise.resolve( document );
     }
 
+    public static async getSet( tableName: string, query: any ): Promise<any> 
+    {
+        let obj = await this.get( tableName, query );
+        if( !obj ) obj = await this.set( tableName, query );
+
+        return Promise.resolve( document );
+    }
+
     /*=============== 
 
 
@@ -150,9 +158,9 @@ class DATA
 
         query = QUERY.get( query );
 
-        let result = await model.findOneAndDelete( query.where );
+        await model.deleteMany( query.where );
 
-        return Promise.resolve( result );
+        return Promise.resolve();
     };
  
 

@@ -67,6 +67,34 @@ export const enum ACTIONS
     GAMETURN_GET            = 55,
     GAMETURN_GETONE         = 56,
     GAMETURN_CHANGE         = 57,
+
+    GAME_SHOPTAB_GET            = 58,
+    GAME_SHOPITEM_GET           = 59,
+
+    GAME_PLAYERINVENTORY_BUY    = 60,
+    GAME_PLAYERINVENTORY_GET    = 61,
+    GAME_PLAYERINVENTORY_CHANGE = 62,
+    GAME_PLAYERINVENTORY_REMOVE = 63,
+
+    GAME_CURRENCY_GET       = 64,
+    GAME_CURRENCY_GETONE    = 65,
+    GAME_CURRENCY_CHANGE    = 66,
+
+    GAME_DAILYREWARDS_GET   = 67,
+    GAME_DAILYREWARDS_SET   = 68,
+
+    INSTANCE_GETONE         = 69,
+    INSTANCE_GET            = 70,
+
+    TAG_ASSOCIATIONS_GET    = 71,
+    TAG_ASSOCIATIONS_SET    = 72,
+
+    AWESOME_GETONE          = 73,
+    AWESOME_SET             = 74,
+
+    STATS_GETONE            = 75
+
+
 }
 
 export const enum STATUS

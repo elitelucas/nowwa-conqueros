@@ -5,7 +5,7 @@ import STATS from "./STATS";
 
 class AWESOME
 {
-    public static table : string = "awesomes";
+    public static table : string = "item_instance_awesomes";
 
     /*=============== 
 

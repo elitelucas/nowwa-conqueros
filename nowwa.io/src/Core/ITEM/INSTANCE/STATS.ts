@@ -4,7 +4,7 @@ import ARRAY from "../../../UTIL/ARRAY";
 
 class STATS
 {
-    private static table : string = "folders";
+    private static table : string = "item_instance_stats";
 
     /*=============== 
 
