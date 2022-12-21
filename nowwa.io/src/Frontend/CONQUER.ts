@@ -15,6 +15,7 @@ import Games from "./GAMES/Games";
 import Tags from "./ITEM/Tags";
 import Instances from "./ITEM/Instances";
 import Wallets from "./WALLET/Wallets";
+import Sounds from "./AUDIO/Sounds";
 
 class CONQUER 
 {
@@ -32,6 +33,7 @@ class CONQUER
     public Followers    : Followers;
     public Games        : Games;
     public Wallets      : Wallets;
+    public Sounds       : Sounds;
 
     public Instances    : Instances;
  
@@ -52,6 +54,7 @@ class CONQUER
         this.Games      = new Games( this );
         this.Instances  = new Instances( this );
         this.Wallets    = new Wallets( this );
+        this.Sounds     = new Sounds();
     };
 
     public async init (): Promise<void> 
