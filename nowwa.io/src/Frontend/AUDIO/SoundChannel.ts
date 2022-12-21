@@ -1,5 +1,5 @@
 import RANDOM from "../../UTIL/RANDOM";
-import {Howl, Howler, Sound} from 'howler';
+import {Howl, Howler } from 'howler';
 import Sounds from "./Sounds";
 import ARRAY from "../../UTIL/ARRAY";
 

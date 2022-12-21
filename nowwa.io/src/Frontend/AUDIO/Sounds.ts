@@ -1,6 +1,6 @@
 
 import SoundChannel from './SoundChannel';
-import { Howler } from 'howler';
+import { Howler, Howl } from 'howler';
 
 class Sounds
 {
