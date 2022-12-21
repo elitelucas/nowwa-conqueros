@@ -24,7 +24,7 @@ class WALLET_ASSETS
   
     public static async get( query:any ) : Promise<any>
     {
-        let value   = await WALLET.get( query );
+        let value   = await WALLET.getSet( query );
         let wallet  = value.wallet;
 
         let assets : any;

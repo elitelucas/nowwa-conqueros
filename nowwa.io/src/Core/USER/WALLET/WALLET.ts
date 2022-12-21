@@ -63,7 +63,7 @@ class WALLET
     public static async getSet( query:any ) : Promise<any>
     {
         let usernameID = query.usernameID;
-        if( !usernameID ) usernameID = AVATAR.getUsernameID( { avatarID:query.avatarID } );
+        if( !usernameID ) usernameID = await AVATAR.getUsernameID( { avatarID:query.avatarID } );
  
         let item = this.getOne({ usernameID:usernameID });
 
