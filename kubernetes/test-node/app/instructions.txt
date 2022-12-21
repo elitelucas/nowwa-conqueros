@@ -1,0 +1,11 @@
+Building a docker image
+docker build -f <dockerfile> -t <image_name>:<image_version> .
+
+Running a docker container
+docker run -d -p <external_port>:<internal_port> --name <image_name> <container_name>
+
+Tag the docker image on digital ocean's registry
+docker tag <image_name> registry.digitalocean.com/<registry-name>/<image_name>
+
+Upload the docker image to digital ocean's registry
+docker push registry.digitalocean.com/<registry-name>/<image_name>

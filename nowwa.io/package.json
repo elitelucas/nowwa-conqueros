@@ -11,7 +11,8 @@
     "conquer:build": "parcel build ./src/Frontend/CONQUER.ts --dist-dir ./storage/home/lib",
     "dev": "tsc && node ./dist/Compile.js --env=\"dev\"",
     "prod": "tsc && node ./dist/Compile.js --env=\"prod\"",
-    "local": "http-server ./storage -p 9876"
+    "local": "http-server ./storage -p 9876",
+    "start": "tsc && node ./dist/Compile.js --env=\"prod\""
   },
   "author": "",
   "license": "ISC",

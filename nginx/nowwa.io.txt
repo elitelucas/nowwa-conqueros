@@ -11,8 +11,6 @@ server {
 	listen 443 ssl default_server;
 	server_name nowwa.io;
 	
-	# ssl_certificate     /home/gearball/certificates/nowwa.io.crt;
-	# ssl_certificate_key /home/gearball/certificates/nowwa.io.key;
 	ssl_certificate     /etc/letsencrypt/live/nowwa.io/fullchain.pem;
 	ssl_certificate_key /etc/letsencrypt/live/nowwa.io/privkey.pem;
 	
@@ -41,8 +39,6 @@ server {
 	listen 9005 ssl;
 	server_name nowwa.io;
 	
-	# ssl_certificate     /home/gearball/certificates/nowwa.io.crt;
-	# ssl_certificate_key /home/gearball/certificates/nowwa.io.key;
 	ssl_certificate     /etc/letsencrypt/live/nowwa.io/fullchain.pem;
 	ssl_certificate_key /etc/letsencrypt/live/nowwa.io/privkey.pem;
 	

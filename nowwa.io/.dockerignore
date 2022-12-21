@@ -1,0 +1,7 @@
+node_modules
+instructions.txt
+dist
+Dockerfile
+.dockerignore
+.parcel-cache
+storage
