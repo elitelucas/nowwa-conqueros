@@ -33,6 +33,14 @@ class AVATAR
 
         return Promise.resolve(avatar);
     };
+    
+    public static async getUsernameID( query:any ) : Promise<any>
+    {
+        let item = await this.getOne( query );
+        if( item ) return Promise.resolve( item.usernameID );
+
+        return Promise.resolve(null);
+    };   
 
     public static async fill( array:any ): Promise<any> 
     {

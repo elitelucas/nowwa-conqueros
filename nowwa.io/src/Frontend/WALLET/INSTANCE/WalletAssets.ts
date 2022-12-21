@@ -1,15 +1,20 @@
+import { ACTIONS } from "../../../Models/ENUM";
 import CONQUER from "../../CONQUER";
 import WalletInstance from "./WalletInstance";
 
 class WalletAssets
 {
     private conquer         : CONQUER;
-    private walletInstance  : WalletInstance;
- 
-    public constructor( conquer:CONQUER, walletInstance:WalletInstance ) 
+
+    public constructor( conquer:CONQUER ) 
     {
         this.conquer        = conquer;
-        this.walletInstance = walletInstance;
+    }
+
+    public async get() : Promise<any>
+    {
+        let result = await this.conquer.do( ACTIONS.WALLET_HISTORY_GET );
+        return Promise.resolve( result );
     }
 }
 

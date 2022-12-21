@@ -4,57 +4,42 @@ import USERNAME from '../USERNAME';
  
 import LOG, { log } from '../../../UTIL/LOG';
 import CRYPT from '../../../UTIL/CRYPT';
+import WALLET from './WALLET';
 
 class WALLET_ASSETS
 {
     private static table : string = "wallet_assets";
- 
- 
-    /*=============== 
-
-
-    SET  
-    
-
-    ================*/
-
-    public static async set( query: any ) : Promise<any>
-    {
-        let value = await DATA.set( this.table, query );
-
-        return Promise.resolve( value );
-    };
- 
  
     /*=============== 
 
 
     GET  
     
+    {
+        usernameID?,
+        avatarID?
+    }
 
     ================*/
   
     public static async get( query:any ) : Promise<any>
     {
-        let value = await DATA.get( this.table, query );
+        let value   = await WALLET.get( query );
+        let wallet  = value.wallet;
 
-        return Promise.resolve( value );
+        let assets : any;
+ 
+        /*
+            //////// J get the assets from the blockchain
+
+            history = the history
+
+        */
+
+        return Promise.resolve( assets );
     };
  
-    /*=============== 
-
-
-    REMOVE  
-    
-
-    ================*/
-  
-    public static async remove( query:any ) : Promise<any>
-    {
-        let values = await DATA.remove( this.table, query );
-
-        return Promise.resolve( values );
-    };
+ 
 };
 
 

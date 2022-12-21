@@ -1,0 +1,11 @@
+export: 
+
+npm run conquer:build
+
+you will find the js library in nowwa.io/storage/home/lib/CONQUER.js
+
+==========
+
+normal:
+
+npm  run core:dev 

@@ -56,14 +56,14 @@ class CONQUER
 
     public async init (): Promise<void> 
     {
-        this.initializing = true;
- 
+        this.initializing = true; 
+
         await this.Storage.init();
         await this.WebAuth.init();
         await this.Socket.init();
         await this.Auth.init();
 
-        this.initialized = true;
+        this.initializing = true;
 
         console.log('conquer initialized');
 

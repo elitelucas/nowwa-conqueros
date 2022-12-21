@@ -1,27 +1,28 @@
+import { ACTIONS } from "../../../Models/ENUM";
 import CONQUER from "../../CONQUER";
 import WalletAssets from "./WalletAssets";
-import WalletCurrencies from "./WalletCurrencies";
 import WalletHistory from "./WalletHistory";
 
 class WalletInstance
 {
     private conquer     : CONQUER;
-
-    public Currencies   : WalletCurrencies;
-    public walletID     : any;
-    public wallet       : any;
+ 
     public History      : WalletHistory;
     public Assets       : WalletAssets;
+    public wallet       : any;
 
     public constructor( conquer:CONQUER, data:any ) 
     {
         this.conquer    = conquer;
-        this.walletID   = data._id;
         this.wallet     = data.wallet;
+        this.History    = new WalletHistory( conquer );
+        this.Assets     = new WalletAssets( conquer );
+    }
 
-        this.Currencies = new WalletCurrencies( conquer, this );
-        this.History    = new WalletHistory( conquer, this );
-        this.Assets     = new WalletAssets( conquer, this );
+    public async send( recipientAvatarID:any, contents:any ) : Promise<any>
+    {
+        let result = await this.conquer.do( ACTIONS.WALLET_SEND, { recipientAvatarID:recipientAvatarID, contents:contents } );
+        return Promise.resolve( result );
     }
 }
 

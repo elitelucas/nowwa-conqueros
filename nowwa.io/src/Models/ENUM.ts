@@ -97,12 +97,10 @@ export const enum ACTIONS
     AVATAR_GET              = 76,
     AVATAR_GETONE           = 77,
     
-    WALLET_GETONE           = 78,
+    WALLET_GETSET           = 78,
     WALLET_HISTORY_GET      = 79,
     WALLET_ASSETS_GET       = 80,
-    WALLET_CURRENCY_GET     = 81,
-    WALLET_CURRENCY_CHANGE  = 82,
-    WALLET_CURRENCY_SEND    = 83,
+    WALLET_SEND             = 81,
  
 }
 

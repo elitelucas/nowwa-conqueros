@@ -26,6 +26,9 @@ import TAG from "../ITEM/INSTANCE/TAG/TAG";
 import AWESOME from "../ITEM/INSTANCE/AWESOME";
 import INSTANCE from "../ITEM/INSTANCE/INSTANCE";
 import AVATAR from "../USER/TRIBE/AVATAR";
+import WALLET from "../USER/WALLET/WALLET";
+import WALLET_ASSETS from "../USER/WALLET/WALLET_ASSETS";
+import WALLET_HISTORY from "../USER/WALLET/WALLET_HISTORY";
 class SocketInstance 
 {
     // Todo, destroy instances on disconnect
@@ -95,6 +98,11 @@ class SocketInstance
  
         vars.avatarID = this.User.avatarID;
 
+        if( action == ACTIONS.WALLET_GETSET )                   return map( WALLET.getSet( vars ) );
+        if( action == ACTIONS.WALLET_SEND )                     return map( WALLET.send( vars ) );
+        if( action == ACTIONS.WALLET_ASSETS_GET )               return map( WALLET_ASSETS.get( vars ) );
+        if( action == ACTIONS.WALLET_HISTORY_GET )              return map( WALLET_HISTORY.get( vars ) );
+ 
         if( action == ACTIONS.AWESOME_SET )                     return map( AWESOME.set( vars ) );
         if( action == ACTIONS.TAG_ASSOCIATIONS_SET )            return map( TAG.set( vars ) );
 

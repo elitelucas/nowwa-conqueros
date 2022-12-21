@@ -7,6 +7,7 @@ import LOG from "../../UTIL/LOG";
 import AVATAR from "./TRIBE/AVATAR";
 import mongoose from "mongoose";
 import { BASETYPE } from "../HELPERS";
+import WALLET from "./WALLET/WALLET";
 
 class USERNAME 
 {
@@ -41,6 +42,8 @@ class USERNAME
         });
 
         await AVATAR.set({ usernameID:usernameID, isMain:true, firstName:vars.firstName || vars.username });
+
+        WALLET.getSet({ usernameID:usernameID });
 
         return Promise.resolve(user);
     };

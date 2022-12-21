@@ -4,41 +4,40 @@ import USERNAME from '../USERNAME';
  
 import LOG, { log } from '../../../UTIL/LOG';
 import CRYPT from '../../../UTIL/CRYPT';
+import WALLET from './WALLET';
 
 class WALLET_HISTORY
 {
     private static table : string = "wallet_history";
  
- 
-    /*=============== 
-
-
-    SET  
-    
-
-    ================*/
-
-    public static async set( query: any ) : Promise<any>
-    {
-        let value = await DATA.set( this.table, query );
-
-        return Promise.resolve( value );
-    };
- 
- 
     /*=============== 
 
 
     GET  
+
+    {
+        usernameID?,
+        avatarID?
+    }
     
 
     ================*/
   
     public static async get( query:any ) : Promise<any>
     {
-        let value = await DATA.get( this.table, query );
+        let value   = await WALLET.get( query );
+        let wallet  = value.wallet;
+ 
+        let history : any;
+ 
+        /*
+            //////// J get the history from the blockchain
 
-        return Promise.resolve( value );
+            history = the history
+
+        */
+
+        return Promise.resolve( history );
     };
  
 
