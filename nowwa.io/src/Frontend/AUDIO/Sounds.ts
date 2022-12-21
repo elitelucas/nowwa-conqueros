@@ -1,5 +1,6 @@
 
 import SoundChannel from './SoundChannel';
+import { Howler } from 'howler';
 
 class Sounds
 {
@@ -10,18 +11,16 @@ class Sounds
    public Music     : SoundChannel;
    public Ambiance  : SoundChannel;
 
-   public volume    : number = 1;
- 
    private channels : any = {};
 
    public isMuted   : boolean = false;
  
    constructor()
    {
-        this.SFX        = this.addChannel( "sfx", "Sound", true );
-        this.Voice      = this.addChannel( "voice", "Sound", true );
-        this.Music      = this.addChannel( "music", "Music", false );
-        this.Ambiance   = this.addChannel( "amb", "Music", false );
+        this.SFX        = this.addChannel( "sfx", "sound", true );
+        this.Voice      = this.addChannel( "voice", "sound", true );
+        this.Music      = this.addChannel( "music", "music", false );
+        this.Ambiance   = this.addChannel( "amb", "music", false );
    };
 
    private addChannel( id:any, b:any, c:any )
@@ -32,17 +31,17 @@ class Sounds
 
    public setVolume( vol:number )
    {
-        this.volume = vol;
+        Howler.volume( vol );
    }
 
    public mute()
    {
-        this.isMuted = true;
+        Howler.mute( true );
    }
 
    public unmute()
    {
-        this.isMuted = false;
+        Howler.mute( false );
    }
  
 }
