@@ -67,7 +67,7 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
     };
 
     let goToRegister = () => {
-        window.history.pushState("", "", `${window.location.origin}`);
+        // window.history.pushState("", "", `${window.location.origin}`);
         updateState(LoginStateDefault);
         setIndexState({
             display: 'Register',

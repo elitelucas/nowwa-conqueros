@@ -24,13 +24,14 @@ class Storage
     {
         console.log('storage initializing...');
         
-        if (typeof this.presetAccount != 'undefined') {
+        if (typeof this.presetAccount.username != 'undefined') {
             console.log(`has preset username: ${JSON.stringify(this.presetAccount)}`);
             this.set("account", {
                 username: this.presetAccount
             });
         }
         this.setAccount( this.loadAccount() );
+        console.log(`storage account`, this.account);
         this.setAccount( this.parseUrlSearchParams() );
 
         console.log('storage initialized!');

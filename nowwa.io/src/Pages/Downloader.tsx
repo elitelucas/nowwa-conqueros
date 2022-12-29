@@ -30,27 +30,26 @@ export const DownloaderInit = (): Promise<DownloaderState> => {
 
 const Downloader = (state: DownloaderState, setState: React.Dispatch<React.SetStateAction<DownloaderState>>, indexState: IndexState) => {
 
-
     let updateState = (updates: Partial<DownloaderState>) => {
         let newState = UpdateComponentState<DownloaderState>(state, updates);
         setState(newState);
     };
 
     if (!state.initialized) {
-        DownloaderInit().then((newState: DownloaderState) => {
-            updateState(newState);
-            let avatarID:string = indexState.account!.avatarID;
-            indexState.conquer!.Files.get({
-                avatarID: avatarID
-            })
-                .then((res) => {
-                    updateState({
-                        isBusy: false,
-                        files: res.result,
-                        initialized: true
-                    });
-                });
-        });
+        // DownloaderInit().then((newState: DownloaderState) => {
+        //     updateState(newState);
+        //     let avatarID:string = indexState.account!.avatarID;
+        //     indexState.conquer!.Files.get({
+        //         avatarID: avatarID
+        //     })
+        //         .then((res) => {
+        //             updateState({
+        //                 isBusy: false,
+        //                 files: res.result,
+        //                 initialized: true
+        //             });
+        //         });
+        // });
     }
 
     let refresh = () => {

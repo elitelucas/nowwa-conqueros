@@ -31,6 +31,7 @@ class Auth
     public async logout()
     {
         this.conquer.Storage.removeAccount();
+        console.log(`after logout`, this.conquer.Storage.account);
         await this.get();
         return Promise.resolve();
     }

@@ -38,9 +38,9 @@ const Home = (state: HomeState, setState: React.Dispatch<React.SetStateAction<Ho
                 isBusy: true
             });
             await indexState.conquer!.Auth.logout();
-            updateState({
-                isBusy: false
-            });
+            // updateState({
+            //     isBusy: false
+            // });
             setIndexState({
                 account: undefined,
                 display: 'Login',

@@ -74,23 +74,37 @@ const Index = () => {
 
             console.log(`account`, account);
 
-            if (account && typeof account.avatarID != 'undefined' && (account.username.indexOf('Guest_') < 0 || state.acceptGuest)) 
+            if (account && typeof account.avatarID != 'undefined' && ((state.acceptGuest && account.username.indexOf('Guest_') > 0) || (account.username.indexOf('Guest_') < 0 && account.username.length > 0)))
             {
-                updateState({
-                    initialized: true,
-                    display: 'Home',
-                    account: account!,
-                    isBusy: false,
-                    conquer: conquer
-                });
+                if (state.conquer != null) {
+                    updateState({
+                        initialized: true,
+                        display: 'Home',
+                        account: account!,
+                        isBusy: false
+                    });
+                } else {
+                    updateState({
+                        initialized: true,
+                        display: 'Home',
+                        account: account!,
+                        isBusy: false,
+                        conquer: conquer
+                    });
+                }
             } else {
-
-                console.log('conquer set busy false');
-                updateState({
-                    initialized: true,
-                    isBusy: false,
-                    conquer: conquer
-                });
+                if (state.conquer != null) {
+                    updateState({
+                        initialized: true,
+                        isBusy: false
+                    });
+                } else {
+                    updateState({
+                        initialized: true,
+                        isBusy: false,
+                        conquer: conquer
+                    });
+                }
             }
 
         });
@@ -152,7 +166,7 @@ const Index = () => {
                         <Icon name='earlybirds' />
                         Nowwa IO
                     </Header>
-                    {state.message.length > 0 && <Message>{state.message}</Message>}
+                    {state.message && state.message.length > 0 && <Message>{state.message}</Message>}
                 </Segment>
             </>}
             {home}

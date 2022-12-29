@@ -12,7 +12,12 @@ export const ComponentStateDefault: ComponentState = {
 }
 
 export const UpdateComponentState = <T extends { [key: string]: unknown }>(state: T, values: Partial<T>): T => {
-    let newState = JSON.parse(JSON.stringify(state)) as T;
+    let newState:T = {} as T;
+    let oldKeys: string[] = Object.keys(state);
+    for (let i: number = 0; i < oldKeys.length; i++) {
+        let key: string = oldKeys[i];
+        (newState as { [key: string]: unknown })[key] = state[key];
+    }
     let keys: string[] = Object.keys(values);
     for (let i: number = 0; i < keys.length; i++) {
         let key: string = keys[i];
