@@ -15,8 +15,11 @@ class Auth
 
     public async init() : Promise<any> 
     {
+
+        console.log('auth initializing...');
         await this.get();
-        
+
+        console.log('auth initialized!');
         return Promise.resolve();
     }
  
@@ -34,6 +37,9 @@ class Auth
 
     public async get( params? : { username: string, password: string, type?:string }): Promise<any> 
     {
+
+        console.log(`params`, params);
+        
         if( params ) params.type = "USERNAME";
 
         console.log(`[Auth] get CONQUER.Storage.account`, this.conquer.Storage.account);

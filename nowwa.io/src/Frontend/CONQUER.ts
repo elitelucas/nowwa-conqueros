@@ -20,7 +20,6 @@ import Sounds from "./AUDIO/Sounds";
 class CONQUER 
 {
     public initialized  : boolean = false;
-    public initializing : boolean = false;
  
     public Storage      : Storage;
     public Auth         : Auth;
@@ -59,16 +58,17 @@ class CONQUER
 
     public async init (): Promise<void> 
     {
-        this.initializing = true; 
+
+        console.log('conquer initializing...');
 
         await this.Storage.init();
         await this.WebAuth.init();
         await this.Socket.init();
         await this.Auth.init();
+        
+        this.initialized = true;
 
-        this.initializing = true;
-
-        console.log('conquer initialized');
+        console.log('conquer initialized!');
 
         return Promise.resolve();
     }

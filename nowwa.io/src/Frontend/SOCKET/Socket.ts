@@ -32,6 +32,8 @@ class Socket
 
     public async init() : Promise<any>
     {
+        console.log('socket initializing...');
+
         log( "client: Init New Socket Client" );
 
         let self    = this;
@@ -43,6 +45,8 @@ class Socket
             self.doSend();
 
         }, interval:300, autoStart:true });
+
+        console.log('socket initialized!');
  
         return Promise.resolve();
     }
@@ -52,22 +56,22 @@ class Socket
         log( "client: Socket Connect" );
 
         var self    = this;
-        // var socket  = self.socket = io( self.socketURL );
-        var socket  = self.socket = io( CONFIG.vars.PUBLIC_SOCKET_FULL_URL );
-
-        socket.on( "disconnect", () => 
-        {
-            log( `client: connect status: ${ socket.connected }` );
-            self.connect();
-        }); 
-
-        socket.on( 'message', function( obj:any )
-        {
-            self.conquer.Rooms._onServerMessage( obj );
-        });
  
         return new Promise((resolve) => 
         {
+            var socket  = self.socket = io( CONFIG.vars.PUBLIC_SOCKET_FULL_URL );
+    
+            socket.on( "disconnect", () => 
+            {
+                log( `client: connect status: ${ socket.connected }` );
+                self.connect();
+            }); 
+    
+            socket.on( 'message', function( obj:any )
+            {
+                self.conquer.Rooms._onServerMessage( obj );
+            });
+
             socket.on( "connect", () => 
             {
                 self.id = socket.id;

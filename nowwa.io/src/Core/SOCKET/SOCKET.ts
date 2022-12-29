@@ -21,7 +21,7 @@ class SOCKET
 
         this.io.on( "connection", (socket) => 
         {
-            // log("[SERVER]========================================================== NEW CONNECTION");
+            log("[SERVER]========================================================== NEW CONNECTION");
             new SocketInstance(socket);
         });
 

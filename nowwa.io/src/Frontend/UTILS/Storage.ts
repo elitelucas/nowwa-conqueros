@@ -22,14 +22,19 @@ class Storage
  
     public async init( ): Promise<any> 
     {
+        console.log('storage initializing...');
+        
         if (typeof this.presetAccount != 'undefined') {
-            console.log(`has preset username: ${this.presetAccount}`);
+            console.log(`has preset username: ${JSON.stringify(this.presetAccount)}`);
             this.set("account", {
                 username: this.presetAccount
             });
         }
         this.setAccount( this.loadAccount() );
         this.setAccount( this.parseUrlSearchParams() );
+
+        console.log('storage initialized!');
+
         return Promise.resolve();
     }
 
@@ -50,25 +55,45 @@ class Storage
  
     private parseUrlSearchParams()
     {
+        
+        let usedParams:string[] = 
+        [
+            "username",
+            "firstName",
+            "type"
+        ];
+
+        let originalParams:{[key:string]:any} = { };
         let params : any = {};
 
         if ( typeof window == 'undefined' ) return null;
         
-        new URL( window.location.href ).searchParams.forEach( function (val, key) 
+        new URL( window.location.href ).searchParams.forEach((val, key) => 
         {
-            if( params[key] !== undefined ) 
-            {
-                if ( !Array.isArray(params[key]) ) params[key] = [params[key]];
+            if (usedParams.indexOf(key) >= 0) {
+                
+                if( params[key] !== undefined ) 
+                {
+                    if ( !Array.isArray(params[key]) ) params[key] = [params[key]];
 
-                params[key].push(val);
+                    params[key].push(val);
+                } else {
+                    params[key] = val;
+                }
+
             } else {
-                params[key] = val;
+                originalParams[key] = val;
             }
         });
 
+        console.log(`window.location.href`, window.location.href);
+
         console.log(`params`, params);
+        
+        let originalSearchParams:string = Object.keys(originalParams).map(key => key + '=' + originalParams[key]).join('&');
+        let originalUrl = `${window.location.origin}${originalSearchParams.length > 0 ? "?" + originalSearchParams : ""}`;
     
-        window.history.pushState( params, "", `${window.location.origin}`);
+        window.history.pushState( params, "", `${originalUrl}`);
  
         return params.username ? params : null;
     }

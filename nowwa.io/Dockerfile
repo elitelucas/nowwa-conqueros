@@ -1,30 +1,20 @@
 # Use an official Python runtime as a parent image
 FROM node:16.16.0
 
-RUN mkdir -p /app
-RUN mkdir -p /app/storage/
-RUN mkdir -p /app/storage/home
-RUN mkdir -p /app/storage/home/lib
+RUN mkdir -p /contents
 
-# Set the working directory to /app
-WORKDIR /app
+# Set the working directory to /contents
+WORKDIR /contents
 
-COPY "package.json" /app
+COPY "package.json" /contents
 
 # Install any needed packages
 RUN npm install
 
-COPY . /app
+COPY . /contents
 
-# Make port 9100 available to the world outside this container
-EXPOSE 9100
-EXPOSE 9100
-EXPOSE 9100
-
-# Define environment variable
-ENV NAME World
+# Make port 9000 available to the world outside this container
+# EXPOSE 9000
 
 # Run command
-# CMD [ "npm", "start" ] 
-
-CMD [ "ls", "-al" ] 
+CMD [ "npm", "start" ] 

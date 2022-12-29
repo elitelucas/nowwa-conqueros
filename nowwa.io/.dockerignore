@@ -5,3 +5,7 @@ Dockerfile
 .dockerignore
 .parcel-cache
 storage
+www
+platforms
+items
+node_modules.zip

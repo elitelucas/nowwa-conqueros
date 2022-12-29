@@ -29,7 +29,7 @@ export type IndexState = ComponentState & {
 export const IndexStateDefault: IndexState = {
     display: 'Login',
     initialized: false,
-    isBusy: false,
+    isBusy: true,
     acceptGuest: false,
     message: ``
 }
@@ -62,69 +62,39 @@ const Index = () => {
         setState(newState);
     };
 
-    if (!state.initialized) {
-        updateState({
-            initialized: true,
-            isBusy: true,
-            conquer: new CONQUER
+    useEffect(()=> {
+
+        console.log(`create conquer`);
+
+        let conquer = new CONQUER();
+
+        conquer.init().then(() => {
+
+            let account = conquer.User;
+
+            console.log(`account`, account);
+
+            if (account && typeof account.avatarID != 'undefined' && (account.username.indexOf('Guest_') < 0 || state.acceptGuest)) 
+            {
+                updateState({
+                    initialized: true,
+                    display: 'Home',
+                    account: account!,
+                    isBusy: false,
+                    conquer: conquer
+                });
+            } else {
+
+                console.log('conquer set busy false');
+                updateState({
+                    initialized: true,
+                    isBusy: false,
+                    conquer: conquer
+                });
+            }
+
         });
-    }
-    if (state.initialized) {
-
-        if (!state.conquer!.initializing && !state.conquer!.initialized) {
-            state.conquer!.init().then(() => {
-
-                let account = state.conquer!.User;
-
-                if (account && typeof account.avatarID != 'undefined' && (account.username.indexOf('Guest_') < 0 || state.acceptGuest)) 
-                {
-                    updateState({
-                        display: 'Home',
-                        account: account!,
-                        isBusy: false
-                    });
-                } else {
-                    updateState({
-                        isBusy: false
-                    });
-                }
-
-                // if (account && account.info == 'verified') {
-                //     updateState({
-                //         message: `email successfully verified!`
-                //     });
-                // }
-                // else if (params.info == 'notverified') {
-                //     updateState({
-                //         initialized: true,
-                //         message: `failed to verify email`
-                //     });
-                // } else if (params.info == 'loggedin') {
-                //     updateState({
-                //         initialized: true,
-                //         display: 'Home',
-                //         account: {
-                //             admin: params.admin as string == 'true',
-                //             id: params.id,
-                //             name: params.name,
-                //             token: params.token,
-                //             friend_count: parseInt(params.friend_count as string || "0")
-                //         }
-                //     });
-                // } else if (params.info == 'discord') {
-                //     updateState({
-                //         initialized: true,
-                //         message: params.detail
-                //     });
-                // } else if (params.error) {
-                //     updateState({
-                //         initialized: true,
-                //         message: `${params.error}`
-                //     });
-                // }
-            });
-        }
-    }
+    }, []);
 
     let top: JSX.Element = <></>;
     if (false) {
