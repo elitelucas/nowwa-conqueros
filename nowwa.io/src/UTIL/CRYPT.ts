@@ -34,12 +34,17 @@ class CRYPT
         return this.match(input, token);
     }
 
-    public static async tokenize(value: string): Promise<string> 
+    public static async hashedToken(value: string): Promise<string> 
     {
-        let secret: string = <string>process.env.EXPRESS_SECRET;
-        let input: string = `${value}|${secret}`;
+        let input: string = await this.token(value);
 
         return this.hash(input);
+    }
+
+    public static async token(value:string) :Promise<string> {
+        let secret: string = <string>process.env.EXPRESS_SECRET;
+        let output: string = `${value}|${secret}`;
+        return Promise.resolve(output);
     }
 
     

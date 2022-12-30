@@ -35,6 +35,7 @@ class AUTH
 
     public static async set(vars: any): Promise<any> 
     {
+        console.log(`create new user`, JSON.stringify(vars));
         let encryptedPassword = await CRYPT.hash(vars.password);
 
         try 
@@ -46,6 +47,8 @@ class AUTH
                 admin       : false,
                 isVerified  : vars.isVerified || false
             });
+            
+            console.log(`create new user success`);
 
             return Promise.resolve(item);
 
@@ -76,9 +79,18 @@ class AUTH
 
         if( !user.isVerified ) return Promise.reject( 'Email is not verified...' );
 
-        let isMatch : boolean = await CRYPT.match( vars.password, user.password );
+        let isMatch : boolean = false;
 
-        if( !isMatch ) return Promise.reject( 'Incorrect password...' );
+        console.log(`[AUTH] get vars`, JSON.stringify(vars));
+
+        if ( vars.token ) {
+            let token = await CRYPT.token(vars.username);
+            isMatch = await CRYPT.match( token, vars.token );
+            if( !isMatch ) return Promise.reject( 'Incorrect token...' );
+        } else {
+            isMatch = await CRYPT.match( vars.password, user.password );
+            if( !isMatch ) return Promise.reject( 'Incorrect password...' );
+        }
 
         return this.getLogin( user );
     };
@@ -87,7 +99,7 @@ class AUTH
     {
         let usernameID  = user._id;
         let username    = user.username;
-        let token       = await CRYPT.tokenize( username );
+        let token       = await CRYPT.hashedToken( username );
  
         await USERNAME.changeLastLogin( usernameID, token );
         

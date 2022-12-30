@@ -91,15 +91,15 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
                     password: state.password
                 });
                 
-                if (res.success) 
-                {
-                    window.location.reload();
-                } else {
-                    updateState({
-                        isBusy: false,
-                        warning: res.result,
-                    });
-                }
+                // if (res.username) 
+                // {
+                //     window.location.reload();
+                // } else {
+                //     updateState({
+                //         isBusy: false,
+                //         warning: res.result,
+                //     });
+                // }
             }
         }
     }

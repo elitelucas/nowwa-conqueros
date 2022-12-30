@@ -26,7 +26,7 @@ class Storage
         
         if (typeof this.presetAccount.username != 'undefined') {
             console.log(`has preset username: ${JSON.stringify(this.presetAccount)}`);
-            this.set("account", {
+            this.setAccount({
                 username: this.presetAccount
             });
         }
@@ -47,6 +47,7 @@ class Storage
     private loadAccount()
     {
         let json = typeof window != 'undefined' ? window.localStorage.getItem( "account" ) : null;
+        console.log(`load account`, json);
         var vars = json ? JSON.parse( json as string ) : this.presetAccount;
 
         if( !vars.username ) vars.username = this.generateUsername();

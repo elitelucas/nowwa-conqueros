@@ -109,7 +109,7 @@ class SOCIALAUTH {
                     });
             } else 
             {
-                let token : string = await CRYPT.tokenize( user.username );
+                let token : string = await CRYPT.hashedToken( user.username );
 
                 res.send(
                     {

@@ -11,8 +11,6 @@ class Auth
         this.conquer = instance;
     }
 
-    private vars: { [key: string]: any } = {};
-
     public async init() : Promise<any> 
     {
 
@@ -38,14 +36,17 @@ class Auth
 
     public async get( params? : { username: string, password: string, type?:string }): Promise<any> 
     {
-
-        console.log(`params`, params);
         
         if( params ) params.type = "USERNAME";
 
         console.log(`[Auth] get CONQUER.Storage.account`, this.conquer.Storage.account);
+        console.log(`[Auth] get params`, params);
+
+        let parameter = typeof params != 'undefined' ? params : this.conquer.Storage.account;
+
+        console.log(`[Auth] get parameter`, parameter);
  
-        let response : any = await this.conquer.do( ACTIONS.AUTH_GET, params || this.conquer.Storage.account );
+        let response : any = await this.conquer.do( ACTIONS.AUTH_GET, parameter );
 
         console.log(`[Auth] get response`, response);
 

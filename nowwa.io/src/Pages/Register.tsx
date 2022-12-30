@@ -96,8 +96,10 @@ const Register = (state: RegisterState, setState: React.Dispatch<React.SetStateA
                     username: state.email,
                     password: state.password
                 });
+
+                console.log(`register result`, JSON.stringify(res));
                 
-                if (res.success) {
+                if (res.username) {
                     updateState({
                         isBusy: false,
                         shouldReset: true,
@@ -116,7 +118,7 @@ const Register = (state: RegisterState, setState: React.Dispatch<React.SetStateA
 
     return (
         <Segment placeholder>
-            <Form warning={state.warning.length > 0}>
+            <Form warning={typeof state.warning != 'undefined' && state.warning.length > 0}>
                 <Grid centered columns='8'>
                     <Grid.Row>
                         <Grid.Column>
