@@ -59,9 +59,9 @@ class Rooms
 
     ================*/
 
-    public async leave( room:RoomInstance ) : Promise<any>
+    public async leave( roomID:any ) : Promise<any>
     {
-        delete this.pool[ room.roomID ];
+        delete this.pool[ roomID ];
 
         return Promise.resolve();
     };
