@@ -26,11 +26,11 @@ class EXPRESS {
 
         var app: express.Express = EXPRESS.app =
             express()
+                .use(cors())
                 .use(express.json())
                 .use(express.urlencoded({
                     extended: false
                 }))
-                .use(cors())
                 .use(session({
                     genid: () => crypto.randomBytes(48).toString('hex'),
                     secret: CONFIG.vars.EXPRESS_SECRET,

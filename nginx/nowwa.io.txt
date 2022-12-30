@@ -11,7 +11,7 @@ server {
 	listen 443 ssl default_server;
 	server_name nowwa.io;
 	
-	add_header Access-Control-Allow-Origin *;
+	#add_header Access-Control-Allow-Origin *;
 	
 	ssl_certificate     /etc/letsencrypt/live/nowwa.io/fullchain.pem;
 	ssl_certificate_key /etc/letsencrypt/live/nowwa.io/privkey.pem;
@@ -41,7 +41,7 @@ server {
 	listen 9005 ssl;
 	server_name nowwa.io;
 	
-	add_header Access-Control-Allow-Origin *;
+	#add_header Access-Control-Allow-Origin *;
 	
 	ssl_certificate     /etc/letsencrypt/live/nowwa.io/fullchain.pem;
 	ssl_certificate_key /etc/letsencrypt/live/nowwa.io/privkey.pem;
