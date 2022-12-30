@@ -62,7 +62,9 @@ class Storage
         [
             "username",
             "firstName",
-            "type"
+            "type",
+            "avatarID",
+            "token",
         ];
 
         let originalParams:{[key:string]:any} = { };

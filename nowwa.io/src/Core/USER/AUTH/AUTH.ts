@@ -71,6 +71,14 @@ class AUTH
 
     public static async get( vars: any ): Promise<any> 
     {
+        
+        if ( vars.token ) {
+            let token:string = await CRYPT.token(vars.username);
+            let isTokenMatch: boolean = await CRYPT.match( token, vars.token );
+            if( !isTokenMatch ) return Promise.reject( 'Incorrect token...' );
+            return Promise.resolve(vars);
+        }
+
         if( vars.type != "USERNAME" ) return this.getProxy( vars );
 
         var user : any = await USERNAME.get({ username: vars.username });
@@ -79,18 +87,8 @@ class AUTH
 
         if( !user.isVerified ) return Promise.reject( 'Email is not verified...' );
 
-        let isMatch : boolean = false;
-
-        console.log(`[AUTH] get vars`, JSON.stringify(vars));
-
-        if ( vars.token ) {
-            let token = await CRYPT.token(vars.username);
-            isMatch = await CRYPT.match( token, vars.token );
-            if( !isMatch ) return Promise.reject( 'Incorrect token...' );
-        } else {
-            isMatch = await CRYPT.match( vars.password, user.password );
-            if( !isMatch ) return Promise.reject( 'Incorrect password...' );
-        }
+        let isMatch : boolean = await CRYPT.match( vars.password, user.password );
+        if( !isMatch ) return Promise.reject( 'Incorrect password...' );
 
         return this.getLogin( user );
     };
