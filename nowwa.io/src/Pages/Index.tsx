@@ -6,6 +6,7 @@ import Explorer, { ExplorerState, ExplorerStateDefault, ExplorerLoad } from './E
 import Builds, { BuildStateDefault } from './Builds';
 import 'semantic-ui-css/semantic.css';
 import Login, { LoginStateDefault } from './Login';
+import MyTest from './MyTest';
 import Register, { RegisterStateDefault } from './Register';
 import Home, { HomeStateDefault } from './Home';
 import { ComponentState, UpdateComponentState } from './Utils/Helpers';
@@ -34,16 +35,16 @@ export const IndexStateDefault: IndexState = {
     message: ``
 }
 
-const LoadScripts = async (urls:string[]) => {
-    for (let i:number = 0; i < urls.length; i++) {
+const LoadScripts = async (urls: string[]) => {
+    for (let i: number = 0; i < urls.length; i++) {
         await new Promise<void>((resolve, reject) => {
-    
+
             let script = document.createElement('script');
             script.type = 'text/javascript';
             script.src = urls[i];
             script.async = true;
             script.defer = true;
-    
+
             script.onload = () => {
                 console.log(`script: ${urls[i]} loaded!`);
                 resolve();
@@ -62,7 +63,7 @@ const Index = () => {
         setState(newState);
     };
 
-    useEffect(()=> {
+    useEffect(() => {
 
         console.log(`create conquer`);
 
@@ -74,8 +75,7 @@ const Index = () => {
 
             console.log(`account`, account);
 
-            if (account && typeof account.avatarID != 'undefined' && ((state.acceptGuest && account.username.indexOf('Guest_') > 0) || (account.username.indexOf('Guest_') < 0 && account.username.length > 0)))
-            {
+            if (account && typeof account.avatarID != 'undefined' && ((state.acceptGuest && account?.username.indexOf('Guest_') > 0) || (account.username.indexOf('Guest_') < 0 && account.username.length > 0))) {
                 if (state.conquer != null) {
                     updateState({
                         initialized: true,
@@ -109,6 +109,12 @@ const Index = () => {
 
         });
     }, []);
+
+    /*
+        Test
+    */
+    let mytest: JSX.Element = <></>;
+    mytest = MyTest(state);
 
     let top: JSX.Element = <></>;
     if (false) {
@@ -170,6 +176,7 @@ const Index = () => {
                 </Segment>
             </>}
             {home}
+            {mytest}
             {top}
             {login}
             {register}

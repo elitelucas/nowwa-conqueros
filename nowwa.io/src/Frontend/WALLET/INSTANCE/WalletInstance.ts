@@ -9,19 +9,21 @@ class WalletInstance
  
     public History      : WalletHistory;
     public Assets       : WalletAssets;
-    public wallet       : any;
+    public address       : any;
+    public balance       : any;
 
     public constructor( conquer:CONQUER, data:any ) 
     {
         this.conquer    = conquer;
-        this.wallet     = data.wallet;
+        this.address     = data.address;
+        this.balance     = data.balance;
         this.History    = new WalletHistory( conquer );
         this.Assets     = new WalletAssets( conquer );
     }
 
-    public async send( recipientAvatarID:any, contents:any ) : Promise<any>
+    public async send( recipientAddress:any, amount:any ) : Promise<any>
     {
-        let result = await this.conquer.do( ACTIONS.WALLET_SEND, { recipientAvatarID:recipientAvatarID, contents:contents } );
+        let result = await this.conquer.do( ACTIONS.WALLET_SEND, { recipientAddress:recipientAddress, amount:amount } );
         return Promise.resolve( result );
     }
 }

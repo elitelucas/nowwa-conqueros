@@ -19,9 +19,12 @@ class Wallets
 
     public async get() : Promise<any>
     {
-        let data : any = await this.conquer.do( ACTIONS.WALLET_GETSET );
+        let res : any = await this.conquer.do( ACTIONS.WALLET_GETSET );
 
-        return Promise.resolve( new WalletInstance( this.conquer, data ) );
+        if(res.success) {
+            res.data =  new WalletInstance( this.conquer, res.data );
+        }
+        return res;
     };
 
 }

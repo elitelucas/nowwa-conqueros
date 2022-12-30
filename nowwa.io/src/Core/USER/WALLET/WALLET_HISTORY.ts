@@ -1,16 +1,15 @@
-import STRING from '../../../UTIL/STRING';
+import STRING from "../../../UTIL/STRING";
 import DATA from "../../DATA/DATA";
-import USERNAME from '../USERNAME';
- 
-import LOG, { log } from '../../../UTIL/LOG';
-import CRYPT from '../../../UTIL/CRYPT';
-import WALLET from './WALLET';
+import USERNAME from "../USERNAME";
 
-class WALLET_HISTORY
-{
-    private static table : string = "wallet_history";
- 
-    /*=============== 
+import LOG, { log } from "../../../UTIL/LOG";
+import CRYPT from "../../../UTIL/CRYPT";
+import WALLET from "./WALLET";
+
+class WALLET_HISTORY {
+  private static table: string = "wallet_history";
+
+  /*=============== 
 
 
     GET  
@@ -22,26 +21,23 @@ class WALLET_HISTORY
     
 
     ================*/
-  
-    public static async get( query:any ) : Promise<any>
-    {
-        let value   = await WALLET.getSet( query );
-        let wallet  = value.wallet;
- 
-        let history : any;
- 
-        /*
-            //////// J get the history from the blockchain
 
-            history = the history
+  public static async get(query: any): Promise<any> {
+    let mywallet = await WALLET.getSet(query);
+    let address = mywallet.address;
 
-        */
+    let history: any;
 
-        return Promise.resolve( history );
-    };
- 
+    history = await DATA.get(this.table, { address: address });
 
-};
+    return Promise.resolve(history);
+  }
 
+  public static async set(query: any): Promise<any> {
+    let item = await DATA.set(this.table, query);
+
+    return Promise.resolve(item);
+  }
+}
 
 export default WALLET_HISTORY;
