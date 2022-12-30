@@ -23,7 +23,7 @@ class WebAuth
         await this.authLinks();
 
         console.log('web auth initialized!');
-        
+
         return Promise.resolve();
     }
 
@@ -33,10 +33,13 @@ class WebAuth
         {
             let authLinkResponse = await new Promise<any>((resolve, reject) => 
             {
-                let authLinksUrl        : URL = new URL(`${window.location.origin}${authLinks}`);
+                let authLinksUrl        : URL = new URL(`${CONFIG.vars.PUBLIC_FULL_URL}${authLinks}`);
                 let authLinksRequest    : RequestInit = {
                     method              : "POST",
-                    headers             : { 'Content-Type': 'application/json' },
+                    headers             : { 
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*',
+                    },
                     body                : '{}'
                 };
                 fetch(authLinksUrl, authLinksRequest)

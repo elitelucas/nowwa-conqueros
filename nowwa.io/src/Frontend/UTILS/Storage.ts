@@ -67,6 +67,7 @@ class Storage
             "token",
         ];
 
+        let allParams : any = {};
         let originalParams:{[key:string]:any} = { };
         let params : any = {};
 
@@ -84,7 +85,6 @@ class Storage
                 } else {
                     params[key] = val;
                 }
-
             } else {
                 originalParams[key] = val;
             }
@@ -95,7 +95,7 @@ class Storage
         console.log(`params`, params);
         
         let originalSearchParams:string = Object.keys(originalParams).map(key => key + '=' + originalParams[key]).join('&');
-        let originalUrl = `${window.location.origin}${originalSearchParams.length > 0 ? "?" + originalSearchParams : ""}`;
+        let originalUrl = window.location.href.substring(0, window.location.href.indexOf('?')) + `${originalSearchParams.length > 0 ? "?" + originalSearchParams : ""}`;
     
         window.history.pushState( params, "", `${originalUrl}`);
  
