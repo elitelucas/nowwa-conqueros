@@ -97,7 +97,7 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
                 } else {
                     updateState({
                         isBusy: false,
-                        warning: res.result,
+                        warning: res,
                     });
                 }
             }

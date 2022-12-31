@@ -109,7 +109,7 @@ const Register = (state: RegisterState, setState: React.Dispatch<React.SetStateA
                     updateState({
                         isBusy: false,
                         shouldReset: true,
-                        warning: res.error
+                        warning: res
                     });
                 }
             }
