@@ -116,8 +116,8 @@ class EMAIL
     {
         let token = await CRYPT.hashedToken(email);
 
-        console.log(`[Testing] : [EMAIL]: currently not sending any email when registering`);
-        return;
+        // console.log(`[Testing] : [EMAIL]: currently not sending any email when registering`);
+        // return;
 
         EMAIL.send(
             {
