@@ -50,9 +50,13 @@ class Auth
 
         console.log(`[Auth] get response`, response);
 
-        this.conquer.User.set( response );
+        if (typeof response != 'string') {
+            
+            this.conquer.User.set( response );
 
-        this.conquer.Analytics.onEntryPoint();
+            this.conquer.Analytics.onEntryPoint();
+            
+        }
 
         return Promise.resolve(response);
     }
