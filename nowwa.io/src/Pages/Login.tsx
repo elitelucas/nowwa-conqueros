@@ -106,11 +106,23 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
 
     let doGuest = async () => {
         if (indexState.conquer!.initialized) {
-            setIndexState({
-                display: 'Home',
-                acceptGuest: true,
-                account: indexState.conquer!.User!
+
+            updateState({
+                isBusy: true,
+                warning: '',
             });
+            
+            let res = await indexState.conquer!.Auth.guest();
+            
+            if (res.username) 
+            {
+                window.location.reload();
+            } else {
+                updateState({
+                    isBusy: false,
+                    warning: res,
+                });
+            }
         }
     }
 
@@ -133,7 +145,6 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
                     if (res.success) {
                         setIndexState({
                             display: 'Home',
-                            account: res.account
                         });
                     } else {
                         updateState({
@@ -165,7 +176,6 @@ const Login = (state: LoginState, setState: React.Dispatch<React.SetStateAction<
                     if (res.success) {
                         setIndexState({
                             display: 'Home',
-                            account: res.account
                         });
                     } else {
                         updateState({

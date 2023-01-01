@@ -80,7 +80,7 @@ class Rooms
         {
             let message = object.messages[n];
 
-            if( message.avatarID == this.conquer.User.avatarID ) continue;
+            if( message.avatarID == this.conquer.User!.avatarID ) continue;
 
             let room  = this.pool[ message.roomID ];
             if( room ) room._onServerMessage( message );

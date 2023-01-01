@@ -1,14 +1,16 @@
+import e from "express";
 import DATE from "../../UTIL/DATE";
 import RANDOM from "../../UTIL/RANDOM";
+import CONQUER from "../CONQUER";
+import User from "../USER/User";
+
 class Storage
 {
 
-    private presetAccount: { username?:string };
+    private conquer: CONQUER;
 
-    public constructor( username?:string ) {
-        this.presetAccount = {
-            username: username
-        };
+    public constructor( instance:CONQUER) {
+        this.conquer = instance;
     }
     /*=============== 
 
@@ -17,21 +19,13 @@ class Storage
     
 
     ================*/ 
-
-    public account:any = {};
  
     public async init( ): Promise<any> 
     {
         console.log('storage initializing...');
-        
-        if (typeof this.presetAccount.username != 'undefined') {
-            console.log(`has preset username: ${JSON.stringify(this.presetAccount)}`);
-            this.setAccount({
-                username: this.presetAccount
-            });
-        }
+
+        this.setAccount( this.conquer.User );
         this.setAccount( this.loadAccount() );
-        console.log(`storage account`, this.account);
         this.setAccount( this.parseUrlSearchParams() );
 
         console.log('storage initialized!');
@@ -47,27 +41,20 @@ class Storage
     private loadAccount()
     {
         let json = typeof window != 'undefined' ? window.localStorage.getItem( "account" ) : null;
-        console.log(`load account`, json);
-        var vars = json ? JSON.parse( json as string ) : this.presetAccount;
-
-        if( !vars.username ) vars.username = this.generateUsername();
-
-        return vars;
+        console.log(`[Storage] loadAccount json`, JSON.stringify(json));
+        if (json == 'null') json = null;
+        var user:User = json ? 
+            JSON.parse( json as string ) : 
+            {
+                username: this.generateUsername()
+            };
+        console.log(`[Storage] loadAccount user`, JSON.stringify(user));
+        return user;
     }
  
     private parseUrlSearchParams()
     {
-        
-        let usedParams:string[] = 
-        [
-            "username",
-            "firstName",
-            "type",
-            "avatarID",
-            "token",
-        ];
 
-        let allParams : any = {};
         let originalParams:{[key:string]:any} = { };
         let params : any = {};
 
@@ -75,7 +62,7 @@ class Storage
         
         new URL( window.location.href ).searchParams.forEach((val, key) => 
         {
-            if (usedParams.indexOf(key) >= 0) {
+            if (User.Fields.indexOf(key) >= 0) {
                 
                 if( params[key] !== undefined ) 
                 {
@@ -127,20 +114,24 @@ class Storage
     public set( key:string, value:any ) 
     {
         if( typeof window != 'undefined' ) {
-            window.localStorage.setItem( key, JSON.stringify( value ));
+            if (value == null) {
+                window.localStorage.removeItem(key);
+            } else {
+                window.localStorage.setItem( key, JSON.stringify( value ));
+            }
         }
-        return value;
+        value;
     }
 
-    public setAccount( vars?:any ) 
+    public setAccount( user?:User ) 
     {
-        if( !vars ) return;
+        console.log(`[Storage] setAccount typeof user`, typeof user);
+        if( !user ) return;
+        console.log(`[Storage] user`, JSON.stringify(user));
 
-        this.account = vars;
+        this.conquer.User = user;
 
-        this.set( "account", this.account );
-        
-        return this.account;
+        this.set( "account", user);
     }
 
     /*=============== 
@@ -153,24 +144,20 @@ class Storage
 
     public remove( key:any ) 
     {
-        return this.set( key, null );
+        this.set( key, null );
     }
 
     public removeAccount() 
     {
-
         this.remove( "account" );
-        let account = {
-            username: this.generateUsername()
-        };
-        return this.setAccount( account );
+        this.setAccount( this.loadAccount() );
     }
  
 }
 
 namespace Storage 
 {
-    export type Account = 
+    export type Preset = 
     {
         avatarID        : any,
         username        : any,

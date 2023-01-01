@@ -13,11 +13,6 @@ class Auth
 
     public async init() : Promise<any> 
     {
-
-        console.log('auth initializing...');
-        await this.get();
-
-        console.log('auth initialized!');
         return Promise.resolve();
     }
  
@@ -29,9 +24,13 @@ class Auth
     public async logout()
     {
         this.conquer.Storage.removeAccount();
-        console.log(`after logout`, this.conquer.Storage.account);
-        await this.get();
         return Promise.resolve();
+    }
+
+    public async guest() 
+    {
+        let response = await this.get();
+        return Promise.resolve(response);
     }
 
     public async get( params? : { username: string, password: string, type?:string }): Promise<any> 
@@ -39,10 +38,10 @@ class Auth
         
         if( params ) params.type = "USERNAME";
 
-        console.log(`[Auth] get CONQUER.Storage.account`, this.conquer.Storage.account);
+        console.log(`[Auth] get CONQUER.User`, this.conquer.User);
         console.log(`[Auth] get params`, params);
 
-        let parameter = typeof params != 'undefined' ? params : this.conquer.Storage.account;
+        let parameter = typeof params != 'undefined' ? params : this.conquer.User;
 
         console.log(`[Auth] get parameter`, parameter);
  
@@ -52,10 +51,11 @@ class Auth
 
         if (typeof response != 'string') {
             
-            this.conquer.User.set( response );
+            console.log(`[Auth] get typeof response`, typeof response);
+            this.conquer.Storage.setAccount(response);
 
             this.conquer.Analytics.onEntryPoint();
-            
+
         }
 
         return Promise.resolve(response);

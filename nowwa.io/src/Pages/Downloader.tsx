@@ -57,7 +57,7 @@ const Downloader = (state: DownloaderState, setState: React.Dispatch<React.SetSt
             isBusy: true,
             needRefresh: false
         });
-        let avatarID:string = indexState.account!.avatarID;
+        let avatarID:string = indexState.conquer!.User!.avatarID!;
         indexState.conquer!.Files.get({
             avatarID: avatarID
         })

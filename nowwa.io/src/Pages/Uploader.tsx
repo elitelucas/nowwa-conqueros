@@ -46,16 +46,16 @@ const Uploader = (state: UploaderState, setState: React.Dispatch<React.SetStateA
             });
             let file = ((e.target) as HTMLInputElement).files![0];
             
-            let avatarID:string = indexState.account!.avatarID;
+            let avatarID:string = indexState.conquer!.User!.avatarID!;
 
-            await indexState.conquer!.File.set(
+            await indexState.conquer!.Files.set(
             {
                 fileName: file.name,
                 content: file,
                 avatarID: avatarID
             })
 
-            let res = await indexState.conquer!.File.get({
+            let res = await indexState.conquer!.Files.get({
                 avatarID: avatarID
             })
             updateDownloaderState({

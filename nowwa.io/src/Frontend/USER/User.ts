@@ -1,31 +1,20 @@
 import { debug } from 'console';
 import LOG, { log } from '../../UTIL/LOG';
 import CONQUER from '../CONQUER';
- 
-class User 
+
+class User
 {
-    private conquer: CONQUER;
-    public constructor(instance:CONQUER) {
-        this.conquer = instance;
-    }
+    public avatarID?        : string;
+    public firstName?       : string;
+    public username?        : string;
+    public token?           : string;
+    public type?            : string;
+}
 
-    public avatarID     : any = null;
-    public firstName    : any = null;
-    public username     : any = null;
-    public token        : any = null;
- 
-    public set( params:any )
-    {
-        if( !params ) return;
-
-        this.avatarID   = params.avatarID;
-        this.firstName  = params.firstName;
-        this.username   = params.username;
-        this.token      = params.token;
- 
-        this.conquer.Storage.setAccount( params );
-    }
-
+namespace User {
+    export const Fields:string[] = [
+        `avatarID`, `firstName`, `username`, `token`
+    ];
 }
 
 export default User;

@@ -38,13 +38,13 @@ const Home = (state: HomeState, setState: React.Dispatch<React.SetStateAction<Ho
                 isBusy: true
             });
             await indexState.conquer!.Auth.logout();
-            // updateState({
-            //     isBusy: false
-            // });
+            updateState({
+                isBusy: false
+            });
             setIndexState({
-                account: undefined,
                 display: 'Login',
-                acceptGuest: false
+                isBusy: false,
+                conquer: indexState.conquer
             });
         }
     };
@@ -55,7 +55,7 @@ const Home = (state: HomeState, setState: React.Dispatch<React.SetStateAction<Ho
                 <Grid columns='equal' verticalAlign='middle'>
                     <Grid.Row>
                         <Grid.Column>
-                            Welcome, {indexState.account!.firstName}!
+                            Welcome, {indexState.conquer!.User!.firstName!}!
                         </Grid.Column>
                         <Grid.Column width='2'>
                             <Button fluid primary onClick={doLogout} disabled={state.isBusy}><Icon name='log out'></Icon>Logout</Button>

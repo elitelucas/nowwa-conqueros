@@ -23,7 +23,7 @@ class CONQUER
  
     public Storage      : Storage;
     public Auth         : Auth;
-    public User         : User;
+    public User?         : User;
     public WebAuth      : WebAuth;
     public Files        : Files;
     public Friends      : Friends;
@@ -38,16 +38,16 @@ class CONQUER
  
     private Socket      : Socket;
  
-    public constructor( username?:string )
+    public constructor( user?:User )
     {
-        this.Storage    = new Storage( username );
+        this.User       = user;
+        this.Storage    = new Storage( this );
         this.Friends    = new Friends( this );
         this.Auth       = new Auth( this );
         this.WebAuth    = new WebAuth();
         this.Files      = new Files( this );
         this.Rooms      = new Rooms( this );
         this.Socket     = new Socket( this );
-        this.User       = new User( this );
         this.Analytics  = new Analytics(this);
         this.Followers  = new Followers( this );
         this.Games      = new Games( this );

@@ -20,9 +20,7 @@ type IndexDisplay = 'None' | 'Explorer' | 'Build' | 'Test' | 'Login' | 'Register
 
 export type IndexState = ComponentState & {
     display: IndexDisplay,
-    account?: User,
     message: string,
-    acceptGuest: boolean,
     params?: { [key: string]: any },
     conquer?: CONQUER
 };
@@ -31,7 +29,6 @@ export const IndexStateDefault: IndexState = {
     display: 'Login',
     initialized: false,
     isBusy: true,
-    acceptGuest: false,
     message: ``
 }
 
@@ -73,21 +70,17 @@ const Index = () => {
 
             let account = conquer.User;
 
-            console.log(`account`, account);
-
-            if (account && typeof account.avatarID != 'undefined' && ((state.acceptGuest && account?.username.indexOf('Guest_') > 0) || (account.username.indexOf('Guest_') < 0 && account.username.length > 0))) {
+            if (account) {
                 if (state.conquer != null) {
                     updateState({
                         initialized: true,
                         display: 'Home',
-                        account: account!,
                         isBusy: false
                     });
                 } else {
                     updateState({
                         initialized: true,
                         display: 'Home',
-                        account: account!,
                         isBusy: false,
                         conquer: conquer
                     });
@@ -116,6 +109,8 @@ const Index = () => {
     let mytest: JSX.Element = <></>;
     mytest = MyTest(state);
 
+    let loggedIn:boolean = typeof state.conquer != 'undefined' && typeof state.conquer!.User != 'undefined' && typeof state.conquer!.User!.username != 'undefined' && typeof state.conquer!.User!.token != 'undefined';
+
     let top: JSX.Element = <></>;
     if (false) {
         top = Top(updateState);
@@ -135,7 +130,7 @@ const Index = () => {
 
     const [loginState, setLoginState] = useState(LoginStateDefault);
     let login: JSX.Element = <></>;
-    if (state.display == 'Login') {
+    if (!loggedIn) {
         login = Login(loginState, setLoginState, state, updateState);
     }
 
@@ -147,7 +142,7 @@ const Index = () => {
 
     const [homeState, setHomeState] = useState(HomeStateDefault);
     let home: JSX.Element = <></>;
-    if (state.account) {
+    if (loggedIn) {
         home = Home(homeState, setHomeState, state, updateState);
     }
 
@@ -155,7 +150,7 @@ const Index = () => {
     let downloader: JSX.Element = <></>;
     const [uploaderState, setUploaderState] = useState(UploaderStateDefault);
     let uploader: JSX.Element = <></>;
-    if (state.account) {
+    if (loggedIn) {
         downloader = Downloader(downloaderState, setDownloaderState, state);
         let updateDownloaderState = (updates: Partial<DownloaderState>) => {
             let newDownloaderState = UpdateComponentState<DownloaderState>(downloaderState, updates);
@@ -166,7 +161,7 @@ const Index = () => {
 
     return (
         <Segment placeholder>
-            {!state.account && <>
+            {!loggedIn && <>
                 <Segment placeholder>
                     <Header icon>
                         <Icon name='earlybirds' />
