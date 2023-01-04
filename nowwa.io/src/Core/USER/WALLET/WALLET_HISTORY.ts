@@ -5,6 +5,7 @@ import USERNAME from "../USERNAME";
 import LOG, { log } from "../../../UTIL/LOG";
 import CRYPT from "../../../UTIL/CRYPT";
 import WALLET from "./WALLET";
+import AVATAR from "../TRIBE/AVATAR";
 
 class WALLET_HISTORY {
   private static table: string = "wallet_history";
@@ -23,12 +24,11 @@ class WALLET_HISTORY {
     ================*/
 
   public static async get(query: any): Promise<any> {
-    let mywallet = await WALLET.getSet(query);
-    let address = mywallet.address;
-
+    console.log('wallet_history get', query)
+    let usernameID = await AVATAR.getUsernameID({ _id: query.avatarID });
     let history: any;
 
-    history = await DATA.get(this.table, { address: address });
+    history = await DATA.get(this.table, { usernameID: usernameID });
 
     return Promise.resolve(history);
   }
@@ -46,7 +46,7 @@ class WALLET_HISTORY {
     recipientAddress: string,
     transaction: string
   ): Promise<any> {
-    let now = new Date(Date.now()).toLocaleString("en-GB", { timeZone: "UTC" });
+    let now = new Date(Date.now()).toISOString();
     let item = await this.set({
       usernameID,
       type: "send",
