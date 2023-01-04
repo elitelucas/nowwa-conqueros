@@ -8,8 +8,8 @@ import { set } from 'mongoose';
 
 
 const JTest = (indexState: IndexState) => {
-    const [data1, setData1] = useState('');
-    const [data2, setData2] = useState('');
+    const [data1, setData1] = useState('0x09904C9C9b77fBc2a1C2a14c050d48975129Cc43');
+    const [data2, setData2] = useState(1.3);
 
     const wallet_gethistory = async () => {
         console.log('wallet_gethistory is called')
@@ -21,7 +21,7 @@ const JTest = (indexState: IndexState) => {
             let history = await walletInstance.History.get();
             console.log(history)
         } else {
-            console.log('failed', res.message)
+            alert(res.message)
             return;
         }
     }
@@ -33,17 +33,17 @@ const JTest = (indexState: IndexState) => {
             let walletInstance = res.data
 
             res = await walletInstance.send(
-                "0x6f870Ba028DC73ecAE917ABF928F75382b07C39e1",
-                2
+                data1,
+                data2
             );
             if (res.success) {
                 console.log('success', res.data)
             } else {
-                console.log('failed', res.message)
+                alert(res.message)
                 return;
             }
         } else {
-            console.log(res.message)
+            alert(res.message)
             return;
         }
 
@@ -74,9 +74,9 @@ const JTest = (indexState: IndexState) => {
                             <Header textAlign='center'>J's Test</Header>
                         </Grid.Column>
                     </Grid.Row>
-                    {/* <Grid.Row>
+                    <Grid.Row>
                         <Grid.Column verticalAlign='middle' textAlign='right' width='2'>
-                            Data1
+                            Recepient Address
                         </Grid.Column>
                         <Grid.Column width='4'>
                             <Form.Input
@@ -88,7 +88,7 @@ const JTest = (indexState: IndexState) => {
                     </Grid.Row>
                     <Grid.Row>
                         <Grid.Column verticalAlign='middle' textAlign='right' width='2'>
-                            Data2
+                            Amount
                         </Grid.Column>
                         <Grid.Column width='4'>
                             <Form.Input
@@ -97,7 +97,7 @@ const JTest = (indexState: IndexState) => {
                                 onChange={(e) => setData2(e.target.value)}
                             />
                         </Grid.Column>
-                    </Grid.Row> */}
+                    </Grid.Row>
                     <Grid.Row>
                         <Grid.Column textAlign='center' width='8'>
                             <Message

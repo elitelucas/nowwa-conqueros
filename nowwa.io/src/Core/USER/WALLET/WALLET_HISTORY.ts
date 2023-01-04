@@ -38,6 +38,27 @@ class WALLET_HISTORY {
 
     return Promise.resolve(item);
   }
+
+  public static async addSendHistory(
+    usernameID: any,
+    amount: number,
+    token: string,
+    recipientAddress: string,
+    transaction: string
+  ): Promise<any> {
+    let now = new Date(Date.now()).toLocaleString("en-GB", { timeZone: "UTC" });
+    let item = await this.set({
+      usernameID,
+      type: "send",
+      amount,
+      token,
+      recipientAddress,
+      transaction,
+      date: now,
+    });
+
+    return Promise.resolve(item);
+  }
 }
 
 export default WALLET_HISTORY;
