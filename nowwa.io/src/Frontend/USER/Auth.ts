@@ -14,14 +14,14 @@ class Auth
 
     public async init() : Promise<any> 
     {
-
         if (typeof this.conquer.User != 'undefined' && 
-        this.conquer.User!.type == 'FACEBOOK' || 
+        (this.conquer.User!.type == 'FACEBOOK' || 
         this.conquer.User!.type == 'DISCORD' || 
         this.conquer.User!.type == 'GOOGLE' || 
         this.conquer.User!.type == 'TWITTER' || 
         this.conquer.User!.type == 'SNAPCHAT' || 
-        this.conquer.User!.type == 'WALLET') {
+        this.conquer.User!.type == 'WALLET' ||
+        typeof this.conquer.User!.token != 'undefined')) {
             await this.get();
         }
 

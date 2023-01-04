@@ -102,7 +102,7 @@ class SocketInstance
 
         // AT THIS POINT, AVATAR ID IS REWRITTEN
 
-        console.log(`this.User.avatarID`, this.User.avatarID);
+        console.log(`this.User.avatarID`, this.User.avatarID); 
  
         vars.avatarID = this.User.avatarID;
 
@@ -151,6 +151,11 @@ class SocketInstance
 
         function doCallback( vars?: any, isSuccess: boolean = true ) 
         {
+            if( action == ACTIONS.AUTH_GET) {
+                console.log(`[SocketInstance.ts] isSuccess`, isSuccess);
+                console.log(`[SocketInstance.ts] vars`, JSON.stringify(vars, null, 2));
+            }
+
             if( action == ACTIONS.AUTH_GET && isSuccess && vars ) setUser( vars );
  
             if( callback ) callback( vars || isSuccess );

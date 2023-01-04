@@ -83,7 +83,9 @@ class Google
 
                 let friend_count    = contactInfo.data.totalPeople || 0;
 
-                console.log(`friends`, JSON.stringify(contactInfo));
+                if (typeof contactInfo.data.connections != 'undefined') {
+                    
+                }
 
                 let account:{[key:string]:any} = 
                 {

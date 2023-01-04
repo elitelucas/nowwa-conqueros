@@ -15,6 +15,8 @@ const MyTest = (indexState: IndexState) => {
         console.log('wallet_gethistory is called')
 
         let res = await indexState.conquer!.Wallets.get();
+
+        console.log(`res`, res);
         if (res.success) {
             console.log('success', res.data)
         } else {
@@ -50,12 +52,12 @@ const MyTest = (indexState: IndexState) => {
     }
 
     const getAccount = async () => {
-        console.log(indexState.conquer?.Storage.account.username)
+        console.log(indexState.conquer?.User!.username)
     }
 
     const test = async () => {
         console.log('test is called')
-        let conquer1 = new CONQUER("user001");
+        let conquer1 = new CONQUER({username: "user001"});
         await conquer1.init();
         let gameInstance = await conquer1.Games.getOne("Bowling");
 
