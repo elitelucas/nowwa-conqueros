@@ -21,7 +21,7 @@ class Auth
         this.conquer.User!.type == 'GOOGLE' || 
         this.conquer.User!.type == 'TWITTER' || 
         this.conquer.User!.type == 'SNAPCHAT' || 
-        this.conquer.User!.type == 'METAMASK') {
+        this.conquer.User!.type == 'WALLET') {
             await this.get();
         }
 
