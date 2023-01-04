@@ -8,7 +8,7 @@ class User
     public firstName?       : string;
     public username?        : string;
     public token?           : string;
-    public type?            : 'DISCORD' | 'FACEBOOK' | 'TWITTER' | 'GOOGLE' | 'SNAPCHAT' | 'CONQUER' | 'METAMASK' | 'GUEST' | 'USERNAME';
+    public type?            : 'DISCORD' | 'FACEBOOK' | 'TWITTER' | 'GOOGLE' | 'SNAPCHAT' | 'CONQUER' | 'WALLET' | 'GUEST' | 'USERNAME';
     public email?           : string;
     public accessToken?     : string;
     public wallet?          : string;
