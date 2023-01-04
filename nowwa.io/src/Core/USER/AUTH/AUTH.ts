@@ -144,25 +144,13 @@ class AUTH
         var usernameID : any;
  
         if( vars.token ) usernameID = await USERNAME.getUsernameID({ token:vars.token });
-
-        console.log(`[AUTH] getProxy 1 usernameID`, usernameID);
  
         if( !usernameID && vars.username ) usernameID = await USERNAME.getUsernameID({ username:vars.username });
-
-        console.log(`[AUTH] getProxy 2 usernameID`, usernameID);
         if( !usernameID && vars.username ) usernameID = await USERNAME_PROXY.getUsernameID({ username:vars.username });
-
-        console.log(`[AUTH] getProxy 3 usernameID`, usernameID);
         if( !usernameID && vars.email )    usernameID = await EMAIL.getUsernameID({ email:vars.email });
-
-        console.log(`[AUTH] getProxy 4 usernameID`, usernameID);
         if( !usernameID && vars.wallet )   usernameID = await WALLET.getUsernameID({ wallet:vars.wallet });
 
-        console.log(`[AUTH] getProxy 5 usernameID`, usernameID);
-
         if (!usernameID) vars.username = vars.username + DATE.now();
-
-        console.log(`[AUTH] getProxy 6 usernameID`, usernameID);
  
         let user        = await ( usernameID ? USERNAME.get({ where: { _id: usernameID } }) : USERNAME.set(vars) );
 
