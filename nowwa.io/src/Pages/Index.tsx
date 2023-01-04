@@ -6,7 +6,7 @@ import Explorer, { ExplorerState, ExplorerStateDefault, ExplorerLoad } from './E
 import Builds, { BuildStateDefault } from './Builds';
 import 'semantic-ui-css/semantic.css';
 import Login, { LoginStateDefault } from './Login';
-import MyTest from './MyTest';
+import JTest from './JTest';
 import Register, { RegisterStateDefault } from './Register';
 import Home, { HomeStateDefault } from './Home';
 import { ComponentState, UpdateComponentState } from './Utils/Helpers';
@@ -106,8 +106,8 @@ const Index = () => {
     /*
         Test
     */
-    let mytest: JSX.Element = <></>;
-    mytest = MyTest(state);
+    let jtest: JSX.Element = <></>;
+    jtest = JTest(state);
 
     let loggedIn:boolean = typeof state.conquer != 'undefined' && typeof state.conquer!.User != 'undefined' && typeof state.conquer!.User!.username != 'undefined' && typeof state.conquer!.User!.token != 'undefined';
 
@@ -171,7 +171,7 @@ const Index = () => {
                 </Segment>
             </>}
             {home}
-            {mytest}
+            {jtest}
             {top}
             {login}
             {register}

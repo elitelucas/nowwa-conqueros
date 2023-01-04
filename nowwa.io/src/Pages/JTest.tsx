@@ -7,7 +7,7 @@ import Storage from '../Frontend/UTILS/Storage';
 import { set } from 'mongoose';
 
 
-const MyTest = (indexState: IndexState) => {
+const JTest = (indexState: IndexState) => {
     const [data1, setData1] = useState('');
     const [data2, setData2] = useState('');
 
@@ -16,48 +16,46 @@ const MyTest = (indexState: IndexState) => {
 
         let res = await indexState.conquer!.Wallets.get();
 
-        console.log(`res`, res);
         if (res.success) {
-            console.log('success', res.data)
+            let walletInstance = res.data
+            let history = await walletInstance.History.get();
+            console.log(history)
         } else {
             console.log('failed', res.message)
             return;
         }
-        let walletInstance = res.data
-        let history = await walletInstance.History.get();
-        console.log(history)
     }
 
     const wallets_send = async () => {
         console.log('wallets_send is called')
         let res = await indexState.conquer!.Wallets.get();
         if (res.success) {
-            console.log(res.data)
+            let walletInstance = res.data
+
+            res = await walletInstance.send(
+                "0x6f870Ba028DC73ecAE917ABF928F75382b07C39e1",
+                2
+            );
+            if (res.success) {
+                console.log('success', res.data)
+            } else {
+                console.log('failed', res.message)
+                return;
+            }
         } else {
             console.log(res.message)
             return;
         }
-        let walletInstance = res.data
 
-        res = await walletInstance.send(
-            "0x6f870Ba028DC73ecAE917ABF928F75382b07C39e1",
-            2
-        );
-        if (res.success) {
-            console.log('success', res.data)
-        } else {
-            console.log('failed', res.message)
-            return;
-        }
     }
 
     const getAccount = async () => {
         console.log(indexState.conquer?.User!.username)
     }
 
-    const test = async () => {
+    const games_getone = async () => {
         console.log('test is called')
-        let conquer1 = new CONQUER({username: "user001"});
+        let conquer1 = new CONQUER({ username: "user001" });
         await conquer1.init();
         let gameInstance = await conquer1.Games.getOne("Bowling");
 
@@ -73,12 +71,12 @@ const MyTest = (indexState: IndexState) => {
                 <Grid centered columns='8'>
                     <Grid.Row>
                         <Grid.Column>
-                            <Header textAlign='center'>My Test</Header>
+                            <Header textAlign='center'>J's Test</Header>
                         </Grid.Column>
                     </Grid.Row>
-                    <Grid.Row>
+                    {/* <Grid.Row>
                         <Grid.Column verticalAlign='middle' textAlign='right' width='2'>
-                            Username
+                            Data1
                         </Grid.Column>
                         <Grid.Column width='4'>
                             <Form.Input
@@ -90,7 +88,7 @@ const MyTest = (indexState: IndexState) => {
                     </Grid.Row>
                     <Grid.Row>
                         <Grid.Column verticalAlign='middle' textAlign='right' width='2'>
-                            Wallet
+                            Data2
                         </Grid.Column>
                         <Grid.Column width='4'>
                             <Form.Input
@@ -99,7 +97,7 @@ const MyTest = (indexState: IndexState) => {
                                 onChange={(e) => setData2(e.target.value)}
                             />
                         </Grid.Column>
-                    </Grid.Row>
+                    </Grid.Row> */}
                     <Grid.Row>
                         <Grid.Column textAlign='center' width='8'>
                             <Message
@@ -110,22 +108,22 @@ const MyTest = (indexState: IndexState) => {
                     </Grid.Row>
                     <Grid.Row>
                         <Grid.Column>
-                            <Button fluid primary onClick={wallet_gethistory}>wallet_gethistory</Button>
+                            <Button fluid primary onClick={wallet_gethistory}>wallet.History.get</Button>
                         </Grid.Column>
                         <Grid.Column>
-                            <Button fluid primary onClick={wallets_send}>wallets_send</Button>
+                            <Button fluid primary onClick={wallets_send}>wallet.send</Button>
                         </Grid.Column>
                         <Grid.Column>
-                            <Button fluid primary >Do Sth</Button>
+                            <Button fluid primary disabled>Do Sth</Button>
                         </Grid.Column>
                         <Grid.Column>
-                            <Button fluid primary >Do Sth</Button>
+                            <Button fluid primary disabled>Do Sth</Button>
                         </Grid.Column>
                         <Grid.Column>
-                            <Button fluid primary onClick={getAccount} >getAccount</Button>
+                            <Button fluid primary onClick={getAccount} >User.username</Button>
                         </Grid.Column>
                         <Grid.Column>
-                            <Button fluid primary onClick={test}>test</Button>
+                            <Button fluid primary onClick={games_getone}>Games.getOne</Button>
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>
@@ -135,4 +133,4 @@ const MyTest = (indexState: IndexState) => {
     );
 }
 
-export default MyTest;
+export default JTest;
