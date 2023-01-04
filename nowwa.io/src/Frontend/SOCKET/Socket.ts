@@ -32,9 +32,9 @@ class Socket
 
     public async init() : Promise<any>
     {
-        console.log('socket initializing...');
+        // console.log('socket initializing...');
 
-        log( "client: Init New Socket Client" );
+        // log( "client: Init New Socket Client" );
 
         let self    = this;
 
@@ -46,14 +46,14 @@ class Socket
 
         }, interval:300, autoStart:true });
 
-        console.log('socket initialized!');
+        // console.log('socket initialized!');
  
         return Promise.resolve();
     }
  
     private async connect() : Promise<any>
     {
-        log( "client: Socket Connect" );
+        // log( "client: Socket Connect" );
 
         var self    = this;
  

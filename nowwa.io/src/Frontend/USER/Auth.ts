@@ -57,20 +57,20 @@ class Auth
         
         if( params ) params.type = "USERNAME";
 
-        console.log(`[Auth] get CONQUER.User`, this.conquer.User);
-        console.log(`[Auth] get params`, params);
+        // console.log(`[Auth] get CONQUER.User`, this.conquer.User);
+        // console.log(`[Auth] get params`, params);
 
         let parameter = typeof params != 'undefined' ? params : this.conquer.User;
 
-        console.log(`[Auth] get parameter`, parameter);
+        // console.log(`[Auth] get parameter`, parameter);
  
         let response : any = await this.conquer.do( ACTIONS.AUTH_GET, parameter );
 
-        console.log(`[Auth] get response`, response);
+        // console.log(`[Auth] get response`, response);
 
         if (typeof response != 'string') {
             
-            console.log(`[Auth] get typeof response`, typeof response);
+            // console.log(`[Auth] get typeof response`, typeof response);
             this.conquer.Storage.setAccount(response);
 
             this.conquer.Analytics.onEntryPoint();

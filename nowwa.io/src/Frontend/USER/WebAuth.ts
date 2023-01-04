@@ -29,10 +29,10 @@ class WebAuth
     public async init(): Promise<any> 
     {
 
-        console.log('web auth initializing...');
+        // console.log('web auth initializing...');
         await this.authLinks();
 
-        console.log('web auth initialized!');
+        // console.log('web auth initialized!');
 
         return Promise.resolve();
     }
