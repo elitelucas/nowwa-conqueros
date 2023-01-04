@@ -1,6 +1,7 @@
 import { ACTIONS } from '../../Models/ENUM';
 import CONQUER from '../CONQUER';
 import Storage from '../UTILS/Storage';
+import User from './User';
 
 class Auth 
 {
@@ -13,6 +14,17 @@ class Auth
 
     public async init() : Promise<any> 
     {
+
+        if (typeof this.conquer.User != 'undefined' && 
+        this.conquer.User!.type == 'FACEBOOK' || 
+        this.conquer.User!.type == 'DISCORD' || 
+        this.conquer.User!.type == 'GOOGLE' || 
+        this.conquer.User!.type == 'TWITTER' || 
+        this.conquer.User!.type == 'SNAPCHAT' || 
+        this.conquer.User!.type == 'METAMASK') {
+            await this.get();
+        }
+
         return Promise.resolve();
     }
  
@@ -23,6 +35,13 @@ class Auth
 
     public async logout()
     {
+        if (typeof this.conquer.User != 'undefined' && this.conquer.User.type == 'FACEBOOK') {
+            await new Promise<void>((resolve, reject) => {
+                FB.logout((response:fb.StatusResponse) => {
+                    resolve();
+                });
+            });
+        }
         this.conquer.Storage.removeAccount();
         return Promise.resolve();
     }
@@ -33,7 +52,7 @@ class Auth
         return Promise.resolve(response);
     }
 
-    public async get( params? : { username: string, password: string, type?:string }): Promise<any> 
+    public async get( params? : { username:string, password:string, type?: string } ): Promise<any> 
     {
         
         if( params ) params.type = "USERNAME";

@@ -1,9 +1,13 @@
 import { TwitterApi, UserV2 } from 'twitter-api-v2';
 import Storage from '../../../Frontend/UTILS/Storage';
 import CRYPT from '../../../UTIL/CRYPT';
-import CONFIG, { twitterCallbackUrl } from '../../CONFIG/CONFIG';
+import CONFIG, { twitterCallbackUrl, twitterShareUrl } from '../../CONFIG/CONFIG';
 import EXPRESS from '../../EXPRESS/EXPRESS';
 import AUTH from './AUTH';
+import AVATAR from '../TRIBE/AVATAR';
+import mongoose from 'mongoose';
+import USERNAME from '../USERNAME';
+import USERNAME_PROXY from '../USERNAME_PROXY';
 
 class Twitter {
 
@@ -27,7 +31,7 @@ class Twitter {
         });
 
         const { url, codeVerifier, state } = twitterClient.generateOAuth2AuthLink(`${CONFIG.vars.TWITTER_CALLBACK_URL}`, {
-            scope: ['tweet.read', 'users.read', 'follows.read']
+            scope: ['tweet.read', 'users.read', 'follows.read', 'tweet.write']
         });
         Twitter.codeVerifiers[state] = codeVerifier;
         return url;
@@ -85,14 +89,33 @@ class Twitter {
                     {
                         username    : userObject.id,
                         firstName   : userObject.username,
+                        accessToken : accessToken,
                         type        : 'TWITTER'
                     };
 
+                    console.log(`accessToken`, accessToken);
+
                     let searchParams:string = Object.keys(account).map(key => key + '=' + account[key]).join('&');
-                    res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?info=loggedin&${searchParams}`);
+                    res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?${searchParams}`);
                 })
                 .catch(() => res.status(403).send('Invalid verifier or access tokens!'));
         });
+    }
+    
+
+    public static async Share(vars: {avatarID:string, shareMessage:string, shareUrl:string}): Promise<void> {
+
+        let avatar = await AVATAR.getOne({ _id: new mongoose.Types.ObjectId ( vars.avatarID ) });
+
+        let proxy = await USERNAME_PROXY.get({ where: { usernameID: new mongoose.Types.ObjectId ( avatar.usernameID ) }});
+
+        let accessToken = proxy.accessToken;
+
+        const twitterClient = new TwitterApi(accessToken as string);
+
+        let result = await twitterClient.v2.tweet(vars.shareMessage + ' ' + vars.shareUrl);
+        
+        return Promise.resolve();
     }
 }
 

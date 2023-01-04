@@ -29,6 +29,8 @@ import AVATAR from "../USER/TRIBE/AVATAR";
 import WALLET from "../USER/WALLET/WALLET";
 import WALLET_ASSETS from "../USER/WALLET/WALLET_ASSETS";
 import WALLET_HISTORY from "../USER/WALLET/WALLET_HISTORY";
+import Twitter from "../USER/AUTH/Twitter";
+import User from "../../Frontend/USER/User";
 class SocketInstance 
 {
     // Todo, destroy instances on disconnect
@@ -95,6 +97,12 @@ class SocketInstance
 
         if( action == ACTIONS.AVATAR_GET )                      return map( AVATAR.get( vars ) );
         if( action == ACTIONS.AVATAR_GETONE )                   return map( AVATAR.getOne( vars ) );
+        
+        if( action == ACTIONS.SOCIAL_TWITTER_SHARE )            return map( Twitter.Share ( vars ) );
+
+        // AT THIS POINT, AVATAR ID IS REWRITTEN
+
+        console.log(`this.User.avatarID`, this.User.avatarID);
  
         vars.avatarID = this.User.avatarID;
 
@@ -163,6 +171,8 @@ class SocketInstance
             if( !vars ) return;
 
             vars.socketID = self.socketID; 
+
+            console.log(`avatarID`, vars.avatarID);
             extract( vars, self.User );
             delete self.User.token;
         }

@@ -174,6 +174,7 @@ export const authenticationUrl: string = `/authentication`;
 
 export const twitterAuthUrl: string = `/twitterAuth`;
 export const twitterCallbackUrl: string = `/twitterCallback`;
+export const twitterShareUrl: string = `/twitterShare`;
 
 export const discordAuthUrl: string = `/discordAuth`;
 export const discordCallbackUrl: string = `/discordCallback`;

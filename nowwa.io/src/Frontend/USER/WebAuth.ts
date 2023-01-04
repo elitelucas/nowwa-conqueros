@@ -1,11 +1,21 @@
 import CONFIG, { authLinks, authLogin, authRegister, authVerify } from "../../Core/CONFIG/CONFIG";
+import { ACTIONS } from "../../Models/ENUM";
 import { log } from "../../UTIL/LOG";
 import CONQUER from "../CONQUER";
 import Storage from "../UTILS/Storage";
+import User from "./User";
 
 class WebAuth 
 {
+
+    private readonly facebookAppId:string = `2303120786519319`;
  
+    private conquer: CONQUER;
+
+    public constructor( instance:CONQUER) {
+        this.conquer = instance;
+    }
+
     // Move all social stuff here
     private vars: { [key: string]: any } & 
     {
@@ -109,16 +119,17 @@ class WebAuth
 
                 let redirectParams:{[key:string]:any} = 
                 {
-                    info        : "loggedin",
                     username    : address,
                     wallet      : address,
                     type        : 'METAMASK'
                 };
 
                 let searchParams:string = Object.keys(redirectParams).map(key => key + '=' + redirectParams[key]).join('&');
-
-                if (typeof window != 'undefined') {
-                    window.location.replace(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?${searchParams}`);
+    
+                if (window.location.href.indexOf('?') >= 0) {
+                    window.location.replace(`${window.location.href}&${searchParams}`);
+                } else {
+                    window.location.replace(`${window.location.href}?${searchParams}`);
                 }
 
             } catch( error ) 
@@ -133,99 +144,159 @@ class WebAuth
     
     public async facebook(): Promise<any> 
     {
-        if (!this.vars.facebook) 
-        {
+        if (typeof window != 'undefined') {
+
+            if (!this.vars.facebook) 
+            {
+                await new Promise<void>((resolve, reject) => 
+                {
+                    let facebookScript      = document.createElement('script');
+                    facebookScript.type     = 'text/javascript';
+                    facebookScript.src      = 'https://connect.facebook.net/en_US/sdk.js';
+                    facebookScript.async    = true;
+                    facebookScript.defer    = true;
+
+                    facebookScript.onload = () => {
+                        
+                        FB.init(
+                        {
+                            appId: this.facebookAppId,
+                            autoLogAppEvents: true,
+                            xfbml: true,
+                            version: 'v15.0'
+                        });
+
+                        FB.AppEvents.logPageView();
+                        resolve();
+                    }
+                    document.body.appendChild(facebookScript);
+                });
+                this.vars.facebook = true;
+            }
+            
+            let loginStatus = await new Promise<fb.StatusResponse>((resolve, reject) => 
+            {
+                FB.getLoginStatus((loginStatus) => 
+                {
+                    // console.log(`loginStatus`, JSON.stringify(loginStatus, null, 4));
+                    // statusChangeCallback(response);
+                    resolve(loginStatus);
+                });
+            });
+
+            let authResponse = loginStatus.authResponse;
+
+            if (!authResponse) 
+            {
+                authResponse = await new Promise<fb.AuthResponse>((resolve, reject) => 
+                {
+                    FB.login((loginResponse: fb.StatusResponse) => 
+                    {
+                        resolve(loginResponse.authResponse);
+                    }, { scope: 'public_profile,email,user_friends' });
+                });
+            }
+
+            let fields: string[] = 
+            [
+                'name',
+                'email',
+            ];
+
+            let apiResponse1 = await new Promise<fb.StatusResponse>((resolve, reject) => 
+            {
+                FB.api('/me', { fields: fields.join(', ') }, (apiResponse1: any) => {
+                    resolve(apiResponse1);
+                });
+            });
+
+            let apiResponse2 = await new Promise<fb.StatusResponse>((resolve, reject) => 
+            {
+                FB.api('/me/friends', {}, (apiResponse2: any) => 
+                {
+                    resolve(apiResponse2);
+                });
+            });
+
+            let userInfo    = apiResponse1 as any;
+            let contactInfo = apiResponse2 as any;
+
+            let friend_count    = contactInfo.summary.total_count;
+
+            let redirectParams:{[key:string]:any} = 
+            {
+                username        : userInfo.email,
+                email           : userInfo.email,
+                firstName       : userInfo.name,
+                type            : 'FACEBOOK'
+            };
+
+            let searchParams:string = Object.keys(redirectParams).map(key => key + '=' + redirectParams[key]).join('&');
+
+            if (window.location.href.indexOf('?') >= 0) {
+                window.location.replace(`${window.location.href}&${searchParams}`);
+            } else {
+                window.location.replace(`${window.location.href}?${searchParams}`);
+            }
+        }
+
+    }
+ 
+    public async shareTwitter ( ) : Promise<any> 
+    {
+        let shareMessage:string = `Join supersnappy.io!`;
+        let shareUrl:string = `https://supersnappy.io`;
+        let avatarID:string = this.conquer.User!.avatarID!;
+
+        return this.conquer.do( ACTIONS.SOCIAL_TWITTER_SHARE, { avatarID, shareMessage, shareUrl }  );  
+    }
+ 
+    public async shareFacebook ( ) : Promise<any> 
+    {
+        if (typeof window != 'undefined') {
+
+            if (!this.vars.facebook) 
+            {
+                await new Promise<void>((resolve, reject) => 
+                {
+                    let facebookScript      = document.createElement('script');
+                    facebookScript.type     = 'text/javascript';
+                    facebookScript.src      = 'https://connect.facebook.net/en_US/sdk.js';
+                    facebookScript.async    = true;
+                    facebookScript.defer    = true;
+
+                    facebookScript.onload = () => {
+                        
+                        FB.init(
+                        {
+                            appId: this.facebookAppId,
+                            autoLogAppEvents: true,
+                            xfbml: true,
+                            version: 'v15.0'
+                        });
+
+                        FB.AppEvents.logPageView();
+                        resolve();
+                    }
+                    document.body.appendChild(facebookScript);
+                });
+                this.vars.facebook = true;
+            }
+
             await new Promise<void>((resolve, reject) => 
             {
-                let facebookScript      = document.createElement('script');
-                facebookScript.type     = 'text/javascript';
-                facebookScript.src      = 'https://connect.facebook.net/en_US/sdk.js';
-                facebookScript.async    = true;
-                facebookScript.defer    = true;
-
-                facebookScript.onload = () => {
-
-                    let facebookAppId: string = `2303120786519319`
-                    
-                    FB.init(
-                    {
-                        appId: facebookAppId,
-                        autoLogAppEvents: true,
-                        xfbml: true,
-                        version: 'v15.0'
-                    });
-
-                    FB.AppEvents.logPageView();
+                let shareMessage:string = `Join supersnappy.io!`;
+                let shareUrl:string = `https://supersnappy.io`;
+                FB.ui({
+                    method: 'share',
+                    href: shareUrl,
+                    quote: shareMessage,
+                }, (response: fb.ShareDialogResponse) => {
                     resolve();
-                }
-                document.body.appendChild(facebookScript);
-            });
-            this.vars.facebook = true;
-        }
-
-        let loginStatus = await new Promise<fb.StatusResponse>((resolve, reject) => 
-        {
-            FB.getLoginStatus((loginStatus) => 
-            {
-                // console.log(`loginStatus`, JSON.stringify(loginStatus, null, 4));
-                // statusChangeCallback(response);
-                resolve(loginStatus);
-            });
-        });
-
-        let authResponse = loginStatus.authResponse;
-
-        if (!authResponse) 
-        {
-            authResponse = await new Promise<fb.AuthResponse>((resolve, reject) => 
-            {
-                FB.login((loginResponse: fb.StatusResponse) => 
-                {
-                    resolve(loginResponse.authResponse);
-                }, { scope: 'public_profile,email,user_friends' });
+                });
             });
         }
-
-        let fields: string[] = 
-        [
-            'name',
-            'email',
-        ];
-
-        let apiResponse1 = await new Promise<fb.StatusResponse>((resolve, reject) => 
-        {
-            FB.api('/me', { fields: fields.join(', ') }, (apiResponse1: any) => {
-                resolve(apiResponse1);
-            });
-        });
-
-        let apiResponse2 = await new Promise<fb.StatusResponse>((resolve, reject) => 
-        {
-            FB.api('/me/friends', {}, (apiResponse2: any) => 
-            {
-                resolve(apiResponse2);
-            });
-        });
-
-        let userInfo    = apiResponse1 as any;
-        let contactInfo = apiResponse2 as any;
-
-        let friend_count    = contactInfo.summary.total_count;
-
-        let redirectParams:{[key:string]:any} = 
-        {
-            username        : userInfo.email,
-            email           : userInfo.email,
-            firstName       : userInfo.name,
-            type            : 'FACEBOOK'
-        };
-
-        let searchParams:string = Object.keys(redirectParams).map(key => key + '=' + redirectParams[key]).join('&');
-
-        if (typeof window != 'undefined') {
-            window.location.replace(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?${searchParams}`);
-        }
-
+        return Promise.resolve();
     }
 }
 

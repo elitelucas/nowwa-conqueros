@@ -83,6 +83,8 @@ class Google
 
                 let friend_count    = contactInfo.data.totalPeople || 0;
 
+                console.log(`friends`, JSON.stringify(contactInfo));
+
                 let account:{[key:string]:any} = 
                 {
                     username        : userInfo.data.email!,
@@ -92,7 +94,7 @@ class Google
                 };
                 
                 let searchParams:string = Object.keys(account).map(key => key + '=' + account[key]).join('&');
-                res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?info=loggedin&${searchParams}`);
+                res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?${searchParams}`);
             } catch (error: any) {
                 res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?error=${error.message}`);
             }

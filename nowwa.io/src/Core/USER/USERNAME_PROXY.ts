@@ -1,6 +1,7 @@
 import DATA from "../DATA/DATA";
 import EMAIL from "./EMAIL";
 import LOG from "../../UTIL/LOG";
+import USERNAME from "./USERNAME";
 
 class USERNAME_PROXY
 {
@@ -23,12 +24,14 @@ class USERNAME_PROXY
 
         let item : any  = await DATA.set( this.table, vars );
  
-        await EMAIL.set(
-        {
-            email       : vars.email,
-            usernameID  : vars.usernameID,
-            isVerified  : true,
-        });
+        if (vars.email) {
+            await EMAIL.set(
+            {
+                email       : vars.email,
+                usernameID  : vars.usernameID,
+                isVerified  : true,
+            });
+        }
 
         return Promise.resolve( item );
     }; 

@@ -49,6 +49,30 @@ const Home = (state: HomeState, setState: React.Dispatch<React.SetStateAction<Ho
         }
     };
 
+    let doShareTwitter = async () => {
+        if (indexState.conquer!.initialized) {
+            updateState({
+                isBusy: true
+            });
+            await indexState.conquer!.WebAuth.shareTwitter();
+            updateState({
+                isBusy: false
+            });
+        }
+    };
+
+    let doShareFacebook = async () => {
+        if (indexState.conquer!.initialized) {
+            updateState({
+                isBusy: true
+            });
+            await indexState.conquer!.WebAuth.shareFacebook();
+            updateState({
+                isBusy: false
+            });
+        }
+    };
+
     return (
         <>
             <Segment>
@@ -59,6 +83,8 @@ const Home = (state: HomeState, setState: React.Dispatch<React.SetStateAction<Ho
                         </Grid.Column>
                         <Grid.Column width='2'>
                             <Button fluid primary onClick={doLogout} disabled={state.isBusy}><Icon name='log out'></Icon>Logout</Button>
+                            <Button fluid primary onClick={doShareTwitter} disabled={state.isBusy}><Icon name='share'></Icon>Twitter</Button>
+                            <Button fluid primary onClick={doShareFacebook} disabled={state.isBusy}><Icon name='share'></Icon>Facebook</Button>
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>

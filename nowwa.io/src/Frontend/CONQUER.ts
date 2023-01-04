@@ -44,7 +44,7 @@ class CONQUER
         this.Storage    = new Storage( this );
         this.Friends    = new Friends( this );
         this.Auth       = new Auth( this );
-        this.WebAuth    = new WebAuth();
+        this.WebAuth    = new WebAuth( this );
         this.Files      = new Files( this );
         this.Rooms      = new Rooms( this );
         this.Socket     = new Socket( this );

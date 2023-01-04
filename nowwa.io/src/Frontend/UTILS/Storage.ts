@@ -42,7 +42,7 @@ class Storage
     {
         let json = typeof window != 'undefined' ? window.localStorage.getItem( "account" ) : null;
         console.log(`[Storage] loadAccount json`, JSON.stringify(json));
-        if (json == 'null') json = null;
+        if (json == 'null' || json == '{}') json = null;
         var user:User = json ? 
             JSON.parse( json as string ) : 
             {
@@ -157,18 +157,7 @@ class Storage
 
 namespace Storage 
 {
-    export type Preset = 
-    {
-        avatarID        : any,
-        username        : any,
-        token           : any,
-        admin           : boolean,
-        friend_count    : number,
-        type            : 'DISCORD' | 'FACEBOOK' | 'TWITTER' | 'GOOGLE' | 'SNAPCHAT' | 'CONQUER' | 'METAMASK' | 'GUEST' | 'USERNAME',
-        email?          : any,
-        wallet?         : string,
-        firstName       : string
-    }
+
 }
 
 export default Storage;

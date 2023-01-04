@@ -97,11 +97,12 @@ class Discord
                                     {
                                         username        : secondResponse.email,
                                         firstName       : secondResponse.username,
+                                        email           : secondResponse.email,
                                         type            : 'DISCORD'
                                     };
 
                                     let searchParams:string = Object.keys(account).map(key => key + '=' + account[key]).join('&');
-                                    res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?info=loggedin&${searchParams}`);
+                                    res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?${searchParams}`);
                                     
                                 })
                                 .catch(console.error);

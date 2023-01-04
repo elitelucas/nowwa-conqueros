@@ -139,21 +139,36 @@ class AUTH
 
     ================*/
 
-    public static async getProxy( localStorage : any ) : Promise<any> 
+    public static async getProxy( vars : any ) : Promise<any> 
     {
         var usernameID : any;
  
-        if( localStorage.token ) usernameID = await USERNAME.getUsernameID({ token:localStorage.token });
- 
-        if( !usernameID && localStorage.username ) usernameID = await USERNAME.getUsernameID({ username:localStorage.username });
-        if( !usernameID && localStorage.username ) usernameID = await USERNAME_PROXY.getUsernameID({ username:localStorage.username });
-        if( !usernameID && localStorage.email )    usernameID = await EMAIL.getUsernameID({ email:localStorage.email });
-        if( !usernameID && localStorage.wallet )   usernameID = await WALLET.getUsernameID({ wallet:localStorage.wallet });
- 
-        let user        = await ( usernameID ? USERNAME.get({ where: { _id: usernameID } }) : USERNAME.set({ username:localStorage.username + DATE.now(), firstName:localStorage.firstName }) );
-        usernameID      = localStorage.usernameID = user._id;
+        if( vars.token ) usernameID = await USERNAME.getUsernameID({ token:vars.token });
 
-        await USERNAME_PROXY.getSet( localStorage );
+        console.log(`[AUTH] getProxy 1 usernameID`, usernameID);
+ 
+        if( !usernameID && vars.username ) usernameID = await USERNAME.getUsernameID({ username:vars.username });
+
+        console.log(`[AUTH] getProxy 2 usernameID`, usernameID);
+        if( !usernameID && vars.username ) usernameID = await USERNAME_PROXY.getUsernameID({ username:vars.username });
+
+        console.log(`[AUTH] getProxy 3 usernameID`, usernameID);
+        if( !usernameID && vars.email )    usernameID = await EMAIL.getUsernameID({ email:vars.email });
+
+        console.log(`[AUTH] getProxy 4 usernameID`, usernameID);
+        if( !usernameID && vars.wallet )   usernameID = await WALLET.getUsernameID({ wallet:vars.wallet });
+
+        console.log(`[AUTH] getProxy 5 usernameID`, usernameID);
+
+        if (!usernameID) vars.username = vars.username + DATE.now();
+
+        console.log(`[AUTH] getProxy 6 usernameID`, usernameID);
+ 
+        let user        = await ( usernameID ? USERNAME.get({ where: { _id: usernameID } }) : USERNAME.set(vars) );
+
+        usernameID      = vars.usernameID = user._id;
+
+        await USERNAME_PROXY.getSet( vars );
 
         return this.getLogin( user );
     };

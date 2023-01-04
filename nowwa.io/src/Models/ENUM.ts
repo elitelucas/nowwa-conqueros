@@ -101,6 +101,8 @@ export const enum ACTIONS
     WALLET_HISTORY_GET      = 79,
     WALLET_ASSETS_GET       = 80,
     WALLET_SEND             = 81,
+
+    SOCIAL_TWITTER_SHARE    = 82,
  
 }
 
