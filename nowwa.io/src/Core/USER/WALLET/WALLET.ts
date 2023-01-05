@@ -144,6 +144,12 @@ class WALLET {
         query.recipientAddress,
         "internal"
       );
+      await WALLET_HISTORY.addReceiveHistory(
+        recipient_wallet.usernameID,
+        amount,
+        "ETH",
+        "internal"
+      );
       result = { success: true, data: my_wallet };
     } else {
       result = { success: false, message: "Not enough balance" };

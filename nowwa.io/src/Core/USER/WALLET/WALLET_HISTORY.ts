@@ -59,6 +59,25 @@ class WALLET_HISTORY {
 
     return Promise.resolve(item);
   }
+
+  public static async addReceiveHistory(
+    usernameID: any,
+    amount: number,
+    token: string,
+    transaction: string
+  ): Promise<any> {
+    let now = new Date(Date.now()).toISOString();
+    let item = await this.set({
+      usernameID,
+      type: "receive",
+      amount,
+      token,
+      transaction,
+      date: now,
+    });
+
+    return Promise.resolve(item);
+  }
 }
 
 export default WALLET_HISTORY;
