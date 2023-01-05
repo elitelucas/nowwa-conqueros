@@ -71,7 +71,7 @@ const JTest = (indexState: IndexState) => {
                 <Grid centered columns='8'>
                     <Grid.Row>
                         <Grid.Column>
-                            <Header textAlign='center'>J's Test</Header>
+                            <Header textAlign='center'>J's Test(Jan 6)</Header>
                         </Grid.Column>
                     </Grid.Row>
                     <Grid.Row>
