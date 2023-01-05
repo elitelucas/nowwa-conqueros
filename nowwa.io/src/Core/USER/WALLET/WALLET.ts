@@ -8,6 +8,8 @@ import CRYPT from "../../../UTIL/CRYPT";
 import AVATAR from "../TRIBE/AVATAR";
 import WALLET_HISTORY from "./WALLET_HISTORY";
 
+import DECIMALS from "../../../UTIL/DECIMALS";
+
 class WALLET {
   private static table: string = "wallets";
 
@@ -124,11 +126,15 @@ class WALLET {
     if (myData.data.balance >= amount) {
       let my_wallet = await DATA.change(this.table, {
         where: { address: myData.data.address },
-        values: { balance: myData.data.balance - amount },
+        values: {
+          balance: DECIMALS.minus(myData.data.balance, amount),
+        },
       });
       await DATA.change(this.table, {
         where: { address: query.recipientAddress },
-        values: { balance: recipient_wallet.balance + amount },
+        values: {
+          balance: DECIMALS.plus(recipient_wallet.balance, amount),
+        },
       });
 
       await WALLET_HISTORY.addSendHistory(
