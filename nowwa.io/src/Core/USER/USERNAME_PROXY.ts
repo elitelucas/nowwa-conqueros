@@ -58,7 +58,6 @@ class USERNAME_PROXY
     public static async getUsernameID( vars:any  ) : Promise<any>
     {
         let item = await DATA.getOne( this.table, vars ); 
-
         if( item ) return Promise.resolve( item.usernameID );
 
         return Promise.resolve(null);

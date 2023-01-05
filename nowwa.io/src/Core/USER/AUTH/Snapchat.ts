@@ -38,81 +38,83 @@ class Snapchat
 
     public static async WebhookCallbackLink(): Promise<void> 
     {
-        EXPRESS.app.use(`${snapchatCallbackUrl}`, (req, res) => 
+        EXPRESS.app.use(`${snapchatCallbackUrl}`, async (req, res) => 
         {
             // console.log('query callback');
             // console.log(JSON.stringify(req.query, null, "\t"));
             // console.log('session callback');
             // console.log(JSON.stringify(req.session, null, "\t"));
 
-            const { access_token, code } = req.query;
+            try {
 
-            let snapchatClientId: string = CONFIG.vars.SNAPCHAT_CLIENT_ID;
-            let snapchatClientSecret: string = CONFIG.vars.SNAPCHAT_CLIENT_SECRET;
-            let snapchatRedirect: string = `${CONFIG.vars.PUBLIC_FULL_URL}${snapchatCallbackUrl}`;
+                const { access_token, code } = req.query;
 
-            let hexEncode = (input: string): string => {
-                var hex, i;
+                let snapchatClientId: string = CONFIG.vars.SNAPCHAT_CLIENT_ID;
+                let snapchatClientSecret: string = CONFIG.vars.SNAPCHAT_CLIENT_SECRET;
+                let snapchatRedirect: string = `${CONFIG.vars.PUBLIC_FULL_URL}${snapchatCallbackUrl}`;
 
-                var result = "";
-                for (let i = 0; i < input.length; i++) {
-                    hex = input.charCodeAt(i).toString(16);
-                    result += ("000" + hex).slice(-4);
-                }
+                let hexEncode = (input: string): string => {
+                    var hex, i;
 
-                return result;
-            };
+                    var result = "";
+                    for (let i = 0; i < input.length; i++) {
+                        hex = input.charCodeAt(i).toString(16);
+                        result += ("000" + hex).slice(-4);
+                    }
 
-            let snapchatFirstHeader: string = hexEncode(`${snapchatClientId}:${snapchatClientSecret}`);
+                    return result;
+                };
 
-            var firstRequestInit: RequestInit =
-            {
-                method: 'POST',
-                body: new URLSearchParams({
-                    client_id: snapchatClientId,
-                    client_secret: snapchatClientSecret,
-                    code: code as string,
-                    grant_type: "authorization_code",
-                    redirect_uri: snapchatRedirect
-                }),
-                headers: {
-                    'Authorization': `Basic ${snapchatFirstHeader}`
-                }
-            };
+                let snapchatFirstHeader: string = hexEncode(`${snapchatClientId}:${snapchatClientSecret}`);
 
-            fetch('https://accounts.snapchat.com/accounts/oauth2/token', firstRequestInit)
-                .then(result => result.json())
-                .then(firstResponse => {
-                    // console.log('firstResponse callback');
-                    // console.log(JSON.stringify(firstResponse, null, "\t"));
-                    var secondRequestInit: RequestInit = {
-                        method: 'POST',
-                        body: JSON.stringify({ "query": "{me{displayName bitmoji{avatar} externalId}}" }),
-                        headers: {
-                            "Content-Type": "application/json",
-                            'Authorization': `Bearer ${firstResponse.access_token}`
-                        }
-                    };
-                    fetch('https://kit.snapchat.com/v1/me', secondRequestInit)
-                        .then(result => result.json())
-                        .then(secondResponse => {
-                            // console.log('secondResponse callback');
-                            // console.log(JSON.stringify(secondResponse, null, "\t"));
-                            let id = Buffer.from(secondResponse.data.me.externalId).toString('base64');
-                            let name = secondResponse.data.me.displayName;
- 
-                            let account:{[key:string]:any} = 
-                            {
-                                username        : id,
-                                firstName       : name,
-                                type            : 'SNAPCHAT'
-                            };
-                            let searchParams:string = Object.keys(account).map(key => key + '=' + account[key]).join('&');
-                            res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?${searchParams}`);
-                 
-                        }).catch(console.error);
-                })
-                .catch(console.error);
+                var firstRequestInit: RequestInit =
+                {
+                    method: 'POST',
+                    body: new URLSearchParams({
+                        client_id: snapchatClientId,
+                        client_secret: snapchatClientSecret,
+                        code: code as string,
+                        grant_type: "authorization_code",
+                        redirect_uri: snapchatRedirect
+                    }),
+                    headers: {
+                        'Authorization': `Basic ${snapchatFirstHeader}`
+                    }
+                };
+
+                let rawFirstResponse = await fetch('https://accounts.snapchat.com/accounts/oauth2/token', firstRequestInit);
+                let firstResponse = await rawFirstResponse.json();
+                
+                var secondRequestInit: RequestInit = {
+                    method: 'POST',
+                    body: JSON.stringify({ "query": "{me{displayName bitmoji{avatar} externalId}}" }),
+                    headers: {
+                        "Content-Type": "application/json",
+                        'Authorization': `Bearer ${firstResponse.access_token}`
+                    }
+                };
+                let rawSecondResponse = await fetch('https://kit.snapchat.com/v1/me', secondRequestInit)
+                let secondResponse = await rawSecondResponse.json();
+                
+                // console.log('secondResponse callback');
+                // console.log(JSON.stringify(secondResponse, null, "\t"));
+                let id = Buffer.from(secondResponse.data.me.externalId).toString('base64');
+                let name = secondResponse.data.me.displayName;
+
+                let account:{[key:string]:any} = 
+                {
+                    username        : id,
+                    firstName       : name,
+                    type            : 'SNAPCHAT'
+                };
+                
+                let user = await AUTH.get(account);
+
+                let searchParams:string = Object.keys(user).map(key => key + '=' + user[key]).join('&');
+                res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?${searchParams}`);
+            } catch (error: any) {
+                res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?error=${error.message}`);
+            }
         });
     }
 }

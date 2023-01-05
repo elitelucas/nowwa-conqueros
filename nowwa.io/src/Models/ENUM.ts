@@ -103,6 +103,8 @@ export const enum ACTIONS
     WALLET_SEND             = 81,
 
     SOCIAL_TWITTER_SHARE    = 82,
+    SOCIAL_GOOGLE_SHARE    = 83,
+    SOCIAL_GOOGLE_SHARE_GET    = 84,
  
 }
 

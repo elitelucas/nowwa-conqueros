@@ -127,7 +127,7 @@ class EMAIL
             });
     }
 
-    public static async send(vars: any) 
+    public static async send(vars: { email:string, subject: string, html?:string, content?:string }) 
     {
         let mailOptions: MailOptions =
         {

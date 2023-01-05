@@ -38,70 +38,79 @@ class Twitter {
     }
 
     public static async WebhookCallbackLink(): Promise<void> {
-        EXPRESS.app.use(`${twitterCallbackUrl}`, (req, res) => {
-            console.log('query callback');
-            console.log(JSON.stringify(req.query));
-            console.log('session callback');
-            console.log(JSON.stringify(req.session));
 
-            const { state, code } = req.query;
+        EXPRESS.app.use(`${twitterCallbackUrl}`, async (req, res) => {
 
-            if (!Twitter.codeVerifiers[state as string]) {
-                return res.status(400).send('Stored tokens didnt match!');
-            }
-            const twitterClient = new TwitterApi({
-                clientId: CONFIG.vars.TWITTER_CLIENT_ID,
-                clientSecret: CONFIG.vars.TWITTER_CLIENT_SECRET,
-            });
+            // console.log('query callback');
+            // console.log(JSON.stringify(req.query));
+            // console.log('session callback');
+            // console.log(JSON.stringify(req.session));
 
-            let codeVerifier = Twitter.codeVerifiers[state as string];
-            console.log(JSON.stringify({ code, codeVerifier }));
+            try {
 
-            twitterClient.loginWithOAuth2({
-                code: code as string,
-                codeVerifier: codeVerifier,
-                redirectUri: CONFIG.vars.TWITTER_CALLBACK_URL
-            })
-                .then(async ({ client: loggedClient, accessToken, expiresIn, scope, refreshToken }) => {
-                    // {loggedClient} is an authenticated client in behalf of some user
-                    // Store {accessToken} somewhere, it will be valid until {expiresIn} is hit.
-                    // If you want to refresh your token later, store {refreshToken} (it is present if 'offline.access' has been given as scope)
+                const { state, code } = req.query;
 
-                    const { data: userObject } = await loggedClient.v2.me();
+                if (!Twitter.codeVerifiers[state as string]) {
+                    return res.status(400).send('Stored tokens didnt match!');
+                }
+                const twitterClient = new TwitterApi({
+                    clientId: CONFIG.vars.TWITTER_CLIENT_ID,
+                    clientSecret: CONFIG.vars.TWITTER_CLIENT_SECRET,
+                });
 
-                    // GET FOLLOWERS
-                    let followers: UserV2[] = [];
-                    let isFinished: boolean = false;
-                    let pagination_token: string | undefined;
-                    while (!isFinished) {
-                        var tmpFollowers = await loggedClient.v2.followers(userObject.id, {
-                            pagination_token: pagination_token
-                        });
-                        followers = followers.concat(tmpFollowers.data);
-                        if (!tmpFollowers.meta.next_token) {
-                            isFinished = true;
-                        } else {
-                            pagination_token = tmpFollowers.meta.next_token;
-                        }
+                let codeVerifier = Twitter.codeVerifiers[state as string];
+                console.log(JSON.stringify({ code, codeVerifier }));
+
+                let response = await twitterClient.loginWithOAuth2({
+                    code: code as string,
+                    codeVerifier: codeVerifier,
+                    redirectUri: CONFIG.vars.TWITTER_CALLBACK_URL
+                });
+
+                // {response.loggedClient} is an authenticated client in behalf of some user
+                // Store {response.accessToken} somewhere, it will be valid until {response.expiresIn} is hit.
+                // If you want to refresh your token later, store {response.refreshToken} (it is present if 'offline.access' has been given as scope)
+
+                const { data: userObject } = await response.client.v2.me();
+
+                // GET FOLLOWERS
+                let followers: UserV2[] = [];
+                let isFinished: boolean = false;
+                let pagination_token: string | undefined;
+                while (!isFinished) {
+                    var tmpFollowers = await response.client.v2.followers(userObject.id, {
+                        pagination_token: pagination_token
+                    });
+                    followers = followers.concat(tmpFollowers.data);
+                    if (!tmpFollowers.meta.next_token) {
+                        isFinished = true;
+                    } else {
+                        pagination_token = tmpFollowers.meta.next_token;
                     }
+                }
 
-                    let account:{[key:string]:any} = 
-                    {
-                        username    : userObject.id,
-                        firstName   : userObject.username,
-                        accessToken : accessToken,
-                        type        : 'TWITTER'
-                    };
+                let account:{[key:string]:any} = 
+                {
+                    username    : userObject.id,
+                    firstName   : userObject.username,
+                    accessToken : response.accessToken,
+                    type        : 'TWITTER'
+                };
+                
+                console.log(`account`, JSON.stringify(account, null, 4));
 
-                    console.log(`accessToken`, accessToken);
+                let user = await AUTH.get(account);
+                
+                console.log(`user`, JSON.stringify(user, null, 4));
 
-                    let searchParams:string = Object.keys(account).map(key => key + '=' + account[key]).join('&');
-                    res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?${searchParams}`);
-                })
-                .catch(() => res.status(403).send('Invalid verifier or access tokens!'));
+                let searchParams:string = Object.keys(user).map(key => key + '=' + user[key]).join('&');
+                res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?${searchParams}`);
+            } catch (error: any) {
+                res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?error=${error.message}`);
+            }
+                    
         });
     }
-    
 
     public static async Share(vars: {avatarID:string, shareMessage:string, shareUrl:string}): Promise<void> {
 

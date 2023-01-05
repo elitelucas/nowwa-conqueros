@@ -36,80 +36,83 @@ class Discord
 
     public static async WebhookCallbackLink(): Promise<void> 
     {
-        EXPRESS.app.use(`${discordCallbackUrl}`, (req, res) => 
+        EXPRESS.app.use(`${discordCallbackUrl}`, async (req, res) => 
         {
             // console.log('query callback');
             // console.log(JSON.stringify(req.query));
             // console.log('session callback');
             // console.log(JSON.stringify(req.session));
 
-            const { access_token, code } = req.query;
+            try {
 
-            let discordClientId: string = CONFIG.vars.DISCORD_CLIENT_ID;
-            let discordClientSecret: string = CONFIG.vars.DISCORD_CLIENT_SECRET;
-            let discordRedirect: string = `${CONFIG.vars.PUBLIC_FULL_URL}${discordCallbackUrl}`;
+                const { access_token, code } = req.query;
 
-            var firstRequestInit: RequestInit = {
-                method: 'POST',
-                body: new URLSearchParams({
-                    client_id: discordClientId,
-                    client_secret: discordClientSecret,
-                    code: code as string,
-                    grant_type: "authorization_code",
-                    redirect_uri: discordRedirect
-                }),
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
-                }
-            };
-            fetch('https://discordapp.com/api/oauth2/token', firstRequestInit)
-                .then(result => result.json())
-                .then(firstResponse => {
-                    console.log(`firstResponse`, JSON.stringify(firstResponse, null, 4));
-                    if (firstResponse.error) {
-                        res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?error=${firstResponse.error_description}`);
-                        return;
+                let discordClientId: string = CONFIG.vars.DISCORD_CLIENT_ID;
+                let discordClientSecret: string = CONFIG.vars.DISCORD_CLIENT_SECRET;
+                let discordRedirect: string = `${CONFIG.vars.PUBLIC_FULL_URL}${discordCallbackUrl}`;
+
+                var firstRequestInit: RequestInit = {
+                    method: 'POST',
+                    body: new URLSearchParams({
+                        client_id: discordClientId,
+                        client_secret: discordClientSecret,
+                        code: code as string,
+                        grant_type: "authorization_code",
+                        redirect_uri: discordRedirect
+                    }),
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
                     }
-                    var secondRequestInit: RequestInit = {
-                        method: 'GET',
-                        headers: {
-                            authorization: `${firstResponse.token_type} ${firstResponse.access_token}`,
-                        },
-                    };
-                    fetch('https://discord.com/api/users/@me', secondRequestInit)
-                        .then(result => result.json())
-                        .then(secondResponse => {
-                            console.log(`secondResponse`, JSON.stringify(secondResponse, null, 4));
-                            var thirdRequestInit: RequestInit = {
-                                method: 'GET',
-                                headers: {
-                                    authorization: `${firstResponse.token_type} ${firstResponse.access_token}`,
-                                },
-                            };
-                            fetch('https://discord.com/api/users/@me/connections', thirdRequestInit)
-                                .then(result => result.json())
-                                .then(thirdResponse => {
-                                    console.log(`thirdResponse`, JSON.stringify(thirdResponse, null, 4));
+                };
 
-                                    let friend_count = thirdResponse.length;
-                                    
-                                    let account:{[key:string]:any} = 
-                                    {
-                                        username        : secondResponse.email,
-                                        firstName       : secondResponse.username,
-                                        email           : secondResponse.email,
-                                        type            : 'DISCORD'
-                                    };
+                let rawFirstResponse = await fetch('https://discordapp.com/api/oauth2/token', firstRequestInit);
+                let firstResponse = await rawFirstResponse.json();
+                
+                console.log(`firstResponse`, JSON.stringify(firstResponse, null, 4));
+                if (firstResponse.error) {
+                    res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?error=${firstResponse.error_description}`);
+                    return;
+                }
+                var secondRequestInit: RequestInit = {
+                    method: 'GET',
+                    headers: {
+                        authorization: `${firstResponse.token_type} ${firstResponse.access_token}`,
+                    },
+                };
 
-                                    let searchParams:string = Object.keys(account).map(key => key + '=' + account[key]).join('&');
-                                    res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?${searchParams}`);
-                                    
-                                })
-                                .catch(console.error);
-                        })
-                        .catch(console.error);
-                })
-                .catch(console.error);
+                let rawSecondResponse = await fetch('https://discord.com/api/users/@me', secondRequestInit)
+                let secondResponse = await rawSecondResponse.json();
+
+                console.log(`secondResponse`, JSON.stringify(secondResponse, null, 4));
+                var thirdRequestInit: RequestInit = {
+                    method: 'GET',
+                    headers: {
+                        authorization: `${firstResponse.token_type} ${firstResponse.access_token}`,
+                    },
+                };
+
+                let rawThirdResponse = await fetch('https://discord.com/api/users/@me/connections', thirdRequestInit);
+                let thirdResponse = await rawThirdResponse.json();
+                
+                console.log(`thirdResponse`, JSON.stringify(thirdResponse, null, 4));
+
+                let friend_count = thirdResponse.length;
+                
+                let account:{[key:string]:any} = 
+                {
+                    username        : secondResponse.email,
+                    firstName       : secondResponse.username,
+                    email           : secondResponse.email,
+                    type            : 'DISCORD'
+                };
+
+                let user = await AUTH.get(account);
+
+                let searchParams:string = Object.keys(user).map(key => key + '=' + user[key]).join('&');
+                res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?${searchParams}`);
+            } catch (error: any) {
+                res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?error=${error.message}`);
+            }
         });
     }
 }

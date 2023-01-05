@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Icon, Button, Segment, ButtonGroup, Menu, Header, Input, InputOnChangeData, Card, Grid, Divider, Label, Image, Message, Form } from 'semantic-ui-react';
 import CONQUER from '../Frontend/CONQUER';
 import { IndexState } from './Index';
@@ -6,7 +6,8 @@ import { UpdateComponentState } from './Utils/Helpers';
 
 export type HomeState = {
     initialized: boolean,
-    isBusy: boolean
+    isBusy: boolean,
+    firstEmail?:string,
 }
 
 export const HomeStateDefault: HomeState = {
@@ -73,18 +74,50 @@ const Home = (state: HomeState, setState: React.Dispatch<React.SetStateAction<Ho
         }
     };
 
+    let doShareGoogleGet = async () => {
+        updateState({
+            isBusy: true
+        });
+        let firstEmail:string | undefined;
+        let results = await indexState.conquer!.WebAuth.shareGoogleGet();
+        if (results.length > 0) {
+            firstEmail = results[0];
+        }
+        updateState({
+            isBusy: false,
+            firstEmail: firstEmail
+        });
+    };
+
+    let doShareGoogle = async () => {
+        updateState({
+            isBusy: true
+        });
+        await indexState.conquer!.WebAuth.shareGoogle( state.firstEmail! );
+        updateState({
+            isBusy: false
+        });
+    };
+
+    let buttonGoogleShareGet = <Button width='1' fluid primary onClick={doShareGoogleGet} disabled={state.isBusy}><Icon name='download'></Icon>Google</Button>;
+    let buttonGoogleShare = <Button width='1' fluid primary onClick={doShareGoogle} disabled={state.isBusy}><Icon name='share'></Icon>{state.firstEmail}</Button>;
+
     return (
         <>
             <Segment>
-                <Grid columns='equal' verticalAlign='middle'>
-                    <Grid.Row>
+                <Grid verticalAlign='middle'>
+                    <Grid.Row columns='equal'>
                         <Grid.Column>
                             Welcome, {indexState.conquer!.User!.firstName!}!
                         </Grid.Column>
-                        <Grid.Column width='2'>
-                            <Button fluid primary onClick={doLogout} disabled={state.isBusy}><Icon name='log out'></Icon>Logout</Button>
-                            <Button fluid primary onClick={doShareTwitter} disabled={state.isBusy}><Icon name='share'></Icon>Twitter</Button>
-                            <Button fluid primary onClick={doShareFacebook} disabled={state.isBusy}><Icon name='share'></Icon>Facebook</Button>
+                        <Grid.Column>
+                            <Button.Group widths='4'>
+                                <Button width='1' fluid primary onClick={doShareTwitter} disabled={state.isBusy}><Icon name='share'></Icon>Twitter</Button>
+                                <Button width='1' fluid primary onClick={doShareFacebook} disabled={state.isBusy}><Icon name='share'></Icon>Facebook</Button>
+                                {typeof state.firstEmail == 'undefined' && buttonGoogleShareGet}
+                                {typeof state.firstEmail != 'undefined' && buttonGoogleShare}
+                                <Button width='1' fluid primary onClick={doLogout} disabled={state.isBusy}><Icon name='log out'></Icon>Logout</Button>
+                            </Button.Group>
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>
