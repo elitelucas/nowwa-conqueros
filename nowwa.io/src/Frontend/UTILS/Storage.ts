@@ -22,13 +22,13 @@ class Storage
  
     public async init( ): Promise<any> 
     {
-        console.log('storage initializing...');
+        // console.log('storage initializing...');
 
         this.setAccount( this.conquer.User );
         this.setAccount( this.loadAccount() );
         this.setAccount( this.parseUrlSearchParams() );
 
-        console.log('storage initialized!');
+        // console.log('storage initialized!');
 
         return Promise.resolve();
     }
@@ -41,14 +41,14 @@ class Storage
     private loadAccount()
     {
         let json = typeof window != 'undefined' ? window.localStorage.getItem( "account" ) : null;
-        console.log(`[Storage] loadAccount json`, JSON.stringify(json));
+        // console.log(`[Storage] loadAccount json`, JSON.stringify(json));
         if (json == 'null' || json == '{}') json = null;
         var user:User = json ? 
             JSON.parse( json as string ) : 
             {
                 username: this.generateUsername()
             };
-        console.log(`[Storage] loadAccount user`, JSON.stringify(user));
+        // console.log(`[Storage] loadAccount user`, JSON.stringify(user));
         return user;
     }
  
@@ -77,9 +77,9 @@ class Storage
             }
         });
 
-        console.log(`window.location.href`, window.location.href);
+        // console.log(`window.location.href`, window.location.href);
 
-        console.log(`params`, params);
+        // console.log(`params`, params);
         
         let originalSearchParams:string = Object.keys(originalParams).map(key => key + '=' + originalParams[key]).join('&');
         let originalUrl = window.location.href.substring(0, window.location.href.indexOf('?')) + `${originalSearchParams.length > 0 ? "?" + originalSearchParams : ""}`;
@@ -125,9 +125,9 @@ class Storage
 
     public setAccount( user?:User ) 
     {
-        console.log(`[Storage] setAccount typeof user`, typeof user);
+        // console.log(`[Storage] setAccount typeof user`, typeof user);
         if( !user ) return;
-        console.log(`[Storage] user`, JSON.stringify(user));
+        // console.log(`[Storage] user`, JSON.stringify(user));
 
         this.conquer.User = user;
 

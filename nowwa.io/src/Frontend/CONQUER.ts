@@ -59,7 +59,7 @@ class CONQUER
     public async init (): Promise<void> 
     {
 
-        console.log('conquer initializing...');
+        // console.log('conquer initializing...');
 
         await this.Storage.init();
         await this.WebAuth.init();

@@ -6,6 +6,7 @@ import USERNAME from "../USERNAME";
 import LOG, { log } from "../../../UTIL/LOG";
 import CRYPT from "../../../UTIL/CRYPT";
 import AVATAR from "../TRIBE/AVATAR";
+import WALLET_HISTORY from "./WALLET_HISTORY";
 
 class WALLET {
   private static table: string = "wallets";
@@ -57,6 +58,13 @@ class WALLET {
     return Promise.resolve(item);
   }
 
+  /*=============== 
+
+     GETSET
+    { avatarID: '63ac6c5a34bba89538a2fde6' }     
+
+    ================*/
+
   public static async getSet(query: any): Promise<any> {
     console.log("wallet/getSet", query);
     let usernameID = query.usernameID;
@@ -85,20 +93,26 @@ class WALLET {
 
   /*=============== 
 
-
-    SEND  
-    
-
+    SEND      
+    {
+      recipientAddress: '0x6f870Ba028DC73ecAE917ABF928F75382b07C39e1',
+      amount: 2,
+      avatarID: '63ac6c2534bba89538a2fdd4'
+    }
     ================*/
 
   public static async send(query: any): Promise<any> {
     console.log("wallet/send", query);
     let myData = await this.getSet({ avatarID: query.avatarID });
     if (!myData.success)
-      return Promise.resolve({ success: false, message: "No avatarID" });
+      return Promise.resolve({ success: false, message: myData.message });
 
-    let recipientData = await this.getOne({ address: query.recipientAddress });
-    if (!recipientData)
+    let usernameID = await AVATAR.getUsernameID({ _id: query.avatarID });
+
+    let recipient_wallet = await this.getOne({
+      address: query.recipientAddress,
+    });
+    if (!recipient_wallet)
       return Promise.resolve({
         success: false,
         message: "Recipient is not valid",
@@ -108,15 +122,23 @@ class WALLET {
     let result: any;
 
     if (myData.data.balance >= amount) {
-      let item = await DATA.change(this.table, {
+      let my_wallet = await DATA.change(this.table, {
         where: { address: myData.data.address },
         values: { balance: myData.data.balance - amount },
       });
       await DATA.change(this.table, {
         where: { address: query.recipientAddress },
-        values: { balance: recipientData.balance + amount },
+        values: { balance: recipient_wallet.balance + amount },
       });
-      result = { success: true, data: item };
+
+      await WALLET_HISTORY.addSendHistory(
+        usernameID,
+        amount,
+        "ETH",
+        query.recipientAddress,
+        "internal"
+      );
+      result = { success: true, data: my_wallet };
     } else {
       result = { success: false, message: "Not enough balance" };
     }
