@@ -31,6 +31,7 @@ import WALLET_ASSETS from "../USER/WALLET/WALLET_ASSETS";
 import WALLET_HISTORY from "../USER/WALLET/WALLET_HISTORY";
 import Twitter from "../USER/AUTH/Twitter";
 import User from "../../Frontend/USER/User";
+import Google from "../USER/AUTH/Google";
 class SocketInstance 
 {
     // Todo, destroy instances on disconnect
@@ -99,10 +100,10 @@ class SocketInstance
         if( action == ACTIONS.AVATAR_GETONE )                   return map( AVATAR.getOne( vars ) );
         
         if( action == ACTIONS.SOCIAL_TWITTER_SHARE )            return map( Twitter.Share ( vars ) );
+        if( action == ACTIONS.SOCIAL_GOOGLE_SHARE_GET )         return map( Google.ShareGet ( vars ) );
+        if( action == ACTIONS.SOCIAL_GOOGLE_SHARE )             return map( Google.Share ( vars ) );
 
         // AT THIS POINT, AVATAR ID IS REWRITTEN
-
-        console.log(`this.User.avatarID`, this.User.avatarID); 
  
         vars.avatarID = this.User.avatarID;
 
@@ -151,11 +152,6 @@ class SocketInstance
 
         function doCallback( vars?: any, isSuccess: boolean = true ) 
         {
-            if( action == ACTIONS.AUTH_GET) {
-                console.log(`[SocketInstance.ts] isSuccess`, isSuccess);
-                console.log(`[SocketInstance.ts] vars`, JSON.stringify(vars, null, 2));
-            }
-
             if( action == ACTIONS.AUTH_GET && isSuccess && vars ) setUser( vars );
  
             if( callback ) callback( vars || isSuccess );
@@ -177,7 +173,6 @@ class SocketInstance
 
             vars.socketID = self.socketID; 
 
-            console.log(`avatarID`, vars.avatarID);
             extract( vars, self.User );
             delete self.User.token;
         }

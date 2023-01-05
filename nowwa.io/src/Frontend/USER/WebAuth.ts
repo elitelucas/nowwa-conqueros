@@ -241,6 +241,21 @@ class WebAuth
         }
 
     }
+
+    public async shareGoogleGet ( ) : Promise<any> 
+    {
+        let avatarID:string = this.conquer.User!.avatarID!;
+
+        return this.conquer.do( ACTIONS.SOCIAL_GOOGLE_SHARE_GET, { avatarID } );
+    }
+ 
+    public async shareGoogle ( email:string ) : Promise<any> 
+    {
+        let shareMessage:string = `Join supersnappy.io!`;
+        let shareUrl:string = `https://supersnappy.io`;
+
+        return this.conquer.do( ACTIONS.SOCIAL_GOOGLE_SHARE, { shareMessage, shareUrl, email }  );  
+    }
  
     public async shareTwitter ( ) : Promise<any> 
     {

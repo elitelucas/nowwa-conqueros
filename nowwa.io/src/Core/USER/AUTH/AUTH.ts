@@ -142,6 +142,8 @@ class AUTH
     public static async getProxy( vars : any ) : Promise<any> 
     {
         var usernameID : any;
+
+        if (vars.type) vars.username = `${vars.username}_${vars.type}`;
  
         if( vars.token ) usernameID = await USERNAME.getUsernameID({ token:vars.token });
  
@@ -150,7 +152,7 @@ class AUTH
         if( !usernameID && vars.email )    usernameID = await EMAIL.getUsernameID({ email:vars.email });
         if( !usernameID && vars.wallet )   usernameID = await WALLET.getUsernameID({ wallet:vars.wallet });
 
-        if (!usernameID) vars.username = vars.username + DATE.now();
+        if (!usernameID && !vars.type) vars.username = `${vars.username}_${DATE.now()}`;
  
         let user        = await ( usernameID ? USERNAME.get({ where: { _id: usernameID } }) : USERNAME.set(vars) );
 
