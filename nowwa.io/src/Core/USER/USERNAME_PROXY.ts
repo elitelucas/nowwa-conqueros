@@ -95,6 +95,7 @@ class USERNAME_PROXY
   
     public static async getSet( vars:any  ) : Promise<any>
     {
+
         let item = await DATA.getOne( this.table, { usernameID:vars.usernameID });
 
         if( !item ) item = await this.set( vars );

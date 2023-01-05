@@ -105,13 +105,12 @@ class AUTH
 
         return Promise.resolve(
         {
-            //...avatar._doc,
             avatarID        : avatar._id,
             firstName       : avatar.firstName,
-            admin           : false,
+            // admin           : false,
             username        : username,
             token           : token,
-            friend_count    : 0
+            // friend_count    : 0
         });
     };
 
@@ -143,7 +142,11 @@ class AUTH
     {
         var usernameID : any;
 
+        console.log(`[AUTH.ts] getProxy vars.username 1`, JSON.stringify(vars, null, 4));
+
         if (vars.type) vars.username = `${vars.username}_${vars.type}`;
+
+        console.log(`[AUTH.ts] getProxy vars.username 2`, JSON.stringify(vars, null, 4));
  
         if( vars.token ) usernameID = await USERNAME.getUsernameID({ token:vars.token });
  

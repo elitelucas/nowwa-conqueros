@@ -8,6 +8,10 @@ export type HomeState = {
     initialized: boolean,
     isBusy: boolean,
     firstEmail?:string,
+    firstGuild?:{
+        id:string,
+        name:string,
+    },
 }
 
 export const HomeStateDefault: HomeState = {
@@ -74,6 +78,31 @@ const Home = (state: HomeState, setState: React.Dispatch<React.SetStateAction<Ho
         }
     };
 
+    let doShareDiscordGet = async () => {
+        updateState({
+            isBusy: true
+        });
+        let firstGuild:{id:string, name:string} | undefined;
+        let results = await indexState.conquer!.WebAuth.shareDiscordGet();
+        if (results.length > 0) {
+            firstGuild = results[0];
+        }
+        updateState({
+            isBusy: false,
+            firstGuild: firstGuild
+        });
+    };
+
+    let doShareDiscord = async () => {
+        updateState({
+            isBusy: true
+        });
+        await indexState.conquer!.WebAuth.shareDiscord( state.firstGuild! );
+        updateState({
+            isBusy: false
+        });
+    };
+
     let doShareGoogleGet = async () => {
         updateState({
             isBusy: true
@@ -101,7 +130,10 @@ const Home = (state: HomeState, setState: React.Dispatch<React.SetStateAction<Ho
 
     let buttonGoogleShareGet = <Button width='1' fluid primary onClick={doShareGoogleGet} disabled={state.isBusy}><Icon name='download'></Icon>Google</Button>;
     let buttonGoogleShare = <Button width='1' fluid primary onClick={doShareGoogle} disabled={state.isBusy}><Icon name='share'></Icon>{state.firstEmail}</Button>;
-
+    
+    let buttonDiscordShareGet = <Button width='1' fluid primary onClick={doShareDiscordGet} disabled={state.isBusy}><Icon name='download'></Icon>Discord</Button>;
+    let buttonDiscordShare = <Button width='1' fluid primary onClick={doShareDiscord} disabled={state.isBusy}><Icon name='share'></Icon>{typeof state.firstGuild != 'undefined' && state.firstGuild!.name }</Button>;
+    
     return (
         <>
             <Segment>
@@ -111,11 +143,13 @@ const Home = (state: HomeState, setState: React.Dispatch<React.SetStateAction<Ho
                             Welcome, {indexState.conquer!.User!.firstName!}!
                         </Grid.Column>
                         <Grid.Column>
-                            <Button.Group widths='4'>
+                            <Button.Group widths='5'>
                                 <Button width='1' fluid primary onClick={doShareTwitter} disabled={state.isBusy}><Icon name='share'></Icon>Twitter</Button>
                                 <Button width='1' fluid primary onClick={doShareFacebook} disabled={state.isBusy}><Icon name='share'></Icon>Facebook</Button>
                                 {typeof state.firstEmail == 'undefined' && buttonGoogleShareGet}
                                 {typeof state.firstEmail != 'undefined' && buttonGoogleShare}
+                                {typeof state.firstGuild == 'undefined' && buttonDiscordShareGet}
+                                {typeof state.firstGuild != 'undefined' && buttonDiscordShare}
                                 <Button width='1' fluid primary onClick={doLogout} disabled={state.isBusy}><Icon name='log out'></Icon>Logout</Button>
                             </Button.Group>
                         </Grid.Column>

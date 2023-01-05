@@ -8,11 +8,13 @@ import AVATAR from '../TRIBE/AVATAR';
 import mongoose from 'mongoose';
 import USERNAME from '../USERNAME';
 import USERNAME_PROXY from '../USERNAME_PROXY';
+import DATA from "../../DATA/DATA";
 
 class Twitter {
 
     private static Instance: Twitter;
     private static codeVerifiers: { [key: string]: string }
+    private static table: string = "twitter";
 
     /**
      * Initialize email module.
@@ -93,15 +95,21 @@ class Twitter {
                 {
                     username    : userObject.id,
                     firstName   : userObject.username,
-                    accessToken : response.accessToken,
                     type        : 'TWITTER'
                 };
                 
-                console.log(`account`, JSON.stringify(account, null, 4));
+                console.log(`[Twitter.ts] account`, JSON.stringify(account, null, 4));
 
                 let user = await AUTH.get(account);
                 
-                console.log(`user`, JSON.stringify(user, null, 4));
+                console.log(`[Twitter.ts] user`, JSON.stringify(user, null, 4));
+
+                let entry = await this.getSet({
+                    avatarID        : user.avatarID,
+                    accessToken     : response.accessToken
+                });
+                
+                console.log(`[Twitter.ts] entry`, JSON.stringify(entry, null, 4));
 
                 let searchParams:string = Object.keys(user).map(key => key + '=' + user[key]).join('&');
                 res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?${searchParams}`);
@@ -116,7 +124,7 @@ class Twitter {
 
         let avatar = await AVATAR.getOne({ _id: new mongoose.Types.ObjectId ( vars.avatarID ) });
 
-        let proxy = await USERNAME_PROXY.get({ where: { usernameID: new mongoose.Types.ObjectId ( avatar.usernameID ) }});
+        let proxy = await DATA.getOne(this.table, { where: { avatarID: new mongoose.Types.ObjectId ( vars.avatarID ) }});
 
         let accessToken = proxy.accessToken;
 
@@ -126,6 +134,25 @@ class Twitter {
         
         return Promise.resolve();
     }
+ 
+    /*=============== 
+
+
+    GET SET 
+    
+
+    ================*/
+  
+    public static async getSet( vars:any  ) : Promise<any>
+    {
+
+        let item = await DATA.getOne( this.table, { usernameID:vars.usernameID });
+
+        if( !item ) item = await DATA.set( this.table, vars );
+ 
+        return Promise.resolve( item );
+    }; 
+
 }
 
 namespace Twitter {
