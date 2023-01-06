@@ -15,6 +15,8 @@ import CONQUER from '../Frontend/CONQUER';
 import Uploader, { UploaderStateDefault } from './Uploader';
 import Downloader, { DownloaderState, DownloaderStateDefault } from './Downloader';
 import User from '../Frontend/USER/User';
+import Yohami, { YohamiStateDefault } from './yohami';
+import Pages from './PAGES';
 
 type IndexDisplay = 'None' | 'Explorer' | 'Build' | 'Test' | 'Login' | 'Register' | 'Home';
 
@@ -66,7 +68,9 @@ const Index = () => {
 
         let conquer = new CONQUER();
 
-        conquer.init().then(() => {
+        conquer.init().then(() => 
+        {
+            Pages.initalize( conquer );
 
             let account = conquer.User;
 
@@ -101,6 +105,8 @@ const Index = () => {
             }
 
         });
+
+        
     }, []);
 
     /*
@@ -146,6 +152,10 @@ const Index = () => {
         home = Home(homeState, setHomeState, state, updateState);
     }
 
+    let yohami: JSX.Element = <></>;
+    yohami = Yohami(state, updateState);
+ 
+
     const [downloaderState, setDownloaderState] = useState(DownloaderStateDefault);
     let downloader: JSX.Element = <></>;
     const [uploaderState, setUploaderState] = useState(UploaderStateDefault);
@@ -159,17 +169,10 @@ const Index = () => {
         uploader = Uploader(uploaderState, setUploaderState, state, updateDownloaderState);
     }
 
+
     return (
         <Segment placeholder>
-            {!loggedIn && <>
-                <Segment placeholder>
-                    <Header icon>
-                        <Icon name='earlybirds' />
-                        Nowwa IO
-                    </Header>
-                    {state.message && state.message.length > 0 && <Message>{state.message}</Message>}
-                </Segment>
-            </>}
+            {yohami}
             {home}
             {jtest}
             {top}
@@ -179,6 +182,7 @@ const Index = () => {
             {build}
             {uploader}
             {downloader}
+            
         </Segment>
     );
 }
