@@ -71,10 +71,6 @@ class SocketInstance
 
         if( action == ACTIONS.FILE_GET)                         return map( FILE.get( vars ) );
 
-        if( action == ACTIONS.ROOM_GET )                        return map( ROOM.get( vars ) );
-
-        if( action == ACTIONS.ROOM_ENTRIES_GET )                return map( ROOM_ENTRIES.get( vars ) );  
-
         if( action == ACTIONS.FRIENDS_CHANGE )                  return map( FRIENDS.change( vars ) );
         if( action == ACTIONS.FRIENDS_REMOVE )                  return map( FRIENDS.remove( vars ) );
         if( action == ACTIONS.ANALYTICS_GET )                   return map( ANALYTICS.get( vars ) );
@@ -137,8 +133,10 @@ class SocketInstance
         if( action == ACTIONS.FOLLOWERS_SET )                   return map( FOLLOWERS.set( vars ) );
         if( action == ACTIONS.FOLLOWERS_GET )                   return map( FOLLOWERS.get( vars ) );
 
+        
+        if( action == ACTIONS.ROOM_GET )                        return map( ROOM.get( vars ) );
         if( action == ACTIONS.ROOM_GETONE )                     return map( ROOM.getOne( vars ) );
-
+        if( action == ACTIONS.ROOM_ENTRIES_GET )                return map( ROOM_ENTRIES.get( vars ) );  
         if( action == ACTIONS.ROOM_ENTRIES_SET )                return map( ROOM_ENTRIES.set( vars ) ); 
         if( action == ACTIONS.ROOM_ENTRIES_CHANGE )             return map( ROOM_ENTRIES.change( vars ) );  
         if( action == ACTIONS.ROOM_ENTRIES_REMOVE )             return map( ROOM_ENTRIES.remove( vars ) );  
