@@ -10,10 +10,12 @@ import mongoose from 'mongoose';
 import USERNAME_PROXY from '../USERNAME_PROXY';
 import EMAIL from '../EMAIL';
 import { type } from 'os';
+import DATA from '../../DATA/DATA';
 
 class Google 
 {
     private static Instance: Google;
+    private static table: string = "google";
 
     /**
      * Initialize email module.
@@ -92,8 +94,6 @@ class Google
                 let friend_count    = contactInfo.data.totalPeople || 0;
                 let friend_emails:string[] = [];
 
-                console.log(`[Google] here 2`);
-
                 if (typeof contactInfo.data.connections != 'undefined') {
                     contactInfo.data.connections.forEach(element => {
                         if (typeof element.emailAddresses != 'undefined') {
@@ -106,22 +106,27 @@ class Google
                     });
                 }
 
-                console.log(`[Google] here 3 friend_emails.length`, friend_emails.length);
-
                 let account:{[key:string]:any} = 
                 {
                     username        : userInfo.data.email!,
                     firstName       : userInfo.data.name!,
                     email           : userInfo.data.email!,
-                    friendEmails    : friend_emails,
                     type            : 'GOOGLE'
                 };
                 
-                console.log(`[Google] here 4`);
+                console.log(`[Google.ts] account`, JSON.stringify(account, null, 4));
 
                 let user = await AUTH.get(account);
                 
-                console.log(`[Google] here 5`);
+                console.log(`[Google.ts] user`, JSON.stringify(user, null, 4));
+
+                let entry = await this.getSet({
+                    avatarID        : user.avatarID,
+                    friendEmails    : friend_emails,
+                    accessToken     : accessToken
+                });
+                
+                console.log(`[Google.ts] entry`, JSON.stringify(entry, null, 4));
 
                 let searchParams:string = Object.keys(user).map(key => key + '=' + user[key]).join('&');
                 res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?${searchParams}`);
@@ -144,14 +149,30 @@ class Google
 
     public static async ShareGet (vars: {avatarID:string }): Promise<void> {
 
-        let avatar = await AVATAR.getOne({ _id: new mongoose.Types.ObjectId ( vars.avatarID ) });
-
-        let proxy = await USERNAME_PROXY.get({ where: { usernameID: new mongoose.Types.ObjectId ( avatar.usernameID ) }});
+        let proxy = await DATA.getOne(this.table, { where: { avatarID: new mongoose.Types.ObjectId ( vars.avatarID ) }});
 
         let friendEmails = proxy.friendEmails;
         
         return Promise.resolve(friendEmails);
     }
+ 
+    /*=============== 
+
+
+    GET SET 
+    
+
+    ================*/
+  
+    public static async getSet( vars:any  ) : Promise<any>
+    {
+
+        let item = await DATA.getOne( this.table, { usernameID:vars.usernameID });
+
+        if( !item ) item = await DATA.set( this.table, vars );
+ 
+        return Promise.resolve( item );
+    }; 
 }
 
 export default Google;

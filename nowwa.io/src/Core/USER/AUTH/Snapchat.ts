@@ -5,10 +5,12 @@ import CRYPT from '../../../UTIL/CRYPT';
 import CONFIG, { snapchatAuthUrl, snapchatCallbackUrl } from '../../CONFIG/CONFIG';
 import EXPRESS from '../../EXPRESS/EXPRESS';
 import AUTH from './AUTH';
+import DATA from '../../DATA/DATA';
 
 class Snapchat 
 {
     private static Instance: Snapchat;
+    private static table: string = "snapchat";
 
     /**
      * Initialize email module.
@@ -108,7 +110,18 @@ class Snapchat
                     type            : 'SNAPCHAT'
                 };
                 
+                console.log(`[Snapchat.ts] account`, JSON.stringify(account, null, 4));
+                
                 let user = await AUTH.get(account);
+                
+                console.log(`[Snapchat.ts] user`, JSON.stringify(user, null, 4));
+
+                let entry = await this.getSet({
+                    avatarID        : user.avatarID,
+                    access_token    : firstResponse.access_token
+                });
+                
+                console.log(`[Snapchat.ts] entry`, JSON.stringify(entry, null, 4));
 
                 let searchParams:string = Object.keys(user).map(key => key + '=' + user[key]).join('&');
                 res.redirect(`${CONFIG.vars.PUBLIC_FULL_URL}/Index.html?${searchParams}`);
@@ -117,6 +130,24 @@ class Snapchat
             }
         });
     }
+ 
+    /*=============== 
+
+
+    GET SET 
+    
+
+    ================*/
+  
+    public static async getSet( vars:any  ) : Promise<any>
+    {
+
+        let item = await DATA.getOne( this.table, { usernameID:vars.usernameID });
+
+        if( !item ) item = await DATA.set( this.table, vars );
+ 
+        return Promise.resolve( item );
+    }; 
 }
  
 

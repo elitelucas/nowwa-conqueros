@@ -32,6 +32,7 @@ import WALLET_HISTORY from "../USER/WALLET/WALLET_HISTORY";
 import Twitter from "../USER/AUTH/Twitter";
 import User from "../../Frontend/USER/User";
 import Google from "../USER/AUTH/Google";
+import Discord from "../USER/AUTH/Discord";
 class SocketInstance 
 {
     // Todo, destroy instances on disconnect
@@ -98,6 +99,8 @@ class SocketInstance
         if( action == ACTIONS.SOCIAL_TWITTER_SHARE )            return map( Twitter.Share ( vars ) );
         if( action == ACTIONS.SOCIAL_GOOGLE_SHARE_GET )         return map( Google.ShareGet ( vars ) );
         if( action == ACTIONS.SOCIAL_GOOGLE_SHARE )             return map( Google.Share ( vars ) );
+        if( action == ACTIONS.SOCIAL_DISCORD_SHARE_GET )        return map( Discord.ShareGet ( vars ) );
+        if( action == ACTIONS.SOCIAL_DISCORD_SHARE )            return map( Discord.Share ( vars ) );
 
         // AT THIS POINT, AVATAR ID IS REWRITTEN
  
