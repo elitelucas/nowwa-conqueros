@@ -50,6 +50,8 @@ const JTest = (indexState: IndexState) => {
     }
 
     const getAccount = async () => {
+        console.log(indexState.conquer)
+        console.log(indexState.conquer?.User!.avatarID)
         console.log(indexState.conquer?.User!.username)
     }
 
@@ -64,6 +66,25 @@ const JTest = (indexState: IndexState) => {
         return;
     }
 
+    const rooms_test = async () => {
+        console.log('rooms_test is called')
+
+        // let friends = await indexState.conquer!.Friends.get();
+        // console.log(friends)
+
+        let roomInstance = await indexState.conquer!.Rooms.getOne([data1]);
+        roomInstance.onMessage = function (message: any) {
+            console.log("GOT MESSAGE", message);
+        }
+
+        console.log(roomInstance)
+        await roomInstance.join()
+        await roomInstance.entry('hi, ' + data1)   
+
+        let entries = await roomInstance.Entries.get();
+        console.log(entries)
+    }
+
     return (
         <Segment placeholder>
 
@@ -76,7 +97,7 @@ const JTest = (indexState: IndexState) => {
                     </Grid.Row>
                     <Grid.Row>
                         <Grid.Column verticalAlign='middle' textAlign='right' width='2'>
-                            Recepient Address
+                            Data1
                         </Grid.Column>
                         <Grid.Column width='4'>
                             <Form.Input
@@ -88,7 +109,7 @@ const JTest = (indexState: IndexState) => {
                     </Grid.Row>
                     <Grid.Row>
                         <Grid.Column verticalAlign='middle' textAlign='right' width='2'>
-                            Amount
+                            Data2
                         </Grid.Column>
                         <Grid.Column width='4'>
                             <Form.Input
@@ -114,7 +135,7 @@ const JTest = (indexState: IndexState) => {
                             <Button fluid primary onClick={wallets_send}>wallet.send</Button>
                         </Grid.Column>
                         <Grid.Column>
-                            <Button fluid primary disabled>Do Sth</Button>
+                            <Button fluid primary onClick={rooms_test}>rooms_test</Button>
                         </Grid.Column>
                         <Grid.Column>
                             <Button fluid primary disabled>Do Sth</Button>

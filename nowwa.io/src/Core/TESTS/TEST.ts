@@ -11,15 +11,29 @@ import ACCOUNT from "./ACCOUNT";
 import TEMPORARY from "./TEMPORARY";
 import LOG, { log } from "../../UTIL/LOG";
 import RoomInstance from "../../Frontend/ROOMS/RoomInstance/RoomInstance";
+import QUERY from "../../UTIL/QUERY";
+import ROOM from "../SOCKET/ROOM/ROOM";
 
 class TEST {
+  public static async Run(): Promise<void> {
+    // TESTING
+    try {
+      /*
+        J's testing
 
-    public static async Run (): Promise<void> {
+        email           avatarID
+        aaa@gmail.com   63ac6c2534bba89538a2fdd4
+        bbb@gmail.com   63ac6c5a34bba89538a2fde6
+     */
+      console.log("J's testing...");
 
-        // TESTING
-        try {
+    //   let res = await ROOM.getOne({
+    //     avatarIDs: ["63ac6c5a34bba89538a2fde6"],
+    //     avatarID: "63ac6c2534bba89538a2fdd4",
+    //   });
+    //   console.log(res);
 
-            /*
+      /*
             let conquer1 = new CONQUER('user001');
             await conquer1.init();    
 
@@ -47,7 +61,7 @@ class TEST {
             log("GOT FRIENDS LIST USER2", list2 );
             */
 
-            /*
+      /*
             //////================= FRIENDS
 
             //var newfriend = await conquer1.Friends.set( "6392e07491358963557a2d92" );
@@ -64,7 +78,7 @@ class TEST {
            // myFriendship.set();
            */
 
-            /*
+      /*
             log('==========================');
  
             let room1 : RoomInstance = await conquer1.Rooms.getOne( [ conquer2.User.avatarID ] );
@@ -85,23 +99,17 @@ class TEST {
  
             room1.entry( "Hello Im am USER 1")
             room2.entry( "Hello and Im USER 2!")
-            */      
-
-        }
-        catch ( error ) {
-            console.log( error );
-        }
-
-        return Promise.resolve();
+            */
+    } catch (error) {
+      console.log(error);
     }
 
-    public static async Fun ( w: string ) {
+    return Promise.resolve();
+  }
 
-    }
+  public static async Fun(w: string) {}
 }
 
-namespace TEST {
-
-}
+namespace TEST {}
 
 export default TEST;
