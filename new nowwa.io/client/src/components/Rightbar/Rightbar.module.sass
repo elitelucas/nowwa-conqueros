@@ -1,0 +1,51 @@
+@import ../../styles/helpers
+
+.container
+    text-align: center
+    padding: 0px 58px
+.user
+    margin-top: 25px
+.logo
+    position: relative
+    z-index: 12
+    display: inline-block
+    flex-shrink: 0
+    width: 70px
+    +d
+        margin-right: auto
+    img
+        width: 100%
+.bar
+    margin-top: 75px
+
+.menuitem
+    display: block
+    height: 50px
+    width: 50px
+    margin: 10px auto
+    border-radius: 200px
+    background-color: #2A323D
+    svg
+        fill: white
+
+.avatar
+    margin-top: 20px
+    position: relative
+    img
+        width: 65px
+        height: 65px
+        margin-right: 16px
+        border-radius: 100px
+
+.active
+    position: absolute
+    bottom: 2px
+    right: 2px
+    display: flex
+    align-items: center
+    justify-content: center
+    width: 12px
+    height: 12px
+    border-radius: 50%
+    border: 1px solid $neutrals8
+    background-color: $green

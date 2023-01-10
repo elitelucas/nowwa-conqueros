@@ -1,0 +1,78 @@
+@import ../../styles/helpers
+
+.gallery
+    display: flex
+    align-items: center
+    justify-content: center
+    gap: 24px
+    max-width: 1200px
+    padding-top: 64px
+    border-radius: 16px
+    // padding: 32px
+    +m
+        flex-direction: column
+
+.viewer
+    flex: 2
+    & img
+        max-width: 100%
+        border-bottom-left-radius: 32px
+
+.detail
+    flex: 3
+
+.inner
+    padding: 24px
+
+.title
+    display: flex
+    justify-content: space-between
+    align-items: center
+    padding: 16px
+    border-radius: 16px
+    background: rgba(255,255,255,0.4)
+    color: $neutrals7
+
+    +m
+        border: none
+    +dark
+        // border-color: $neutrals3
+.text
+    color: $neutrals4
+    font-weight: 700
+    text-transform: uppercase
+    font-size: .8rem
+.subtitle
+    font-size: .7rem
+    font-weight: 400
+    color: $neutrals5
+    text-transform: uppercase
+
+.no
+    display: flex
+    align-items: center
+    gap: 16px
+    font-size: 1.2rem
+    font-weight: 500
+    color: $neutrals1
+.name
+    font-size: .7rem
+    font-weight: 400
+    text-transform: uppercase
+    color: $neutrals1
+.token
+    font-size: 1.2rem
+    font-weight: 500
+    color: $neutrals1
+
+.props
+    padding-top: 24px
+    display: grid
+    grid-template-columns: repeat(3, 1fr) 
+    row-gap: 16px
+    column-gap: 16px
+
+.item
+    padding: 16px
+    border-radius: 16px
+    background: rgba(255,255,255,0.4)

@@ -1,0 +1,84 @@
+@import ../../styles/helpers
+.container
+    display: flex
+    padding: 27px 49px
+    justify-content: space-between
+    position: relative
+
+    &__left
+        display: flex
+
+        &__avatar
+            width: 66px
+            height: 66px
+            img
+                width: 66px
+                height: 66px
+                margin-right: 16px
+                border-radius: 100px
+                cursor: pointer
+        
+        &__info
+            padding-left: 25px
+            display: flex
+            flex-direction: column
+            justify-content: space-between
+
+            &__name
+                font-size: 25px
+                line-height: 29px
+                font-weight: semi-bold
+
+            &__state
+                display: flex
+                justify-content: center
+                align-items: center
+                
+                &__iconActive
+                    bottom: 2px
+                    right: 2px
+                    display: flex
+                    align-items: center
+                    justify-content: center
+                    width: 15px
+                    height: 15px
+                    border-radius: 50%
+                    background-color: #409e5c
+
+                &__stringActive
+                    margin-left: 9px
+                    font-size: 16px
+                    line-height: 19px
+
+    &__right
+        display: flex
+        justify-content: center
+        align-items: center       
+        gap: 36px
+
+        +m
+            gap: 5px
+
+        button
+            color: #ffffff
+            opacity: 0.4
+            width: 28px
+            height: 28px
+
+.topGradient
+    background: linear-gradient(0, #11141B 5.76%, rgba(17, 20, 27, 0.8) 41.96%, rgba(17, 20, 27, 0.56311) 67.2%, rgba(17, 20, 27, 0) 97.72%)
+    transform: rotate(180deg)
+    width: -webkit-fill-available
+    height: 100px
+    position: absolute
+    bottom: -120px
+
+.setting
+    background: #1B2028
+    z-index: 10
+    height: 100vh
+    padding: 0px
+    
+            
+
+

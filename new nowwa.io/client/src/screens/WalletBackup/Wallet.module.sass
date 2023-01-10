@@ -1,0 +1,176 @@
+@import ../../styles/helpers
+
+.wallet
+    margin: 30px 150px
+
+    +d
+        margin: auto
+
+    +m
+        margin: 30px 5px
+
+.stepContainer
+    border: 2px solid $neutrals2
+    border-radius: 12px
+    width: 100%
+    gap: 20px
+    padding: 30px
+    display: flex
+    flex-direction: column
+    justify-content: space-between
+    align-items: center
+
+    +m
+        padding: 15px
+
+    &__title
+        display: flex
+        position: relative
+        justify-content: center
+        align-items: center
+        font-size: 20px
+        width: 100%
+        
+        
+        &__prev
+            position: absolute
+            top: 50%
+            left: 0px
+            transform: translateY(-50%)
+            cursor: pointer
+
+    &__stepper
+        align-items: center
+        width: 50%
+        +m 
+            width: 100%
+
+    &__description
+        display: flex
+        flex-direction: column
+        gap: 10px
+
+    &__steptitle
+        text-color: #fff
+        font-size: 30px
+        line-height: 40px
+        font-weight: 800
+        text-align: center
+
+    &__stepdescription
+        color: $neutrals4
+        text-align: center
+
+        margin: 0 30px
+        +m
+            margin: 0
+
+    &__tip
+        width: 100%
+        display: flex
+        flex-direction: column
+        gap: 10px
+        align-items: center
+
+        &__title
+            margin: 0 30px
+            +m
+                margin: 0
+
+        &__box
+            width: 600px
+            display: flex
+            justify-content: space-between
+            align-items: center
+            gap: 10px
+            background: $neutrals2
+            border-radius: 12px
+            padding: 30px
+            margin: 0 30px
+            +m
+                margin: 0px
+                padding: 20px
+                width: 100%
+
+            +x
+                margin: 0px
+                padding: 20px
+                width: 100%
+
+            &__check
+                padding: 2px
+                width: 20px
+                height: 20px
+                border-radius: 100%
+                background: #1975d2
+                color: #fff
+
+    &__seedbox
+        width: 60%
+        border: 2px solid $neutrals2
+        border-radius: 12px
+        padding: 30px
+        display: grid
+        grid-template-columns: auto auto auto
+        gap: 15px
+
+        +m
+            width: 100%
+            padding: 10px
+            gap: 5px
+        
+        +x 
+            width: 100%
+
+        &__seed
+            border-radius: 12px
+            border: 1px solid $neutrals4
+            padding: 3px
+            text-align: center
+            align-items: center
+
+    &__seedbox1
+        width: 60%
+        border: 2px solid $neutrals2
+        border-radius: 12px
+        padding: 30px
+        display: grid
+        grid-template-columns: auto auto auto
+        gap: 15px
+        cursor: pointer
+
+        +m
+            width: 100%
+            padding: 10px
+            gap: 5px
+        
+        +x 
+            width: 100%
+
+        &__seed
+            border-radius: 12px
+            border: 1px solid $neutrals4
+            padding: 3px
+            text-align: center
+            align-items: center
+
+        &__selectseed
+            border-radius: 12px
+            border: 1px solid #1975d2
+            padding: 3px
+            text-align: center
+            align-items: center
+            background: #1975d2
+
+
+    &__btn
+        width: 300px
+        align-items: center
+        text-align: center
+        border-radius: 12px
+        +m
+            width: 100%
+
+
+
+
