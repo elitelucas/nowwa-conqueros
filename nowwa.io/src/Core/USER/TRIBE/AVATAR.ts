@@ -49,6 +49,13 @@ class AVATAR {
     return Promise.resolve(null);
   }
 
+  public static async getFirstName(query: any): Promise<any> {
+    let item = await this.getOne(query);
+    if (item) return Promise.resolve(item.firstName);
+
+    return Promise.resolve(null);
+  }
+
   public static async fill(array: any): Promise<any> {
     for (var n in array) {
       let item = array[n];

@@ -2,6 +2,7 @@ import DATA from "../../DATA/DATA";
 import LOG, { log } from "../../../UTIL/LOG";
 import QUERY from "../../../UTIL/QUERY";
 import ROOM_ENTRIES from "./ROOM_ENTRIES";
+import AVATAR from "../../USER/TRIBE/AVATAR";
 
 class ROOM {
   public static pool: any = {};
@@ -34,6 +35,7 @@ class ROOM {
  
     {
         avatarIDs?:[]
+        name?
     }
 
     
@@ -43,18 +45,30 @@ class ROOM {
     let avatarIDs = query.avatarIDs;
 
     if (avatarIDs) {
-      if (query.avatarID) avatarIDs.push(query.avatarID);
+      if (query.avatarID && !avatarIDs.includes(query.avatarID))
+        avatarIDs.push(query.avatarID);
       delete query.avatarID;
 
       avatarIDs = QUERY.toObjectID(avatarIDs);
-      query.avatarIDs = { $all: avatarIDs, $size: avatarIDs.length };
+        query.avatarIDs = { $all: avatarIDs, $size: avatarIDs.length };
     }
 
     let room = await DATA.getOne(this.table, query);
 
     if (room) return Promise.resolve(room);
 
-    if (avatarIDs) return this.set({ avatarIDs: avatarIDs, name: query.name });
+    if (avatarIDs) {
+      let name = query.name;
+
+      if (!name) {
+        name = "";
+        for (var i = 0; i < avatarIDs.length; i++) {
+          let usernameID = await AVATAR.getFirstName({ _id: avatarIDs[i] });
+          name = name + usernameID + ":";
+        }
+      }
+      return this.set({ avatarIDs: avatarIDs, name: name });
+    }
 
     return this.set(query);
   }

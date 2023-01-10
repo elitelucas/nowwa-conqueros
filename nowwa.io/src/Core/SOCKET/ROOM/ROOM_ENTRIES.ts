@@ -10,13 +10,13 @@ class ROOM_ENTRIES
 
 
     GET  
-    
+    {roomID}
 
     ================*/
 
     public static async get( query:any ) : Promise<any>
     {
-        let value = await DATA.get( this.table, query );
+        let value = await DATA.get( this.table, {roomID: query.roomID} );
 
         return Promise.resolve( value );
     };
