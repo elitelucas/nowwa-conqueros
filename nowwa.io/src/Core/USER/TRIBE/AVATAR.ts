@@ -8,11 +8,10 @@ import FOLDER from "../../ITEM/INSTANCE/FOLDER";
 import ITEM from "../../ITEM/ITEM";
 import FRIENDS from "./FRIENDS/FRIENDS";
 
-class AVATAR 
-{
-    private static table: string = "avatars";
+class AVATAR {
+  private static table: string = "avatars";
 
-    /*=============== 
+  /*=============== 
 
 
     GET  
@@ -20,48 +19,52 @@ class AVATAR
 
     ================*/
 
-    public static async get(vars: any): Promise<any> 
-    {
-        var results = await DATA.get(this.table, vars);
-        return Promise.resolve(results);
-    };
-
-    public static async getOne(vars: any): Promise<any> 
-    {
-        let avatar = await DATA.getOne(this.table, vars);
-        if (!avatar) avatar = await this.set(vars);
-
-        return Promise.resolve(avatar);
-    };
+  public static async get(vars: any): Promise<any> {
+    console.log("Core/Avatar/get", vars);
     
-    public static async getUsernameID( query:any ) : Promise<any>
-    {
-        let item = await this.getOne( query );
-        if( item ) return Promise.resolve( item.usernameID );
+    //returns where firstname exists
+    var results = await DATA.get(this.table, {
+      where: {
+        firstName: {
+          $exists: true,
+          $type: "string",
+        //   $not: { $regex: "^Guest" },
+        },
+      },
+    });
+    return Promise.resolve(results);
+  }
 
-        return Promise.resolve(null);
-    };   
+  public static async getOne(vars: any): Promise<any> {
+    let avatar = await DATA.getOne(this.table, vars);
+    if (!avatar) avatar = await this.set(vars);
 
-    public static async fill( array:any ): Promise<any> 
-    {
-        for( var n in array )
-        {
-            let item = array[n];
+    return Promise.resolve(avatar);
+  }
 
-            if( item.avatarID )
-            {
-                let avatarData = await this.get( { _id:item.avatarID });
+  public static async getUsernameID(query: any): Promise<any> {
+    let item = await this.getOne(query);
+    if (item) return Promise.resolve(item.usernameID);
 
-                item.firstname = avatarData.firstName;
-                item.userPhoto  = avatarData.userPhoto;
-            }
-        }
- 
-        return Promise.resolve( array );
-    };
+    return Promise.resolve(null);
+  }
 
+  public static async fill(array: any): Promise<any> {
+    for (var n in array) {
+      let item = array[n];
 
-    /*=============== 
+      if (item.avatarID) {
+        let avatarData = await this.get({ _id: item.avatarID });
+
+        item.firstname = avatarData.firstName;
+        item.userPhoto = avatarData.userPhoto;
+      }
+    }
+
+    return Promise.resolve(array);
+  }
+
+  /*=============== 
 
 
     SET  
@@ -75,58 +78,51 @@ class AVATAR
  
     ================*/
 
-    public static async set( vars:any ): Promise<any> 
-    {
-        let avatar      = await DATA.set( this.table, QUERY.set(vars));
-        let avatarID    = avatar._id;
+  public static async set(vars: any): Promise<any> {
+    let avatar = await DATA.set(this.table, QUERY.set(vars));
+    let avatarID = avatar._id;
 
-        let tribe = await TRIBE.set(
-        {
-            private     : true,
-            domainID    : avatarID,
-            type        : "avatarAdmin",
-            avatarIDs   : [ avatarID ]
-        });
- 
-        let friends = await TRIBE.set(
-        {
-            type        : "friends",
-            domainID    : avatarID,
-            private     : true
-        });
+    let tribe = await TRIBE.set({
+      private: true,
+      domainID: avatarID,
+      type: "avatarAdmin",
+      avatarIDs: [avatarID],
+    });
 
-        let followers = await TRIBE.set(
-        {
-            type        : "followers",
-            domainID    : avatarID
-        });
+    let friends = await TRIBE.set({
+      type: "friends",
+      domainID: avatarID,
+      private: true,
+    });
 
-        await TRIBE_MEMBERS.set(
-        {
-            tribeID     : friends._id,
-            avatarID    : avatarID,
-            role        : 0,
-            hidden      : true
-        });
+    let followers = await TRIBE.set({
+      type: "followers",
+      domainID: avatarID,
+    });
 
-        await TRIBE_MEMBERS.set(
-        {
-            tribeID     : followers._id,
-            avatarID    : avatarID,
-            role        : 0,
-            hidden      : true
-        });
- 
-        let folder = await FOLDER.set(
-        {
-            type        : "root",
-            avatarID    : avatar._id
-        });
+    await TRIBE_MEMBERS.set({
+      tribeID: friends._id,
+      avatarID: avatarID,
+      role: 0,
+      hidden: true,
+    });
 
-        return Promise.resolve( avatar );
-    };
+    await TRIBE_MEMBERS.set({
+      tribeID: followers._id,
+      avatarID: avatarID,
+      role: 0,
+      hidden: true,
+    });
 
-    /*=============== 
+    let folder = await FOLDER.set({
+      type: "root",
+      avatarID: avatar._id,
+    });
+
+    return Promise.resolve(avatar);
+  }
+
+  /*=============== 
 
 
     CHANGE  
@@ -134,12 +130,9 @@ class AVATAR
 
     ================*/
 
-    public static async change( query:any ): Promise<any> 
-    {
+  public static async change(query: any): Promise<any> {}
 
-    };
-
-    /*=============== 
+  /*=============== 
 
 
     REMOVE  
@@ -147,38 +140,30 @@ class AVATAR
 
     ================*/
 
-    public static async remove(query: any): Promise<any> 
-    {
-        query = QUERY.get(query);
+  public static async remove(query: any): Promise<any> {
+    query = QUERY.get(query);
 
-        if (query.where.usernameID) 
-        {
-            let results: any = this.get({ usernameID: query.usernameID });
-            for (let n in results) await this.removeAvatar(results[n]._id);
-        }
+    if (query.where.usernameID) {
+      let results: any = this.get({ usernameID: query.usernameID });
+      for (let n in results) await this.removeAvatar(results[n]._id);
+    }
 
-        if (query.where._id) 
-        {
-            let results = this.get({ _id: query._id });
+    if (query.where._id) {
+      let results = this.get({ _id: query._id });
 
-            for (let n in results) {
-                // remove FOLDERS, ITEMS
-            }
-        }
+      for (let n in results) {
+        // remove FOLDERS, ITEMS
+      }
+    }
 
-        await DATA.remove(this.table, query);
-        return Promise.resolve();
-    };
+    await DATA.remove(this.table, query);
+    return Promise.resolve();
+  }
 
-
-    public static async removeAvatar(avatarID: any): Promise<any> 
-    {
-        await ITEM.remove({ avatarID: avatarID });
-        await FOLDER.remove({ avatarID: avatarID });
-
-    };
-
-
-};
+  public static async removeAvatar(avatarID: any): Promise<any> {
+    await ITEM.remove({ avatarID: avatarID });
+    await FOLDER.remove({ avatarID: avatarID });
+  }
+}
 
 export default AVATAR;

@@ -19,7 +19,7 @@ class AvatarInstance
 
     private fill( vars:any )
     {
-        this.avatarID       = vars.avatarID || this.avatarID;
+        this.avatarID       = vars._id || this.avatarID;
         this.firstName      = vars.firstName || this.firstName;
         this.userPhoto      = vars.userPhoto || this.userPhoto;
     }

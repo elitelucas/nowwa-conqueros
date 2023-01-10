@@ -69,20 +69,24 @@ const JTest = (indexState: IndexState) => {
     const rooms_test = async () => {
         console.log('rooms_test is called')
 
-        // let friends = await indexState.conquer!.Friends.get();
-        // console.log(friends)
+        let avatars = await indexState.conquer!.Avatars.get();
+        // let avatars = await indexState.conquer!.Avatars.get('63ac6c2534bba89538a2fdd4');
+        console.log(avatars)
 
-        let roomInstance = await indexState.conquer!.Rooms.getOne([data1]);
-        roomInstance.onMessage = function (message: any) {
-            console.log("GOT MESSAGE", message);
-        }
+        // let res = await indexState.conquer!.Rooms.get({});
+        // console.log(res)
 
-        console.log(roomInstance)
-        await roomInstance.join()
-        await roomInstance.entry('hi, ' + data1)   
+        // let roomInstance = await indexState.conquer!.Rooms.getOne([data1]);
+        // roomInstance.onMessage = function (message: any) {
+        //     console.log("GOT MESSAGE", message);
+        // }
 
-        let entries = await roomInstance.Entries.get();
-        console.log(entries)
+        // console.log(roomInstance)
+        // await roomInstance.join()
+        // await roomInstance.entry('hi, ' + data1)   
+
+        // let entries = await roomInstance.Entries.get();
+        // console.log(entries)
     }
 
     return (

@@ -3,28 +3,31 @@ import LOG, { log } from "../../../UTIL/LOG";
 import QUERY from "../../../UTIL/QUERY";
 import ROOM_ENTRIES from "./ROOM_ENTRIES";
 
-class ROOM
-{
-    public static pool : any = {};
+class ROOM {
+  public static pool: any = {};
 
-    private static table : string = "rooms";
+  private static table: string = "rooms";
 
-    /*=============== 
+  /*=============== 
 
 
-    GET  
+    GET   { avatarID }
  
 
     ================*/
 
-    public static async get( query:any ) : Promise<any>
-    {
-        let value = await DATA.get( this.table, query );
+  public static async get(query: any): Promise<any> {
+    //return rooms which my avatarID is involved in members
+    let rooms = await DATA.get(this.table, {
+      where: {
+        avatarIDs: QUERY.toObjectID(query.avatarID),
+      },
+    });
 
-        return Promise.resolve( value );
-    };
+    return Promise.resolve(rooms);
+  }
 
-    /*=============== 
+  /*=============== 
 
 
     GET ONE ( used for 'switch context' using avatarIDs ) 
@@ -36,29 +39,27 @@ class ROOM
     
     ================*/
 
-    public static async getOne( query:any ) : Promise<any>
-    {
-        let avatarIDs = query.avatarIDs;
+  public static async getOne(query: any): Promise<any> {
+    let avatarIDs = query.avatarIDs;
 
-        if( avatarIDs ) 
-        {
-            if( query.avatarID ) avatarIDs.push( query.avatarID )
-            delete query.avatarID;
+    if (avatarIDs) {
+      if (query.avatarID) avatarIDs.push(query.avatarID);
+      delete query.avatarID;
 
-            avatarIDs       = QUERY.toObjectID( avatarIDs );
-            query.avatarIDs = { $all:avatarIDs, $size:avatarIDs.length };
-        }
+      avatarIDs = QUERY.toObjectID(avatarIDs);
+      query.avatarIDs = { $all: avatarIDs, $size: avatarIDs.length };
+    }
 
-        let room = await DATA.getOne( this.table, query );
+    let room = await DATA.getOne(this.table, query);
 
-        if( room ) return Promise.resolve( room );
+    if (room) return Promise.resolve(room);
 
-        if( avatarIDs ) return this.set({ avatarIDs:avatarIDs, name:query.name });
-  
-        return this.set( query );
-    };
+    if (avatarIDs) return this.set({ avatarIDs: avatarIDs, name: query.name });
 
-    /*=============== 
+    return this.set(query);
+  }
+
+  /*=============== 
 
 
     SET  
@@ -71,16 +72,15 @@ class ROOM
  
     ================*/
 
-    public static async set( query:any ) : Promise<any>
-    {
-        query.name          = query.name || "Room";
-   
-        let room            = await DATA.set( this.table, query );
- 
-        return Promise.resolve( room );
-    };
+  public static async set(query: any): Promise<any> {
+    query.name = query.name || "Room";
 
-    /*=============== 
+    let room = await DATA.set(this.table, query);
+
+    return Promise.resolve(room);
+  }
+
+  /*=============== 
 
 
     CHANGE  
@@ -88,14 +88,13 @@ class ROOM
 
     ================*/
 
-    public static async change( query:any ) : Promise<any>
-    {
-        let value = await DATA.change( this.table, query );
+  public static async change(query: any): Promise<any> {
+    let value = await DATA.change(this.table, query);
 
-        return Promise.resolve( value );
-    };
+    return Promise.resolve(value);
+  }
 
-    /*=============== 
+  /*=============== 
 
 
     REMOVE  
@@ -103,17 +102,16 @@ class ROOM
 
     ================*/
 
-    public static async remove( query:any ) : Promise<any>
-    {
-        let results     = await DATA.get( this.table, query ); 
+  public static async remove(query: any): Promise<any> {
+    let results = await DATA.get(this.table, query);
 
-        for( let n in results ) await ROOM_ENTRIES.remove({ roomID:results[n]._id });
- 
-        let removed     = await DATA.remove( this.table, query );
+    for (let n in results)
+      await ROOM_ENTRIES.remove({ roomID: results[n]._id });
 
-        return Promise.resolve( removed );
-    };
- 
-};
+    let removed = await DATA.remove(this.table, query);
+
+    return Promise.resolve(removed);
+  }
+}
 
 export default ROOM;
