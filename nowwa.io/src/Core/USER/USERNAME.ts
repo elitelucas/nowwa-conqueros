@@ -25,7 +25,7 @@ class USERNAME
     {
         let user = await DATA.getOne( this.table, { username: vars.username });
 
-        if( user ) return Promise.reject('user already exists');
+        if( user ) return Promise.reject( 'user already exists' );
 
         user = await DATA.set( this.table, vars );
 

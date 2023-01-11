@@ -59,25 +59,23 @@ class EMAIL
             return Promise.resolve();
         }
 
-        let email;
-        try {
-            email = await DATA.getOne(EMAIL.table, vars);
-        } catch (error) {
-            // if email does not exists, then proceed
-        }
-
-        if (email)  {
+        let email = await DATA.getOne( EMAIL.table, vars);
+ 
+        if ( email )  
+        {
             LOG.msg('Email already exists');
+
+            if( vars.usernameID && !email.usernameID ) this.change( { where:{ _id:email._id }, values:{ usernameID:vars.usernameID }}  );
+
             return Promise.resolve();
         }
 
-        email = await DATA.set(EMAIL.table, vars);
+        email = await DATA.set( EMAIL.table, vars);
 
-        if (!vars.isVerified) EMAIL.requestVerification(vars.email);
+        if ( !vars.isVerified ) EMAIL.requestVerification( vars.email );
 
         return Promise.resolve(email);
     }
-
  
     public static webhookEmailVerify() 
     {
@@ -188,7 +186,7 @@ class EMAIL
 
     public static async change(query: any): Promise<any> 
     {
-        let results = DATA.change(EMAIL.table, query);
+        let results = DATA.change( EMAIL.table, query );
         return Promise.resolve(results);
     }
 
