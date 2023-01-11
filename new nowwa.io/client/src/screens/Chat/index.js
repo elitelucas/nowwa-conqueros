@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
 import Leftbar from "../../components/Leftbar";
 import MessageList from "../../components/MessageList";
 import ChatList from "../../components/ChatList";
@@ -7,10 +7,18 @@ import styles from "./Chat.module.sass";
 import Box from "@mui/material/Box";
 import io from "socket.io-client";
 import ls from "local-storage";
+import { ConquerContext } from "../../contexts/ConquerContext";
 
 const Chat = () => {
+  //conquer
+  const { CONQUER } = useContext(ConquerContext)
+  const [rooms, setRooms] = useState([]);
+  useEffect(() => {
+    if (!CONQUER) return;
+    setRooms(CONQUER.Rooms.pool)
+  }, [CONQUER]);
+
   //auth
-  const [login, setLogin] = useState(false);
   const [user, setUser] = useState("");
   //chat
   const [users, setUsers] = useState([]);
@@ -24,7 +32,6 @@ const Chat = () => {
   const socket = useRef();
 
   useEffect(() => {
-    setLogin(ls.get("login"));
     setUser(ls.get("user"));
   }, []);
   useEffect(() => {

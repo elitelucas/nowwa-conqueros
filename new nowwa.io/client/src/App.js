@@ -28,6 +28,7 @@ import WalletReceiveToken from "./screens/Wallet/ReceiveToken";
 import useDarkMode from "use-dark-mode";
 import ls from "local-storage";
 import ConquerContextProvider from "./contexts/ConquerContext";
+import ChatContextProvider from "./contexts/ChatContext";
 
 function App() {
   // Make theme to dark mode as default
@@ -185,7 +186,11 @@ function App() {
               </Page>
             )}
           />
-          <Route exact path="/chat" render={() => <Chat />} />
+          <Route exact path="/chat" render={() =>
+            <ChatContextProvider>
+              <Chat />
+            </ChatContextProvider>
+          } />
           <Route
             exact
             path="/game"

@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import FriendItem from "../Friend";
 import styles from "./FriendList.module.sass";
+import { ChatContext } from "../../contexts/ChatContext";
 
 const friendList = [
   {
@@ -43,6 +44,9 @@ const friendList = [
 ];
 
 const FriendList = (props) => {
+  //conquer
+  const { rooms, onSelectRoom } = useContext(ChatContext)
+
   const { users } = props;
   const [list, setList] = useState(friendList);
   const [selectedIndex, setSelectedIndex] = useState(-1);
@@ -76,14 +80,14 @@ const FriendList = (props) => {
   return (
     <>
       <div className={styles.container}>
-        {users.map((user, index) => {
+        {rooms.map((room, index) => {
           return (
             <FriendItem
               data={{
-                name: user,
+                name: room.name,
                 avatar: "/images/content/avatar-0.jpg",
-                time: "01:23",
-                lastMsg: getLastMessage(user),
+                // time: "01:23",
+                // lastMsg: getLastMessage(user),
                 isTyping: false,
                 state: "check",
                 isActive: true,
@@ -94,7 +98,8 @@ const FriendList = (props) => {
               itemClicked={() => {
                 setSelectedIndex(index);
                 props.chatViewUpdate("single");
-                props.selectedUserUpdate(user);
+                // props.selectedUserUpdate(user);
+                onSelectRoom(room.avatarIDs)
               }}
             />
           );

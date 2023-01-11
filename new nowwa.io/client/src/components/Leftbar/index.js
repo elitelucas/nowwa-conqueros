@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import styles from "./Leftbar.module.sass";
 import cn from "classnames";
 import Icon from "../Icon";
@@ -16,8 +16,10 @@ import TrendingUpOutlinedIcon from "@mui/icons-material/TrendingUpOutlined";
 import QuestionAnswerOutlinedIcon from "@mui/icons-material/QuestionAnswerOutlined";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import ChatIcon from "@mui/icons-material/Chat";
+import { ConquerContext } from "../../contexts/ConquerContext";
 
 const Leftbar = ({ children }) => {
+  const { CONQUER } = useContext(ConquerContext)
   const { pathname } = useLocation();
   const [visible, setVisible] = useState(false);
 
@@ -38,7 +40,11 @@ const Leftbar = ({ children }) => {
           (pathname == "/" || pathname == "/Mint") && styles.active
         )}
       >
-        <DashboardOutlinedIcon sx={{ fontSize: 40 }} />
+        <DashboardOutlinedIcon sx={{ fontSize: 40 }} onClick={() => {
+          // console.log(CONQUER)
+          let pool = CONQUER.Rooms.pool;
+          console.log(Object.values(pool))
+        }} />
       </div>
 
       <div className={styles.tools}>

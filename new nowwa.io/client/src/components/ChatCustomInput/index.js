@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
 import { IconButton } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
@@ -7,8 +7,12 @@ import MicNoneIcon from "@mui/icons-material/MicNone";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import styles from "./ChatCustomInput.module.sass";
 import emojis from "./emoji.json"
+import { ChatContext } from "../../contexts/ChatContext";
 
-const ChatCustomInput = (props) => {
+const ChatCustomInput = () => {
+  //conquer
+  const { sendMessage } = useContext(ChatContext)
+
   const [inputText, setInputText] = useState("");
   const [showEmojiBox, setShowEmojiBox] = useState(false);
 
@@ -24,7 +28,7 @@ const ChatCustomInput = (props) => {
   }
 
   const doSendMessage = () => {
-    props.sendMessage(inputText);
+    sendMessage(inputText);
     setInputText("")
     setShowEmojiBox(false)
   }

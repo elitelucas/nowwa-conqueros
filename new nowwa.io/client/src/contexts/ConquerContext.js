@@ -58,6 +58,13 @@ const ConquerContextProvider = (props) => {
     }
   }
 
+  //Avatar
+  const getAvatars = async () => {
+
+    let res = await CONQUER?.Avatars.get();
+    return res;
+  }
+
   //my handling
   useEffect(() => {
     const script = document.createElement("script");
@@ -117,6 +124,7 @@ const ConquerContextProvider = (props) => {
     setAddress(address)
     setBalance(balance)
     setHistory(history)
+
   }
 
   const goHome = async () => {
@@ -126,6 +134,7 @@ const ConquerContextProvider = (props) => {
   return (
     <ConquerContext.Provider
       value={{
+        CONQUER,
         //User
         username,
         loggedin,
@@ -135,7 +144,9 @@ const ConquerContextProvider = (props) => {
         address,
         balance,
         history,
-        send
+        send,
+        //Avatar,
+        getAvatars,
       }}>
       {props.children}
     </ConquerContext.Provider>
