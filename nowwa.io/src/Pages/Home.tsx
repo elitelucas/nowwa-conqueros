@@ -7,6 +7,7 @@ import { UpdateComponentState } from './Utils/Helpers';
 export type HomeState = {
     initialized: boolean,
     isBusy: boolean,
+    testEmail?:string,
     firstEmail?:string,
     firstGuild?:{
         id:string,
@@ -134,6 +135,22 @@ const Home = (state: HomeState, setState: React.Dispatch<React.SetStateAction<Ho
     let buttonDiscordShareGet = <Button width='1' fluid primary onClick={doShareDiscordGet} disabled={state.isBusy}><Icon name='download'></Icon>Discord</Button>;
     let buttonDiscordShare = <Button width='1' fluid primary onClick={doShareDiscord} disabled={state.isBusy}><Icon name='share'></Icon>{typeof state.firstGuild != 'undefined' && state.firstGuild!.name }</Button>;
     
+    let setTestEmail = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        updateState({
+            testEmail: event.currentTarget.value
+        });
+    };
+    let sendTestEmail = async () => {
+        console.log(`send test email`, state.testEmail);
+        if (indexState.conquer!.initialized) {
+            indexState.conquer!.Email.sendEmail({
+                email: state.testEmail || "",
+                subject: "test email",
+                content: "this is just a test"
+            });
+        }
+    };
+
     return (
         <>
             <Segment>
@@ -155,6 +172,13 @@ const Home = (state: HomeState, setState: React.Dispatch<React.SetStateAction<Ho
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>
+            </Segment>
+            <Segment>
+                <Input key="inpEmail">
+                    <Label>Test Send Email</Label>
+                    <input onChange={setTestEmail}/>
+                    <Button onClick={sendTestEmail}>Send</Button>
+                </Input>
             </Segment>
             {/* <iframe
                 src='https://dev.nowwa.io'

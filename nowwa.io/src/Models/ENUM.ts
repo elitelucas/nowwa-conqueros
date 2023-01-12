@@ -102,11 +102,13 @@ export const enum ACTIONS
     WALLET_ASSETS_GET       = 80,
     WALLET_SEND             = 81,
 
-    SOCIAL_TWITTER_SHARE    = 82,
-    SOCIAL_GOOGLE_SHARE    = 83,
-    SOCIAL_GOOGLE_SHARE_GET    = 84,
-    SOCIAL_DISCORD_SHARE    = 85,
+    SOCIAL_TWITTER_SHARE        = 82,
+    SOCIAL_GOOGLE_SHARE         = 83,
+    SOCIAL_GOOGLE_SHARE_GET     = 84,
+    SOCIAL_DISCORD_SHARE        = 85,
     SOCIAL_DISCORD_SHARE_GET    = 86,
+
+    EMAIL_SEND                  = 87,
  
 }
 
