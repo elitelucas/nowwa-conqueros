@@ -8,11 +8,14 @@
     "core:build": "tsc",
     "front:dev": "parcel watch ./src/Pages/Index.html --dist-dir ./storage --no-content-hash",
     "front:build": "parcel build ./src/Pages/Index.html --dist-dir ./storage",
-    "conquer:build": "parcel build ./src/Frontend/CONQUER.ts --dist-dir ./storage/home/lib",
+    "conquer:build": "parcel build ./src/Frontend/CONQUER.ts --dist-dir ./storage/home/lib && parcel build ./src/Frontend/CONQUER.ts --dist-dir ./frontend/public/js",
     "dev": "tsc && node ./dist/Compile.js --env=\"dev\"",
     "prod": "tsc && node ./dist/Compile.js --env=\"prod\"",
     "local": "http-server ./storage -p 9876",
-    "start": "tsc && node ./dist/Compile.js --env=\"prod\""
+    "start": "tsc && node ./dist/Compile.js --env=\"prod\"",
+    "web:start": "cd frontend && react-scripts start",
+    "web:build": "cd frontend && react-scripts build",
+    "web:prod": "cd frontend && node server.js"
   },
   "author": "",
   "license": "ISC",
@@ -81,7 +84,7 @@
     "7zip-bin": "^5.2.0",
     "bcrypt": "^5.0.1",
     "busboy": "^1.5.0",
-    "cloudinary": "^1.29.0",   
+    "cloudinary": "^1.29.0",
     "decimal": "^0.0.2",
     "decimal.js": "^10.4.3",
     "dicer": "^0.3.1",
@@ -91,7 +94,7 @@
     "express-session": "^1.17.2",
     "firebase": "^9.13.0",
     "googleapis": "^109.0.1",
-    "howler": "^2.2.3",   
+    "howler": "^2.2.3",
     "mongoose": "^6.2.6",
     "multer": "^1.4.4",
     "node-cron": "^3.0.2",
@@ -112,8 +115,6 @@
     "ts-dotenv": "^0.8.3",
     "tsc-watch": "^4.6.2",
     "twitter-api-v2": "^1.12.9",
-
-
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
     "@mui/icons-material": "^5.10.9",
