@@ -1,0 +1,56 @@
+@import ../../styles/helpers
+
+.login
+    max-width: 800px
+    height: 500px
+    margin: 50px auto 
+    border-radius: 16px
+    background-color: $neutrals2
+    padding: 20px
+    padding-bottom: 40px
+
+    &__column
+      height: 100%
+      display: flex
+      flex-direction: column
+      padding: 60px
+      align-items: center
+      justify-content: space-between
+
+    &__title
+        font-size: 40px
+        font-weight: 500px !important
+        text-align: center
+
+    &__inputbox
+        display: flex
+        flex-direction: column
+        justify-content: space-around
+        width: 50%
+        gap: 20px
+        +m
+            width: 100%
+        input
+            width: 100%
+            height: 48px
+            padding: 0 14px 0 14px
+            border-radius: 12px
+            background: none
+            border: 2px solid $neutrals6
+            +poppins
+            +caption-1
+            color: $neutrals2
+            transition: border-color .2s
+            +dark
+                border-color: $neutrals3
+                color: $neutrals8
+            +placeholder
+                color: $neutrals4
+            &:focus
+                border-color: $neutrals4
+
+.button
+    width: 200px
+    border-radius: 12px
+
+
