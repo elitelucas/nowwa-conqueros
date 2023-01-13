@@ -6,7 +6,7 @@ import { ChatContext } from "../../contexts/ChatContext";
 
 const FriendList = () => {
   //conquer
-  const { rooms, loadingRooms, onSelectRoom, currentRoomID } = useContext(ChatContext)
+  const { rooms, loadingRooms, onSelectRoom, currentRoomID, search } = useContext(ChatContext)
 
   return (
     <>
@@ -16,25 +16,26 @@ const FriendList = () => {
             <CircularProgress />
           </Box> :
           rooms.map((roomInstance, index) => {
-            return (
-              <FriendItem
-                data={{
-                  name: roomInstance.name,
-                  avatar: "/images/content/avatar-0.jpg",
-                  time: "01:23",
-                  lastMsg: 'haha',
-                  isTyping: false,
-                  // state: "3",
-                  isActive: true,
-                  selected: currentRoomID == roomInstance.roomID,
-                }}
-                key={index}
-                index={index}
-                itemClicked={() => {
-                  onSelectRoom(roomInstance)
-                }}
-              />
-            );
+            if (search == '' || roomInstance.name.toLowerCase().includes(search.toLowerCase()))
+              return (
+                <FriendItem
+                  data={{
+                    name: roomInstance.name,
+                    avatar: "/images/content/avatar-0.jpg",
+                    time: "", //
+                    lastMsg: '',
+                    isTyping: false,
+                    // state: "3",
+                    isActive: true,
+                    selected: currentRoomID == roomInstance.roomID,
+                  }}
+                  key={index}
+                  index={index}
+                  itemClicked={() => {
+                    onSelectRoom(roomInstance)
+                  }}
+                />
+              );
           })}
       </div>
     </>

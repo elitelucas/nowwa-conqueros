@@ -6,7 +6,7 @@ import { ChatContext } from "../../contexts/ChatContext";
 
 const MessageListHeader = () => {
   //chat context
-  const { setShowNewRoomModal, rooms } = useContext(ChatContext)
+  const { setShowNewRoomModal, rooms, setSearch } = useContext(ChatContext)
 
   return (
     <>
@@ -30,6 +30,7 @@ const MessageListHeader = () => {
             name="search"
             placeholder="Search"
             required
+            onChange={(e) => setSearch(e.target.value)}
           />
         </div>
       </div>

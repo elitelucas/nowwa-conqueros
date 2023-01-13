@@ -20,6 +20,7 @@ const ChatContextProvider = (props) => {
   const [showNewRoomModal, setShowNewRoomModal] = useState(false);
   const [loadingRooms, setLoadingRooms] = useState(true);
   const [loadingEntries, setLoadingEntries] = useState(true);
+  const [search, setSearch] = useState('');
 
 
   useEffect(async () => {
@@ -124,7 +125,9 @@ const ChatContextProvider = (props) => {
         setShowNewRoomModal,
         loadingRooms,
         loadingEntries,
-        isWelcomePage
+        isWelcomePage,
+        search,
+        setSearch
       }}>
       {props.children}
     </ChatContext.Provider>
