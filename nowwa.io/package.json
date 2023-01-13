@@ -81,8 +81,7 @@
     "7zip-bin": "^5.2.0",
     "bcrypt": "^5.0.1",
     "busboy": "^1.5.0",
-    "cloudinary": "^1.29.0",
-    "date-and-time": "^2.4.2",
+    "cloudinary": "^1.29.0",   
     "decimal": "^0.0.2",
     "decimal.js": "^10.4.3",
     "dicer": "^0.3.1",
@@ -92,8 +91,7 @@
     "express-session": "^1.17.2",
     "firebase": "^9.13.0",
     "googleapis": "^109.0.1",
-    "howler": "^2.2.3",
-    "lettered-avatar": "^1.0.0",
+    "howler": "^2.2.3",   
     "mongoose": "^6.2.6",
     "multer": "^1.4.4",
     "node-cron": "^3.0.2",
@@ -152,7 +150,9 @@
     "sass": "^1.53.0",
     "typescript": "^4.9.4",
     "use-dark-mode": "^2.3.1",
-    "zustand": "^4.1.4"
+    "zustand": "^4.1.4",
+    "date-and-time": "^2.4.2",
+    "lettered-avatar": "^1.0.0"
   },
   "cordova": {
     "platforms": [
