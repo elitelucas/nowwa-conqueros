@@ -1,6 +1,5 @@
 @import ../../../styles/helpers
 
-
 .container
     width: 100%
     align-items: center
@@ -8,28 +7,29 @@
     justify-content: center
 
 .tokens
-    display: flex 
-    flex-direction: column 
+    display: flex
+    flex-direction: column
     gap: 10px
     background: $neutrals2
     border-top-left-radius: 12px
     border-top-right-radius: 12px
     width: 100%
     padding: 20px
-    +t 
+    +myscroll
+    +t
         padding: 10px
 
     &__list
-        display: flex  
+        display: flex
         flex-direction: column
         height: 500px
-        overflow-y: scroll
+        overflow-y: auto
 
-        &__item 
-            display: flex 
+        &__item
+            display: flex
             align-items: center
             justify-content: space-between
-            border-bottom: 1px solid $neutrals4 
+            border-bottom: 1px solid $neutrals4
             padding: 15px
 
             &__img
@@ -47,7 +47,7 @@
                 text-align: left
                 padding-left: 15px
 
-.header 
+.header
     display: flex
     flex-direction: column
     width: 100%
@@ -59,8 +59,8 @@
         align-items: center
         font-size: 20px
         width: 100%
-        margin-bottom: 10px        
-        
+        margin-bottom: 10px
+
         &__prev
             position: absolute
             top: 50%
@@ -97,17 +97,15 @@
         color: $neutrals4
         margin-bottom: 10px
         padding-right: 10px
-        padding-left: 10px 
-
+        padding-left: 10px
 
 .theme
     display: inline-block
     position: relative
-    user-select: none 
+    user-select: none
     cursor: pointer
     -webkit-tap-highlight-color: rgba(0,0,0,0)
     font-size: 0
-                
 
 .input
     position: absolute
@@ -126,7 +124,7 @@
     width: 40px
     height: 20px
     background: $neutrals6
-    border-radius: 10px 
+    border-radius: 10px
     transition: all .2s
     +dark
         background: $neutrals3
@@ -140,4 +138,4 @@
         height: 12px
         border-radius: 50%
         background: $blue
-        transition: all .2s 
+        transition: all .2s

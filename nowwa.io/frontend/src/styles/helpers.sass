@@ -10,7 +10,7 @@
         @content
 =t
     @media only screen and (max-width: "1023px")
-        @content 
+        @content
 =m
     @media only screen and (max-width: "767px")
         @content
@@ -27,7 +27,7 @@
 
 =poppins
     font-family: 'Poppins', sans-serif
-    
+
 // colors
 $white: #ffffff
 $blue: #3772FF
@@ -110,7 +110,7 @@ $neutrals8: #FCFCFD
     font-size: 14px
     line-height: 1.15
     font-weight: 700
-    
+
 //triangle
 =arr($width, $height, $bg, $direction)
     width: 0px
@@ -170,3 +170,19 @@ $neutrals8: #FCFCFD
 =dark-common
     @at-root .dark-mode &
         @content
+
+// scroll bar
+=myscroll
+    overflow-y: auto !important    
+
+    ::-webkit-scrollbar
+        width: 0
+        height: 0
+        background: transparent
+    ::-webkit-scrollbar-thumb
+        background: #161a22
+        width: 0px
+        height: 0px
+    &:hover
+        ::-webkit-scrollbar
+            width: 7px
