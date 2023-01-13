@@ -13,7 +13,7 @@
     "prod": "tsc && node ./dist/Compile.js --env=\"prod\"",
     "local": "http-server ./storage -p 9876",
     "start": "tsc && node ./dist/Compile.js --env=\"prod\"",
-    "web:start": "cd frontend && react-scripts start",
+    "web:start": "react-scripts start",
     "web:build": "cd frontend && react-scripts build",
     "web:prod": "cd frontend && node server.js"
   },
@@ -155,12 +155,21 @@
     "date-and-time": "^2.4.2",
     "lettered-avatar": "^1.0.0"
   },
-  "cordova": {
-    "platforms": [
-      "android"
+  "eslintConfig": {
+    "extends": [
+      "react-app"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
     ],
-    "plugins": {
-      "onesignal-cordova-plugin": {}
-    }
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }

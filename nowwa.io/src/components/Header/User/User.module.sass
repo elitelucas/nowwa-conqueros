@@ -1,0 +1,169 @@
+@import ../../../styles/helpers
+
+.user
+    position: relative
+    padding: 12px 16px 0px 16px
+    +m
+        position: static
+
+.head
+    position: relative
+    display: flex
+    align-items: center
+    padding: 4px 16px 4px 4px
+    +button-2
+    cursor: pointer
+    transition: box-shadow .2s
+
+    +m
+        padding: 0
+        border-radius: 10px
+        box-shadow: none
+
+.avatar
+    flex-shrink: 0
+    width: 65px
+    height: 65px
+    img
+        width: 100%
+        height: 100%
+        border-radius: 50%
+
+.wallet
+    margin-left: 12px
+    +m
+        display: none
+
+.currency
+    color: $green
+
+.body
+    position: absolute
+    top: calc(100% + 10px)
+    left: -35%
+    width: 256px
+    margin-left: -128px
+    padding: 20px 16px 20px
+    box-shadow: 0px 16px 64px 0 rgba(31, 47, 70, 0.4)
+    border-radius: 12px
+    background: $neutrals8
+    opacity: 0
+    transform: scale(.9)
+    transform-origin: 50% 50px
+    will-change: transform
+    animation: showUser .4s forwards
+    z-index: 9
+
+    +t
+        left: auto
+        right: 0
+    +m
+        left: 16px
+        right: 16px
+        top: calc(100% + 16px)
+        width: auto
+        margin: 0
+
+    +dark
+        background: $neutrals2
+        &:before
+            background-image: url("data:image/svg+xml,%3Csvg width='32' height='13' viewBox='0 0 32 13' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10.3432 2.65685L0 13H32L21.6569 2.65686C18.5327 -0.467339 13.4673 -0.467344 10.3432 2.65685Z' fill='%2323262F'/%3E%3C/svg%3E%0A")
+
+@keyframes showUser
+    0%
+        opacity: 0
+        transform: scale(.9)
+    100%
+        opacity: 1
+        transform: scale(1)
+
+.name
+    +body-2
+    text-align: center
+    margin-bottom: 10px
+
+.code
+    display: flex
+    align-items: center
+    margin-bottom: 8px
+
+.number
+    font-weight: 500
+    color: $neutrals4
+
+.copy
+    margin-left: 8px
+    svg
+        fill: $blue
+        transition: fill .2s
+    &:hover
+        svg
+            fill: darken($blue, 10)
+
+.wrap
+    margin-bottom: 7px
+    padding: 8px
+    border-radius: 16px
+    box-shadow: 0px 24px 24px -8px rgba(15, 15, 15, 0.2)
+
+.line
+    display: flex
+    align-items: center
+    margin-bottom: 10px
+
+.preview
+    flex-shrink: 0
+    width: 40px
+    height: 40px
+    margin-right: 16px
+    img
+        width: 100%
+        height: 100%
+        border-radius: 50%
+
+.info
+    +caption-2
+    color: $neutrals4
+
+.price
+    +body-bold-1
+
+.button
+    width: 100%
+    height: 32px
+    padding: 0 10px
+    font-size: 14px
+
+.item
+    display: flex
+    align-items: center
+    padding: 17px 0 12px
+    +button-2
+    color: $neutrals4
+    &:not(:last-child)
+        border-bottom: 1px solid $neutrals6
+        +dark
+            border-color: $neutrals3
+    &:hover
+        color: $blue
+        svg
+            fill: $blue
+
+.icon
+    flex-shrink: 0
+    width: 20px
+    margin-right: 8px
+    svg
+        fill: $neutrals4
+        transition: fill .2s
+
+.text
+    margin-right: auto
+
+.connect
+    height: 40px
+    padding: 0px
+    width: 130px
+
+.disconnect
+    cursor: pointer

@@ -41,7 +41,7 @@ class SoundChannel
     public pause()
     {
         this.lastPlayed = this.currentName;
-        self.stop();
+        this.stop();
     }
 
     public resume()

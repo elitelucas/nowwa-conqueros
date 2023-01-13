@@ -120,7 +120,7 @@ class Storage
                 window.localStorage.setItem( key, JSON.stringify( value ));
             }
         }
-        value;
+        return value;
     }
 
     public setAccount( user?:User ) 

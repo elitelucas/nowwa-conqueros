@@ -1,0 +1,38 @@
+@import ../../styles/helpers
+
+.page
+    overflow: hidden
+
+.column_left
+    position: fixed
+    z-index: 3
+    top: 0
+    left: 0
+    width: 180px
+    height: 100vh
+    text-align: center
+    padding-top: 31px
+    display: block
+    +m
+        display: none
+
+.column_center
+    margin-left: 180px
+    margin-right: 180px
+    padding: 0px 15px
+    
+    +m
+        margin-left: 0px
+        margin-right: 0px
+        padding: 0px 3px
+
+.column_right
+    position: fixed
+    z-index: 3
+    top: 0
+    right: 0
+    width: 180px
+    height: 100vh
+    display: block
+    +m
+        display: none
