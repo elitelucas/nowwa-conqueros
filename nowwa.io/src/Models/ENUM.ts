@@ -25,7 +25,8 @@ export const enum ACTIONS
     FILE_SET                = 21,
     FILE_GET                = 22,
 
-    ROOM_GET                = 23,
+    ROOM_SET                = 231,
+    ROOM_GET                = 23,    
     ROOM_GETONE             = 24,
 
     ROOM_ENTRIES_GET        = 25,

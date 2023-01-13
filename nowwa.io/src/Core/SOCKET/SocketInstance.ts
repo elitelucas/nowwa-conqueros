@@ -137,6 +137,7 @@ class SocketInstance
         if( action == ACTIONS.FOLLOWERS_GET )                   return map( FOLLOWERS.get( vars ) );
 
         
+        if( action == ACTIONS.ROOM_SET )                        return map( ROOM.set( vars ) );
         if( action == ACTIONS.ROOM_GET )                        return map( ROOM.get( vars ) );
         if( action == ACTIONS.ROOM_GETONE )                     return map( ROOM.getOne( vars ) );
         if( action == ACTIONS.ROOM_ENTRIES_GET )                return map( ROOM_ENTRIES.get( vars ) );  

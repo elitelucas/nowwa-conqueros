@@ -1,49 +1,49 @@
 import { ACTIONS } from "../../Models/ENUM";
 import CONQUER from "../CONQUER";
 import AvatarInstance from "./AvatarInstance";
- 
-class Avatars
-{
-    private conquer : CONQUER;
-    public pool     : any = [];
 
-    public constructor( instance:CONQUER ) 
-    {
-        this.conquer = instance;
-    }
- 
-    /*=============== 
+class Avatars {
+  private conquer: CONQUER;
+  public pool: any = [];
+
+  public constructor(instance: CONQUER) {
+    this.conquer = instance;
+  }
+
+  /*=============== 
 
 
     GET
-    
+    get() - get all, set conquer.Room.pool
+    get('avatarID1')
+    get(['avatarID1','avatarID2'])
 
     ================*/
 
-    public async get( avatarIDs?:any ) : Promise<any>
-    {
-        if( typeof avatarIDs == "string" )
-        {
-           let value = await this.conquer.do( ACTIONS.AVATAR_GETONE, { _id:avatarIDs } );
-           return Promise.resolve( new AvatarInstance( this.conquer, value ) );
-        }
+  public async get(avatarIDs?: any): Promise<any> {
+    if (typeof avatarIDs == "string") {
+      let value = await this.conquer.do(ACTIONS.AVATAR_GETONE, {
+        _id: avatarIDs,
+      });
+      return Promise.resolve(new AvatarInstance(this.conquer, value));
+    }
 
-        if( Array.isArray( avatarIDs ) )
-        {
-           let value = await this.conquer.do( ACTIONS.AVATAR_GET, { _id:avatarIDs } );
-           return Promise.resolve( new AvatarInstance( this.conquer, value ) );
-        }
- 
-        this.pool   = [];
+    if (Array.isArray(avatarIDs)) { //backend not developed
+      let value = await this.conquer.do(ACTIONS.AVATAR_GET, { _id: avatarIDs });
+      return Promise.resolve(new AvatarInstance(this.conquer, value));
+    }
 
-        let array   = await this.conquer.do( ACTIONS.AVATAR_GET );
- 
-        for( var n in array ) this.pool.push( new AvatarInstance( this.conquer, array[n] ));
- 
-        return Promise.resolve( this.pool );
-    };
+    this.pool = [];
 
-    /*=============== 
+    let array = await this.conquer.do(ACTIONS.AVATAR_GET);
+
+    for (var n in array)
+      this.pool.push(new AvatarInstance(this.conquer, array[n]));
+
+    return Promise.resolve(this.pool);
+  }
+
+  /*=============== 
 
 
     SET
@@ -51,12 +51,13 @@ class Avatars
 
     ================*/
 
-    public async set( toFollowID:any ) : Promise<any>
-    {
-        var friendship = await this.conquer.do( ACTIONS.FOLLOWERS_SET, { toFollowID:toFollowID } );
+  public async set(toFollowID: any): Promise<any> {
+    var friendship = await this.conquer.do(ACTIONS.FOLLOWERS_SET, {
+      toFollowID: toFollowID,
+    });
 
-        return Promise.resolve( friendship );
-    };
+    return Promise.resolve(friendship);
+  }
 }
 
 export default Avatars;

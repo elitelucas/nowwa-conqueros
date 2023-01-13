@@ -3,17 +3,27 @@ import RoomInstance from "./RoomInstance/RoomInstance";
 import LOG, { log } from "../../UTIL/LOG";
 import { ACTIONS } from "../../Models/ENUM";
 
-class Rooms
-{
-    private conquer:CONQUER;
-    public pool : any = {};
+class Rooms {
+  private conquer: CONQUER;
+  public pool: any = {};
 
-    public constructor( instance:CONQUER ) 
-    {
-        this.conquer = instance;
-    }
- 
-    /*=============== 
+  public constructor(instance: CONQUER) {
+    this.conquer = instance;
+  }
+
+  public async set(avatarIDs: Array<string>, roomName: string): Promise<any> {
+    let query = { avatarIDs: avatarIDs, name: roomName };
+
+    let value = await this.conquer.do(ACTIONS.ROOM_SET, query);
+
+    let room = new RoomInstance(this.conquer, value);
+
+    this.pool[room.roomID] = room;
+
+    return Promise.resolve(room);
+  }
+
+  /*=============== 
  
     GET (JOIN)
     {
@@ -24,34 +34,32 @@ class Rooms
  
     ================*/
 
-    public async get( vars:any ) : Promise<any>
-    {
-        let values : any = await this.conquer.do( ACTIONS.ROOM_GET, vars );
+  public async get(vars: any): Promise<any> {
+    let values: any = await this.conquer.do(ACTIONS.ROOM_GET, vars);
 
-        for( var n in values )
-        {
-            let room = new RoomInstance( this.conquer, values[n] );
-            this.pool[ room.roomID ] = room;
-        }
- 
-        return Promise.resolve( this.pool );
-    };
+    for (var n in values) {
+      let room = new RoomInstance(this.conquer, values[n]);
+      this.pool[room.roomID] = room;
+    }
 
-    public async getOne( vars:any ) : Promise<any>
-    {
-        if( Array.isArray( vars ) )     vars = { avatarIDs:vars };
-        if( typeof vars == 'string' )   vars = { roomID:vars };
+    return Promise.resolve(this.pool);
+  }
 
-        let value   = await this.conquer.do( ACTIONS.ROOM_GETONE, vars );
+  //give avatarIDs or roomID
+  public async getOne(vars: any): Promise<any> {
+    if (Array.isArray(vars)) vars = { avatarIDs: vars };
+    if (typeof vars == "string") vars = { roomID: vars };
 
-        let room    = new RoomInstance( this.conquer, value );
+    let value = await this.conquer.do(ACTIONS.ROOM_GETONE, vars);
 
-        this.pool[ room.roomID ] = room;
+    let room = new RoomInstance(this.conquer, value);
 
-        return Promise.resolve( room );
-    };
- 
-    /*=============== 
+    this.pool[room.roomID] = room;
+
+    return Promise.resolve(room);
+  }
+
+  /*=============== 
 
 
     LEAVE
@@ -59,14 +67,13 @@ class Rooms
 
     ================*/
 
-    public async leave( roomID:any ) : Promise<any>
-    {
-        delete this.pool[ roomID ];
+  public async leave(roomID: any): Promise<any> {
+    delete this.pool[roomID];
 
-        return Promise.resolve();
-    };
+    return Promise.resolve();
+  }
 
-    /*=============== 
+  /*=============== 
 
 
     ON MESSAGE
@@ -74,19 +81,16 @@ class Rooms
 
     ================*/
 
-    public _onServerMessage( object:any )
-    {
-        for( let n in object.messages )
-        {
-            let message = object.messages[n];
+  public _onServerMessage(object: any) {
+    for (let n in object.messages) {
+      let message = object.messages[n];
 
-            if( message.avatarID == this.conquer.User!.avatarID ) continue;
+      if (message.avatarID == this.conquer.User!.avatarID) continue;
 
-            let room  = this.pool[ message.roomID ];
-            if( room ) room._onServerMessage( message );
-        }
- 
+      let room = this.pool[message.roomID];
+      if (room) room._onServerMessage(message);
     }
+  }
 }
 
 export default Rooms;

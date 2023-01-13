@@ -31,46 +31,38 @@ class ROOM {
   /*=============== 
 
 
-    GET ONE ( used for 'switch context' using avatarIDs ) 
+    GET ONE ( used for 'switch context' ) 
  
     {
-        avatarIDs?:[]
-        name?
+        avatarIDs?:[]       
+    }
+    OR
+    {
+        roomID: string
     }
 
     
     ================*/
 
   public static async getOne(query: any): Promise<any> {
-    let avatarIDs = query.avatarIDs;
-
-    if (avatarIDs) {
+    if (query.avatarIDs) {
+      let avatarIDs = query.avatarIDs;
       if (query.avatarID && !avatarIDs.includes(query.avatarID))
         avatarIDs.push(query.avatarID);
       delete query.avatarID;
 
       avatarIDs = QUERY.toObjectID(avatarIDs);
-        query.avatarIDs = { $all: avatarIDs, $size: avatarIDs.length };
+      query = { avatarIDs: { $all: avatarIDs, $size: avatarIDs.length } };
+    }
+
+    if (query.roomID) {
+      query = { _id: query.roomID };
     }
 
     let room = await DATA.getOne(this.table, query);
 
     if (room) return Promise.resolve(room);
-
-    if (avatarIDs) {
-      let name = query.name;
-
-      if (!name) {
-        name = "";
-        for (var i = 0; i < avatarIDs.length; i++) {
-          let usernameID = await AVATAR.getFirstName({ _id: avatarIDs[i] });
-          name = name + usernameID + ":";
-        }
-      }
-      return this.set({ avatarIDs: avatarIDs, name: name });
-    }
-
-    return this.set(query);
+    else return Promise.resolve(null);
   }
 
   /*=============== 
@@ -80,16 +72,24 @@ class ROOM {
 
     {
         name?,
-        avatarIDs?:[],
-        capacity? 
+        avatarIDs?:[],      
     }
  
     ================*/
 
   public static async set(query: any): Promise<any> {
-    query.name = query.name || "Room";
+    let myAvatarID = query.avatarID;
 
-    let room = await DATA.set(this.table, query);
+    let name = query.name || "Room";
+
+    let avatarIDs = query.avatarIDs;
+    if (!avatarIDs.includes(myAvatarID)) avatarIDs = [...avatarIDs, myAvatarID]; //include me to members
+
+    let room = await DATA.set(this.table, {
+      name: name,
+      avatarIDs: avatarIDs,
+      ownerAvatarID: myAvatarID,
+    });
 
     return Promise.resolve(room);
   }
