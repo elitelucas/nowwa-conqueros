@@ -33,6 +33,7 @@ import Twitter from "../USER/AUTH/Twitter";
 import User from "../../Frontend/USER/User";
 import Google from "../USER/AUTH/Google";
 import Discord from "../USER/AUTH/Discord";
+import EMAIL from "../USER/EMAIL";
 class SocketInstance 
 {
     // Todo, destroy instances on disconnect
@@ -101,6 +102,8 @@ class SocketInstance
         if( action == ACTIONS.SOCIAL_GOOGLE_SHARE )             return map( Google.Share ( vars ) );
         if( action == ACTIONS.SOCIAL_DISCORD_SHARE_GET )        return map( Discord.ShareGet ( vars ) );
         if( action == ACTIONS.SOCIAL_DISCORD_SHARE )            return map( Discord.Share ( vars ) );
+
+        if( action == ACTIONS.EMAIL_SEND )                      return map( EMAIL.send( vars ) );
 
         // AT THIS POINT, AVATAR ID IS REWRITTEN
  

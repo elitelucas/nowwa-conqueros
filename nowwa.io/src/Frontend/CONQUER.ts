@@ -17,6 +17,7 @@ import Instances from "./ITEM/Instances";
 import Wallets from "./WALLET/Wallets";
 import Sounds from "./AUDIO/Sounds";
 import Avatars from "./AVATAR/Avatars";
+import Email from "./EMAIL/Email";
 
 class CONQUER 
 {
@@ -35,6 +36,7 @@ class CONQUER
     public Wallets      : Wallets;
     public Sounds       : Sounds;
     public Avatars      : Avatars;
+    public Email        : Email;
 
     public Instances    : Instances;
  
@@ -57,6 +59,7 @@ class CONQUER
         this.Wallets    = new Wallets( this );
         this.Sounds     = new Sounds();
         this.Avatars    = new Avatars( this );
+        this.Email      = new Email ( this );
     };
 
     public async init (): Promise<void> 
