@@ -46,6 +46,13 @@ const ChatContextProvider = (props) => {
     setCurrentRoomMemberNames([])
     setLoadingEntries(true)
 
+    let memberNames = [];
+    allAvatars.map((avatarInstance) => {
+      if (roomInstance.avatarIDs.includes(avatarInstance.avatarID))
+        memberNames.push(avatarInstance.firstName)
+    })
+    setCurrentRoomMemberNames(memberNames)
+    
     console.log(roomInstance)
     setCurrentRoomInstance(roomInstance)
 
@@ -63,12 +70,7 @@ const ChatContextProvider = (props) => {
     setEntries(entries)
     setLoadingEntries(false)
 
-    let memberNames = [];
-    allAvatars.map((avatarInstance) => {
-      if (roomInstance.avatarIDs.includes(avatarInstance.avatarID))
-        memberNames.push(avatarInstance.firstName)
-    })
-    setCurrentRoomMemberNames(memberNames)
+ 
   }
 
   const addMessagetoContent = (text, avatarID) => {

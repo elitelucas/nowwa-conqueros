@@ -10,6 +10,16 @@ const ChatContent = () => {
   //conquer
   const { entries, myAvatarID, loadingEntries } = useContext(ChatContext)
 
+  const messagesEndRef = useRef(null)
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+  }
+
+  useEffect(() => {
+    scrollToBottom()
+  }, [loadingEntries, entries]);
+
   return (
     <div
       className={styles.container}
@@ -34,6 +44,7 @@ const ChatContent = () => {
             <p> This is begin of messages</p>
           </Box>
       }
+      <div ref={messagesEndRef} />
     </div>
   );
 };
