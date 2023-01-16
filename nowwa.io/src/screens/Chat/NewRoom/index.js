@@ -4,14 +4,14 @@ import Icon from "../../../components/Icon";
 import CircularProgress from '@mui/material/CircularProgress';
 import { Box, Button } from "@mui/material";
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import LetteredAvatar from "lettered-avatar";
+import Avatar from 'react-avatar';
 import { ConquerContext } from "../../../contexts/ConquerContext";
 import { ChatContext } from "../../../contexts/ChatContext";
 
 const UserItem = ({ name, state, photoSrc, itemClicked }) => {
   return (
     <div className={styles.tokens__list__item} onClick={() => itemClicked()}>
-      <LetteredAvatar name={name} options={{ twoLetter: true }} />
+      <Avatar name={name} round={true} size={40}/>
       <p className={styles.tokens__list__item__name}>{name}</p>
       <div className={styles.tokens__list__item__switch}>
         {state && <CheckCircleIcon />}
