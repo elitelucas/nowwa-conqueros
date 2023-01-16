@@ -14,7 +14,7 @@
     "local": "http-server ./storage -p 9876",
     "start": "tsc && node ./dist/Compile.js --env=\"prod\"",
     "web:start": "react-scripts start",
-    "web:build": "cd frontend && react-scripts build",
+    "web:build": "react-scripts build",
     "web:prod": "cd frontend && node server.js"
   },
   "author": "",
