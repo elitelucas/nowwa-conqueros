@@ -3,7 +3,7 @@ import styles from "./Friend.module.sass";
 import CheckIcon from "@mui/icons-material/Check";
 import DoneAllIcon from "@mui/icons-material/DoneAll";
 import EditIcon from "@mui/icons-material/Edit";
-import LetteredAvatar from "lettered-avatar";
+import Avatar from 'react-avatar';
 import { shortenString } from "../../helper";
 
 const FriendItem = (props) => {
@@ -18,7 +18,7 @@ const FriendItem = (props) => {
     >
       <div className={styles.container}>
         <div className={styles.avatar}>
-          <LetteredAvatar name={props.data.name} options={{ twoLetter: true }} />
+          <Avatar name={props.data.name} round={true} size={50} />
           {props.data.isActive && <div className={styles.active}></div>}
         </div>
 

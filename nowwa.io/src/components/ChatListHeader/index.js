@@ -7,7 +7,7 @@ import ChatSetting from "../ChatSetting";
 import styles from "./ChatListHeader.module.sass";
 import SlidingPanel from "react-sliding-side-panel";
 import "react-sliding-side-panel/lib/index.css";
-import LetteredAvatar from "lettered-avatar";
+import Avatar from 'react-avatar';
 import { ChatContext } from "../../contexts/ChatContext";
 import { ConquerContext } from "../../contexts/ConquerContext";
 
@@ -31,7 +31,7 @@ const ChatListHeader = () => {
       <div className={styles.container}>
         <div className={styles.container__left}>
           <div className={styles.container__left__avatar}>
-            <LetteredAvatar name={currentRoomInstance?.name} options={{ twoLetter: true }} />
+            <Avatar name={currentRoomInstance?.name} round={true} size={60} />
           </div>
           <div className={styles.container__left__info}>
 
@@ -43,7 +43,7 @@ const ChatListHeader = () => {
                   const arr = [];
                   for (let i = 0; i < currentRoomMemberNames.length; i++) {
                     arr.push(
-                      <LetteredAvatar name={currentRoomMemberNames[i]} options={{ twoLetter: true }} key={i} />
+                      <Avatar name={currentRoomMemberNames[i]} round={true} size={25} key={i} />
                     );
                   }
                   return arr;

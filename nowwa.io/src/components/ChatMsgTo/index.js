@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef, useContext } from "react";
 import { IconButton } from "@mui/material";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import LetteredAvatar from "lettered-avatar";
+import Avatar from 'react-avatar';
 import styles from "./my.module.sass";
 import { ChatContext } from "../../contexts/ChatContext";
 import date from 'date-and-time';
@@ -13,7 +13,7 @@ const ChatMsgTo = (props) => {
   return (
     <div id="chatMsgFrom" className={styles.container}>
       <div className={styles.container__avatar}>
-        <LetteredAvatar name={getUserNamebyAvatarID(props.avatarID)} options={{ twoLetter: true }} />
+        <Avatar name={getUserNamebyAvatarID(props.avatarID)} round={true} size={30} />
       </div>
       <div className={styles.container__message}>
         <span>{props.text}</span>

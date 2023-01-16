@@ -1,38 +1,36 @@
 import { set } from 'local-storage';
 import React, { createContext, useState, useEffect } from 'react'
 import { plus } from '../UTIL/DECIMALS'
-import CONQUER from '../Frontend/CONQUER'
+// import {CONQUER as RAWCONQUER} from '../Frontend/CONQUER'
 
 export const ConquerContext = createContext()
 
 const ConquerContextProvider = (props) => {
-  const [myConquer, setCONQUER] = useState();
+  const [CONQUER, setCONQUER] = useState();
   useEffect(async () => {
     console.log('testing utils....', plus(0.12345, 0.234567))
 
     /* Load js file */
-    // const script = document.createElement("script");
-    // script.type = 'text/javascript';
-    // script.src = "/js/CONQUER.js";
-    // script.async = true;
-    // script.defer = true;
+    const script = document.createElement("script");
+    script.type = 'text/javascript';
+    script.src = "/js/CONQUER.js";
+    script.async = true;
+    script.defer = true;
 
-    // script.onload = async () => {
-    //   console.log(123)
-    //   let mconquer = new window.CONQUER();
-    //   await mconquer.init();
-    //   console.log(234)
-    //   setCONQUER(mconquer)
-    // }
+    script.onload = async () => {
+      let mconquer = new window.CONQUER();
+      await mconquer.init();
+      setCONQUER(mconquer)
+    }
 
-    // document.body.appendChild(script);
+    document.body.appendChild(script);
 
 
     /* Load typescript file */
-    let myconquer = new CONQUER();
-    await myconquer.init();
+    // let myconquer = new RAWCONQUER();
+    // await myconquer.init();
 
-    setCONQUER(myconquer)
+    // setCONQUER(myconquer)
   }, []);
 
   //user
@@ -40,13 +38,13 @@ const ConquerContextProvider = (props) => {
   const [myAvatarID, setMyAvatarID] = useState();
   const [loggedin, setLoggedin] = useState(false);
   const logout = async () => {
-    await myConquer.Auth.logout();
-    whenConquerChanged(myConquer)
+    await CONQUER.Auth.logout();
+    whenConquerChanged(CONQUER)
     goHome();
   }
   const login = async (email, password) => {
     try {
-      let res = await myConquer.Auth.get({
+      let res = await CONQUER.Auth.get({
         username: email,
         password: password
       });
@@ -63,7 +61,7 @@ const ConquerContextProvider = (props) => {
         }
       */
       if (res.username) {
-        whenConquerChanged(myConquer)
+        whenConquerChanged(CONQUER)
       } else {
         alert(res)
       }
@@ -92,7 +90,7 @@ const ConquerContextProvider = (props) => {
 
   //Avatar
   const getAllAvatars = async () => {
-    let res = await myConquer?.Avatars.get();
+    let res = await CONQUER?.Avatars.get();
     /*
     [...
     {
@@ -107,15 +105,15 @@ const ConquerContextProvider = (props) => {
   }
 
   const getAvatars = async (avatarIDsArray) => {
-    let res = await myConquer?.Avatars.get(avatarIDsArray);
+    let res = await CONQUER?.Avatars.get(avatarIDsArray);
     return res;
   }
 
   //my handling
   useEffect(async () => {
-    if (!myConquer?.User) return;
-    await whenConquerChanged(myConquer);
-  }, [myConquer]);
+    if (!CONQUER?.User) return;
+    await whenConquerChanged(CONQUER);
+  }, [CONQUER]);
 
   const whenConquerChanged = async (CONQUER) => {
     let mconquer = CONQUER;
@@ -168,7 +166,7 @@ const ConquerContextProvider = (props) => {
   return (
     <ConquerContext.Provider
       value={{
-        CONQUER: myConquer,
+        CONQUER: CONQUER,
         //User
         username,
         myAvatarID,
