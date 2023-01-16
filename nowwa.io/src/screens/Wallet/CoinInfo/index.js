@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext } from "react";
 import styles from "../Wallet.module.sass";
 import CoinInfoItem from "../CoinInfoItem";
 import Activity from "../Activity";
-import { ConquerContext } from "../../../contexts/ConquerContext";
 
 const coinInfo = [
   {

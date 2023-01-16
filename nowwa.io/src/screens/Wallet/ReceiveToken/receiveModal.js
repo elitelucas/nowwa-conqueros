@@ -6,13 +6,11 @@ import QRCode from "react-qr-code";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import ShareIcon from "@mui/icons-material/Share";
 import cn from "classnames";
-import { ConquerContext } from "../../../contexts/ConquerContext";
-import { shortenAddress } from "../../../helper";
-
+import { WalletContext } from "../../../contexts/WalletContext";
 
 const ReceiveModal = (props) => {
   //conquer
-  const { address } = useContext(ConquerContext)
+  const { address } = useContext(WalletContext)
 
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [amount, setAmount] = useState(0.0);

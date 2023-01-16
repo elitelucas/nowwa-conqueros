@@ -12,11 +12,11 @@ import CoinInfo from "./CoinInfo";
 import Modal from "@mui/material/Modal";
 import Tokens from "./Token";
 import ReceiveModal from "./ReceiveToken/receiveModal";
-import { ConquerContext } from "../../contexts/ConquerContext";
+import { WalletContext } from "../../contexts/WalletContext";
 
 const Wallet = ({ }) => {
   //conquer
-  const { balance } = useContext(ConquerContext)
+  const { balance } = useContext(WalletContext)
 
   const [open, setOpen] = useState(false);
   const [isAddToken, setIsAddToken] = useState(false);
@@ -37,7 +37,7 @@ const Wallet = ({ }) => {
           </div>
           <div className={styles.walletcontainer__balance__value}>
             {/* <p>$30621.46</p> */}
-            <p>{balance}ETH</p>
+            <p>{balance} ETH</p>
           </div>
         </div>
 

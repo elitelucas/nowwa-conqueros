@@ -2,11 +2,11 @@ import React, { useState, useEffect, useContext } from "react";
 import styles from "../Wallet.module.sass";
 import NorthIcon from "@mui/icons-material/North";
 import SouthIcon from "@mui/icons-material/South";
-import { ConquerContext } from "../../../contexts/ConquerContext";
+import { WalletContext } from "../../../contexts/WalletContext";
 
 const Activity = () => {
   //conquer
-  const { history } = useContext(ConquerContext)
+  const { history } = useContext(WalletContext)
 
   return (
 

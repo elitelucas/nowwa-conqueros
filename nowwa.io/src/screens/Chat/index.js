@@ -5,8 +5,6 @@ import ChatList from "../../components/ChatList";
 import GroupChatList from "../../components/GroupChatList";
 import styles from "./Chat.module.sass";
 import Box from "@mui/material/Box";
-import io from "socket.io-client";
-import ls from "local-storage";
 import { Button, Modal } from "@mui/material";
 import NewRoom from "./NewRoom";
 import { ConquerContext } from "../../contexts/ConquerContext";

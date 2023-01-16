@@ -1,12 +1,10 @@
 import React, { useState, useEffect, useContext } from "react";
 import styles from "./SendToken.module.sass";
 import NowwaSelect from "../NowwaSelect";
-import SwapVertIcon from "@mui/icons-material/SwapVert";
 import TextField from "@mui/joy/TextField";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import cn from "classnames";
-import { ConquerContext } from "../../../contexts/ConquerContext";
-
+import { WalletContext } from "../../../contexts/WalletContext";
 
 const Step1 = (props) => {
   const fromAddress = [
@@ -312,7 +310,7 @@ const Step3 = (props) => {
 
 const WalletSendToken = () => {
   //conquer
-  const { balance, send } = useContext(ConquerContext)
+  const { balance, send } = useContext(WalletContext)
 
   const [step, setStep] = useState(0);
   const [recipientAddress, setRecipientAddress] = useState()

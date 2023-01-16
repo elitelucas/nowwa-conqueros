@@ -9,7 +9,6 @@ import Wallet from "../Wallet";
 import Modal from "../../Modal";
 import { useWeb3React } from "@web3-react/core";
 import { shortenAddress, getNameFromEmail } from "../../../helper";
-import ls from "local-storage";
 import { ConquerContext } from "../../../contexts/ConquerContext";
 
 const items = [

@@ -1,4 +1,3 @@
-import { set } from 'local-storage';
 import React, { createContext, useState, useEffect } from 'react'
 import { plus } from '../UTIL/DECIMALS'
 // import {CONQUER as RAWCONQUER} from '../Frontend/CONQUER'
@@ -7,6 +6,7 @@ export const ConquerContext = createContext()
 
 const ConquerContextProvider = (props) => {
   const [CONQUER, setCONQUER] = useState();
+  //load CONQER
   useEffect(async () => {
     console.log('testing utils....', plus(0.12345, 0.234567))
 
@@ -37,11 +37,13 @@ const ConquerContextProvider = (props) => {
   const [username, setUsername] = useState();
   const [myAvatarID, setMyAvatarID] = useState();
   const [loggedin, setLoggedin] = useState(false);
+
   const logout = async () => {
     await CONQUER.Auth.logout();
-    whenConquerChanged(CONQUER)
+    onConquerChanged(CONQUER)
     goHome();
   }
+
   const login = async (email, password) => {
     try {
       let res = await CONQUER.Auth.get({
@@ -61,7 +63,7 @@ const ConquerContextProvider = (props) => {
         }
       */
       if (res.username) {
-        whenConquerChanged(CONQUER)
+        onConquerChanged(CONQUER)
       } else {
         alert(res)
       }
@@ -72,21 +74,6 @@ const ConquerContextProvider = (props) => {
 
   }
 
-  //wallet
-  const [walletInstance, setWalletInstance] = useState();
-  const [address, setAddress] = useState();
-  const [balance, setBalance] = useState();
-  const [history, setHistory] = useState([]);
-  const send = async (recipient, amount, callback) => {
-    let res = await walletInstance.send(recipient, amount);
-    if (res.success) {
-      console.log('success', res.data)
-      callback()
-    } else {
-      alert(res.message)
-      return;
-    }
-  }
 
   //Avatar
   const getAllAvatars = async () => {
@@ -98,8 +85,7 @@ const ConquerContextProvider = (props) => {
       firstName: "aaa@gmail.com"
       userPhoto: undefined
     },
-    ]
-    
+    ]    
     */
     return res;
   }
@@ -112,10 +98,10 @@ const ConquerContextProvider = (props) => {
   //my handling
   useEffect(async () => {
     if (!CONQUER?.User) return;
-    await whenConquerChanged(CONQUER);
+    await onConquerChanged(CONQUER);
   }, [CONQUER]);
 
-  const whenConquerChanged = async (CONQUER) => {
+  const onConquerChanged = async (CONQUER) => {
     let mconquer = CONQUER;
     console.log('----->myconquer', mconquer)
 
@@ -131,31 +117,6 @@ const ConquerContextProvider = (props) => {
     if (username && !username.includes('Guest')) loggedin = true;
     else loggedin = false;
     setLoggedin(loggedin)
-
-    // Wallet
-    return;
-    let address, balance, history = [];
-
-    if (loggedin) {
-      let res = await mconquer.Wallets.get();
-      if (res.success) {
-        let walletInstance = res.data
-        setWalletInstance(walletInstance)
-        console.log('----->walletInstance', walletInstance)
-
-        address = walletInstance.address
-        balance = walletInstance.balance
-
-        history = await walletInstance.History.get();
-        history = history.reverse();
-      } else {
-        console.log('wallet get failed', res.message)
-      }
-    }
-
-    setAddress(address)
-    setBalance(balance)
-    setHistory(history)
 
   }
 
@@ -173,11 +134,6 @@ const ConquerContextProvider = (props) => {
         loggedin,
         logout,
         login,
-        //Wallet
-        address,
-        balance,
-        history,
-        send,
         //Avatar,
         getAllAvatars,
         getAvatars,

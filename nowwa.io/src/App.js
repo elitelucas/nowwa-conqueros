@@ -26,9 +26,9 @@ import Wallet from "./screens/Wallet";
 import WalletSendToken from "./screens/Wallet/SendToken";
 import WalletReceiveToken from "./screens/Wallet/ReceiveToken";
 import useDarkMode from "use-dark-mode";
-import ls from "local-storage";
 import ConquerContextProvider from "./contexts/ConquerContext";
 import ChatContextProvider from "./contexts/ChatContext";
+import WalletContextProvider from "./contexts/WalletContext";
 
 function App() {
   // Make theme to dark mode as default
@@ -214,36 +214,44 @@ function App() {
             exact
             path="/wallet/backup"
             render={() => (
-              <Page>
-                <WalletBackup />
-              </Page>
+              <WalletContextProvider>
+                <Page>
+                  <WalletBackup />
+                </Page>
+              </WalletContextProvider>
             )}
           />
           <Route
             exact
             path="/wallet"
             render={() => (
-              <Page>
-                <Wallet />
-              </Page>
+              <WalletContextProvider>
+                <Page>
+                  <Wallet />
+                </Page>
+              </WalletContextProvider>
             )}
           />
           <Route
             exact
             path="/wallet/send"
             render={() => (
-              <Page>
-                <WalletSendToken />
-              </Page>
+              <WalletContextProvider>
+                <Page>
+                  <WalletSendToken />
+                </Page>
+              </WalletContextProvider>
             )}
           />
           <Route
             exact
             path="/wallet/receive"
             render={() => (
-              <Page>
-                <WalletReceiveToken />
-              </Page>
+              <WalletContextProvider>
+                <Page>
+                  <WalletReceiveToken />
+                </Page>
+              </WalletContextProvider>
             )}
           />
         </Switch>
