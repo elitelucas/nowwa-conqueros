@@ -14,8 +14,7 @@
     "local": "http-server ./storage -p 9876",
     "start": "tsc && node ./dist/Compile.js --env=\"prod\"",
     "web:start": "react-scripts start",
-    "web:build": "react-scripts build && move build storage",
-    "web:prod": "cd frontend && node server.js"
+    "web:build": "react-scripts build && copyfiles build/* storage"
   },
   "author": "",
   "license": "ISC",
