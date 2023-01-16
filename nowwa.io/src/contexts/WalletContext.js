@@ -24,7 +24,7 @@ const WalletContextProvider = (props) => {
       if (res.success) {
         let walletInstance = res.data
         setWalletInstance(walletInstance)
-        console.log('----->walletInstance', walletInstance)
+        // console.log('----->walletInstance', walletInstance)
 
         address = walletInstance.address
         setAddress(address)

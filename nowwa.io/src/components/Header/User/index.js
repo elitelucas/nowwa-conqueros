@@ -35,7 +35,7 @@ const items = [
 
 const User = ({ className }) => {
   //conquer
-  const { username, loggedin, logout, balance: ETHbalance } = useContext(ConquerContext)
+  const { username, loggedin, logout } = useContext(ConquerContext)
 
   //
   const onClickLogOut = async () => {
@@ -158,7 +158,7 @@ const User = ({ className }) => {
               )}
 
             <div className={styles.wrap}>
-              <div className={styles.line}>
+              {/* <div className={styles.line}>
                 <div className={styles.preview}>
                   <img
                     src="/images/content/etherium-circle.jpg"
@@ -168,11 +168,10 @@ const User = ({ className }) => {
                 <div className={styles.details}>
                   <div className={styles.info}>Balance</div>
                   <div className={styles.price}>
-                    {/* {balance.toFixed(3) / 1} ETH */}
                     {ETHbalance?.toFixed(3) / 1} ETH
                   </div>
                 </div>
-              </div>
+              </div> */}
               <Link to="/wallet">
                 <button
                   className={cn("button-stroke button-small", styles.button)}
