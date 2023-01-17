@@ -13,8 +13,8 @@
     "prod": "tsc && node ./dist/Compile.js --env=\"prod\"",
     "local": "http-server ./storage -p 9876",
     "start": "tsc && node ./dist/Compile.js --env=\"prod\"",
-    "web:start": "set PORT=9002 && react-scripts start",
-    "web:build": "react-scripts build && copyfiles build/* storage"
+    "web:start": "set PORT=9003 && react-scripts start",
+    "web:build": "react-scripts build && copyfiles public/* storage"
   },
   "author": "",
   "license": "ISC",
