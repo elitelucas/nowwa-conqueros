@@ -10,11 +10,10 @@
     "pages:build": "parcel build ./src/Pages/Index.html --dist-dir ./storage",
     "newpages:dev": "parcel watch ./src/NewPages/Index.html --dist-dir ./storage --no-content-hash",
     "newpages:build": "parcel build ./src/NewPages/Index.html --dist-dir ./storage",
-    "conquer:build": "parcel build ./src/Frontend/CONQUER.ts --dist-dir ./storage/home/lib && parcel build ./src/Frontend/CONQUER.ts --dist-dir ./public/js",
+    "conquer:build": "parcel build ./src/Conquer/CONQUER.ts --dist-dir ./storage/home/lib",
     "dev": "tsc && node ./dist/Compile.js --env=\"dev\"",
     "prod": "tsc && node ./dist/Compile.js --env=\"prod\"",
-    "web:start": "set PORT=9003 && react-scripts start",
-    "web:build": "react-scripts build"
+    "server": "node server.js"
   },
   "author": "",
   "license": "ISC",
