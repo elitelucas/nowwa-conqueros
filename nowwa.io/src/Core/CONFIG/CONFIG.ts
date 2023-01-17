@@ -1,6 +1,3 @@
-import dotenv from 'dotenv';
-import path from 'path';
-
 class CONFIG 
 {
     private static _vars: CONFIG.Config;
@@ -24,7 +21,6 @@ class CONFIG
 
     private static get MainConfig(): CONFIG.Config 
     {
-        dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
         let corePort: number = parseInt(process.env.CORE_PORT as string);
         let coreHost: string = process.env.CORE_HOST as string;
