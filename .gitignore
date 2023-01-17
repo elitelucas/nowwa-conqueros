@@ -30,3 +30,4 @@ nowwa.io/heap-*
 test/
 nowwa.io/items/
 analytics/node_modules/
+nowwa.io/build/
