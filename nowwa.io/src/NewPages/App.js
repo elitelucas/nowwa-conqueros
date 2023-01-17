@@ -31,9 +31,60 @@ import WalletContextProvider from "./contexts/WalletContext";
 
 function App() {
 
+  const [AppState, SetAppState] = useState({
+    path: "/"
+  });
+
+  useEffect(() => {
+    SetAppState({
+      path: "/"
+    });
+  }, []);
+
   return (
     <ConquerContextProvider>
-      <Router>
+      {AppState.path != "/chat" &&
+        <Page>
+          {AppState.path == "/" && <NHome />}
+          {AppState.path == "/profile" && <NAccount />}
+          {AppState.path == "/upload-variants" && <UploadVariants />}
+          {AppState.path == "/upload-details" && <UploadDetails />}
+          {AppState.path == "/connect-wallet" && <ConnectWallet />}
+          {AppState.path == "/faq" && <Faq />}
+          {AppState.path == "/activity" && <Activity />}
+          {AppState.path == "/search01" && <Search01 />}
+          {AppState.path == "/mint" && <Mint />}
+          {AppState.path == "/upload-details" && <UploadDetails />}
+          {AppState.path == "/gallery" && <Gallery />}
+          {AppState.path == "/store" && <Store />}
+          {AppState.path == "/profile1" && <Profile />}
+          {AppState.path == "/profile-edit" && <ProfileEdit />}
+          {AppState.path == "/item" && <Item />}
+          {AppState.path == "/pagelist" && <PageList />}
+          {AppState.path == "/game" && <Game />}
+          {AppState.path == "/login" && <Login />}
+        </Page>}
+      {AppState.path == "/chat" && 
+        <ChatContextProvider>
+          <Chat />
+        </ChatContextProvider>}
+      {AppState.path.indexOf("/wallet") == 0 && 
+        <WalletContextProvider>
+          <Page>
+            {AppState.path == "/wallet/backup" && <WalletBackup />}
+            {AppState.path == "/wallet" && <Wallet />}
+            {AppState.path == "/wallet/backup" && <WalletBackup />}
+            {AppState.path == "/wallet/send" && <WalletSendToken />}
+            {AppState.path == "/wallet/receive" && <WalletReceiveToken />}
+          </Page>
+        </WalletContextProvider>}
+      {AppState.path == "/wallet/backup" && 
+        <WalletContextProvider>
+          <Page>
+            <WalletBackup />
+          </Page>
+        </WalletContextProvider>}
+      {/* <Router>
         <Switch>
           <Route
             exact
@@ -53,7 +104,6 @@ function App() {
               </Page>
             )}
           />
-          {/* old */}
           <Route
             exact
             path="/home"
@@ -180,7 +230,8 @@ function App() {
               </Page>
             )}
           />
-          <Route exact path="/chat" render={() =>
+          <Route 
+          exact path="/chat" render={() =>
             <ChatContextProvider>
               <Chat />
             </ChatContextProvider>
@@ -248,7 +299,7 @@ function App() {
             )}
           />
         </Switch>
-      </Router>
+      </Router> */}
     </ConquerContextProvider>
 
   );

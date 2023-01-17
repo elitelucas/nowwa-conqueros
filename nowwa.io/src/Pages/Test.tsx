@@ -1,7 +1,6 @@
 import { equal } from 'assert';
 import React, { useState, useEffect } from 'react';
 import { Icon, Header, Label, Segment, Button, Card, Image, Item, Breadcrumb, List, SegmentGroup, BreadcrumbSection, BreadcrumbDivider, Table, Checkbox, Embed, ButtonGroup, Divider, Grid, TextArea, Form } from 'semantic-ui-react';
-import Conquer from '../Frontend/_DEPRECATED/Conquer';
 import { Client, RpcResponse, Session } from '@heroiclabs/nakama-js';
 
 export type TestState = {

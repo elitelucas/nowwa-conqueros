@@ -1,6 +1,6 @@
 import React from 'react';
 import { Icon, Button, Segment, ButtonGroup, Menu, Header, Input, InputOnChangeData, Card, Grid, Divider, Label, Image, Message, Form } from 'semantic-ui-react';
-import CONQUER from '../Frontend/CONQUER';
+import CONQUER from '../Conquer/CONQUER';
 import { DownloaderState } from './Downloader';
 import { IndexState } from './Index';
 import { UpdateComponentState } from './Utils/Helpers';

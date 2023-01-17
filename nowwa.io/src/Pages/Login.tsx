@@ -3,8 +3,8 @@ import { Icon, Button, Segment, ButtonGroup, Menu, Header, Input, InputOnChangeD
 import { IndexState, } from './Index';
 import { Hash, UpdateComponentState } from './Utils/Helpers';
 import './Utils/Facebook';
-import CONQUER from '../Frontend/CONQUER';
-import Storage from '../Frontend/UTILS/Storage';
+import CONQUER from '../Conquer/CONQUER';
+import Storage from '../Conquer/UTILS/Storage';
 
 export type LoginState = {
     initialized: boolean,

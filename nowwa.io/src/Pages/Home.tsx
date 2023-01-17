@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Icon, Button, Segment, ButtonGroup, Menu, Header, Input, InputOnChangeData, Card, Grid, Divider, Label, Image, Message, Form } from 'semantic-ui-react';
-import CONQUER from '../Frontend/CONQUER';
+import CONQUER from '../Conquer/CONQUER';
 import { IndexState } from './Index';
 import { UpdateComponentState } from './Utils/Helpers';
 
