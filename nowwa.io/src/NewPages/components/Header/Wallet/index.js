@@ -12,7 +12,8 @@ export default function WalletModal({ onClose }) {
   const [isConnecting, setIsConnecting] = useState(false);
 
   const onClickLogin = async () => {
-    window.location.href = "/login";
+    // TODO : set state for App -> SetAppState({ path: "/login" });
+    // window.location.href = "/login";
   };
   const onclickConnect = async () => {
     setIsConnecting(true);
