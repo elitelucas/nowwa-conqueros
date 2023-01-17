@@ -11,10 +11,10 @@ import Register, { RegisterStateDefault } from './Register';
 import Home, { HomeStateDefault } from './Home';
 import { ComponentState, UpdateComponentState } from './Utils/Helpers';
 import Status from '../Core/APPS/Status';
-import CONQUER from '../Frontend/CONQUER';
+import CONQUER from '../Conquer/CONQUER';
 import Uploader, { UploaderStateDefault } from './Uploader';
 import Downloader, { DownloaderState, DownloaderStateDefault } from './Downloader';
-import User from '../Frontend/USER/User';
+import User from '../Conquer/USER/User';
 import Yohami, { YohamiStateDefault } from './yohami';
 import Pages from './PAGES';
 

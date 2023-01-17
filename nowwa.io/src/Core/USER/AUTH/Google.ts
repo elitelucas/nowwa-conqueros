@@ -4,7 +4,7 @@ import EXPRESS from '../../EXPRESS/EXPRESS';
 import { google, people_v1 } from 'googleapis';
 import AUTH from './AUTH';
 import CRYPT from '../../../UTIL/CRYPT';
-import Storage from '../../../Frontend/UTILS/Storage';
+import Storage from '../../../Conquer/UTILS/Storage';
 import AVATAR from '../TRIBE/AVATAR';
 import mongoose from 'mongoose';
 import USERNAME_PROXY from '../USERNAME_PROXY';

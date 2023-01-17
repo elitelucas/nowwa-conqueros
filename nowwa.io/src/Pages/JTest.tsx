@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Icon, Button, Segment, ButtonGroup, Menu, Header, Input, InputOnChangeData, Card, Grid, Divider, Label, Image, Message, Form } from 'semantic-ui-react';
 import { IndexState, } from './Index';
 import { Hash, UpdateComponentState } from './Utils/Helpers';
-import CONQUER from '../Frontend/CONQUER';
-import Storage from '../Frontend/UTILS/Storage';
+import CONQUER from '../Conquer/CONQUER';
+import Storage from '../Conquer/UTILS/Storage';
 import { set } from 'mongoose';
 
 
@@ -120,7 +120,7 @@ const JTest = (indexState: IndexState) => {
                             <Form.Input
                                 type='text'
                                 value={data2}
-                                onChange={(e) => setData2(e.target.value)}
+                                onChange={(e) => setData2(parseInt(e.target.value))}
                             />
                         </Grid.Column>
                     </Grid.Row>

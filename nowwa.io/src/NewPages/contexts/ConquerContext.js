@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react'
 import { plus } from '../../UTIL/DECIMALS';
-import CONQUER from '../../Frontend/CONQUER';
+import CONQUER from '../../Conquer/CONQUER';
 
 export const ConquerContext = createContext()
 

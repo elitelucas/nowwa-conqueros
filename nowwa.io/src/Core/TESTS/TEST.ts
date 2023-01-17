@@ -1,5 +1,5 @@
 import mongoose, { mongo } from "mongoose";
-import CONQUER from "../../Frontend/CONQUER";
+import CONQUER from "../../Conquer/CONQUER";
 import DATA from "../DATA/DATA";
 import FOLDER from "../ITEM/INSTANCE/FOLDER";
 import ITEM from "../ITEM/ITEM";
@@ -10,7 +10,7 @@ import USERNAME from "../USER/USERNAME";
 import ACCOUNT from "./ACCOUNT";
 import TEMPORARY from "./TEMPORARY";
 import LOG, { log } from "../../UTIL/LOG";
-import RoomInstance from "../../Frontend/ROOMS/RoomInstance/RoomInstance";
+import RoomInstance from "../../Conquer/ROOMS/RoomInstance/RoomInstance";
 import QUERY from "../../UTIL/QUERY";
 import ROOM from "../SOCKET/ROOM/ROOM";
 

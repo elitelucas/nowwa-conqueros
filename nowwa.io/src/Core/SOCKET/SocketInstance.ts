@@ -30,7 +30,7 @@ import WALLET from "../USER/WALLET/WALLET";
 import WALLET_ASSETS from "../USER/WALLET/WALLET_ASSETS";
 import WALLET_HISTORY from "../USER/WALLET/WALLET_HISTORY";
 import Twitter from "../USER/AUTH/Twitter";
-import User from "../../Frontend/USER/User";
+import User from "../../Conquer/USER/User";
 import Google from "../USER/AUTH/Google";
 import Discord from "../USER/AUTH/Discord";
 import EMAIL from "../USER/EMAIL";

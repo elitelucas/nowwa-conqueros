@@ -9,7 +9,7 @@ import Build from './APPS/Build';
 
 import Email from './DEPRECATED/Email';
 import SOCKET from './SOCKET/SOCKET';
-import CONQUER from '../Frontend/CONQUER';
+import CONQUER from '../Conquer/CONQUER';
 import LOG, { log } from "../UTIL/LOG";
 import AUTH from './USER/AUTH/AUTH';
 import EMAIL from './USER/EMAIL';

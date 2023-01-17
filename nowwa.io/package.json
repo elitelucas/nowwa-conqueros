@@ -6,10 +6,10 @@
   "scripts": {
     "core:dev": "tsc-watch --onSuccess \"node ./dist/Core/Main.js",
     "core:build": "tsc",
-    "front:dev": "parcel watch ./src/Pages/Index.html --dist-dir ./storage --no-content-hash",
-    "front:build": "parcel build ./src/Pages/Index.html --dist-dir ./storage",
-    "newfront:dev": "parcel watch ./src/NewPages/Index.html --dist-dir ./storage --no-content-hash",
-    "newfront:build": "parcel build ./src/NewPages/Index.html --dist-dir ./storage",
+    "pages:dev": "parcel watch ./src/Pages/Index.html --dist-dir ./storage --no-content-hash",
+    "pages:build": "parcel build ./src/Pages/Index.html --dist-dir ./storage",
+    "newpages:dev": "parcel watch ./src/NewPages/Index.html --dist-dir ./storage --no-content-hash",
+    "newpages:build": "parcel build ./src/NewPages/Index.html --dist-dir ./storage",
     "conquer:build": "parcel build ./src/Frontend/CONQUER.ts --dist-dir ./storage/home/lib && parcel build ./src/Frontend/CONQUER.ts --dist-dir ./public/js",
     "dev": "tsc && node ./dist/Compile.js --env=\"dev\"",
     "prod": "tsc && node ./dist/Compile.js --env=\"prod\"",
@@ -106,7 +106,7 @@
     "decimal": "^0.0.2",
     "decimal.js": "^10.4.3",
     "dicer": "^0.3.1",
-    "dotenv": "^16.0.2",
+    "dotenv": "^16.0.3",
     "ethers": "^5.7.2",
     "express": "^4.18.2",
     "express-session": "^1.17.2",
@@ -129,10 +129,10 @@
     "passport-custom": "^1.1.1",
     "passport-local": "^1.0.0",
     "passport-local-mongoose": "^7.0.0",
-    "react": "^17.0.2",
+    "react": "^18.2.0",
     "react-avatar": "^5.0.3",
-    "react-dom": "^17.0.2",
-    "react-moralis": "1.4.0",
+    "react-dom": "^18.2.0",
+    "react-moralis": "^1.4.2",
     "react-notifications": "^1.7.4",
     "react-outside-click-handler": "^1.3.0",
     "react-qr-code": "^2.0.8",
@@ -142,7 +142,7 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "^5.0.1",
     "react-share": "^4.4.0",
-    "react-slick": "^0.28.1",
+    "react-slick": "^0.29.0",
     "react-sliding-pane": "^7.3.0",
     "react-sliding-side-panel": "^2.0.3",
     "react-swipeable-views": "^0.14.0",
@@ -173,6 +173,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "alias": {
+    "process": false
   },
   "proxy": "https://nowwa.io:9000"
 }
