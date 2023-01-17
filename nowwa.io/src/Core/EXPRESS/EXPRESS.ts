@@ -18,13 +18,13 @@ class EXPRESS {
     private static baseUrl: string;
 
     public static init() {
-        console.log(`init express...`);
+        console.log(`init express core...`);
 
         this.baseUrl = `/webhook/v${CONFIG.vars.VERSION}`;
 
         EXPRESS.status = EXPRESS.StatusDefault;
 
-        var app: express.Express = EXPRESS.app =
+        var app: express.Express = 
             express()
                 .use(cors())
                 .use(express.json())
@@ -68,13 +68,18 @@ class EXPRESS {
             res.status(200).send('test');
         });
 
+        EXPRESS.app = app;
+    }
+
+    public static listen() {
+
         console.log(`running Environment: ${CONFIG.vars.ENVIRONMENT}`);
         if (CONFIG.vars.ENVIRONMENT == 'production' || CONFIG.vars.ENVIRONMENT == 'development') {
-            app.listen(CONFIG.vars.CORE_PORT);
+            EXPRESS.app.listen(CONFIG.vars.CORE_PORT);
         } else if (CONFIG.vars.ENVIRONMENT == 'ssl_development') {
             const key = readFileSync(path.join(__dirname, '..', '..', '..', 'localhost.decrypted.key'));
             const cert = readFileSync(path.join(__dirname, '..', '..', '..', 'localhost.crt'));
-            const server = https.createServer({ key: key, cert: cert }, app);
+            const server = https.createServer({ key: key, cert: cert }, EXPRESS.app);
             server.listen(CONFIG.vars.CORE_PORT);
         }
 

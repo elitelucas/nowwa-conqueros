@@ -33,7 +33,10 @@ class EMAIL
 
         EMAIL.transporter = nodemailer.createTransport(
         {
-            service: 'gmail',
+            service: 'zoho',
+            // host: 'smtp.zoho.com',
+            // secure: true,
+            // port: 465,
             auth: {
                 user: `${CONFIG.vars.VERIFY_EMAIL_SENDER}`,
                 pass: `${CONFIG.vars.VERIFY_EMAIL_PASSWORD}`
@@ -134,6 +137,8 @@ class EMAIL
             subject: vars.subject,
             html: vars.html || "<html><body>" + vars.content + "<body><html>"
         };
+
+        console.log(`about to send email to: ${vars.email}`);
 
         try {
             EMAIL.transporter.sendMail(mailOptions, (error: any, info: any) => {

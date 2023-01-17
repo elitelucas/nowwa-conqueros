@@ -19,7 +19,7 @@ class Main {
 
     private async AsyncInit(): Promise<void> {
         try {
-            console.log(`init express...`);
+            console.log(`init express supersnappy...`);
 
             var self: Main = this;
 

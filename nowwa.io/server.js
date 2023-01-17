@@ -7,10 +7,10 @@ const socket = require("socket.io");
 const path = require("path");
 // const walletController = require('./controllers/wallet');
 
-app.use(express.static("./build"));
+app.use(express.static(path.resolve(__dirname, "storage")));
 
-app.get("*", (req, res) => {
-  res.sendFile(path.resolve(__dirname, "build", "index.html"));
+app.get("*", (req, res, next) => {
+  res.sendFile(path.resolve("storage", "index.html"));
 });
 
 const port = process.env.PORT || 9002;

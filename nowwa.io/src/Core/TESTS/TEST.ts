@@ -25,7 +25,14 @@ class TEST {
         aaa@gmail.com   63ac6c2534bba89538a2fdd4
         bbb@gmail.com   63ac6c5a34bba89538a2fde6
      */
-      console.log("J's testing...");
+      // console.log("J's testing...");
+      
+      // console.log("test send email");
+      // EMAIL.send({
+      //   email: 'garibaldy.mukti@gmail.com',
+      //   subject: 'test email from zoho',
+      //   content: 'this is the content'
+      // });
 
     //   let res = await ROOM.getOne({
     //     avatarIDs: ["63ac6c5a34bba89538a2fde6"],

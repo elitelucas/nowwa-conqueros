@@ -59,6 +59,9 @@ class Main {
 
         // TESTING
 
+        EXPRESS.listen();
+        console.log('about to test again');
+
         await TEST.Run();
     }
 
