@@ -30,10 +30,13 @@ const NewRoom = (props) => {
   const [loadingUser, setLoadingUser] = useState(true);
   const [selectedAvatars, setSelectedAvatars] = useState([]);
 
-  useEffect(async () => {
-    let avatars = await getAllAvatars();
-    setUsers(avatars)
-    setLoadingUser(false)
+  useEffect(() => {
+    let asyncFunction = async () => {
+      let avatars = await getAllAvatars();
+      setUsers(avatars)
+      setLoadingUser(false)
+    }
+    asyncFunction();
   }, [])
 
   const onClickUser = (avatarID) => {

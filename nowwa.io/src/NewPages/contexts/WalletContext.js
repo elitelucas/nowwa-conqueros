@@ -13,32 +13,35 @@ const WalletContextProvider = (props) => {
   const [balance, setBalance] = useState();
   const [history, setHistory] = useState([]);
 
-  useEffect(async () => {
-    if (!CONQUER) return;
+  useEffect(() => {
+    let asyncFunction = async () => {
+      if (!CONQUER) return;
 
-    // Wallet
-    let address, balance, history = [];
+      // Wallet
+      let address, balance, history = [];
 
-    if (loggedin) {
-      let res = await CONQUER.Wallets.get();
-      if (res.success) {
-        let walletInstance = res.data
-        setWalletInstance(walletInstance)
-        // console.log('----->walletInstance', walletInstance)
+      if (loggedin) {
+        let res = await CONQUER.Wallets.get();
+        if (res.success) {
+          let walletInstance = res.data
+          setWalletInstance(walletInstance)
+          // console.log('----->walletInstance', walletInstance)
 
-        address = walletInstance.address
-        setAddress(address)
+          address = walletInstance.address
+          setAddress(address)
 
-        balance = walletInstance.balance
-        setBalance(balance)
+          balance = walletInstance.balance
+          setBalance(balance)
 
-        history = await walletInstance.History.get();
-        history = history.reverse();
-        setHistory(history)
-      } else {
-        console.log('wallet get failed', res.message)
+          history = await walletInstance.History.get();
+          history = history.reverse();
+          setHistory(history)
+        } else {
+          console.log('wallet get failed', res.message)
+        }
       }
-    }
+    };
+    asyncFunction();
   }, [CONQUER, loggedin]);
 
 

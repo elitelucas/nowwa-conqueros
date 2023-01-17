@@ -22,20 +22,23 @@ const ChatContextProvider = (props) => {
   const [search, setSearch] = useState('');
 
 
-  useEffect(async () => {
-    if (!CONQUER) return;
-    setMyAvatarID(CONQUER.User.avatarID)
-
-    setLoadingRooms(true)
-
-    let allAvatars = await getAllAvatars();
-    setAllAvatars(allAvatars)
-
-    await CONQUER.Rooms.get({});
-    let pool = CONQUER.Rooms.pool;
-    setRooms(Object.values(pool))
-
-    setLoadingRooms(false)
+  useEffect(() => {
+    let asyncFunction = async () => {
+      if (!CONQUER) return;
+      setMyAvatarID(CONQUER.User.avatarID)
+  
+      setLoadingRooms(true)
+  
+      let allAvatars = await getAllAvatars();
+      setAllAvatars(allAvatars)
+  
+      await CONQUER.Rooms.get({});
+      let pool = CONQUER.Rooms.pool;
+      setRooms(Object.values(pool))
+  
+      setLoadingRooms(false)
+    };
+    asyncFunction();
   }, [CONQUER]);
 
 

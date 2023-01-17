@@ -10,8 +10,11 @@ const Login = ({ }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
-  useEffect(async () => {
-    if (loggedin) await goHome();
+  useEffect(() => {
+    let asyncFunction = async () => {
+      if (loggedin) await goHome();
+    };
+    asyncFunction();
   }, [loggedin])
 
 
