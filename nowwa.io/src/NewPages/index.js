@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOMClient from 'react-dom/client';
 import App from './App';
 import { createWeb3ReactRoot, useWeb3React, Web3ReactProvider } from '@web3-react/core'
 import { getLibrary } from './utils';
@@ -17,17 +17,18 @@ if (!!window.ethereum) {
 }
 
 
-ReactDOM.render(
-  <React.StrictMode>
-    <Web3ReactProvider getLibrary={getLibrary}>
-      <Web3ProviderNetwork getLibrary={getLibrary}>
-          <ChainUpdater />
-          <TransactionUpdater />
-          <ApplicationUpdater />
-          <App />
-      </Web3ProviderNetwork>
-    </Web3ReactProvider>
-    <NotificationContainer/>
-  </React.StrictMode>,
-  document.getElementById("root")
-);
+let root = ReactDOMClient.createRoot(document.getElementById('root'));
+let index = 
+<React.StrictMode>
+  <Web3ReactProvider getLibrary={getLibrary}>
+  <Web3ProviderNetwork getLibrary={getLibrary}>
+  <ChainUpdater />
+  <TransactionUpdater />
+  <ApplicationUpdater />
+  <App />
+  </Web3ProviderNetwork>
+  </Web3ReactProvider>
+  <NotificationContainer/>
+</React.StrictMode>;
+
+root.render(index);

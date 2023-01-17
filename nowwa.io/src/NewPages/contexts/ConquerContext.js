@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect } from 'react'
+import React, { createContext, useState, useEffect } from 'react';
 import { plus } from '../../UTIL/DECIMALS';
 import CONQUER from '../../Conquer/CONQUER';
 
@@ -7,7 +7,7 @@ export const ConquerContext = createContext()
 const ConquerContextProvider = (props) => {
   const [ConquerState, setConquerState] = useState();
   //load CONQER
-  useEffect(async () => {
+  useEffect(() => {
     console.log('testing utils....', plus(0.12345, 0.234567))
 
     /* Load js file */
@@ -16,11 +16,13 @@ const ConquerContextProvider = (props) => {
     // script.src = "/js/CONQUER.js";
     // script.async = true;
     // script.defer = true;
+    let asyncFunction = async () => {
+      let mconquer = new CONQUER();
+      await mconquer.init();
+      setConquerState(mconquer);
+    }
 
-    let mconquer = new CONQUER();
-    await mconquer.init();
-    setConquerState(mconquer);
-
+    asyncFunction();
 
     /* Load typescript file */
     // let myconquer = new RAWCONQUER();
@@ -92,9 +94,12 @@ const ConquerContextProvider = (props) => {
   }
 
   //my handling
-  useEffect(async () => {
-    if (!ConquerState?.User) return;
-    await onConquerChanged(ConquerState);
+  useEffect(() => {
+    let asyncFunction = async () => {
+      if (!ConquerState?.User) return;
+      await onConquerChanged(ConquerState);
+    }
+    asyncFunction();
   }, [ConquerState]);
 
   const onConquerChanged = async (CONQUER) => {
