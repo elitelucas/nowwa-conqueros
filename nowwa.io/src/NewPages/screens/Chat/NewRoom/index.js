@@ -11,7 +11,7 @@ import { ChatContext } from "../../../contexts/ChatContext";
 const UserItem = ({ name, state, photoSrc, itemClicked }) => {
   return (
     <div className={styles.tokens__list__item} onClick={() => itemClicked()}>
-      <Avatar name={name} round={true} size={40}/>
+      <Avatar name={name} round={true} size={40} />
       <p className={styles.tokens__list__item__name}>{name}</p>
       <div className={styles.tokens__list__item__switch}>
         {state && <CheckCircleIcon />}
@@ -30,10 +30,15 @@ const NewRoom = (props) => {
   const [loadingUser, setLoadingUser] = useState(true);
   const [selectedAvatars, setSelectedAvatars] = useState([]);
 
-  useEffect(async () => {
-    let avatars = await getAllAvatars();
-    setUsers(avatars)
-    setLoadingUser(false)
+  useEffect(() => {
+    let asyncFunction = async () => {
+      let avatars = await getAllAvatars();
+      setUsers(avatars)
+      setLoadingUser(false)
+    }
+    asyncFunction();
+
+
   }, [])
 
   const onClickUser = (avatarID) => {

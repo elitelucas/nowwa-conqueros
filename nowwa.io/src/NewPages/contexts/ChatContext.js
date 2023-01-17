@@ -22,20 +22,23 @@ const ChatContextProvider = (props) => {
   const [search, setSearch] = useState('');
 
 
-  useEffect(async () => {
-    if (!CONQUER) return;
-    setMyAvatarID(CONQUER.User.avatarID)
+  useEffect(() => {
+    let asyncFunction = async () => {
+      if (!CONQUER) return;
+      setMyAvatarID(CONQUER.User.avatarID)
 
-    setLoadingRooms(true)
+      setLoadingRooms(true)
 
-    let allAvatars = await getAllAvatars();
-    setAllAvatars(allAvatars)
+      let allAvatars = await getAllAvatars();
+      setAllAvatars(allAvatars)
 
-    await CONQUER.Rooms.get({});
-    let pool = CONQUER.Rooms.pool;
-    setRooms(Object.values(pool))
+      await CONQUER.Rooms.get({});
+      let pool = CONQUER.Rooms.pool;
+      setRooms(Object.values(pool))
 
-    setLoadingRooms(false)
+      setLoadingRooms(false)
+    }
+    asyncFunction();
   }, [CONQUER]);
 
 
@@ -51,7 +54,7 @@ const ChatContextProvider = (props) => {
         memberNames.push(avatarInstance.firstName)
     })
     setCurrentRoomMemberNames(memberNames)
-    
+
     console.log(roomInstance)
     setCurrentRoomInstance(roomInstance)
 
@@ -69,7 +72,7 @@ const ChatContextProvider = (props) => {
     setEntries(entries)
     setLoadingEntries(false)
 
- 
+
   }
 
   const addMessagetoContent = (text, avatarID) => {

@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext } from "react";
 import cn from "classnames";
 import styles from "./Login.module.sass";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import axios from "axios";
 import { ConquerContext } from "../../contexts/ConquerContext";
 
 const Login = ({ }) => {
@@ -10,8 +9,8 @@ const Login = ({ }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
-  useEffect(async () => {
-    if (loggedin) await goHome();
+  useEffect(() => {
+    if (loggedin) goHome();
   }, [loggedin])
 
 
