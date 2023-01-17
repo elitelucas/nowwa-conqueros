@@ -40,8 +40,9 @@ const WalletContextProvider = (props) => {
           console.log('wallet get failed', res.message)
         }
       }
-    };
+    }
     asyncFunction();
+
   }, [CONQUER, loggedin]);
 
 
