@@ -37,8 +37,6 @@ const NewRoom = (props) => {
       setLoadingUser(false)
     }
     asyncFunction();
-
-
   }, [])
 
   const onClickUser = (avatarID) => {
