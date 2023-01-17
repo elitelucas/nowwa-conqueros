@@ -1,13 +1,9 @@
 import React, { useEffect } from "react";
 import cn from "classnames";
 import styles from "./Theme.module.sass";
-import useDarkMode from "use-dark-mode";
 
 const Theme = ({ className }) => {
-  const darkMode = useDarkMode(false);
-  useEffect(() => {
-    if (!darkMode.value) darkMode.toggle();
-  }, []);
+
 
   return (
     <label
@@ -19,8 +15,8 @@ const Theme = ({ className }) => {
     >
       <input
         className={styles.input}
-        checked={darkMode.value}
-        onChange={darkMode.toggle}
+        // checked={darkMode.value}
+        // onChange={darkMode.toggle}
         type="checkbox"
       />
       <span className={styles.inner}>
