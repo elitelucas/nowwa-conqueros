@@ -34,6 +34,9 @@ import User from "../../Conquer/USER/User";
 import Google from "../USER/AUTH/Google";
 import Discord from "../USER/AUTH/Discord";
 import EMAIL from "../USER/EMAIL";
+import NFT_COLLECTION from "../NFT/NFT_COLLECTION";
+import NFT_TOKEN from "../NFT/NFT_TOKEN";
+import NFT_HISTORY from "../NFT/NFT_HISTORY";
 class SocketInstance 
 {
     // Todo, destroy instances on disconnect
@@ -105,9 +108,16 @@ class SocketInstance
 
         if( action == ACTIONS.EMAIL_SEND )                      return map( EMAIL.send( vars ) );
 
+        if( action == ACTIONS.NFT_COLLECTION_GET )              return map( NFT_COLLECTION.get( vars ) );
+        if( action == ACTIONS.NFT_TOKEN_GET )                   return map( NFT_TOKEN.get( vars ) );
+        if( action == ACTIONS.NFT_HISTORY_GET )                 return map( NFT_HISTORY.get( vars ) );
+
         // AT THIS POINT, AVATAR ID IS REWRITTEN
  
         vars.avatarID = this.User.avatarID;
+
+        if( action == ACTIONS.NFT_TOKEN_SET )                   return map( NFT_TOKEN.set( vars ) );
+        if( action == ACTIONS.NFT_TOKEN_CHANGE )                return map( NFT_TOKEN.change( vars ) );
 
         if( action == ACTIONS.WALLET_GETSET )                   return map( WALLET.getSet( vars ) );
         if( action == ACTIONS.WALLET_SEND )                     return map( WALLET.send( vars ) );

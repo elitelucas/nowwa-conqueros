@@ -109,8 +109,14 @@ export const enum ACTIONS
     SOCIAL_DISCORD_SHARE        = 85,
     SOCIAL_DISCORD_SHARE_GET    = 86,
 
-    EMAIL_SEND                  = 87,
- 
+    EMAIL_SEND              = 87,
+
+    NFT_COLLECTION_GET      = 88,
+    NFT_TOKEN_SET           = 89,
+    NFT_TOKEN_GET           = 90,
+    NFT_TOKEN_REMOVE        = 91,
+    NFT_TOKEN_CHANGE        = 92,
+    NFT_HISTORY_GET         = 93
 }
 
 export const enum STATUS
