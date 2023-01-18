@@ -13,6 +13,7 @@ import LOG, { log } from "../../UTIL/LOG";
 import RoomInstance from "../../Conquer/ROOMS/RoomInstance/RoomInstance";
 import QUERY from "../../UTIL/QUERY";
 import ROOM from "../SOCKET/ROOM/ROOM";
+import path from "path";
 
 class TEST {
   public static async Run(): Promise<void> {
@@ -26,12 +27,17 @@ class TEST {
         bbb@gmail.com   63ac6c5a34bba89538a2fde6
      */
       // console.log("J's testing...");
-      
+
       // console.log("test send email");
       // EMAIL.send({
       //   email: 'garibaldy.mukti@gmail.com',
-      //   subject: 'test email from zoho',
-      //   content: 'this is the content'
+      //   subject: 'Subscribe to SuperSnappy.io',
+      //   html: `Welcome! <img src="cid:badge" />`,
+      //   attachments: [{
+      //     filename: "SUPERSNAPPY_LOGO_email.png",
+      //     path: path.resolve("storage", "SUPERSNAPPY_LOGO_email.png"),
+      //     cid: 'badge' //same cid value as in the html img src,
+      //   }]
       // });
 
     //   let res = await ROOM.getOne({

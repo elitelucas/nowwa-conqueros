@@ -2,7 +2,7 @@ import STRING from '../../UTIL/STRING';
 import DATA from "../DATA/DATA";
 import USERNAME from './USERNAME';
 
-import CONFIG, { authVerify, emailVerify } from '../CONFIG/CONFIG';
+import CONFIG, { authVerify, emailSubscribe, emailVerify } from '../CONFIG/CONFIG';
 import nodemailer, { Transport, Transporter } from 'nodemailer';
 import { MailOptions } from 'nodemailer/lib/json-transport';
 import LOG, { log } from '../../UTIL/LOG';
@@ -10,6 +10,8 @@ import CRYPT from '../../UTIL/CRYPT';
 import mongoose from 'mongoose';
 import AUTH from './AUTH/AUTH';
 import EXPRESS from '../EXPRESS/EXPRESS';
+import Mail from 'nodemailer/lib/mailer';
+import path from 'path';
 
 class EMAIL 
 {
@@ -28,15 +30,16 @@ class EMAIL
     public static async init() 
     {
         this.webhookEmailVerify();
+        this.webhookEmailSubscribe();
 
         EMAIL.emailSender = `${CONFIG.vars.VERIFY_EMAIL_SENDER}`;
 
         EMAIL.transporter = nodemailer.createTransport(
         {
-            service: 'zoho',
-            // host: 'smtp.zoho.com',
-            // secure: true,
-            // port: 465,
+            // service: 'zoho',
+            host: 'smtp.zoho.eu',
+            secure: true,
+            port: 465,
             auth: {
                 user: `${CONFIG.vars.VERIFY_EMAIL_SENDER}`,
                 pass: `${CONFIG.vars.VERIFY_EMAIL_PASSWORD}`
@@ -78,6 +81,27 @@ class EMAIL
         if ( !vars.isVerified ) EMAIL.requestVerification( vars.email );
 
         return Promise.resolve(email);
+    }
+ 
+    public static webhookEmailSubscribe() 
+    {
+        EXPRESS.app.use(`${emailSubscribe}`, async (req, res) => {
+
+            const { email } = req.query;
+            
+            let result = await EMAIL.send({
+                email: <string>email,
+                subject: 'Subscribe to SuperSnappy.io',
+                html: `Welcome! <img src="cid:badge" />`,
+                attachments: [{
+                filename: "SUPERSNAPPY_LOGO_email.png",
+                path: path.resolve("storage", "SUPERSNAPPY_LOGO_email.png"),
+                cid: 'badge' //same cid value as in the html img src,
+                }]
+            });
+
+            res.status(200).send(`Success: ${result}`);
+        });
     }
  
     public static webhookEmailVerify() 
@@ -128,28 +152,34 @@ class EMAIL
             });
     }
 
-    public static async send(vars: { email:string, subject: string, html?:string, content?:string }) 
+    public static async send(vars: { email:string, subject: string, html?:string, content?:string, attachments?: Mail.Attachment[] }) 
     {
         let mailOptions: MailOptions =
         {
             from: EMAIL.emailSender,
             to: vars.email,
             subject: vars.subject,
-            html: vars.html || "<html><body>" + vars.content + "<body><html>"
+            html: vars.html || "<html><body>" + vars.content + "<body><html>",
+            attachments: vars.attachments
         };
 
         console.log(`about to send email to: ${vars.email}`);
 
         try {
             EMAIL.transporter.sendMail(mailOptions, (error: any, info: any) => {
-                if (error) return Promise.reject(LOG.msg(error));
+                
+                if (error) {
+                    console.log("EMAIL SEND FAILED", error);
+                } else {
+                    console.log('EMAIL SEND SUCCESS', info.response);
+                }
 
-                log('Email sent: ' + info.response);
-                return Promise.resolve(info);
+                return Promise.resolve(typeof error == 'undefined' ? true : false);
             });
 
         } catch (error) {
-            log("EMAIL SEND FAILED", error);
+            console.log("EMAIL SEND ERROR", error);
+            return Promise.resolve(false);
         }
 
     };
