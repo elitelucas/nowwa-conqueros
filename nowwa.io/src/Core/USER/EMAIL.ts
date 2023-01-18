@@ -85,9 +85,14 @@ class EMAIL
  
     public static webhookEmailSubscribe() 
     {
+        console.log('setup email subscribe');
         EXPRESS.app.use(`${emailSubscribe}`, async (req, res) => {
 
+            console.log('about to subscribe: ');
+
             const { email } = req.query;
+
+            console.log(`email`, email);
             
             let result = await EMAIL.send({
                 email: <string>email,
