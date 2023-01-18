@@ -68,12 +68,12 @@ class Storage {
     private static WebhookFiles(): void {
         let rootPath: string = path.join(__dirname, `${Storage.RootFolder}`);
         console.log(`rootPath: ${rootPath}`);
-        EXPRESS.app.use('/', (req, res, next) => {
-            if (req.url.indexOf('/?') >= 0) {
-                req.url = req.url.replace('/?', '/Index.html?');
-            }
-            return (express.static(rootPath))(req, res, next);
-        });
+        // EXPRESS.app.use('/', (req, res, next) => {
+        //     if (req.url.indexOf('/?') >= 0) {
+        //         req.url = req.url.replace('/?', '/Index.html?');
+        //     }
+        //     return (express.static(rootPath))(req, res, next);
+        // });
     }
 }
 

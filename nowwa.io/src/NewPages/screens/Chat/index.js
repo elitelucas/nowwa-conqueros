@@ -15,8 +15,9 @@ const Chat = () => {
   const { CONQUER, username } = useContext(ConquerContext)
   const [rooms, setRooms] = useState([]);
   useEffect(() => {
-    if (!CONQUER) return;
-    setRooms(CONQUER.Rooms.pool)
+    if (typeof CONQUER != null) {
+      setRooms(CONQUER.Rooms.pool)
+    }
   }, [CONQUER]);
 
   //chat context

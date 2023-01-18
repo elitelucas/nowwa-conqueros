@@ -40,21 +40,27 @@ class EXPRESS {
                         maxAge: (1000 * 60 * 100)
                     }
                 }))
-                .use((req, res, next) => {
-                    // console.log(`req.url: ${req.url}`);
-                    var adjustedUrl = req.url;
-                    if (adjustedUrl.indexOf('//') == 0) {
-                        adjustedUrl = adjustedUrl.slice(1);
-                    }
-                    if (!adjustedUrl.match(/\.[a-zA-Z0-9_\-]+$/g) && adjustedUrl[adjustedUrl.length - 1] != '/') {
-                        req.url = `${adjustedUrl}/`;
-                    }
-                    next();
-                });
+                // .use((req, res, next) => {
+                //     // console.log(`req.url: ${req.url}`);
+                //     var adjustedUrl = req.url;
+                //     if (adjustedUrl.indexOf('//') == 0) {
+                //         adjustedUrl = adjustedUrl.slice(1);
+                //     }
+                //     if (!adjustedUrl.match(/\.[a-zA-Z0-9_\-]+$/g) && adjustedUrl[adjustedUrl.length - 1] != '/') {
+                //         req.url = `${adjustedUrl}/`;
+                //     }
+                //     next();
+                // });
 
-        app.all('/', (req, res, next) => {
-            req.url = req.url + 'Index.html';
-            next();
+        // app.all('/', (req, res, next) => {
+        //     req.url = req.url + 'Index.html';
+        //     next();
+        // });
+
+        app.use(express.static("storage"));
+
+        app.get('*', (req, res, next) => {
+            res.sendFile(path.resolve("storage", "Index.html"));
         });
 
         app.use(`${toyStatusUrl}`, (req, res) => {
