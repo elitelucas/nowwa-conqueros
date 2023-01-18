@@ -57,12 +57,6 @@ class EXPRESS {
         //     next();
         // });
 
-        app.use(express.static("storage"));
-
-        app.get('*', (req, res, next) => {
-            res.sendFile(path.resolve("storage", "Index.html"));
-        });
-
         app.use(`${toyStatusUrl}`, (req, res) => {
             // console.log(`[Express] /status/`);
             this.status.Builder = Status.CurrentStatus;
@@ -78,6 +72,39 @@ class EXPRESS {
     }
 
     public static listen() {
+
+        EXPRESS.app.use(express.static("storage"));
+
+        let routes:string[] = [
+            '/',
+            '/profile',
+            '/home',
+            '/upload-variants',
+            '/upload-details',
+            '/upload-wallet',
+            '/faq',
+            '/activity',
+            '/search01',
+            '/mint',
+            '/gallery',
+            '/store',
+            '/profile1',
+            '/profile-edit',
+            '/item',
+            '/pagelist',
+            '/chat',
+            '/game',
+            '/login',
+            '/wallet/backup',
+            '/wallet',
+            '/wallet/send',
+            '/wallet/receive' 
+        ];
+        for (let i = 0; i < routes.length; i++) {
+            EXPRESS.app.get(routes[i], (req, res, next) => {
+                res.sendFile(path.resolve("storage", "Index.html"));
+            });
+        }
 
         console.log(`running Environment: ${CONFIG.vars.ENVIRONMENT}`);
         if (CONFIG.vars.ENVIRONMENT == 'production' || CONFIG.vars.ENVIRONMENT == 'development') {

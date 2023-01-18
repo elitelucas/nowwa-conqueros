@@ -1,6 +1,6 @@
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber'
 import { One, Zero } from '@ethersproject/constants'
-import { formatBalance, isEmptyValue, parseBalance } from '../Utils'
+import { formatBalance, isEmptyValue, parseBalance } from '../utils'
 
 class Fraction {
     static BASE = BigNumber.from(10).pow(18)

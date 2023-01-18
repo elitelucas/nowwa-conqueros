@@ -183,6 +183,7 @@ export const snapchatAuthUrl: string = `/snapchatAuth`;
 export const snapchatCallbackUrl: string = `/snapchatCallback`;
 
 export const emailVerify: string = `/emailVerify`;
+export const emailSubscribe: string = `/emailSubscribe`;
 
 export const authTokenize: string = `/authTokenize`;
 export const authLinks: string = `/authLinks`;
