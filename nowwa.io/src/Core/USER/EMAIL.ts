@@ -121,8 +121,6 @@ class EMAIL
                 email: email
             });
 
-            console.log(`prevEmail`, prevEmail);
-
             if (prevEmail != null) {
 
                 let html:string = `Your email is confirmed.<br/>We'll notify you when Super Snappy is soft launched.<br/><br/><img src="cid:badge" />`
