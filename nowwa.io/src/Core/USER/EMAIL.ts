@@ -16,6 +16,7 @@ import path from 'path';
 class EMAIL 
 {
     private static table        : string = "username_emails";
+    private static tableSubscriber        : string = "subscribers";
     private static emailSender  : any;
     private static transporter  : any;
 
@@ -82,6 +83,28 @@ class EMAIL
 
         return Promise.resolve(email);
     }
+
+    public static async setSubscriber(vars: any): Promise<any> 
+    {
+        if ( !STRING.validateEmail(vars.email) ) 
+        {
+            LOG.msg('Email is invalid');
+            return Promise.resolve();
+        }
+
+        let email = await DATA.getOne( EMAIL.tableSubscriber, vars);
+ 
+        if ( email )  
+        {
+            LOG.msg('Subscriber already exists');
+
+            return Promise.resolve(null);
+        }
+
+        email = await DATA.set( EMAIL.tableSubscriber, vars);
+
+        return Promise.resolve(email);
+    }
  
     public static webhookEmailSubscribe() 
     {
@@ -93,19 +116,32 @@ class EMAIL
             const { email } = req.query;
 
             console.log(`email`, email);
-            
-            let result = await EMAIL.send({
-                email: <string>email,
-                subject: 'Subscribe to SuperSnappy.io',
-                html: `Welcome! <img src="cid:badge" />`,
-                attachments: [{
-                filename: "SUPERSNAPPY_LOGO_email.png",
-                path: path.resolve("storage", "SUPERSNAPPY_LOGO_email.png"),
-                cid: 'badge' //same cid value as in the html img src,
-                }]
+
+            let prevEmail = await this.setSubscriber({
+                email: email
             });
 
-            res.status(200).send(`Success: ${result}`);
+            console.log(`prevEmail`, prevEmail);
+
+            if (prevEmail != null) {
+
+                let html:string = `Your email is confirmed.<br/>We'll notify you when Super Snappy is soft launched.<br/><br/><img src="cid:badge" />`
+                let result = await EMAIL.send({
+                    email: <string>email,
+                    subject: 'Subscribe to SuperSnappy.io',
+                    html: html,
+                    attachments: [{
+                    filename: "SUPERSNAPPY_LOGO_email.png",
+                    path: path.resolve("storage", "SUPERSNAPPY_LOGO_email.png"),
+                    cid: 'badge' //same cid value as in the html img src,
+                    }]
+                });
+
+                res.status(200).send(`Success: ${result}`);
+            } else {
+                res.status(200).send(`Success: false, already registered`);
+            }
+
         });
     }
  
@@ -159,33 +195,37 @@ class EMAIL
 
     public static async send(vars: { email:string, subject: string, html?:string, content?:string, attachments?: Mail.Attachment[] }) 
     {
-        let mailOptions: MailOptions =
-        {
-            from: EMAIL.emailSender,
-            to: vars.email,
-            subject: vars.subject,
-            html: vars.html || "<html><body>" + vars.content + "<body><html>",
-            attachments: vars.attachments
-        };
+        return new Promise((resolve, reject) => {
 
-        console.log(`about to send email to: ${vars.email}`);
-
-        try {
-            EMAIL.transporter.sendMail(mailOptions, (error: any, info: any) => {
-                
-                if (error) {
-                    console.log("EMAIL SEND FAILED", error);
-                } else {
-                    console.log('EMAIL SEND SUCCESS', info.response);
-                }
-
-                return Promise.resolve(typeof error == 'undefined' ? true : false);
-            });
-
-        } catch (error) {
-            console.log("EMAIL SEND ERROR", error);
-            return Promise.resolve(false);
-        }
+            let mailOptions: MailOptions =
+            {
+                from: EMAIL.emailSender,
+                to: vars.email,
+                subject: vars.subject,
+                html: vars.html || "<html><body>" + vars.content + "<body><html>",
+                attachments: vars.attachments
+            };
+    
+            console.log(`about to send email to: ${vars.email}`);
+    
+            try {
+                EMAIL.transporter.sendMail(mailOptions, (error: any, info: any) => {
+                    
+                    if (error) {
+                        console.log("EMAIL SEND FAILED", error);
+                        resolve(false);
+                    } else {
+                        console.log('EMAIL SEND SUCCESS', info.response);
+                        resolve(true);
+                    }
+    
+                });
+    
+            } catch (error) {
+                console.log("EMAIL SEND ERROR", error);
+                resolve(false);
+            }
+        });
 
     };
 
