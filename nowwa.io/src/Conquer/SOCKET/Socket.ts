@@ -59,7 +59,7 @@ class Socket
  
         return new Promise((resolve) => 
         {
-            var socket  = self.socket = io( CONFIG.vars.PUBLIC_SOCKET_FULL_URL );
+            var socket  = self.socket = io( CONFIG.vars.PUBLIC_SOCKET_FULL_URL, {transports: ['websocket']} );
     
             socket.on( "disconnect", () => 
             {
