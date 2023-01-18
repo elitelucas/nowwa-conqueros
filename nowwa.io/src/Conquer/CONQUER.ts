@@ -19,6 +19,8 @@ import Sounds from "./AUDIO/Sounds";
 import Avatars from "./AVATAR/Avatars";
 import Email from "./EMAIL/Email";
 
+import NFT from "./NFT/NFT";
+
 class CONQUER 
 {
     public initialized  : boolean = false;
@@ -37,6 +39,8 @@ class CONQUER
     public Sounds       : Sounds;
     public Avatars      : Avatars;
     public Email        : Email;
+    public NFT          : NFT;
+ 
 
     public Instances    : Instances;
  
@@ -60,6 +64,7 @@ class CONQUER
         this.Sounds     = new Sounds();
         this.Avatars    = new Avatars( this );
         this.Email      = new Email ( this );
+        this.NFT        = new NFT( this );
     };
 
     public async init (): Promise<void> 

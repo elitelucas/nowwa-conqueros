@@ -2,7 +2,7 @@ import { ACTIONS } from "../../../Models/ENUM";
 import CONQUER from "../../CONQUER";
 import TokenInstance from "./TOKEN/TokenInstance";
  
-class NFTCollectionInstance
+class NFTInstance
 {
     private conquer         : CONQUER;
     private data            : any;
@@ -45,4 +45,4 @@ class NFTCollectionInstance
  
 }
 
-export default NFTCollectionInstance;
+export default NFTInstance;

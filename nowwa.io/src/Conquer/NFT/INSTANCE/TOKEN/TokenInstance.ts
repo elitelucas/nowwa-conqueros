@@ -12,6 +12,7 @@ class TokenInstance
     public metadata         : any;
     public listed           : boolean;
     public price            : number;
+    public token            : any;
  
     public constructor( conquer:CONQUER, data:any ) 
     {
@@ -22,6 +23,7 @@ class TokenInstance
         this.metadata       = data.metadata;
         this.listed         = data.listed;
         this.price          = data.price;
+        this.token          = data.token;
  
         this.History        = new TokenHistory( conquer, this.tokenID );
     }

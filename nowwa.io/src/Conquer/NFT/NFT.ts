@@ -1,8 +1,8 @@
 import CONQUER from "../CONQUER";
 import { ACTIONS } from "../../Models/ENUM";
-import NFTCollectionInstance from "./INSTANCE/NFTCollectionInstance";
+import NFTInstance from "./INSTANCE/NFTInstance";
 
-class NFTCollection
+class NFT
 {
     private conquer     : CONQUER;
 
@@ -20,9 +20,9 @@ class NFTCollection
     public async get( vars?:any ) : Promise<any>
     {
         let data : any = await this.conquer.do( ACTIONS.NFT_COLLECTION_GET, vars );
-        return Promise.resolve( new NFTCollectionInstance( this.conquer, data ) );
+        return Promise.resolve( new NFTInstance( this.conquer, data ) );
     };
 
 }
 
-export default NFTCollection;
+export default NFT;
