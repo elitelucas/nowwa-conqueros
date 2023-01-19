@@ -10,8 +10,14 @@ import WALLET_HISTORY from "./WALLET_HISTORY";
 
 import DECIMALS from "../../../UTIL/DECIMALS";
 
+import initMempool from "./Backend/receive";
+
 class WALLET {
   private static table: string = "wallets";
+
+  public static async init(): Promise<any> {
+    initMempool();
+  }
 
   /*=============== 
 
@@ -156,6 +162,25 @@ class WALLET {
     }
 
     return Promise.resolve(result);
+  }
+
+  public static async onReceive(address: string, amount: number): Promise<any> {
+    let recipient_wallet = await this.getOne({
+      address: address,
+    });
+
+    await DATA.change(this.table, {
+      where: { address: address },
+      values: {
+        balance: DECIMALS.plus(recipient_wallet.balance, amount),
+      },
+    });
+    await WALLET_HISTORY.addReceiveHistory(
+      recipient_wallet.usernameID,
+      amount,
+      "ETH",
+      "external"
+    );
   }
 }
 

@@ -52,7 +52,7 @@ const Chat = () => {
   }, []);
 
   useEffect(() => {
-    chatViewUpdate('group')
+    // chatViewUpdate('single')
   }, [])
 
 

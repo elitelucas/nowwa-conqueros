@@ -25,7 +25,7 @@ import mongoose from 'mongoose';
 import TEST from './TESTS/TEST';
 import SOCIALAUTH from './USER/AUTH/SOCIALAUTH';
 import CRON from './CRON/CRON';
-
+import WALLET from './USER/WALLET/WALLET';
 
 
 class Main {
@@ -56,6 +56,7 @@ class Main {
         await SOCKET.init();
         await FILE.init();
         await CRON.init();
+        await WALLET.init();
 
         // TESTING
 
