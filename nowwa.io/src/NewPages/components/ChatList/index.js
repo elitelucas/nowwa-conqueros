@@ -4,14 +4,12 @@ import ChatInput from "../ChatInput";
 import ChatContent from "../ChatContent";
 import styles from "./ChatList.module.sass";
 
-const ChatList = (props) => {
+const ChatList = () => {
   return (
     <div className={styles.container}>
-      <ChatListHeader selectedUser={props.selectedUser} />
-
-      <ChatContent messages={props.messages} />
-
-      <ChatInput sendMessage={props.sendMessage} />
+      <ChatListHeader />
+      <ChatContent />
+      <ChatInput />
     </div>
   );
 };

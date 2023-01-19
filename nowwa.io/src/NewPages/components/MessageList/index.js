@@ -5,17 +5,12 @@ import GroupList from "../GroupList";
 import styles from "./MessageList.module.sass";
 import { PropaneSharp } from "@mui/icons-material";
 
-const MessageList = (props) => {
+const MessageList = () => {
   return (
     <div className={styles.container}>
       <MessageListHeader />
       <div className={styles.container__friendList}>
-        <FriendList 
-        chatViewUpdate={props.chatViewUpdate} 
-        selectedUserUpdate={props.selectedUserUpdate} 
-        users={props.users} 
-        messages={props.messages} 
-        />
+        <FriendList />
       </div>
       {/* <GroupList chatViewUpdate={props.chatViewUpdate} /> */}
     </div>

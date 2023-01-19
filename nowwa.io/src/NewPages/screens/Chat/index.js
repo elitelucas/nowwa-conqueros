@@ -12,29 +12,10 @@ import { ChatContext } from "../../contexts/ChatContext";
 
 const Chat = () => {
   //conquer
-  const { CONQUER, username } = useContext(ConquerContext)
-  const [rooms, setRooms] = useState([]);
-  useEffect(() => {
-    if (typeof CONQUER != null) {
-      setRooms(CONQUER.Rooms.pool)
-    }
-  }, [CONQUER]);
+  const { username } = useContext(ConquerContext)
 
   //chat context
   const { showNewRoomModal, setShowNewRoomModal, isWelcomePage } = useContext(ChatContext)
-
-  //auth
-  const [user, setUser] = useState("");
-  //chat
-  const [users, setUsers] = useState([]);
-  const [selectedUser, setSelectedUser] = useState("");
-  const [messages, setMessages] = useState([
-    // { side: "to", type: "image", data: "/images/games/game2.png" },
-    // { side: "to", type: "text", data: "Hello" },
-    // { side: "from", type: "text", data: "Hi" },
-  ]);
-  //socket
-  const socket = useRef();
 
   const [isGroupChat, setIsGroupChat] = useState(false);
 
@@ -70,6 +51,11 @@ const Chat = () => {
     }
   }, []);
 
+  useEffect(() => {
+    chatViewUpdate('group')
+  }, [])
+
+
   const chatViewUpdate = (viewName) => {
     if (viewName === "group") {
       setIsGroupChat(true);
@@ -89,25 +75,7 @@ const Chat = () => {
       msgListEl.style.display = "flex";
     }
   };
-  const selectedUserUpdate = (user) => {
-    if (user != selectedUser) {
-      setSelectedUser(user);
-    }
-  };
 
-  const sendMessage = (text) => {
-    setMessages((prev) => {
-      return [
-        ...prev,
-        { side: "to", with: selectedUser, type: "text", data: text },
-      ];
-    });
-    socket.current.emit("sendMessage", {
-      from: user,
-      to: selectedUser,
-      text: text,
-    });
-  };
 
   return (
     <>
@@ -117,10 +85,7 @@ const Chat = () => {
             <Leftbar />
           </Box>
           <Box id="messageList" className={styles.container__column_messages} >
-            <MessageList
-              chatViewUpdate={chatViewUpdate}
-              selectedUserUpdate={selectedUserUpdate}
-            />
+            <MessageList />
           </Box>
           <Box id="chatList" className={styles.container__column_chat}>
             {isWelcomePage ?
@@ -137,11 +102,7 @@ const Chat = () => {
               isGroupChat ?
                 <GroupChatList />
                 :
-                <ChatList
-                  sendMessage={sendMessage}
-                  messages={messages.filter((item) => item.with == selectedUser)}
-                  selectedUser={selectedUser}
-                />
+                <ChatList />
             }
           </Box>
           <Modal
