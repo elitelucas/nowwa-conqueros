@@ -13,7 +13,8 @@
     "conquer:build": "parcel build ./src/Conquer/CONQUER.ts --dist-dir ./storage/home/lib",
     "dev": "tsc && node ./dist/Compile.js --env=\"dev\"",
     "prod": "tsc && node ./dist/Compile.js --env=\"prod\"",
-    "server": "node server.js"
+    "server": "node server.js",
+    "test": "react-app-rewired start"
   },
   "author": "",
   "license": "ISC",
@@ -72,6 +73,7 @@
     "path-browserify": "^1.0.1",
     "process": "^0.11.10",
     "querystring-es3": "^0.2.1",
+    "react-app-rewired": "^2.2.1",
     "rimraf": "^3.0.2",
     "stream-browserify": "^3.0.0",
     "stream-http": "^3.2.0",
