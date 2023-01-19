@@ -8,27 +8,27 @@ import ApplicationUpdater from './updaters/ApplicationUpdater'
 import TransactionUpdater from './updaters/TransactionUpdater'
 import { injected } from './connectors';
 import 'react-notifications/lib/notifications.css';
-import {NotificationContainer} from 'react-notifications';
+import { NotificationContainer } from 'react-notifications';
 
 const Web3ProviderNetwork = createWeb3ReactRoot('NETWORK')
 
 if (!!window.ethereum) {
-    window.ethereum.autoRefreshOnNetworkChange = false
+  window.ethereum.autoRefreshOnNetworkChange = false
 }
 
 
 let root = ReactDOMClient.createRoot(document.getElementById('root'));
-let index = 
-<React.StrictMode>
-  <Web3ReactProvider getLibrary={getLibrary}>
-  <Web3ProviderNetwork getLibrary={getLibrary}>
-  <ChainUpdater />
-  <TransactionUpdater />
-  <ApplicationUpdater />
-  <App />
-  </Web3ProviderNetwork>
-  </Web3ReactProvider>
-  <NotificationContainer/>
-</React.StrictMode>;
+let index =
+  <>
+    <Web3ReactProvider getLibrary={getLibrary}>
+      <Web3ProviderNetwork getLibrary={getLibrary}>
+        <ChainUpdater />
+        <TransactionUpdater />
+        <ApplicationUpdater />
+        <App />
+      </Web3ProviderNetwork>
+    </Web3ReactProvider>
+    <NotificationContainer />
+  </>;
 
 root.render(index);
