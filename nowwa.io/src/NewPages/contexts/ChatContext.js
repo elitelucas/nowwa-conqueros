@@ -38,27 +38,37 @@ const ChatContextProvider = (props) => {
       setLoadingRooms(false)
 
       Object.values(pool).map(async (roomInstance) => {
-        await roomInstance.join()
         roomInstance.onMessage = function (server_message) {
-          handleServerMessage(server_message)
+          onMessageAtRoom(server_message, false)
         }
+        await roomInstance.join()
       })
     }
     asyncFunction();
   }, [CONQUER]);
 
-  const handleServerMessage = async (server_message) => {
+  const onMessageAtRoom = (server_message, room_selected) => {
     console.log("GOT MESSAGE", server_message);
-    if (server_message.action == 33) //send message
-    {
-      setHasNewMessage(hasNewMessage => {
-        let new_obj = JSON.parse(JSON.stringify(hasNewMessage));
-        new_obj[server_message.roomID] = true;
-        return new_obj
-      })
+    switch (server_message.action) {
+      case 1: //I join
+        break;
+      case 2: //others join
+        break;
+      case 33: //new message
+        if (room_selected) {
+          addMessagetoContent(server_message.data, server_message.avatarID)
+        } else {
+          setHasNewMessage(hasNewMessage => {
+            let new_obj = JSON.parse(JSON.stringify(hasNewMessage));
+            new_obj[server_message.roomID] = true;
+            return new_obj
+          });
+        }
+        break;
+      default:
     }
-  }
 
+  }
 
   const onSelectRoom = async (roomInstance) => {
     setIsWelcomePage(false)
@@ -79,30 +89,23 @@ const ChatContextProvider = (props) => {
     })
     setCurrentRoomMemberNames(memberNames)
 
-    roomInstance.onMessage = function (server_message) {
-      console.log("GOT MESSAGE", server_message);
-      if (server_message.action == 33) //send message
-      {
-        if (roomInstance.roomID == server_message.roomID) {
-          addMessagetoContent(server_message.data, server_message.avatarID)
-        }
-        else {
-          setHasNewMessage(hasNewMessage => {
-            let new_obj = JSON.parse(JSON.stringify(hasNewMessage));
-            new_obj[server_message.roomID] = true;
-            return new_obj
-          });
-        }
-      }
-    }
     console.log(roomInstance)
     setCurrentRoomInstance(roomInstance)
+    rooms.map(async (rI) => {
+      if (rI.roomID == roomInstance.roomID)
+        rI.onMessage = function (server_message) {
+          onMessageAtRoom(server_message, true)
+        }
+      else
+        rI.onMessage = function (server_message) {
+          onMessageAtRoom(server_message, false)
+        }
+    })
+
 
     let entries = await roomInstance.Entries.get();
     setEntries(entries)
     setLoadingEntries(false)
-
-
   }
 
   const addMessagetoContent = (text, avatarID) => {
