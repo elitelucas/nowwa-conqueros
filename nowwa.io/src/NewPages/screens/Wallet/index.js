@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import styles from "./Wallet.module.sass";
 import cn from "classnames";
+import { Box, CircularProgress } from "@mui/material";
 import SouthIcon from "@mui/icons-material/South";
 import NorthIcon from "@mui/icons-material/North";
 import CreditCardIcon from "@mui/icons-material/CreditCard";
@@ -16,7 +17,7 @@ import { WalletContext } from "../../contexts/WalletContext";
 
 const Wallet = ({ }) => {
   //conquer
-  const { balance } = useContext(WalletContext)
+  const { balance, loadingWallet } = useContext(WalletContext)
 
   const [open, setOpen] = useState(false);
   const [isAddToken, setIsAddToken] = useState(false);
@@ -32,12 +33,20 @@ const Wallet = ({ }) => {
         <div className={styles.walletcontainer__walletname}>Primary wallet</div>
 
         <div className={styles.walletcontainer__balance}>
-          <div className={styles.walletcontainer__balance__label}>
-            <p>Your balance</p>
-          </div>
-          <div className={styles.walletcontainer__balance__value}>            
-            <p>{balance}ETH</p>
-          </div>
+          {loadingWallet ?
+            <Box sx={{ textAlign: 'center', padding: '20px' }}>
+              <CircularProgress />
+            </Box>
+            :
+            <>
+              <div className={styles.walletcontainer__balance__label}>
+                <p>Your balance</p>
+              </div>
+              <div className={styles.walletcontainer__balance__value}>
+                <p>{balance}ETH</p>
+              </div>
+            </>
+          }
         </div>
 
         <div className={styles.walletcontainer__actionbar}>

@@ -13,6 +13,11 @@ const WalletContextProvider = (props) => {
   const [balance, setBalance] = useState();
   const [history, setHistory] = useState([]);
 
+  //Page components
+  const [loadingWallet, setLoadingWallet] = useState(true);
+  const [loadingActivity, setLoadingActivity] = useState(true);
+
+
   useEffect(() => {
     let asyncFunction = async () => {
       if (!CONQUER) return;
@@ -21,6 +26,9 @@ const WalletContextProvider = (props) => {
       let address, balance, history = [];
 
       if (loggedin) {
+        setLoadingWallet(true)
+        setLoadingActivity(true)
+
         let res = await CONQUER.Wallets.get();
         if (res.success) {
           let walletInstance = res.data
@@ -33,13 +41,22 @@ const WalletContextProvider = (props) => {
           balance = walletInstance.balance
           setBalance(balance)
 
+          setLoadingWallet(false)
+
+
           history = await walletInstance.History.get();
           history = history.reverse();
           setHistory(history)
+
+          setLoadingActivity(false)
+
         } else {
           console.log('wallet get failed', res.message)
+          setLoadingWallet(false)
         }
       }
+
+      
     }
     asyncFunction();
 
@@ -65,7 +82,10 @@ const WalletContextProvider = (props) => {
         address,
         balance,
         history,
-        send
+        send,
+        //page
+        loadingWallet,
+        loadingActivity
       }}>
       {props.children}
     </WalletContext.Provider>
