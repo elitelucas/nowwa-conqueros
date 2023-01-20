@@ -40,25 +40,24 @@ const ChatContextProvider = (props) => {
       Object.values(pool).map(async (roomInstance) => {
         await roomInstance.join()
         roomInstance.onMessage = function (server_message) {
-          console.log("GOT MESSAGE", server_message);
-          if (server_message.action == 33) //send message
-          {
-            if (currentRoomID == server_message.roomID) {
-              addMessagetoContent(server_message.data, server_message.avatarID)
-            }
-            else {
-              setHasNewMessage(hasNewMessage => {
-                let new_obj = JSON.parse(JSON.stringify(hasNewMessage));
-                new_obj[server_message.roomID] = true;
-                return new_obj
-              });
-            }
-          }
+          handleServerMessage(server_message)
         }
       })
     }
     asyncFunction();
   }, [CONQUER]);
+
+  const handleServerMessage = async (server_message) => {
+    console.log("GOT MESSAGE", server_message);
+    if (server_message.action == 33) //send message
+    {
+      setHasNewMessage(hasNewMessage => {
+        let new_obj = JSON.parse(JSON.stringify(hasNewMessage));
+        new_obj[server_message.roomID] = true;
+        return new_obj
+      })
+    }
+  }
 
 
   const onSelectRoom = async (roomInstance) => {
@@ -80,6 +79,22 @@ const ChatContextProvider = (props) => {
     })
     setCurrentRoomMemberNames(memberNames)
 
+    roomInstance.onMessage = function (server_message) {
+      console.log("GOT MESSAGE", server_message);
+      if (server_message.action == 33) //send message
+      {
+        if (roomInstance.roomID == server_message.roomID) {
+          addMessagetoContent(server_message.data, server_message.avatarID)
+        }
+        else {
+          setHasNewMessage(hasNewMessage => {
+            let new_obj = JSON.parse(JSON.stringify(hasNewMessage));
+            new_obj[server_message.roomID] = true;
+            return new_obj
+          });
+        }
+      }
+    }
     console.log(roomInstance)
     setCurrentRoomInstance(roomInstance)
 
