@@ -20,7 +20,7 @@ const ChatContextProvider = (props) => {
   const [loadingRooms, setLoadingRooms] = useState(true);
   const [loadingEntries, setLoadingEntries] = useState(true);
   const [search, setSearch] = useState('');
-
+  const [hasNewMessage, setHasNewMessage] = useState({});
 
   useEffect(() => {
     let asyncFunction = async () => {
@@ -32,11 +32,30 @@ const ChatContextProvider = (props) => {
       let allAvatars = await getAllAvatars();
       setAllAvatars(allAvatars)
 
-      await CONQUER.Rooms.get({});
-      let pool = CONQUER.Rooms.pool;
+      let pool = await CONQUER.Rooms.get({});
       setRooms(Object.values(pool))
 
       setLoadingRooms(false)
+
+      Object.values(pool).map(async (roomInstance) => {
+        await roomInstance.join()
+        roomInstance.onMessage = function (server_message) {
+          console.log("GOT MESSAGE", server_message);
+          if (server_message.action == 33) //send message
+          {
+            if (currentRoomID == server_message.roomID) {
+              addMessagetoContent(server_message.data, server_message.avatarID)
+            }
+            else {
+              setHasNewMessage(hasNewMessage => {
+                let new_obj = JSON.parse(JSON.stringify(hasNewMessage));
+                new_obj[server_message.roomID] = true;
+                return new_obj
+              });
+            }
+          }
+        }
+      })
     }
     asyncFunction();
   }, [CONQUER]);
@@ -48,6 +67,12 @@ const ChatContextProvider = (props) => {
     setCurrentRoomMemberNames([])
     setLoadingEntries(true)
 
+    setHasNewMessage(hasNewMessage => {
+      let new_obj = JSON.parse(JSON.stringify(hasNewMessage));
+      new_obj[roomInstance.roomID] = false;
+      return new_obj
+    });
+
     let memberNames = [];
     allAvatars.map((avatarInstance) => {
       if (roomInstance.avatarIDs.includes(avatarInstance.avatarID))
@@ -57,16 +82,6 @@ const ChatContextProvider = (props) => {
 
     console.log(roomInstance)
     setCurrentRoomInstance(roomInstance)
-
-    roomInstance.onMessage = function (server_message) {
-      console.log("GOT MESSAGE", server_message);
-      if (server_message.action == 33) //send message
-      {
-        if (roomInstance.roomID == server_message.roomID)
-          addMessagetoContent(server_message.data, server_message.avatarID)
-      }
-    }
-    await roomInstance.join()
 
     let entries = await roomInstance.Entries.get();
     setEntries(entries)
@@ -131,7 +146,8 @@ const ChatContextProvider = (props) => {
         loadingEntries,
         isWelcomePage,
         search,
-        setSearch
+        setSearch,
+        hasNewMessage
       }}>
       {props.children}
     </ChatContext.Provider>

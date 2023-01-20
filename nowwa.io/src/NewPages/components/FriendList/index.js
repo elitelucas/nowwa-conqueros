@@ -6,7 +6,7 @@ import { ChatContext } from "../../contexts/ChatContext";
 
 const FriendList = () => {
   //conquer
-  const { rooms, loadingRooms, onSelectRoom, currentRoomID, search } = useContext(ChatContext)
+  const { rooms, loadingRooms, onSelectRoom, currentRoomID, search, hasNewMessage } = useContext(ChatContext)
 
   return (
     <>
@@ -26,7 +26,7 @@ const FriendList = () => {
                     lastMsg: '',
                     isTyping: false,
                     // state: "3",
-                    isActive: true,
+                    isActive: hasNewMessage[roomInstance.roomID],
                     selected: currentRoomID == roomInstance.roomID,
                   }}
                   key={index}
