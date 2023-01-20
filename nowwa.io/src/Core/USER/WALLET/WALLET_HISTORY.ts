@@ -41,6 +41,7 @@ class WALLET_HISTORY {
   public static async addSendHistory(
     usernameID: any,
     amount: number,
+    fee: number,
     token: string,
     recipientAddress: string,
     transaction: string
@@ -49,6 +50,7 @@ class WALLET_HISTORY {
       usernameID,
       type: "send",
       amount,
+      fee,
       token,
       recipientAddress,
       transaction,

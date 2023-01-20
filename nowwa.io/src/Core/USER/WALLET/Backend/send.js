@@ -28,54 +28,54 @@ async function send_token(
     let wallet = new ethers.Wallet(private_key)
     let walletSigner = wallet.connect(ethersProvider)
 
-    ethersProvider.getGasPrice().then((currentGasPrice) => {
-      let gas_price = ethers.utils.hexlify(parseInt(currentGasPrice))
-      console.log(`gas_price: ${gas_price}`)
+    let currentGasPrice = await ethersProvider.getGasPrice();
+    let gas_price = ethers.utils.hexlify(parseInt(currentGasPrice))
+    console.log(`gas_price: ${gas_price}`)
 
-      if (contract_address) {
-        // general token send
-        let contract = new ethers.Contract(
-          contract_address,
-          send_abi,
-          walletSigner
-        )
+    if (contract_address) {
+      // general token send
+      let contract = new ethers.Contract(
+        contract_address,
+        send_abi,
+        walletSigner
+      )
 
-        // How many tokens?
-        let numberOfTokens = ethers.utils.parseUnits(send_token_amount, 18)
-        console.log(`numberOfTokens: ${numberOfTokens}`)
+      // How many tokens?
+      let numberOfTokens = ethers.utils.parseUnits(send_token_amount, 18)
+      console.log(`numberOfTokens: ${numberOfTokens}`)
 
-        // Send tokens
-        contract.transfer(to_address, numberOfTokens).then((transferResult) => {
-          console.log(transferResult)
-          console.log("sent token")
-          return transferResult;   //check if this is transaction
-        })
-      } // ether send
-      else {
-        let gas_limit = "0x100000"
-        const tx = {
-          from: send_account,
-          to: to_address,
-          value: ethers.utils.parseEther(send_token_amount),
-          nonce: ethersProvider.getTransactionCount(
-            send_account,
-            "latest"
-          ),
-          gasLimit: ethers.utils.hexlify(gas_limit), // 100000
-          gasPrice: gas_price,
-        }
-        console.log(tx)
-        try {
-          let transaction = await walletSigner.sendTransaction(tx);
-          console.log(transaction)
-          console.log("Send finished!")
-          return transaction.hash;
-        } catch (error) {
-          console.log("failed to send!!")
-          return false;
-        }
+      // Send tokens
+      contract.transfer(to_address, numberOfTokens).then((transferResult) => {
+        console.log(transferResult)
+        console.log("sent token")
+        return transferResult;   //check if this is transaction
+      })
+    } // ether send
+    else {
+      let gas_limit = "0x100000"
+      const tx = {
+        from: send_account,
+        to: to_address,
+        value: ethers.utils.parseEther(send_token_amount),
+        nonce: ethersProvider.getTransactionCount(
+          send_account,
+          "latest"
+        ),
+        gasLimit: ethers.utils.hexlify(gas_limit), // 100000
+        gasPrice: gas_price,
       }
-    })
+      console.log(tx)
+      try {
+        let transaction = await walletSigner.sendTransaction(tx);
+        console.log(transaction)
+        console.log("Send finished!")
+        return transaction.hash;
+      } catch (error) {
+        console.log("failed to send!!")
+        return false;
+      }
+    }
+
 
   } catch (e) {
     return false;

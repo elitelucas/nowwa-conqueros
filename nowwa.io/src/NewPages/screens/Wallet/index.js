@@ -35,9 +35,8 @@ const Wallet = ({ }) => {
           <div className={styles.walletcontainer__balance__label}>
             <p>Your balance</p>
           </div>
-          <div className={styles.walletcontainer__balance__value}>
-            {/* <p>$30621.46</p> */}
-            <p>{balance} ETH</p>
+          <div className={styles.walletcontainer__balance__value}>            
+            <p>{balance}ETH</p>
           </div>
         </div>
 

@@ -5,6 +5,8 @@ import TextField from "@mui/joy/TextField";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import cn from "classnames";
 import { WalletContext } from "../../../contexts/WalletContext";
+import DECIMALS from "../../../../UTIL/DECIMALS";
+import { WITHDRAW_FEES } from "../../../../Core/CONFIG/WALLET";
 
 const Step1 = (props) => {
   const fromAddress = [
@@ -284,7 +286,7 @@ const Step3 = (props) => {
             </p>
             <div>
               <p className={styles.walletcontainer__review__largeItem}>
-                {Number(props.amount) + Number(props.fee)} {props.token}
+                {DECIMALS.plus(props.amount, props.fee)} {props.token}
               </p>
               {/* <p
                 className={styles.walletcontainer__review__smallItem}
@@ -316,7 +318,7 @@ const WalletSendToken = () => {
   const [recipientAddress, setRecipientAddress] = useState()
   const [token, setToken] = useState('ETH')
   const [amount, setAmount] = useState(1)
-  const [fee, setFee] = useState(0.0002)
+  const [fee, setFee] = useState(WITHDRAW_FEES.ETH)
 
   const funcSend = async () => {
     await send(recipientAddress, amount, () => { window.location.href = "/wallet"; });

@@ -17,5 +17,6 @@ class DECIMALS {
 }
 
 export var plus = DECIMALS.plus;
+export var minus = DECIMALS.minus;
 
 export default DECIMALS;
