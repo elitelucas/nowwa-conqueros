@@ -24,7 +24,6 @@ class WALLET_HISTORY {
     ================*/
 
   public static async get(query: any): Promise<any> {
-    console.log('wallet_history get', query)
     let usernameID = await AVATAR.getUsernameID({ _id: query.avatarID });
     let history: any;
 
@@ -46,7 +45,6 @@ class WALLET_HISTORY {
     recipientAddress: string,
     transaction: string
   ): Promise<any> {
-    let now = new Date(Date.now()).toISOString();
     let item = await this.set({
       usernameID,
       type: "send",
@@ -54,7 +52,6 @@ class WALLET_HISTORY {
       token,
       recipientAddress,
       transaction,
-      date: now,
     });
 
     return Promise.resolve(item);
@@ -64,16 +61,16 @@ class WALLET_HISTORY {
     usernameID: any,
     amount: number,
     token: string,
+    senderAddress: string,
     transaction: string
   ): Promise<any> {
-    let now = new Date(Date.now()).toISOString();
     let item = await this.set({
       usernameID,
       type: "receive",
       amount,
       token,
+      senderAddress,
       transaction,
-      date: now,
     });
 
     return Promise.resolve(item);

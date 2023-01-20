@@ -109,16 +109,19 @@ class WALLET {
     }
     ================*/
 
-  public static async send(query: any): Promise<any> {
+  public static async send(query: {
+    avatarID: string;
+    recipientAddress: string;
+    amount: number;
+  }): Promise<any> {
     console.log("wallet/send", query);
-    let myData = await this.getSet({ avatarID: query.avatarID });
+    let { avatarID, recipientAddress, amount } = query;
+    let myData = await this.getSet({ avatarID: avatarID });
     if (!myData.success)
       return Promise.resolve({ success: false, message: myData.message });
 
-    let usernameID = await AVATAR.getUsernameID({ _id: query.avatarID });
-
     let recipient_wallet = await this.getOne({
-      address: query.recipientAddress,
+      address: recipientAddress,
     });
     if (!recipient_wallet)
       return Promise.resolve({
@@ -126,37 +129,26 @@ class WALLET {
         message: "Recipient is not valid",
       });
 
-    let amount = query.amount;
     let result: any;
 
     if (myData.data.balance >= amount) {
-      let my_wallet = await DATA.change(this.table, {
-        where: { address: myData.data.address },
-        values: {
-          balance: DECIMALS.minus(myData.data.balance, amount),
-        },
-      });
-      await DATA.change(this.table, {
-        where: { address: query.recipientAddress },
-        values: {
-          balance: DECIMALS.plus(recipient_wallet.balance, amount),
-        },
-      });
+      let sender_wallet = await this.onSend(
+        myData.data.address,
+        amount,
+        "ETH",
+        recipientAddress,
+        "internal"
+      );
 
-      await WALLET_HISTORY.addSendHistory(
-        usernameID,
+      let recipient_wallet = await this.onReceive(
+        recipientAddress,
         amount,
         "ETH",
-        query.recipientAddress,
+        myData.data.address,
         "internal"
       );
-      await WALLET_HISTORY.addReceiveHistory(
-        recipient_wallet.usernameID,
-        amount,
-        "ETH",
-        "internal"
-      );
-      result = { success: true, data: my_wallet };
+
+      result = { success: true, data: sender_wallet };
     } else {
       result = { success: false, message: "Not enough balance" };
     }
@@ -164,23 +156,64 @@ class WALLET {
     return Promise.resolve(result);
   }
 
-  public static async onReceive(address: string, amount: number): Promise<any> {
-    let recipient_wallet = await this.getOne({
+  public static async onSend(
+    address: string,
+    amount: number,
+    token: string,
+    recipientAddress: string,
+    transaction: string
+  ): Promise<any> {
+    let wallet = await this.getOne({
       address: address,
     });
+    let balance = wallet.balance;
+    let usernameID = wallet.usernameID;
 
-    await DATA.change(this.table, {
+    let new_wallet = await DATA.change(this.table, {
       where: { address: address },
       values: {
-        balance: DECIMALS.plus(recipient_wallet.balance, amount),
+        balance: DECIMALS.minus(balance, amount),
+      },
+    });
+    await WALLET_HISTORY.addSendHistory(
+      usernameID,
+      amount,
+      token,
+      recipientAddress,
+      transaction
+    );
+
+    return Promise.resolve(new_wallet);
+  }
+
+  public static async onReceive(
+    address: string,
+    amount: number,
+    token: string,
+    senderAddress: string,
+    transaction: string
+  ): Promise<any> {
+    let wallet = await this.getOne({
+      address: address,
+    });
+    let balance = wallet.balance;
+    let usernameID = wallet.usernameID;
+
+    let new_wallet = await DATA.change(this.table, {
+      where: { address: address },
+      values: {
+        balance: DECIMALS.plus(balance, amount),
       },
     });
     await WALLET_HISTORY.addReceiveHistory(
-      recipient_wallet.usernameID,
+      usernameID,
       amount,
-      "ETH",
-      "external"
+      token,
+      senderAddress,
+      transaction
     );
+
+    return Promise.resolve(new_wallet);
   }
 }
 

@@ -208,7 +208,7 @@ const Step3 = (props) => {
         ></ArrowBackIosNewIcon>
       </div>
 
-      <div className={styles.walletcontainer__amount}>0.125 BTC</div>
+      <div className={styles.walletcontainer__amount}>{props.amount} {props.token}</div>
       <div className={styles.walletcontainer__first}>
         {/* <div className={styles.walletcontainer__address}>
           <p className={styles.walletcontainer__address__caption}>From</p>

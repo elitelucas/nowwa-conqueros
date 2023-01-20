@@ -9,7 +9,7 @@ let initMempool = async () => {
         addresses.push(wallet.address)
     })
 
-    console.log('backend/init')
+    console.log('initiating wallet receive .....')
     const wssprovider = new ethers.providers.WebSocketProvider(process.env.ETH_WS);
 
     wssprovider.on("pending", (tx) => {
@@ -32,10 +32,9 @@ const checkDepositTransaction = (transaction, addresses) => {
     const value = ethers.utils.formatUnits(transaction.value); //ethers amount
     if (Number(value) > 0) {
         var txTo = transaction.to;
-        // console.log(transaction.hash, transaction.from, '-->', transaction.to, value, 'ETH')
         if (addresses.includes(txTo)) {//if txTo is users' wallet
             console.log("----------- receive", transaction.hash, transaction.from, '-->', transaction.to, value, 'ETH');
-            WALLET.onReceive(transaction.to, value);
+            WALLET.onReceive(transaction.to, value, 'ETH', transaction.from, transaction.hash);
         }
     }
 };

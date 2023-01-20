@@ -3,6 +3,8 @@ import styles from "../Wallet.module.sass";
 import NorthIcon from "@mui/icons-material/North";
 import SouthIcon from "@mui/icons-material/South";
 import { WalletContext } from "../../../contexts/WalletContext";
+import { shortenAddress } from "../../../helper";
+import date from 'date-and-time';
 
 const Activity = () => {
   //conquer
@@ -35,7 +37,7 @@ const Activity = () => {
                 styles.walletcontainer__details__list__item__coininfo__percent
               }
             >
-              {new Date(new Date(historyitem.date).getTime()).toLocaleString()}
+              {date.format(new Date(historyitem.timestamp), 'MM/DD/YYYY HH:mm A')}
             </p>
           </div>
           <div className={styles.walletcontainer__details__list__item__priceinfo}>
@@ -44,8 +46,16 @@ const Activity = () => {
                 styles.walletcontainer__details__list__item__priceinfo__priceusd
               }
             >
-              {/* {historyitem.valueUsd} */}
-              $123
+              {historyitem.type === "send" ?
+                <>
+                  <span>To: </span>
+                  {shortenAddress(historyitem.recipientAddress)}
+                </> :
+                <>
+                  <span>From: </span>
+                  {shortenAddress(historyitem.senderAddress)}
+                </>
+              }
             </p>
             <p
               className={
