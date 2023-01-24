@@ -53,6 +53,8 @@ class ROOM
     let avatarIDs = query.avatarIDs || [];
 
     if ( query.avatarID ) ARRAY.pushUnique( avatarIDs, query.avatarID );
+
+    avatarIDs = QUERY.toObjectID( avatarIDs );
  
     let room = await DATA.getOne( this.table, { avatarIDs: { $all: avatarIDs, $size: avatarIDs.length } } );
 
