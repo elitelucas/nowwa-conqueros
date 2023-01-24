@@ -84,6 +84,7 @@ class ROOM
     let avatarIDs = query.avatarIDs || [];
 
     if ( myAvatarID ) ARRAY.pushUnique( avatarIDs, myAvatarID ); //include me to members
+    avatarIDs = QUERY.toObjectID( avatarIDs );
  
     let room = await DATA.set( this.table, 
     {
