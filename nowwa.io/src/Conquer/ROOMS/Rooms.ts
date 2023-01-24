@@ -3,22 +3,23 @@ import RoomInstance from "./RoomInstance/RoomInstance";
 import LOG, { log } from "../../UTIL/LOG";
 import { ACTIONS } from "../../Models/ENUM";
 
-class Rooms {
-  private conquer: CONQUER;
-  public pool: any = {};
+class Rooms 
+{
+  private conquer : CONQUER;
+  public pool     : any = {};
 
-  public constructor(instance: CONQUER) {
+  public constructor(instance: CONQUER) 
+  {
     this.conquer = instance;
   }
 
-  public async set(avatarIDs: Array<string>, roomName: string): Promise<any> {
+  public async set( avatarIDs: Array<string>, roomName: string ): Promise<any> 
+  {
     let query = { avatarIDs: avatarIDs, name: roomName };
-
     let value = await this.conquer.do(ACTIONS.ROOM_SET, query);
+    let room  = new RoomInstance(this.conquer, value);
 
-    let room = new RoomInstance(this.conquer, value);
-
-    this.pool[room.roomID] = room;
+    this.pool[ room.roomID ] = room;
 
     return Promise.resolve(room);
   }
@@ -34,27 +35,29 @@ class Rooms {
  
     ================*/
 
-  public async get(vars: any): Promise<any> {
+  public async get(vars: any): Promise<any> 
+  {
     let values: any = await this.conquer.do(ACTIONS.ROOM_GET, vars);
 
-    for (var n in values) {
-      let room = new RoomInstance(this.conquer, values[n]);
-      this.pool[room.roomID] = room;
+    for ( var n in values ) 
+    {
+      let room                  = new RoomInstance(this.conquer, values[n]);
+      this.pool[ room.roomID ]  = room;
     }
 
     return Promise.resolve(this.pool);
   }
 
   //give avatarIDs or roomID
-  public async getOne(vars: any): Promise<any> {
-    if (Array.isArray(vars)) vars = { avatarIDs: vars };
-    if (typeof vars == "string") vars = { roomID: vars };
+  public async getOne(vars: any): Promise<any> 
+  {
+    if (Array.isArray(vars))      vars = { avatarIDs: vars };
+    if (typeof vars == "string")  vars = { roomID: vars };
 
-    let value = await this.conquer.do(ACTIONS.ROOM_GETONE, vars);
+    let value   = await this.conquer.do(ACTIONS.ROOM_GETONE, vars);
+    let room    = new RoomInstance(this.conquer, value);
 
-    let room = new RoomInstance(this.conquer, value);
-
-    this.pool[room.roomID] = room;
+    this.pool[ room.roomID ] = room;
 
     return Promise.resolve(room);
   }
