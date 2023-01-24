@@ -3,11 +3,12 @@ import LOG, { log } from "../../../UTIL/LOG";
 import QUERY from "../../../UTIL/QUERY";
 import ROOM_ENTRIES from "./ROOM_ENTRIES";
 import AVATAR from "../../USER/TRIBE/AVATAR";
+import ARRAY from "../../../UTIL/ARRAY";
 
-class ROOM {
-  public static pool: any = {};
-
-  private static table: string = "rooms";
+class ROOM 
+{
+  public static pool    : any = {};
+  private static table  : string = "rooms";
 
   /*=============== 
 
@@ -17,15 +18,12 @@ class ROOM {
 
     ================*/
 
-  public static async get(query: any): Promise<any> {
+  public static async get(query: any): Promise<any> 
+  {
     //return rooms which my avatarID is involved in members
-    let rooms = await DATA.get(this.table, {
-      where: {
-        avatarIDs: QUERY.toObjectID(query.avatarID),
-      },
-    });
+    let rooms = await DATA.get( this.table, { avatarIDs : query.avatarID });
 
-    return Promise.resolve(rooms);
+    return Promise.resolve( rooms );
   }
 
   /*=============== 
@@ -44,25 +42,23 @@ class ROOM {
     
     ================*/
 
-  public static async getOne(query: any): Promise<any> {
-    if (query.avatarIDs) {
-      let avatarIDs = query.avatarIDs;
-      if (query.avatarID && !avatarIDs.includes(query.avatarID))
-        avatarIDs.push(query.avatarID);
-      delete query.avatarID;
-
-      avatarIDs = QUERY.toObjectID(avatarIDs);
-      query = { avatarIDs: { $all: avatarIDs, $size: avatarIDs.length } };
+  public static async getOne( query:any ) : Promise<any> 
+  {
+    if ( query.roomID ) 
+    {
+        let room = await DATA.getOne( this.table, { _id: query.roomID } );  
+        return Promise.resolve( room );
     }
 
-    if (query.roomID) {
-      query = { _id: query.roomID };
-    }
+    let avatarIDs = query.avatarIDs || [];
 
-    let room = await DATA.getOne(this.table, query);
+    if ( query.avatarID ) ARRAY.pushUnique( avatarIDs, query.avatarID );
+ 
+    let room = await DATA.getOne( this.table, { avatarIDs: { $all: avatarIDs, $size: avatarIDs.length } } );
 
-    if (room) return Promise.resolve(room);
-    else return Promise.resolve(null);
+    if ( room ) return Promise.resolve( room );
+
+    return Promise.resolve( this.set({ avatarIDs:avatarIDs, avatarID:query.avatarID }));
   }
 
   /*=============== 
@@ -77,18 +73,21 @@ class ROOM {
  
     ================*/
 
-  public static async set(query: any): Promise<any> {
+  public static async set( query: any ): Promise<any> 
+  {
     let myAvatarID = query.avatarID;
 
     let name = query.name || "Room";
 
-    let avatarIDs = query.avatarIDs;
-    if (!avatarIDs.includes(myAvatarID)) avatarIDs = [...avatarIDs, myAvatarID]; //include me to members
+    let avatarIDs = query.avatarIDs || [];
 
-    let room = await DATA.set(this.table, {
-      name: name,
-      avatarIDs: avatarIDs,
-      ownerAvatarID: myAvatarID,
+    if ( myAvatarID ) ARRAY.pushUnique( avatarIDs, myAvatarID ); //include me to members
+ 
+    let room = await DATA.set( this.table, 
+    {
+      name          : name,
+      avatarIDs     : avatarIDs,
+      ownerAvatarID : myAvatarID,
     });
 
     return Promise.resolve(room);
@@ -102,10 +101,11 @@ class ROOM {
 
     ================*/
 
-  public static async change(query: any): Promise<any> {
-    let value = await DATA.change(this.table, query);
+  public static async change( query : any ): Promise<any> 
+  {
+    let value = await DATA.change( this.table, query );
 
-    return Promise.resolve(value);
+    return Promise.resolve( value );
   }
 
   /*=============== 
@@ -116,15 +116,15 @@ class ROOM {
 
     ================*/
 
-  public static async remove(query: any): Promise<any> {
-    let results = await DATA.get(this.table, query);
+  public static async remove(query: any): Promise<any> 
+  {
+    let results = await DATA.get( this.table, query);
 
-    for (let n in results)
-      await ROOM_ENTRIES.remove({ roomID: results[n]._id });
+    for ( let n in results) await ROOM_ENTRIES.remove({ roomID: results[n]._id });
+ 
+    let removed = await DATA.remove( this.table, query );
 
-    let removed = await DATA.remove(this.table, query);
-
-    return Promise.resolve(removed);
+    return Promise.resolve( removed );
   }
 }
 
