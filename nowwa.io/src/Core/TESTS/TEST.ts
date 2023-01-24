@@ -15,6 +15,8 @@ import QUERY from "../../UTIL/QUERY";
 import ROOM from "../SOCKET/ROOM/ROOM";
 import path from "path";
 
+import NFT_COLLECTION from "../NFT/NFT_COLLECTION";
+
 class TEST {
   public static async Run(): Promise<void> {
     // TESTING
@@ -26,7 +28,25 @@ class TEST {
         aaa@gmail.com   63ac6c2534bba89538a2fdd4
         bbb@gmail.com   63ac6c5a34bba89538a2fde6
      */
-      // console.log("J's testing...");
+      console.log("J's testing...");
+      let myconquer = new CONQUER();
+      await myconquer.init();
+
+      let nftInstance = await myconquer.NFT.get();
+      // let res = await nftInstance.mint(2);
+      // console.log(res);
+
+      // let result = await NFT_COLLECTION.get();
+      // console.log(result)
+
+      // await NFT_COLLECTION.set({
+      //   address: "0xE74da0A4E7C5FC09fa793498ccE70e598D8432b2",
+      //   chainID: 5,
+      //   name: "NOWNFT",
+      //   symbol: "NN",
+      //   totalSupply: 28,
+      //   mintPrice: 0.07,
+      // });
 
       // console.log("test send email");
       // EMAIL.send({
@@ -40,11 +60,11 @@ class TEST {
       //   }]
       // });
 
-    //   let res = await ROOM.getOne({
-    //     avatarIDs: ["63ac6c5a34bba89538a2fde6"],
-    //     avatarID: "63ac6c2534bba89538a2fdd4",
-    //   });
-    //   console.log(res);
+      //   let res = await ROOM.getOne({
+      //     avatarIDs: ["63ac6c5a34bba89538a2fde6"],
+      //     avatarID: "63ac6c2534bba89538a2fdd4",
+      //   });
+      //   console.log(res);
 
       /*
             let conquer1 = new CONQUER('user001');

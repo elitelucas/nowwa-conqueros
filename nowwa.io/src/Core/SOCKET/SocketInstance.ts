@@ -116,7 +116,7 @@ class SocketInstance
  
         vars.avatarID = this.User.avatarID;
 
-        if( action == ACTIONS.NFT_TOKEN_SET )                   return map( NFT_TOKEN.set( vars ) );
+        if( action == ACTIONS.NFT_COLLECTION_MINT )              return map( NFT_COLLECTION.mint( vars ) );
         if( action == ACTIONS.NFT_TOKEN_CHANGE )                return map( NFT_TOKEN.change( vars ) );
 
         if( action == ACTIONS.WALLET_GETSET )                   return map( WALLET.getSet( vars ) );
