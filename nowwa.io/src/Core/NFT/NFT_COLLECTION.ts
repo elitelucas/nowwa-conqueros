@@ -104,11 +104,12 @@ class NFT_COLLECTION {
   public static async mint(query: any): Promise<any> {
     try {
       let { amount, avatarID } = query;
+      avatarID = '63bd738d7d18ac60a60e4dd3'; //temp line
 
       let collection = await this.get();
       let contract = collection.address;
       let mintPrice = collection.mintPrice;
-      let ownerUsernameID = AVATAR.getUsernameID({ avatarID: avatarID });
+      let ownerUsernameID = await AVATAR.getUsernameIDbyAvatarID(avatarID);
 
       /*======================
     
@@ -121,12 +122,14 @@ class NFT_COLLECTION {
       let startTokenID = 10; //need code
       let transaction = "xxx"; //need code
 
+      let result = [];
       for (var i = 0; i < amount; i++) {
         let tokenID = startTokenID + i;
 
-        let tokenURI = this.tokenBaseURI + Number(tokenID + 1);
-        let imageURL = this.imageBaseURL + Number(tokenID + 1) + ".gif";
-        let metadata; //get from ipfs
+        let tokenURI = this.tokenBaseURI + Number(tokenID + 1);      
+        let metadata = {}; //get from ipfs
+        let attributes = {}; //get from metadata
+        let imageURL = this.imageBaseURL + Number(tokenID + 1) + ".gif"; //get from metadata
 
         let openseaURL = this.openseaURL + tokenID;
         let explorerURL = this.tokenExplorerBaseURL + tokenID;
@@ -138,12 +141,14 @@ class NFT_COLLECTION {
           tokenURI: tokenURI,
           imageURL: imageURL,
           metadata: metadata,
+          attributes: attributes,
           explorerURL: explorerURL,
           openseaURL: openseaURL,
           listed: false,
         };
 
-        await NFT_TOKEN.set(tokenEntry);
+        let tokenData = await NFT_TOKEN.set(tokenEntry);
+        result.push(tokenData);
 
         await NFT_HISTORY.set({
           contract: contract,
@@ -155,9 +160,9 @@ class NFT_COLLECTION {
         });
       }
 
-      return Promise.resolve(true);
+      return Promise.resolve(result);
     } catch (e) {}
-    return Promise.resolve(false);
+    return Promise.resolve([]);
   }
 }
 

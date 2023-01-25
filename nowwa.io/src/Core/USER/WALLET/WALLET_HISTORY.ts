@@ -24,7 +24,7 @@ class WALLET_HISTORY {
     ================*/
 
   public static async get(query: any): Promise<any> {
-    let usernameID = await AVATAR.getUsernameID({ _id: query.avatarID });
+    let usernameID = await AVATAR.getUsernameIDbyAvatarID(query.avatarID);
     let history: any;
 
     history = await DATA.get(this.table, { usernameID: usernameID });

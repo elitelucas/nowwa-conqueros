@@ -13,15 +13,37 @@ class NFT_TOKEN {
     GET  
 
     {
-        gameID,
-        avatarID
+        type - 'all', 'owner', 'tokenID', 'listed',
+        contract,
+        ownerAvatarID - used for 'owner'
+        tokenID - used for 'tokenID'
     }
     
 
     ================*/
 
   public static async get(query: any): Promise<any> {
-    let results: any = await DATA.get(this.table, query);
+    let { type, contract, ownerAvatarID, tokenID } = query;
+
+    let new_query = {};
+    let results;
+    if (type == "all") {
+      new_query = { contract };
+      results = await DATA.get(this.table, new_query);
+    }
+    if (type == "owner") {
+      let ownerUsernameID = await AVATAR.getUsernameIDbyAvatarID(ownerAvatarID);
+      new_query = { contract, ownerUsernameID };
+      results = await DATA.get(this.table, new_query);
+    }
+    if (type == "tokenID") {
+      new_query = { contract, tokenID };
+      results = await DATA.getOne(this.table, new_query);
+    }
+    if (type == "listed") {
+      new_query = { contract, listed: true };
+      results = await DATA.get(this.table, new_query);
+    }
 
     return Promise.resolve(results);
   }

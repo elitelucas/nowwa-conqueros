@@ -32,19 +32,51 @@ class NFTInstance {
     ================*/
 
   public async mint(amount: number): Promise<any> {
-    let result: any = await this.conquer.do(ACTIONS.NFT_COLLECTION_MINT, {
+    let array: any = await this.conquer.do(ACTIONS.NFT_COLLECTION_MINT, {
       amount: amount,
     });
-    return Promise.resolve(result);
+    let output: any = [];
+
+    for (let n in array) output.push(new TokenInstance(this.conquer, array[n]));
+
+    return Promise.resolve(output);
   }
 
   /*=============== 
  
-    GET TOKENS
+    GET TOKENS - get by ownerAvatarID or get all
 
     ================*/
 
-  public async getTokens(vars?: any): Promise<any> {
+  public async getTokens(ownerAvatarID?: any): Promise<any> {
+    let vars = {};
+    if (ownerAvatarID)
+      vars = {
+        type: "owner",
+        contract: this.address,
+        ownerAvatarID: ownerAvatarID,
+      };
+    else vars = { type: "all", contract: this.address };
+
+    let array: any = await this.conquer.do(ACTIONS.NFT_TOKEN_GET, vars);
+    let output: any = [];
+
+    for (let n in array) output.push(new TokenInstance(this.conquer, array[n]));
+
+    return Promise.resolve(output);
+  }
+
+  public async getToken(tokenID: number): Promise<any> {
+    let vars = { type: "tokenID", contract: this.address, tokenID: tokenID };
+
+    let result: any = await this.conquer.do(ACTIONS.NFT_TOKEN_GET, vars);
+
+    return Promise.resolve(new TokenInstance(this.conquer, result));
+  }
+
+  public async getListedTokens(): Promise<any> {
+    let vars = { type: "listed", contract: this.address };
+
     let array: any = await this.conquer.do(ACTIONS.NFT_TOKEN_GET, vars);
     let output: any = [];
 

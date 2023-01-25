@@ -24,29 +24,27 @@ class TEST {
       /*
         J's testing
 
-        email           avatarID
-        aaa@gmail.com   63ac6c2534bba89538a2fdd4
-        bbb@gmail.com   63ac6c5a34bba89538a2fde6
+        email           avatarID                    usernameID
+        aaa@gmail.com   63bd738d7d18ac60a60e4dd3    63bd738b7d18ac60a60e4dce
+        bbb@gmail.com   63bd739d7d18ac60a60e4dee    63bd739d7d18ac60a60e4de9
      */
       console.log("J's testing...");
       let myconquer = new CONQUER();
       await myconquer.init();
 
       let nftInstance = await myconquer.NFT.get();
-      // let res = await nftInstance.mint(2);
-      // console.log(res);
+      let res;
+      // res = await nftInstance.mint(2);
+      res = await nftInstance.getTokens();
+      // res = await nftInstance.getTokens('63bd738d7d18ac60a60e4dd3');
+      console.log(res);
 
-      // let result = await NFT_COLLECTION.get();
-      // console.log(result)
+      let tokenInstance = await nftInstance.getToken(11);
+      res = await tokenInstance.History.get();
+      console.log(res)
+      
 
-      // await NFT_COLLECTION.set({
-      //   address: "0xE74da0A4E7C5FC09fa793498ccE70e598D8432b2",
-      //   chainID: 5,
-      //   name: "NOWNFT",
-      //   symbol: "NN",
-      //   totalSupply: 28,
-      //   mintPrice: 0.07,
-      // });
+
 
       // console.log("test send email");
       // EMAIL.send({
