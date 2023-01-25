@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { useActiveWeb3React } from ".";
 import { contractAddress, goerliNetworkChainId, mainNetworkChainId } from "../constants"
 
-import MINT_ABI from '../constants/contract_testnet.json';
+import MINT_ABI from '../constants/nft_abi_testnet.json';
 import { getContract } from "../utils";
 
 // returns null on errors

@@ -16,6 +16,7 @@ import ROOM from "../SOCKET/ROOM/ROOM";
 import path from "path";
 
 import NFT_COLLECTION from "../NFT/NFT_COLLECTION";
+import mint from "../NFT/backend/mint";
 
 class TEST {
   public static async Run(): Promise<void> {
@@ -29,19 +30,21 @@ class TEST {
         bbb@gmail.com   63bd739d7d18ac60a60e4dee    63bd739d7d18ac60a60e4de9
      */
       console.log("J's testing...");
-      let myconquer = new CONQUER();
-      await myconquer.init();
+      // let myconquer = new CONQUER();
+      // await myconquer.init();
 
-      let nftInstance = await myconquer.NFT.get();
-      let res;
+      // let nftInstance = await myconquer.NFT.get();
+      // let res;
       // res = await nftInstance.mint(2);
-      res = await nftInstance.getTokens();
+      // res = await nftInstance.getTokens();
       // res = await nftInstance.getTokens('63bd738d7d18ac60a60e4dd3');
-      console.log(res);
+      // console.log(res);
 
-      let tokenInstance = await nftInstance.getToken(11);
-      res = await tokenInstance.History.get();
-      console.log(res)
+      // let tokenInstance = await nftInstance.getToken(11);
+      // res = await tokenInstance.History.get();
+      // console.log(res)
+
+      await mint(1, 0.007);
       
 
 
