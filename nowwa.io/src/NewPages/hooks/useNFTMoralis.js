@@ -7,20 +7,20 @@ const apiKey = MoralisAPIKey.apiKey
 
 const useNFTMoralis = () => {
     const { account, chainId } = useActiveWeb3React()
-    const [ allNFTData, setAllNFTData ] = useState([])
-    const [ myNFTData, setMyNFTData ] = useState([])
+    const [allNFTData, setAllNFTData] = useState([])
+    const [myNFTData, setMyNFTData] = useState([])
 
     const fetchNFTsForContract = useCallback(async () => {
         const oldTime = new Date().getTime()
-        
+
         let cursor = null
 
-        while(true) {
+        while (true) {
             const options = {
                 method: 'GET',
-                url: 'https://deep-index.moralis.io/api/v2/nft/' + contractAddress[ ChainId['GOERLI'] ],
-                params: {chain: 'goerli', format: 'decimal', cursor: cursor},
-                headers: {accept: 'application/json', 'X-API-Key': apiKey}
+                url: 'https://deep-index.moralis.io/api/v2/nft/' + contractAddress[ChainId['GOERLI']],
+                params: { chain: 'goerli', format: 'decimal', cursor: cursor },
+                headers: { accept: 'application/json', 'X-API-Key': apiKey }
             }
 
             const response = await axios.request(options)
@@ -31,30 +31,36 @@ const useNFTMoralis = () => {
             const ethNFTs = response.data
             console.log(ethNFTs)
             cursor = ethNFTs.cursor
-            setAllNFTData( prev => ([ ...prev, ...ethNFTs.result ]) )
 
-            if( cursor === "" || cursor === null )
+            let result = ethNFTs.result;
+            result = result.sort((a, b) => {
+                if ((Number(a.token_id)) < (Number(b.token_id))) return -1;
+                else 1;
+            })
+            setAllNFTData(prev => ([...prev, ...result]))
+
+            if (cursor === "" || cursor === null)
                 break
         }
 
         const newTime = new Date().getTime()
         console.error('time elapsed: ', (newTime - oldTime))
-    }, [ setAllNFTData ])
+    }, [setAllNFTData])
 
     const fetchNFTsForOwner = useCallback(async () => {
         if (!account)
             return;
 
         const oldTime = new Date().getTime()
-        
+
         let cursor = null
 
-        while(true) {
+        while (true) {
             const options = {
                 method: 'GET',
                 url: `https://deep-index.moralis.io/api/v2/${account}/nft`,
-                params: {chain: 'goerli', format: 'decimal', token_addresses: contractAddress[ ChainId['GOERLI'] ], cursor: cursor},
-                headers: {accept: 'application/json', 'X-API-Key': apiKey}
+                params: { chain: 'goerli', format: 'decimal', token_addresses: contractAddress[ChainId['GOERLI']], cursor: cursor },
+                headers: { accept: 'application/json', 'X-API-Key': apiKey }
             }
 
             const response = await axios.request(options)
@@ -65,21 +71,21 @@ const useNFTMoralis = () => {
             const ethNFTs = response.data
             console.log(ethNFTs)
             cursor = ethNFTs.cursor
-            setMyNFTData( prev => ([ ...prev, ...ethNFTs.result ]) )
+            setMyNFTData(prev => ([...prev, ...ethNFTs.result]))
 
-            if( cursor === "" || cursor === null )
+            if (cursor === "" || cursor === null)
                 break
         }
 
         const newTime = new Date().getTime()
         console.error('time elapsed: ', (newTime - oldTime))
-    }, [ setMyNFTData ])
+    }, [setMyNFTData])
 
 
     useEffect(() => {
         fetchNFTsForContract()
         fetchNFTsForOwner()
-    }, [ setAllNFTData, setMyNFTData ])
+    }, [setAllNFTData, setMyNFTData])
 
     return { allNFTData, myNFTData }
 }
