@@ -67,7 +67,7 @@ class CONQUER
         this.Avatars    = new Avatars( this );
         this.Email      = new Email ( this );
         this.NFT        = new NFT( this );
-        this.Signal     = new Signal( this );
+        this.Signal     = new Signal();
         this.Tags       = new Tags( this );
     };
 

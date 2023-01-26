@@ -1,17 +1,9 @@
  
-import CONQUER from "../CONQUER";
  
 class Signal
 {
-    private conquer     : CONQUER;
     public tabs         : any;
-    private vars        : any = {};
     public listeners    : any = {};
- 
-    constructor( conquer:CONQUER  )
-    {
-        this.conquer    = conquer;
-    }
  
     public get( name:string, callback:Function )
     {
@@ -35,6 +27,11 @@ class Signal
             this.listeners.splice( n, 1 ); 
             return;
         }
+    }
+
+    public getInstance()
+    {
+        return new Signal();
     }
 }
 

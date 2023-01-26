@@ -25,6 +25,7 @@ class GameInstance
     public DailyRewards : DailyRewards;
     public Data         : GameData;
     public Analytics    : GameAnalytics
+    public Signal       : GameSignal;
  
     constructor( instance:CONQUER, vars:any )
     {
