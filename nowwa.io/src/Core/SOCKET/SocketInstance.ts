@@ -37,6 +37,7 @@ import EMAIL from "../USER/EMAIL";
 import NFT_COLLECTION from "../NFT/NFT_COLLECTION";
 import NFT_TOKEN from "../NFT/NFT_TOKEN";
 import NFT_HISTORY from "../NFT/NFT_HISTORY";
+import GAMEDATA from "../GAME/GAMEDATA";
 class SocketInstance 
 {
     // Todo, destroy instances on disconnect
@@ -143,6 +144,9 @@ class SocketInstance
         if( action == ACTIONS.GAMETURN_GET )                    return map( GAMETURN.get( vars ) );
         if( action == ACTIONS.GAMETURN_SET )                    return map( GAMETURN.set( vars ) );
         if( action == ACTIONS.GAMETURN_CHANGE )                 return map( GAMETURN.change( vars ) );
+
+        if( action == ACTIONS.GAMEDATA_GET )                    return map( GAMEDATA.get( vars ) );
+        if( action == ACTIONS.GAMEDATA_SET )                    return map( GAMEDATA.set( vars ) );
 
         if( action == ACTIONS.ANALYTICS_SET )                   return map( ANALYTICS.set( vars ) );
 

@@ -41,7 +41,6 @@ class CONQUER
     public Email        : Email;
     public NFT          : NFT;
  
-
     public Instances    : Instances;
  
     private Socket      : Socket;

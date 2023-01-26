@@ -88,7 +88,7 @@ class ROOM
     let room = await DATA.set( this.table, 
     {
       name          : name,
-      avatarIDs     : QUERY.toObjectID( avatarIDs ),
+      avatarIDs     : avatarIDs,
       ownerAvatarID : myAvatarID,
     });
 

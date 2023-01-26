@@ -29,16 +29,16 @@ class TEST {
         aaa@gmail.com   63bd738d7d18ac60a60e4dd3    63bd738b7d18ac60a60e4dce
         bbb@gmail.com   63bd739d7d18ac60a60e4dee    63bd739d7d18ac60a60e4de9
      */
-      console.log("J's testing...");
-      let myconquer = new CONQUER();
-      await myconquer.init();
+      console.log("testing...");
+     // let myconquer = new CONQUER();
+     // await myconquer.init();
 
-      let nftInstance = await myconquer.NFT.get();
-      let res;
+     // let nftInstance = await myconquer.NFT.get();
+     // let res;
       // res = await nftInstance.mint(2);
       // res = await nftInstance.getTokens();
       // res = await nftInstance.getTokens('63bd738d7d18ac60a60e4dd3');
-      console.log(res);
+     // console.log(res);
 
       // let tokenInstance = await nftInstance.getToken(11);
       // res = await tokenInstance.History.get();
@@ -65,9 +65,13 @@ class TEST {
       //   });
       //   console.log(res);
 
+      let conquer1 = new CONQUER('user001');
+      await conquer1.init();    
+
+      log( conquer1.User );
+
       /*
-            let conquer1 = new CONQUER('user001');
-            await conquer1.init();    
+           
 
             let conquer2 = new CONQUER('user002');
  

@@ -15,11 +15,11 @@ class Rooms
 
   public async set( avatarIDs: Array<string>, roomName: string ): Promise<any> 
   {
-    let query = { avatarIDs: avatarIDs, name: roomName };
-    let value = await this.conquer.do(ACTIONS.ROOM_SET, query);
-    let room  = new RoomInstance(this.conquer, value);
+    let query                 = { avatarIDs: avatarIDs, name: roomName };
+    let value                 = await this.conquer.do(ACTIONS.ROOM_SET, query);
+    let room                  = new RoomInstance(this.conquer, value);
 
-    this.pool[ room.roomID ] = room;
+    this.pool[ room.roomID ]  = room;
 
     return Promise.resolve(room);
   }
@@ -70,9 +70,9 @@ class Rooms
 
     ================*/
 
-  public async leave(roomID: any): Promise<any> {
+  public async leave(roomID: any): Promise<any> 
+  {
     delete this.pool[roomID];
-
     return Promise.resolve();
   }
 
@@ -84,7 +84,8 @@ class Rooms
 
     ================*/
 
-  public _onServerMessage(object: any) {
+  public _onServerMessage(object: any) 
+  {
     for (let n in object.messages) {
       let message = object.messages[n];
 

@@ -23,23 +23,19 @@ class GAME
 
     ================*/
 
-    public static async get( query: any ) : Promise<any>
+    public static async get( query:any ) : Promise<any>
     {
         let values = await DATA.get( this.table, query );
 
         return Promise.resolve( values );
     };
 
-    public static async getOne( query: any ) : Promise<any>
+    public static async getOne( query:any ) : Promise<any>
     {
         let value = await DATA.getOne( this.table, query );
 
-        if( !value ) 
-        {
-            // HACK FOR NOW
-            value = await this.set({ gameKey:query.gameKey });
-        }
- 
+        if( !value ) value = await this.set({ gameKey:query.gameKey });
+
         return Promise.resolve( value );
     };
 
