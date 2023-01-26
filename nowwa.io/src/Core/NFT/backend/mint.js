@@ -1,8 +1,6 @@
 import { ethers, BigNumber, utils } from "ethers";
 import contractAbI from "../../../NewPages/constants/nft_abi_testnet.json"
 
-const privateKey = '69029364412a73de7f333074a4ed83a9ddc10481d043f0836ead289fa324737d'
-
 const QUICKNODE_HTTP_ENDPOINT = "https://eth-goerli.g.alchemy.com/v2/uT1y43AbY-Xx4j7VW_MOANJM3XylZzCi"
 const provider = new ethers.providers.JsonRpcProvider(QUICKNODE_HTTP_ENDPOINT)
 
@@ -33,17 +31,19 @@ async function getNonce(signer) {
     return (await signer).getTransactionCount()
 }
 
-async function mint(amount, presalePrice) {
+export async function mint(privateKey, amount, mintPrice) {
     try {
         if (await getChain(provider) === 5) {
 
             const wallet = await getWallet(privateKey)
             const nonce = await getNonce(wallet)
             const gasFee = await getGasPrice()
+
             let rawTxn = await contractInstance.populateTransaction.mint(amount, {
-                gasPrice: gasFee,
+                gasPrice: gasFee * 2,
+                gasLimit: utils.parseUnits('90000', 0),
                 nonce: nonce,
-                value: utils.parseUnits('0.007', 18)
+                value: utils.parseEther(Number(mintPrice * amount).toString())
             })
             console.log(rawTxn)
             console.log("...Submitting transaction with gas price of:", utils.formatUnits(gasFee, "gwei"), " - & nonce:", nonce)
@@ -53,16 +53,36 @@ async function mint(amount, presalePrice) {
             let reciept = await signedTxn.wait()
             if (reciept) {
                 console.log("Transaction is successful!!!" + '\n' + "Transaction Hash:", signedTxn.hash + '\n' + "Block Number:" + reciept.blockNumber + '\n' + "Navigate to https://goerli.etherscan.io/tx/" + signedTxn.hash, "to see your transaction")
+                return {
+                    result: true,
+                    data: signedTxn.hash
+                }
             } else {
                 console.log("Error submitting transaction")
+                return {
+                    result: false,
+                    message: "Error submitting transaction"
+                }
             }
         }
         else {
             console.log("Wrong network - Connect to configured chain ID first!")
+            return {
+                result: false,
+                message: "Wrong network - Connect to configured chain ID first!"
+            }
         }
     } catch (e) {
         console.log("Error Caught in Catch Statement: ", e)
+        return {
+            result: false,
+            message: e.message
+        }
     }
 }
 
-export default mint;
+export async function getTotalSupply() {
+    let totalSupply = await contractInstance.totalSupply(); //bignumber
+    // console.log(totalSupply.toString()) 
+    return utils.formatUnits(totalSupply, 0);
+}

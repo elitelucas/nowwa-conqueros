@@ -3,7 +3,9 @@ import LOG, { log } from "../../UTIL/LOG";
 import AVATAR from "../USER/TRIBE/AVATAR";
 import NFT_HISTORY from "./NFT_HISTORY";
 import NFT_TOKEN from "./NFT_TOKEN";
-import { from } from "form-data";
+import { mint, getTotalSupply } from "./backend/mint";
+import WALLET from "../USER/WALLET/WALLET";
+import { Wallet } from "ethers";
 
 class NFT_COLLECTION {
   private static table: string = "nft_collections";
@@ -104,29 +106,38 @@ class NFT_COLLECTION {
   public static async mint(query: any): Promise<any> {
     try {
       let { amount, avatarID } = query;
-      avatarID = '63bd738d7d18ac60a60e4dd3'; //temp line
+      avatarID = "63bd738d7d18ac60a60e4dd3"; //temp line
 
       let collection = await this.get();
       let contract = collection.address;
       let mintPrice = collection.mintPrice;
       let ownerUsernameID = await AVATAR.getUsernameIDbyAvatarID(avatarID);
 
-      /*======================
-    
-    
-        J BLOCHCKAIN CODE
-    
-        mint - get tokenID and transaction
-    
-        =========================*/
-      let startTokenID = 10; //need code
-      let transaction = "xxx"; //need code
+      let walletData = await WALLET.getSet({ usernameID: ownerUsernameID });
+      if (!walletData.success) {
+        console.log("No wallet");
+        return Promise.resolve([]);
+      }
+      let { privateKey, address: ownerAddress } = walletData.data;
+
+      let totalSupply = await getTotalSupply();
+
+      let startTokenID = Number(totalSupply);
+      let transaction;
+
+      let res = await mint(privateKey, amount, 0.007);
+      if (res.result) {
+        transaction = res.data;
+      } else {
+        return Promise.resolve([]);
+      }
+      console.log(transaction)
 
       let result = [];
       for (var i = 0; i < amount; i++) {
         let tokenID = startTokenID + i;
 
-        let tokenURI = this.tokenBaseURI + Number(tokenID + 1);      
+        let tokenURI = this.tokenBaseURI + Number(tokenID + 1);
         let metadata = {}; //get from ipfs
         let attributes = {}; //get from metadata
         let imageURL = this.imageBaseURL + Number(tokenID + 1) + ".gif"; //get from metadata
@@ -135,17 +146,20 @@ class NFT_COLLECTION {
         let explorerURL = this.tokenExplorerBaseURL + tokenID;
 
         let tokenEntry: any = {
-          contract: contract,
-          tokenID: tokenID,
-          ownerUsernameID: ownerUsernameID,
-          tokenURI: tokenURI,
-          imageURL: imageURL,
-          metadata: metadata,
-          attributes: attributes,
-          explorerURL: explorerURL,
-          openseaURL: openseaURL,
+          contract,
+          tokenID,
+          ownerAddress,
+          ownerUsernameID,
+          tokenURI,
+          imageURL,
+          metadata,
+          attributes,
+          explorerURL,
+          openseaURL,
           listed: false,
         };
+
+        console.log(tokenEntry)
 
         let tokenData = await NFT_TOKEN.set(tokenEntry);
         result.push(tokenData);
@@ -161,8 +175,10 @@ class NFT_COLLECTION {
       }
 
       return Promise.resolve(result);
-    } catch (e) {}
-    return Promise.resolve([]);
+    } catch (e) {
+      console.log(e);
+      return Promise.resolve([]);
+    }
   }
 }
 
