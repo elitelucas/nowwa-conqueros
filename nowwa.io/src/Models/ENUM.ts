@@ -116,7 +116,9 @@ export const enum ACTIONS
     NFT_TOKEN_GET           = 90,
     NFT_TOKEN_REMOVE        = 91,
     NFT_TOKEN_CHANGE        = 92,
-    NFT_HISTORY_GET         = 93
+    NFT_HISTORY_GET         = 93,
+
+    GAMEDATA_REMOVE         = 94,
 }
 
 export const enum STATUS

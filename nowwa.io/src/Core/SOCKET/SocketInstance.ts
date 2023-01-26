@@ -147,7 +147,8 @@ class SocketInstance
 
         if( action == ACTIONS.GAMEDATA_GET )                    return map( GAMEDATA.get( vars ) );
         if( action == ACTIONS.GAMEDATA_SET )                    return map( GAMEDATA.set( vars ) );
-
+        if( action == ACTIONS.GAMEDATA_REMOVE )                 return map( GAMEDATA.remove( vars ) );
+ 
         if( action == ACTIONS.ANALYTICS_SET )                   return map( ANALYTICS.set( vars ) );
 
         if( action == ACTIONS.FOLLOWERS_SET )                   return map( FOLLOWERS.set( vars ) );
