@@ -23,29 +23,37 @@ class NFT_TOKEN {
     ================*/
 
   public static async get(query: any): Promise<any> {
-    let { type, contract, ownerAvatarID, tokenID } = query;
+    try {
+      console.log("Core/NFT_TOKEN/get", query);
+      let { type, contract, ownerAvatarID, tokenID } = query;
 
-    let new_query = {};
-    let results;
-    if (type == "all") {
-      new_query = { contract };
-      results = await DATA.get(this.table, new_query);
-    }
-    if (type == "owner") {
-      let ownerUsernameID = await AVATAR.getUsernameIDbyAvatarID(ownerAvatarID);
-      new_query = { contract, ownerUsernameID };
-      results = await DATA.get(this.table, new_query);
-    }
-    if (type == "tokenID") {
-      new_query = { contract, tokenID };
-      results = await DATA.getOne(this.table, new_query);
-    }
-    if (type == "listed") {
-      new_query = { contract, listed: true };
-      results = await DATA.get(this.table, new_query);
-    }
+      let new_query = {};
+      let results;
+      if (type == "all") {
+        new_query = { contract: contract };
+        results = await DATA.get(this.table, new_query);
+      }
+      if (type == "owner") {
+        let ownerUsernameID = await AVATAR.getUsernameIDbyAvatarID(
+          ownerAvatarID
+        );
+        new_query = { contract: contract, ownerUsernameID: ownerUsernameID };
+        results = await DATA.get(this.table, new_query);
+      }
+      if (type == "tokenID") {
+        new_query = { contract: contract, tokenID: tokenID };
+        results = await DATA.getOne(this.table, new_query);
+      }
+      if (type == "listed") {
+        new_query = { contract: contract, listed: true };
+        results = await DATA.get(this.table, new_query);
+      }
 
-    return Promise.resolve(results);
+      return Promise.resolve(results);
+    } catch (e) {
+      console.log(e);
+      return Promise.resolve([]);
+    }
   }
 
   public static async getOne(query: any): Promise<any> {

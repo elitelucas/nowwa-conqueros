@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import cn from "classnames";
 import styles from "./Search01.module.sass";
 import Icon from "../../components/Icon";
@@ -9,14 +9,18 @@ import GalleryCard from "../../components/GalleryCard";
 import useNFTMoralis from '../../hooks/useNFTMoralis';
 import Attribute from "./Attribute";
 import Modal from "../../components/Modal";
+import { NFTContext } from "../../contexts/NFTContext";
 
 const Gallery = () => {
+  //NFTContext
+  const { getAllTokens, getMyTokens, getTokenHistory, getTokenbyTokenID } = useContext(NFTContext)
 
-  const [ showFilter, setShowFilter ] = useState(false)
-  const [ searchAttr, setSearchAttr ] = useState([])
-  const [ nftDetail, setNftDetail ] = useState({})
-  const [ showCount, setShowCount ] = useState(20)
-  const [ searchTokenId, setSearchTokenId ] = useState('')
+
+  const [showFilter, setShowFilter] = useState(false)
+  const [searchAttr, setSearchAttr] = useState([])
+  const [nftDetail, setNftDetail] = useState({})
+  const [showCount, setShowCount] = useState(20)
+  const [searchTokenId, setSearchTokenId] = useState('')
 
   // const openModal = useModalOpen( ApplicationModal.GALLERY )
   // const toggleModal = useGalleryModalToggle()
@@ -29,64 +33,63 @@ const Gallery = () => {
   const getFilteredData = (data) => {
 
     return data.filter((item) => {
-        const metadata = JSON.parse(item.metadata)
+      const metadata = JSON.parse(item.metadata)
 
-        if( searchTokenId !== '' && Number(item.token_id) !== Number(searchTokenId) )
-            return false
+      if (searchTokenId !== '' && Number(item.token_id) !== Number(searchTokenId))
+        return false
 
-        for( let i = 0; i < searchAttr.length; i++ ) {
-            if (!metadata)
-                continue
+      for (let i = 0; i < searchAttr.length; i++) {
+        if (!metadata)
+          continue
 
-            const temp = searchAttr[i]
-            const index = metadata.attributes.findIndex((attr) => attr.trait_type === temp.trait_type && attr.value === temp.value)
+        const temp = searchAttr[i]
+        const index = metadata.attributes.findIndex((attr) => attr.trait_type === temp.trait_type && attr.value === temp.value)
 
-            if( index === -1 )  return false
-        }
+        if (index === -1) return false
+      }
 
-        return true
+      return true
     })
   }
   const dataArray = getFilteredData(allNFTData).slice(0, showCount)
 
-  const toggleAttr = ( name, attr ) => {
-      console.log(name)
-      console.log(attr)
+  const toggleAttr = (name, attr) => {
+    console.log(name)
+    console.log(attr)
 
-      const newSearchAttr = [ ...searchAttr ]
+    const newSearchAttr = [...searchAttr]
 
-      const index = newSearchAttr.findIndex( (item) => item.trait_type === name && item.value === attr )
+    const index = newSearchAttr.findIndex((item) => item.trait_type === name && item.value === attr)
 
-      if( index === -1 )
-          newSearchAttr.push({ trait_type: name, value: attr })
-      else
-          newSearchAttr.splice( index, 1 )
+    if (index === -1)
+      newSearchAttr.push({ trait_type: name, value: attr })
+    else
+      newSearchAttr.splice(index, 1)
 
-      setSearchAttr(newSearchAttr)
+    setSearchAttr(newSearchAttr)
   }
 
   const detectScroll = () => {
-      if ((window.innerHeight + window.scrollY) >= (document.body.offsetHeight * 90 / 100)) {
-          setShowCount(prev => prev + 20)
-      }
+    if ((window.innerHeight + window.scrollY) >= (document.body.offsetHeight * 90 / 100)) {
+      setShowCount(prev => prev + 20)
+    }
   }
 
   useEffect(() => {
-      window.addEventListener('scroll', detectScroll)
+    window.addEventListener('scroll', detectScroll)
 
-      return (() => window.removeEventListener('scroll', detectScroll))
+    return (() => window.removeEventListener('scroll', detectScroll))
   }, [])
 
-  const onClickImage = (item) => {
-      setNftDetail(item)
+  const onClickImage = async (item) => {
+    setNftDetail(item)
 
-      toggleModal(true)
-      console.log('over here')
+    toggleModal(true)
   }
 
   const handleClearFilter = () => {
-      setSearchAttr([])
-      setSearchTokenId('')
+    setSearchAttr([])
+    setSearchTokenId('')
   }
 
   return (
@@ -104,8 +107,8 @@ const Gallery = () => {
                   name="search"
                   placeholder="Token ID..."
                   required
-                  value={ searchTokenId } 
-                  onChange={ (ev) => setSearchTokenId( ev.target.value ) }
+                  value={searchTokenId}
+                  onChange={(ev) => setSearchTokenId(ev.target.value)}
                 />
                 <button className={styles.result}>
                   <Icon name="search" size="16" />
@@ -113,29 +116,29 @@ const Gallery = () => {
               </div>
             </div>
             <div className={styles.group}>
-            { Object.keys(attributes).map( (item, index) => (
-                <div key={ `attributes_${index}` }>
-                    <Attribute name={ item } searchAttr={ searchAttr } toggleAttr={ toggleAttr } />
+              {Object.keys(attributes).map((item, index) => (
+                <div key={`attributes_${index}`}>
+                  <Attribute name={item} searchAttr={searchAttr} toggleAttr={toggleAttr} />
                 </div>
-            )) }
+              ))}
             </div>
           </div>
           <div className={styles.wrapper}>
             <div className={styles.list}>
               {dataArray.map((x, index) => (
-                <GalleryItem 
-                  className={styles.card} 
-                  item={x} 
-                  key={index} 
-                  open={ () => onClickImage(x) }
+                <GalleryItem
+                  className={styles.card}
+                  item={x}
+                  key={index}
+                  open={() => onClickImage(x)}
                 />
               ))}
-              { allNFTData.length > 0 && !dataArray.length ? (
+              {allNFTData.length > 0 && !dataArray.length ? (
                 <div className={styles.nothing}>
-                    <div className={cn('h4')}>No search result found.</div>
-                    {/* <button className={cn("button-stroke",styles.button)} onClick={handleClearFilter}>Clear Filters</button> */}
+                  <div className={cn('h4')}>No search result found.</div>
+                  {/* <button className={cn("button-stroke",styles.button)} onClick={handleClearFilter}>Clear Filters</button> */}
                 </div>
-              ) : null }
+              ) : null}
             </div>
             {/* <div className={styles.btns}>
               <button className={cn("button-stroke", styles.button)}>
@@ -147,7 +150,7 @@ const Gallery = () => {
       </div>
       <Modal
         visible={openModal}
-        onClose={() => toggleModal(false) }
+        onClose={() => toggleModal(false)}
       >
         <GalleryCard nftDetail={nftDetail} />
       </Modal>

@@ -28,6 +28,7 @@ import WalletReceiveToken from "./screens/Wallet/ReceiveToken";
 import ConquerContextProvider from "./contexts/ConquerContext";
 import ChatContextProvider from "./contexts/ChatContext";
 import WalletContextProvider from "./contexts/WalletContext";
+import NFTContextProvider from "./contexts/NFTContext";
 
 function App() {
 
@@ -120,18 +121,24 @@ function App() {
             exact
             path="/mint"
             render={() => (
-              <Page>
-                <Mint />
-              </Page>
+              <NFTContextProvider>
+                <WalletContextProvider>
+                  <Page>
+                    <Mint />
+                  </Page>
+                </WalletContextProvider>
+              </NFTContextProvider>
             )}
           />
           <Route
             exact
             path="/gallery"
             render={() => (
-              <Page>
-                <Gallery />
-              </Page>
+              <NFTContextProvider>
+                <Page>
+                  <Gallery />
+                </Page>
+              </NFTContextProvider>
             )}
           />
           <Route
@@ -179,12 +186,12 @@ function App() {
               </Page>
             )}
           />
-          <Route 
-          exact path="/chat" render={() =>
-            <ChatContextProvider>
-              <Chat />
-            </ChatContextProvider>
-          } />
+          <Route
+            exact path="/chat" render={() =>
+              <ChatContextProvider>
+                <Chat />
+              </ChatContextProvider>
+            } />
           <Route
             exact
             path="/game"
@@ -248,8 +255,8 @@ function App() {
             )}
           />
         </Switch>
-      </Router> 
-     
+      </Router>
+
     </ConquerContextProvider>
 
   );

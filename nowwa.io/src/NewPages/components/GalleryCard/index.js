@@ -1,15 +1,33 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useContext } from "react"
 import { colors } from "../../constants"
 import styles from './Gallery.module.sass';
 import cn from 'classnames';
+import { NFTContext } from "../../contexts/NFTContext";
 
-export default function GalleryCard ({ isOpen, onClose, nftDetail }) {
-    const metadata = nftDetail.metadata ? JSON.parse( nftDetail.metadata ) : { attributes: [] }
+export default function GalleryCard({ isOpen, onClose, nftDetail }) {
+    //NFTContext
+    const { getTokenHistory, getTokenbyTokenID } = useContext(NFTContext)
+    const [histories, setHistores] = useState([]);
+    const [loadingHistory, setLoadingHistory] = useState(true);
+    useEffect(() => {
+        let asyncFunction = async () => {
+            setLoadingHistory(true)
+            let histories = await getTokenHistory(Number(nftDetail.token_id));
+            console.log(histories)
+            setHistores(histories)
+            setLoadingHistory(false)
+        }
+        asyncFunction();
+
+    }, [nftDetail])
+
+
+    const metadata = nftDetail.metadata ? JSON.parse(nftDetail.metadata) : { attributes: [] }
     const [backgroundColor, setBack] = useState(colors['Default']);
 
     const getBackgroundColor = (metadata) => {
         if (!metadata.attributes.length)
-        return colors['Default']
+            return colors['Default']
 
         metadata?.attributes.map((item) => {
             let color;
@@ -43,7 +61,7 @@ export default function GalleryCard ({ isOpen, onClose, nftDetail }) {
     return (
         <div className={styles.gallery} style={{ background: backgroundColor }}>
             <div className={styles.viewer}>
-                <img src={`https://ipfs.io/ipfs/QmXmuSenZRnofhGMz2NyT3Yc4Zrty1TypuiBKDcaBsNw9V/${ Number(nftDetail.token_id) + 1 }.gif`} alt='pic' />
+                <img src={`https://ipfs.io/ipfs/QmXmuSenZRnofhGMz2NyT3Yc4Zrty1TypuiBKDcaBsNw9V/${Number(nftDetail.token_id) + 1}.gif`} alt='pic' />
             </div>
 
             <div className={styles.detail}>
@@ -52,25 +70,36 @@ export default function GalleryCard ({ isOpen, onClose, nftDetail }) {
                         <div className={styles.no}>
                             <div className={styles.number}>#</div>
                             <div>
-                                <div className={styles.name}>NOWNFT</div> 
-                                <div className={styles.token}>{ nftDetail.token_id }</div>
+                                <div className={styles.name}>NOWNFT</div>
+                                <div className={styles.token}>{nftDetail.token_id}</div>
                             </div>
                         </div>
-                        <a 
+                        <a
                             target={'_blank'}
-                            href={`https://testnets.opensea.io/assets/goerli/0xe74da0a4e7c5fc09fa793498cce70e598d8432b2/${ nftDetail.token_id }`}>
-                            <img alt="pic" src="/images/opensea.svg" style={{ width: 48, height: 48 }}/>
+                            href={`https://testnets.opensea.io/assets/goerli/0xe74da0a4e7c5fc09fa793498cce70e598d8432b2/${nftDetail.token_id}`}>
+                            <img alt="pic" src="/images/opensea.svg" style={{ width: 48, height: 48 }} />
                         </a>
                     </div>
 
                     <div className={styles.props}>
-                        { (metadata?.attributes).map((item, index) => (
+                        {(metadata?.attributes).map((item, index) => (
                             <div className={styles.item} key={`attr_${index}`}>
-                                <div className={styles.subtitle}>{ item.trait_type }</div>
-                                <div className={styles.text}> { item.value } </div>
+                                <div className={styles.subtitle}>{item.trait_type}</div>
+                                <div className={styles.text}> {item.value} </div>
                             </div>
-                        )) }
+                        ))}
                     </div>
+
+                    {loadingHistory ?
+                        <>
+                            loading......
+                        </> :
+                        <>
+                            {histories.map((history, index) => {
+                                if (history.action == 'mint') return <p key={index} style={{ color: 'darkblue' }}>Minted at Price {history.price} ETH, Tx: {history.transaction}</p>
+                            }
+                            )}
+                        </>}
                 </div>
             </div>
         </div>

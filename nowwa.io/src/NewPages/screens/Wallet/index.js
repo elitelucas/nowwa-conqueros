@@ -16,7 +16,7 @@ import ReceiveModal from "./ReceiveToken/receiveModal";
 import { WalletContext } from "../../contexts/WalletContext";
 
 const Wallet = ({ }) => {
-  //conquer
+  //Wallet
   const { balance, loadingWallet } = useContext(WalletContext)
 
   const [open, setOpen] = useState(false);

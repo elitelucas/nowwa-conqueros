@@ -6,6 +6,7 @@ export const shortenString = (string, count = 10) => {
 };
 
 export const shortenAddress = (address, count = 4) => {
+  if (!address) return '';
   return address.slice(0, count) + "..." + address.slice(-count);
 };
 

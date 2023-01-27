@@ -7,6 +7,7 @@ class TokenInstance {
   public History: TokenHistory;
   public contract: string;
   public tokenID: any;
+  public ownerAddress: any;
   public ownerUsernameID: any;
   public tokenURI: any;
   public imageURL: any;
@@ -21,6 +22,7 @@ class TokenInstance {
     this.conquer = conquer;
     this.contract = data.contract;
     this.tokenID = data.tokenID;
+    this.ownerAddress = data.ownerAddress;
     this.ownerUsernameID = data.ownerUsernameID;
     this.tokenURI = data.tokenURI;
     this.metadata = data.metadata;

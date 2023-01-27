@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import cn from "classnames";
 import styles from "./Mint.module.sass";
 import { shortenAddress } from '../../helper';
@@ -11,12 +11,25 @@ import { useWalletModalToggle } from '../../hooks/store'
 import { useIsTransactionPending } from '../../hooks/store/transactions'
 import Loader from '../../components/Loader';
 import { NotificationManager } from 'react-notifications'
+import { NFTContext } from '../../contexts/NFTContext';
+import { WalletContext } from '../../contexts/WalletContext';
 
 const Mint = () => {
+  //NFTContext
+  const { contractInfo, mintTokens } = useContext(NFTContext)
+  useEffect(() => {
+    console.log(contractInfo)
+  }, [contractInfo])
+
+  //Wallet
+  const { balance, loadingWallet } = useContext(WalletContext)
+
+
+
   const { account } = useWeb3React()
-  const [ count, setCount ] = useState(1)
-  const [ pendingTx, setPendingTx ] = useState(null)
-  const [ saleStatus, setSaleStatus ] = useState('')
+  const [count, setCount] = useState(1)
+  const [pendingTx, setPendingTx] = useState(null)
+  const [saleStatus, setSaleStatus] = useState('')
 
   const isPending = useIsTransactionPending(pendingTx ?? undefined)
 
@@ -29,7 +42,7 @@ const Mint = () => {
   const getTotalMintPrice = () => {
     let totalPrice
 
-    if (presaleStatus) 
+    if (presaleStatus)
       totalPrice = BigNumber.from(presalePrice).mul(count)
     if (publicsaleStatus)
       totalPrice = BigNumber.from(publicsalePrice).mul(count)
@@ -40,14 +53,14 @@ const Mint = () => {
   }
 
   const getFormattedTotalPrice = () => {
-    return Number( formatBalance( getTotalMintPrice(), 18 ) )
+    return Number(formatBalance(getTotalMintPrice(), 18))
   }
 
   useEffect(() => {
-    if( count >= maxSupply - totalSupply )
-      setCount( maxSupply - totalSupply )
-    if( count <= 1 )
-      setCount( 1 )
+    if (count >= maxSupply - totalSupply)
+      setCount(maxSupply - totalSupply)
+    if (count <= 1)
+      setCount(1)
 
     if (account) {
       if (presaleStatus) {
@@ -58,31 +71,37 @@ const Mint = () => {
         setSaleStatus('Now is not the time to mint')
       }
     }
-  }, [ count, presaleStatus, publicsaleStatus ])
+  }, [count, presaleStatus, publicsaleStatus])
 
   const onClickMint = async () => {
-      if( !account ) {
-          toggleWalletModal()
-          return
+    // if (!account) {
+    //   console.log('no account')
+    //   toggleWalletModal()
+    //   return
+    // }
+
+    try {
+      let mintedTokens = await mintTokens(1); //conquer->nft->mint
+      console.log(mintedTokens)
+      return;
+
+
+      const val = await mint({
+        mintAmount: count,
+        value: getTotalMintPrice()
+      })
+
+      if (val.result) {
+        if (val.status.hash)
+          setPendingTx(val.status.hash)
+      } else {
+        const err = val.status
+        NotificationManager.error(errorFilter(err), 'Something went wrong!')
       }
 
-      try {
-        const val = await mint({
-          mintAmount: count,
-          value: getTotalMintPrice()
-        })
-
-        if (val.result) {
-          if( val.status.hash )
-            setPendingTx(val.status.hash)
-        } else {
-          const err = val.status
-          NotificationManager.error( errorFilter(err), 'Something went wrong!' )
-        }
-
-      } catch(e) {
-          console.error('mint process error --------', e)
-      }
+    } catch (e) {
+      console.error('mint process error --------', e)
+    }
   }
   return (
     <div className={styles.page}>
@@ -91,52 +110,62 @@ const Mint = () => {
           <div className={styles.list}>
             <div className={styles.item}>
               <h1 className={cn("h2", styles.title)}>Mint Now</h1>
-              <h5 className={cn("h5", styles.title)}>{ saleStatus }</h5>
+              <h5 className={cn("h5", styles.title)}>{saleStatus}</h5>
               <div className={styles.info}>
                 <span>{totalSupply} / {maxSupply} minted!</span>
               </div>
               <div className={styles.search}>
-                <button 
+                <button
                   className={cn("button-stroke", styles.button)}
                   onClick={() => setCount(prev => prev - 1)}
-                  disabled={ count <= 1 }
+                  disabled={count <= 1}
                 >-</button>
                 <input
                   type="text"
                   readOnly
-                  value={ count } 
-                  placeholder={ count } 
-                  onChange={ (e) => setCount(e.target.value) } 
+                  value={count}
+                  placeholder={count}
+                  onChange={(e) => setCount(e.target.value)}
                   className={styles.input}
                 />
-                <button 
+                <button
                   className={cn("button-stroke", styles.button)}
                   onClick={() => setCount(prev => prev + 1)}
-                  disabled={ count >= (maxSupply - totalSupply) }
+                  disabled={count >= (maxSupply - totalSupply)}
                 >+</button>
               </div>
               <div className={styles.info}>
-                {getFormattedTotalPrice() }E + TX
+                {getFormattedTotalPrice()}E + TX
               </div>
-              <button 
+              <button
                 className={cn("button-stroke", styles.button)}
-                onClick={ onClickMint }
-                disabled={ !enableMintBtn }
+                onClick={onClickMint}
+                disabled={!enableMintBtn}
               >
-                { (pendingTx && isPending) ? (
-                    <>
-                        <Loader size='25' />
-                    </>
-                ) : 'MINT' }
+                {(pendingTx && isPending) ? (
+                  <>
+                    <Loader size='25' />
+                  </>
+                ) : 'MINT'}
               </button>
               <div
                 className={styles.note}
               >
+                Wallet Balance: {balance} ETH
+              </div>
+              <div
+                className={styles.note}
+              >
+                Mint Price: {contractInfo.mintPrice} ETH
+              </div>
+              <div
+                className={styles.note}
+              >
                 <a
-                  href={`https://goerli.etherscan.io/address/${ contractAddress[ ChainId['GOERLI'] ] }`}
+                  href={`https://goerli.etherscan.io/address/${contractAddress[ChainId['GOERLI']]}`}
                   target="_blank"
                 >
-                  {shortenAddress(contractAddress[ChainId.GOERLI])}
+                  {shortenAddress(contractInfo.address)}
                 </a>
               </div>
             </div>

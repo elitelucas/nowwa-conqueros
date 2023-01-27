@@ -106,7 +106,6 @@ class NFT_COLLECTION {
   public static async mint(query: any): Promise<any> {
     try {
       let { amount, avatarID } = query;
-      avatarID = "63bd738d7d18ac60a60e4dd3"; //temp line
 
       let collection = await this.get();
       let contract = collection.address;
