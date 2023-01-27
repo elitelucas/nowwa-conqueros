@@ -43,7 +43,6 @@ class CONQUER
     public NFT          : NFT;
     public Signal       : Signal;
     public Tags         : Tags;
- 
     public Instances    : Instances;
  
     private Socket      : Socket;
