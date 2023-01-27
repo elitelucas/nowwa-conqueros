@@ -40,15 +40,14 @@ class Storage
 
     private loadAccount()
     {
+        let oldUsername = typeof this.conquer.User != 'undefined' ? this.conquer.User.username : null;
         let json = typeof window != 'undefined' ? window.localStorage.getItem( "account" ) : null;
-        // console.log(`[Storage] loadAccount json`, JSON.stringify(json));
         if (json == 'null' || json == '{}') json = null;
         var user:User = json ? 
             JSON.parse( json as string ) : 
             {
-                username: this.generateUsername()
+                username: oldUsername == null ? this.generateUsername() : oldUsername
             };
-        // console.log(`[Storage] loadAccount user`, JSON.stringify(user));
         return user;
     }
  
@@ -127,7 +126,6 @@ class Storage
     {
         // console.log(`[Storage] setAccount typeof user`, typeof user);
         if( !user ) return;
-        // console.log(`[Storage] user`, JSON.stringify(user));
 
         this.conquer.User = user;
 
