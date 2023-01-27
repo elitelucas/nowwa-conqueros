@@ -48,9 +48,9 @@ class CONQUER
  
     private Socket      : Socket;
  
-    public constructor( user?:User )
+    public constructor( user?:User | string )
     {
-        this.User       = user;
+        this.User       = typeof user == 'string' ? { username: user } : user;
         this.Storage    = new Storage( this );
         this.Friends    = new Friends( this );
         this.Auth       = new Auth( this );
