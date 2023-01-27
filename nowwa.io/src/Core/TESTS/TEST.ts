@@ -14,11 +14,30 @@ import RoomInstance from "../../Conquer/ROOMS/RoomInstance/RoomInstance";
 import QUERY from "../../UTIL/QUERY";
 import ROOM from "../SOCKET/ROOM/ROOM";
 import path from "path";
+import PlayCanvas from "../APPS/Playcanvas";
 
 class TEST {
   public static async Run(): Promise<void> {
     // TESTING
     try {
+      // let authToken = "BGaSdbmMDrmQKVVkgNffpAsruFeVD8Oj";
+      // let projectId = 873503;
+      // let branchIds = [
+      //   "123854c4-e2bc-4dee-8cf1-ee231a6d8887",
+      //   "d66f4b35-015b-4784-bf8c-0128fb2ca2a3",
+      //   "0a3cf614-b953-431f-a619-2900f394ca16"
+      // ];
+      // let appNames = [
+      //   "Farm Kings FTUE",
+      //   "Snappy Jump",
+      //   "Snappy Run"
+      // ];
+      // let appVersion = "1.0.0";
+      // let directory = "storage";
+
+      // for (var i = 0; i < 1; i++) {
+      //   await PlayCanvas.Archive(authToken, projectId, branchIds[i], appNames[i], appVersion, directory, true);
+      // }
       /*
         J's testing
 

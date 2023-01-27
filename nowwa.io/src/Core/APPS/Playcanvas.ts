@@ -119,6 +119,7 @@ class PlayCanvas {
                     fs.mkdirSync(path.dirname(output), {recursive:true});
                 }
                 fs.writeFileSync(output, Buffer.from(arrayBuffer), 'binary');
+                console.log('✔ Zip downloaded');
                 resolve(output);
             })
             .catch(reject);
