@@ -9,6 +9,7 @@ import PlayerInventory from "./INVENTORY/PlayerInventory";
 import DailyRewards from "./DailyRewards";
 import GameData from "./DATA/GameData";
 import GameAnalytics from "./DATA/GameAnalytics";
+import Signal from "../SIGNAL/Signal";
 
 class GameInstance
 {
@@ -23,6 +24,7 @@ class GameInstance
     public DailyRewards : DailyRewards;
     public Data         : GameData;
     public Analytics    : GameAnalytics
+    public Signal       : Signal;
  
     constructor( instance:CONQUER, vars:any )
     {
@@ -40,6 +42,7 @@ class GameInstance
         this.DailyRewards   = new DailyRewards( this.conquer, this.gameID );
         this.Data           = new GameData( this.conquer, this.gameID );
         this.Analytics      = new GameAnalytics( this.conquer, this.gameID );
+        this.Signal         = new Signal();
     };
 }
 
