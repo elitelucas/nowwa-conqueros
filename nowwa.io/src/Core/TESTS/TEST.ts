@@ -84,10 +84,21 @@ class TEST {
       //   });
       //   console.log(res);
 
+       // login as guest
       let conquer1 = new CONQUER('user001');
       await conquer1.init();    
+      await conquer1.Auth.guest(); 
 
-      log( conquer1.User );
+      // login as some user (make sure this user is already registered)
+     let conquer2 = new CONQUER();
+     await conquer2.init();    
+     await conquer2.Auth.get({
+      username: 'com@com.com',
+      password: 'comcomcom'
+     }); 
+
+      log( `conquer1\n` + JSON.stringify(conquer1.User, null, 2) );
+      log( `conquer2\n` + JSON.stringify(conquer2.User, null, 2) );
 
       /*
            
