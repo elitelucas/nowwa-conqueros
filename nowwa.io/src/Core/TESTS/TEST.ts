@@ -14,6 +14,7 @@ import RoomInstance from "../../Conquer/ROOMS/RoomInstance/RoomInstance";
 import QUERY from "../../UTIL/QUERY";
 import ROOM from "../SOCKET/ROOM/ROOM";
 import path from "path";
+import PlayCanvas from "../APPS/Playcanvas";
 
 import NFT_COLLECTION from "../NFT/NFT_COLLECTION";
 import { mint, getTotalSupply } from "../NFT/backend/mint";
@@ -22,6 +23,24 @@ class TEST {
   public static async Run(): Promise<void> {
     // TESTING
     try {
+      // let authToken = "BGaSdbmMDrmQKVVkgNffpAsruFeVD8Oj";
+      // let projectId = 873503;
+      // let branchIds = [
+      //   "123854c4-e2bc-4dee-8cf1-ee231a6d8887",
+      //   "d66f4b35-015b-4784-bf8c-0128fb2ca2a3",
+      //   "0a3cf614-b953-431f-a619-2900f394ca16"
+      // ];
+      // let appNames = [
+      //   "Farm Kings FTUE",
+      //   "Snappy Jump",
+      //   "Snappy Run"
+      // ];
+      // let appVersion = "1.0.0";
+      // let directory = "storage";
+
+      // for (var i = 0; i < 1; i++) {
+      //   await PlayCanvas.Archive(authToken, projectId, branchIds[i], appNames[i], appVersion, directory, true);
+      // }
       /*
         J's testing
 
@@ -29,16 +48,16 @@ class TEST {
         aaa@gmail.com   63bd738d7d18ac60a60e4dd3    63bd738b7d18ac60a60e4dce
         bbb@gmail.com   63bd739d7d18ac60a60e4dee    63bd739d7d18ac60a60e4de9
      */
-      console.log("J's testing...");
-      let myconquer = new CONQUER();
-      await myconquer.init();
+      console.log("testing...");
+     // let myconquer = new CONQUER();
+     // await myconquer.init();
 
-      let nftInstance = await myconquer.NFT.get();
-      let res;
+     // let nftInstance = await myconquer.NFT.get();
+     // let res;
       // res = await nftInstance.mint(2);
       // res = await nftInstance.getTokens();
       // res = await nftInstance.getTokens('63bd738d7d18ac60a60e4dd3');
-      console.log(res);
+     // console.log(res);
 
       // let tokenInstance = await nftInstance.getToken(11);
       // res = await tokenInstance.History.get();
@@ -65,9 +84,24 @@ class TEST {
       //   });
       //   console.log(res);
 
+       // login as guest
+      let conquer1 = new CONQUER('user001');
+      await conquer1.init();    
+      await conquer1.Auth.guest(); 
+
+      // login as some user (make sure this user is already registered)
+     let conquer2 = new CONQUER();
+     await conquer2.init();    
+     await conquer2.Auth.get({
+      username: 'com@com.com',
+      password: 'comcomcom'
+     }); 
+
+      log( `conquer1\n` + JSON.stringify(conquer1.User, null, 2) );
+      log( `conquer2\n` + JSON.stringify(conquer2.User, null, 2) );
+
       /*
-            let conquer1 = new CONQUER('user001');
-            await conquer1.init();    
+           
 
             let conquer2 = new CONQUER('user002');
  

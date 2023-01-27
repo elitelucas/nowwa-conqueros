@@ -18,6 +18,7 @@ import Wallets from "./WALLET/Wallets";
 import Sounds from "./AUDIO/Sounds";
 import Avatars from "./AVATAR/Avatars";
 import Email from "./EMAIL/Email";
+import Signal from "./SIGNAL/Signal";
 
 import NFT from "./NFT/NFT";
 
@@ -40,15 +41,15 @@ class CONQUER
     public Avatars      : Avatars;
     public Email        : Email;
     public NFT          : NFT;
- 
-
+    public Signal       : Signal;
+    public Tags         : Tags;
     public Instances    : Instances;
  
     private Socket      : Socket;
  
-    public constructor( user?:User )
+    public constructor( user?:User | string )
     {
-        this.User       = user;
+        this.User       = typeof user == 'string' ? { username: user } : user;
         this.Storage    = new Storage( this );
         this.Friends    = new Friends( this );
         this.Auth       = new Auth( this );
@@ -65,6 +66,8 @@ class CONQUER
         this.Avatars    = new Avatars( this );
         this.Email      = new Email ( this );
         this.NFT        = new NFT( this );
+        this.Signal     = new Signal();
+        this.Tags       = new Tags( this );
     };
 
     public async init (): Promise<void> 

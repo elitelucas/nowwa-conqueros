@@ -22,7 +22,8 @@ class Auth
             // this.conquer.User!.type == 'TWITTER' || 
             // this.conquer.User!.type == 'SNAPCHAT' || 
             this.conquer.User!.type == 'WALLET' ||
-        typeof this.conquer.User!.token != 'undefined')
+            typeof this.conquer.User!.token != 'undefined'
+        )
         ) {
             await this.get();
         }
@@ -50,6 +51,7 @@ class Auth
 
     public async guest() 
     {
+        this.conquer.User!.type = 'GUEST'; 
         let response = await this.get();
         return Promise.resolve(response);
     }

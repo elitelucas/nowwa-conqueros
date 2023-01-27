@@ -130,9 +130,9 @@ const Index = () => {
     const [gameState, setGameState] = useState(BuildStateDefault);
     const [gameStatus, setGameStatus] = useState(Status.DetailDefault);
     let build: JSX.Element = <></>;
-    if (state.display == 'Build') {
+    // if (state.display == 'Build') {
         build = Builds(gameState, setGameState, gameStatus, setGameStatus);
-    }
+    // }
 
     const [loginState, setLoginState] = useState(LoginStateDefault);
     let login: JSX.Element = <></>;

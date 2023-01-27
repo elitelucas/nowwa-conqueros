@@ -1,6 +1,4 @@
-import ACCOUNT from "../../Core/TESTS/ACCOUNT";
-import { ACTIONS } from "../../Models/ENUM";
-import ARRAY from "../../UTIL/ARRAY";
+
 import CONQUER from "../CONQUER";
 import LOG, { log } from "../../UTIL/LOG";
 import Score from "./Score";
@@ -9,18 +7,24 @@ import Shop from "./SHOP/Shop";
 import GameWallet from "./WALLET/GameWallet";
 import PlayerInventory from "./INVENTORY/PlayerInventory";
 import DailyRewards from "./DailyRewards";
+import GameData from "./DATA/GameData";
+import GameAnalytics from "./DATA/GameAnalytics";
+import Signal from "../SIGNAL/Signal";
 
 class GameInstance
 {
     private conquer     : CONQUER;
     public gameID       : any;
     public gameKey      : any;
-    private Score       : Score
-    private Turns       : Turns;
+    public Score        : Score
+    public Turns        : Turns;
     public Shop         : Shop;
     public Wallet       : GameWallet;
     public Inventory    : PlayerInventory;
     public DailyRewards : DailyRewards;
+    public Data         : GameData;
+    public Analytics    : GameAnalytics
+    public Signal       : Signal;
  
     constructor( instance:CONQUER, vars:any )
     {
@@ -36,12 +40,10 @@ class GameInstance
         this.Inventory      = new PlayerInventory( this.conquer, this, this.gameID );
 
         this.DailyRewards   = new DailyRewards( this.conquer, this.gameID );
- 
+        this.Data           = new GameData( this.conquer, this.gameID );
+        this.Analytics      = new GameAnalytics( this.conquer, this.gameID );
+        this.Signal         = new Signal();
     };
-
-  
- 
- 
 }
 
 export default GameInstance;
