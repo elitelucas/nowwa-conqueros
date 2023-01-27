@@ -21,14 +21,14 @@ class AVATAR {
 
   public static async get(vars: any): Promise<any> {
     console.log("Core/Avatar/get", vars);
-    
+
     //returns where firstname exists
     var results = await DATA.get(this.table, {
       where: {
         firstName: {
           $exists: true,
           $type: "string",
-        //   $not: { $regex: "^Guest" },
+          //   $not: { $regex: "^Guest" },
         },
       },
     });
@@ -42,8 +42,8 @@ class AVATAR {
     return Promise.resolve(avatar);
   }
 
-  public static async getUsernameID(query: any): Promise<any> {
-    let item = await this.getOne(query);
+  public static async getUsernameIDbyAvatarID(avatarID: string): Promise<any> {
+    let item = await this.getOne({ _id: avatarID });
     if (item) return Promise.resolve(item.usernameID);
 
     return Promise.resolve(null);

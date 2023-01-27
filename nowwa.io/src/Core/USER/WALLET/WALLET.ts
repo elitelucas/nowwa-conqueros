@@ -77,9 +77,9 @@ class WALLET {
 
   public static async getSet(query: any): Promise<any> {
     console.log("wallet/getSet", query);
-    let usernameID = query.usernameID;
+    let { usernameID, avatarID } = query;
     if (!usernameID)
-      usernameID = await AVATAR.getUsernameID({ _id: query.avatarID });
+      usernameID = await AVATAR.getUsernameIDbyAvatarID(avatarID);
     if (!usernameID)
       return Promise.resolve({ success: false, message: "No usernameID" });
 

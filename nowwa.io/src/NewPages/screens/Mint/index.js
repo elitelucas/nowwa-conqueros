@@ -136,7 +136,7 @@ const Mint = () => {
                   href={`https://goerli.etherscan.io/address/${ contractAddress[ ChainId['GOERLI'] ] }`}
                   target="_blank"
                 >
-                  {shortenAddress('0x176B6eB693792Ad7081E25B537D8E14bea130Ff8')}
+                  {shortenAddress(contractAddress[ChainId.GOERLI])}
                 </a>
               </div>
             </div>

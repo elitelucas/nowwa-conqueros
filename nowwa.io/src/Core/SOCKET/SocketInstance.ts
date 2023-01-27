@@ -37,6 +37,7 @@ import EMAIL from "../USER/EMAIL";
 import NFT_COLLECTION from "../NFT/NFT_COLLECTION";
 import NFT_TOKEN from "../NFT/NFT_TOKEN";
 import NFT_HISTORY from "../NFT/NFT_HISTORY";
+import GAMEDATA from "../GAME/GAMEDATA";
 class SocketInstance 
 {
     // Todo, destroy instances on disconnect
@@ -116,7 +117,7 @@ class SocketInstance
  
         vars.avatarID = this.User.avatarID;
 
-        if( action == ACTIONS.NFT_TOKEN_SET )                   return map( NFT_TOKEN.set( vars ) );
+        if( action == ACTIONS.NFT_COLLECTION_MINT )              return map( NFT_COLLECTION.mint( vars ) );
         if( action == ACTIONS.NFT_TOKEN_CHANGE )                return map( NFT_TOKEN.change( vars ) );
 
         if( action == ACTIONS.WALLET_GETSET )                   return map( WALLET.getSet( vars ) );
@@ -144,6 +145,10 @@ class SocketInstance
         if( action == ACTIONS.GAMETURN_SET )                    return map( GAMETURN.set( vars ) );
         if( action == ACTIONS.GAMETURN_CHANGE )                 return map( GAMETURN.change( vars ) );
 
+        if( action == ACTIONS.GAMEDATA_GET )                    return map( GAMEDATA.get( vars ) );
+        if( action == ACTIONS.GAMEDATA_SET )                    return map( GAMEDATA.set( vars ) );
+        if( action == ACTIONS.GAMEDATA_REMOVE )                 return map( GAMEDATA.remove( vars ) );
+ 
         if( action == ACTIONS.ANALYTICS_SET )                   return map( ANALYTICS.set( vars ) );
 
         if( action == ACTIONS.FOLLOWERS_SET )                   return map( FOLLOWERS.set( vars ) );
