@@ -1,6 +1,4 @@
-import ACCOUNT from "../../Core/TESTS/ACCOUNT";
-import { ACTIONS } from "../../Models/ENUM";
-import ARRAY from "../../UTIL/ARRAY";
+
 import CONQUER from "../CONQUER";
 import LOG, { log } from "../../UTIL/LOG";
 import Score from "./Score";
@@ -25,7 +23,6 @@ class GameInstance
     public DailyRewards : DailyRewards;
     public Data         : GameData;
     public Analytics    : GameAnalytics
-    public Signal       : GameSignal;
  
     constructor( instance:CONQUER, vars:any )
     {
