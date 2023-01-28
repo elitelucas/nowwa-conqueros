@@ -46,6 +46,8 @@ class GameInstance
 
         // TEST 
 
+        /*
+
         let Data = this.Data;
 
         Data.get().then( function( data )
@@ -53,7 +55,7 @@ class GameInstance
             console.log("HACK GOT DATA", data );
             data = data || {};
             Data.set( "attempt", ( data.attempt || 0 )+1 )
-        });
+        });*/
     };
 }
 
