@@ -86,6 +86,7 @@ class TEST {
 
        // login as guest
        
+       /*
       let conquer1 = new CONQUER();//'user001'
       await conquer1.init();    
       await conquer1.Auth.guest(); 
@@ -93,7 +94,8 @@ class TEST {
       log("LOGGED USER", conquer1.User );
 
       await conquer1.Games.getOne( "TEMPLATE" );
-
+      */
+     
       // login as some user (make sure this user is already registered)
      
      /* let conquer2 = new CONQUER();

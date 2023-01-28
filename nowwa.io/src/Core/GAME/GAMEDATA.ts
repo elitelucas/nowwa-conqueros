@@ -72,9 +72,7 @@ class GAMEDATA
     public static async getSet( query:any ) : Promise<any>
     {
         query = QUERY.get( query );
-
-        log("GETSET query", query );
-
+ 
         var vars : any      = { avatarID:query.where.avatarID, gameID:query.where.gameID, name:query.where.name };
         var entry           = await this.getOne( vars );
 
