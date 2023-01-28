@@ -25,7 +25,12 @@ class GameData
         this.interval = setInterval( function()
         {
             if( !self.dirty.length ) return;
-            conquer.do( ACTIONS.GAMEDATA_SET, { gameID:gameID, $vars:self.dirty } );
+
+            log("SAVING DATA", { gameID:gameID, $vars:self.dirty } );
+
+            conquer.do( ACTIONS.GAMEDATA_SET, { gameID:gameID, $vars:self.dirty } ).then( function(e){
+                log("SAVED DATA", e );
+            })
  
             self.dirty  = [];
 
@@ -42,11 +47,13 @@ class GameData
         vars                = vars || {};
         vars.gameID         = this.gameID;
         let results : any   = await this.conquer.do( ACTIONS.GAMEDATA_GET, vars );
+
+        log("Got Gamedata", results );
  
-        if( results[".version"] && results[".version"] != this.version ) 
+        if( results[".vrsn"] && results[".vrsn"] != this.version ) 
         {
-            this.remove();
-            this.set( ".version", this.version );
+            await this.remove();
+            this.set( ".vrsn", this.version );
             return Promise.resolve( {} );
         }
 
