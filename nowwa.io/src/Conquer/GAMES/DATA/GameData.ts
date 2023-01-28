@@ -1,6 +1,7 @@
 import { ACTIONS } from "../../../Models/ENUM";
 import CONQUER from "../../CONQUER";
 import ARRAY from "../../../UTIL/ARRAY";
+import { log } from "../../../UTIL/LOG";
  
 class GameData
 {
@@ -19,24 +20,29 @@ class GameData
         this.vars       = { gameID:gameID };
         this.gameID     = gameID;
  
-        var doSet       = this.doSet;
+        let self       = this;
 
         this.interval = setInterval( function()
         {
-            doSet();
+            if( !self.dirty.length ) return;
+            conquer.do( ACTIONS.GAMEDATA_SET, { gameID:gameID, $vars:self.dirty } );
+ 
+            self.dirty  = [];
+
         }, 1000 );
     }
  
-    public setVersion( version:any )
+    public setVersion( value:any )
     {
-        this.version = version;
+        this.version = value;
     };
  
-    public async get( vars:any ) : Promise<any>
+    public async get( vars?:any ) : Promise<any>
     {
+        vars                = vars || {};
         vars.gameID         = this.gameID;
         let results : any   = await this.conquer.do( ACTIONS.GAMEDATA_GET, vars );
-
+ 
         if( results[".version"] && results[".version"] != this.version ) 
         {
             this.remove();
@@ -55,18 +61,7 @@ class GameData
         this.dirty.push({ name:name, value:value });
         this.conquer.Signal.set( name, value );
     }
-
-    private async doSet() : Promise<any>
-    {
-        if( !this.dirty.length ) return;
-
-        let data    = { gameID:this.gameID, $vars:this.dirty };
-        this.dirty  = [];
-        let results = await this.conquer.do( ACTIONS.GAMEDATA_SET, data );
  
-        return Promise.resolve( results );
-    }
-
     public async remove( vars?:any ) : Promise<any>
     {
         vars            = vars || {};

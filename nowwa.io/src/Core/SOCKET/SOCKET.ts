@@ -17,11 +17,11 @@ class SOCKET
             httpServer, { cors: { origin: "*" } }
         );
 
-        log( "NEW SOCKET SERVER" );
+        //log( "NEW SOCKET SERVER>>>" );
 
         this.io.on( "connection", (socket) => 
         {
-            // log("[SERVER]========================================================== NEW CONNECTION");
+            //console.log("[SERVER]========================================================== NEW CONNECTION");
             new SocketInstance(socket);
         });
 

@@ -1,5 +1,6 @@
 import DATA from "../DATA/DATA";
 import LOG, { log } from "../../UTIL/LOG";
+import QUERY from "../../UTIL/QUERY";
 
 class GAMEDATA
 {
@@ -54,27 +55,31 @@ class GAMEDATA
     {
         if( query.$vars )// {coins:4, shields:4 }
         {
-            for( var n in query.$vars ) await this.set({ avatarID:query.avatarID, gameID:query.gameID, name:query.$vars[n].name, value:query.$vars[n].value });
+            for( var n in query.$vars ) await this.set( { avatarID:query.avatarID, gameID:query.gameID, name:query.$vars[n].name, value:query.$vars[n].value });
             return Promise.resolve();
         }
+
+        if( !query.where ) query = { where:{ avatarID:query.avatarID, gameID:query.gameID, name:query.name }, values:{ value:query.value }};
  
         let entry = await this.getSet( query );
-        
-        await this.change({ where:{ _id:entry._id }, values:{ value:query.value } });
+ 
+        if( entry.value !== query.values.value ) await this.change({ where:{ _id:entry._id }, values:{ value:query.values.value } });
 
         return Promise.resolve( entry );
     };
 
     public static async getSet( query:any ) : Promise<any>
     {
-        var vars : any      = { avatarID:query.avatarID, gameID:query.gameID, name:query.name };
+        query = QUERY.get( query );
+
+        var vars : any      = { avatarID:query.where.avatarID, gameID:query.where.gameID, name:query.where.name };
         var entry           = await this.getOne( vars );
 
         if( entry ) return Promise.resolve( entry );
 
-        vars.value          = 0;
- 
-        if( !entry ) entry  = DATA.set( this.table, vars );
+        vars.value          = query.values ? query.values.value : 0;
+
+        entry               = await DATA.set( this.table, vars );
 
         return Promise.resolve( entry );
     };

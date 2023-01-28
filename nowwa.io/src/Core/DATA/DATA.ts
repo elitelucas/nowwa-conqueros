@@ -53,7 +53,7 @@ class DATA
     public static async get( tableName: string, vars: any ): Promise<any> 
     {
         vars            = QUERY.get( vars );
-
+ 
         let model       = await TABLE_MODEL.get( tableName );
         let myQuery     = model.find( vars.where );
 

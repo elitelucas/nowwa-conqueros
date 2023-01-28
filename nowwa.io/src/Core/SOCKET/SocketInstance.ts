@@ -1,9 +1,7 @@
  
 import { Socket } from "socket.io"
 import { ACTIONS } from "../../Models/ENUM";
-import CRYPT from "../../UTIL/CRYPT";
-import LOG, { log } from "../../UTIL/LOG";
-import QUERY from "../../UTIL/QUERY";
+import { log } from "../../UTIL/LOG";
 import FILE from "../CMS/FILE";
 import GameRoomInstance from "../GAME/GAMEROOM/GameRoomInstance";
 import AUTH from "../USER/AUTH/AUTH";
@@ -56,7 +54,7 @@ class SocketInstance
         this.socket = socket;
         this.socketID     = socket.id;
 
-        // log("[SERVER]: New SOCKET instance", this.id);
+       // log("[SERVER]: New SOCKET instance", this.socketID );
 
         this.socket.on( 'action', this.onAction.bind(this) );
         this.socket.on( 'message', this.onMessage.bind(this) );
@@ -65,7 +63,7 @@ class SocketInstance
 
     public onAction( action:any, vars?: any, callback?: Function ) 
     {
-        log( "[SERVER]: client action requested", action );
+       // log( "[SERVER]: client action requested", action, vars );
 
         vars        = vars || {};
         let self    = this;
@@ -116,7 +114,7 @@ class SocketInstance
         // AT THIS POINT, AVATAR ID IS REWRITTEN
  
         vars.avatarID = this.User.avatarID;
-
+ 
         if( action == ACTIONS.NFT_COLLECTION_MINT )              return map( NFT_COLLECTION.mint( vars ) );
         if( action == ACTIONS.NFT_TOKEN_CHANGE )                return map( NFT_TOKEN.change( vars ) );
 
