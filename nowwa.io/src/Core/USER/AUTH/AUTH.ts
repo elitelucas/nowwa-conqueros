@@ -107,8 +107,9 @@ class AUTH
         {
             avatarID        : avatar._id,
             firstName       : avatar.firstName,
+            userPhoto       : avatar.userPhoto,
             // admin           : false,
-            username        : username,
+            //username        : username,
             token           : token,
             // friend_count    : 0
         });
