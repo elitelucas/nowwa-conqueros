@@ -43,6 +43,17 @@ class GameInstance
         this.Data           = new GameData( this.conquer, this.gameID );
         this.Analytics      = new GameAnalytics( this.conquer, this.gameID );
         this.Signal         = new Signal();
+
+        // TEST 
+
+        let Data = this.Data;
+
+        Data.get().then( function( data )
+        {
+            console.log("HACK GOT DATA", data );
+            data = data || {};
+            Data.set( "attempt", ( data.attempt || 0 )+1 )
+        });
     };
 }
 

@@ -53,6 +53,7 @@ class GAMEDATA
 
     public static async set( query:any ) : Promise<any>
     {
+ 
         if( query.$vars )// {coins:4, shields:4 }
         {
             for( var n in query.$vars ) await this.set( { avatarID:query.avatarID, gameID:query.gameID, name:query.$vars[n].name, value:query.$vars[n].value });
@@ -71,6 +72,8 @@ class GAMEDATA
     public static async getSet( query:any ) : Promise<any>
     {
         query = QUERY.get( query );
+
+        log("GETSET query", query );
 
         var vars : any      = { avatarID:query.where.avatarID, gameID:query.where.gameID, name:query.where.name };
         var entry           = await this.getOne( vars );
@@ -94,6 +97,8 @@ class GAMEDATA
 
     public static async change( query:any ) : Promise<any>
     {
+        log("CHANGE query", query );
+
         let value = await DATA.change( this.table, query );
 
         return Promise.resolve( value );

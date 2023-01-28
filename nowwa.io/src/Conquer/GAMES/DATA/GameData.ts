@@ -26,11 +26,11 @@ class GameData
         {
             if( !self.dirty.length ) return;
 
-            log("SAVING DATA", { gameID:gameID, $vars:self.dirty } );
+            console.log("SAVING DATA", { gameID:gameID, $vars:self.dirty } );
 
             conquer.do( ACTIONS.GAMEDATA_SET, { gameID:gameID, $vars:self.dirty } ).then( function(e){
-                log("SAVED DATA", e );
-            })
+                console.log("SAVED DATA", e );
+            });
  
             self.dirty  = [];
 
@@ -48,14 +48,15 @@ class GameData
         vars.gameID         = this.gameID;
         let results : any   = await this.conquer.do( ACTIONS.GAMEDATA_GET, vars );
 
-        log("Got Gamedata", results );
+        console.log( "Got Gamedata", results, "vars", vars );
  
+        /*
         if( results[".vrsn"] && results[".vrsn"] != this.version ) 
         {
             await this.remove();
             this.set( ".vrsn", this.version );
             return Promise.resolve( {} );
-        }
+        }*/
 
         ARRAY.extract( results, this.data );
 
@@ -64,6 +65,8 @@ class GameData
 
     public set( name:string, value:any )
     {
+        if( this.data[ name ] === value ) return;
+
         this.data[ name ] = value;
         this.dirty.push({ name:name, value:value });
         this.conquer.Signal.set( name, value );

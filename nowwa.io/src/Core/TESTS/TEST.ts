@@ -85,20 +85,14 @@ class TEST {
       //   console.log(res);
 
        // login as guest
-       /*
-      let conquer1 = new CONQUER('user001');
+       
+      let conquer1 = new CONQUER();//'user001'
       await conquer1.init();    
       await conquer1.Auth.guest(); 
 
-      var gameInstance = await conquer1.Games.getOne( "TEMPLATE" );
- 
-      gameInstance.Data.set("testVariable", 2 );
-      gameInstance.Data.set("testVariable2", 2 );
-      gameInstance.Data.set("health", 2 );
+      log("LOGGED USER", conquer1.User );
 
-      var gameData = await gameInstance.Data.get();
-
-      log("gameData", gameData );*/
+      await conquer1.Games.getOne( "TEMPLATE" );
 
       // login as some user (make sure this user is already registered)
      
