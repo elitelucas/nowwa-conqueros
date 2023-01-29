@@ -4,15 +4,36 @@ import ARRAY from "../../../UTIL/ARRAY";
  
 class GameAnalytics
 {
-    private conquer : CONQUER;
-    public tabs     : any;
-    private vars    : any = {};
-    public data     : any = {};
+    private conquer     : CONQUER;
+    public tabs         : any;
+    private vars        : any = {};
+    public data         : any = {};
+    private interval    : any;
+    private dirty       : any = [];
  
     constructor( conquer:CONQUER, gameID:any )
     {
         this.conquer    = conquer;
         this.vars       = { gameID:gameID };
+
+        let self        = this;
+        let vars        = this.vars;
+
+        this.interval = setInterval( function()
+        {
+            if( !self.dirty.length ) return;
+
+            console.log("SAVING ANALYTICS", { gameID:gameID, $vars:self.dirty });
+
+            conquer.do( ACTIONS.ANALYTICS_SET, ARRAY.extract( vars, { $vars:self.dirty }) )
+ 
+            .then( function(e){
+                console.log("SAVED DATA", e );
+            });
+ 
+            self.dirty  = [];
+
+        }, 500 );
     }
 
     public setPayload( object:any )
@@ -22,7 +43,7 @@ class GameAnalytics
  
     public set( label:string, value?:any )
     {
-        this.conquer.do( ACTIONS.ANALYTICS_SET, ARRAY.extract( this.vars, { label:label, value:value } ) )
+        this.dirty.push({ label:label, value:value });
     }
 
     public onError( value?:any )

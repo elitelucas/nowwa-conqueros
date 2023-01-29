@@ -1,5 +1,6 @@
 import DATA from "../DATA/DATA";
 import LOG, { log } from "../../UTIL/LOG";
+import ARRAY from "../../UTIL/ARRAY";
 
 class ANALYTICS
 {
@@ -37,6 +38,15 @@ class ANALYTICS
 
     public static async set( query: any ) : Promise<any>
     {
+        if( query.$vars )// {coins:4, shields:4 }
+        {
+            let $vars = query.$vars;
+            delete query.$vars;
+
+            for( var n in $vars ) await this.set( ARRAY.extract( query, { label:$vars[n].label, value:$vars[n].value } ) );
+            return Promise.resolve();
+        }
+
         let value = await DATA.set( this.table, query );
 
         return Promise.resolve( value );
