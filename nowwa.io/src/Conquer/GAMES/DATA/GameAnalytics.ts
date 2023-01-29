@@ -33,7 +33,7 @@ class GameAnalytics
  
             self.dirty  = [];
 
-        }, 500 );
+        }, 16.66 );
     }
 
     public setPayload( object:any )
