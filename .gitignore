@@ -50,3 +50,5 @@ nowwa.io/build/
 .cache/
 .cloud-locale-test.skip
 .snapdev/
+webhook/node_modules/
+webhook/package-lock.json
