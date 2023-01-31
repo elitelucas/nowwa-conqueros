@@ -39,7 +39,7 @@ class EXPRESS {
                     cookie: {
                         maxAge: (1000 * 60 * 100)
                     }
-                }))
+                }));
                 // .use((req, res, next) => {
                 //     // console.log(`req.url: ${req.url}`);
                 //     var adjustedUrl = req.url;

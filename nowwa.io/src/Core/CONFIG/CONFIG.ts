@@ -1,3 +1,9 @@
+import dotenv from 'dotenv';
+import path from 'path';
+let envPath = path.resolve('.env');
+console.log(`envPath`, envPath);
+dotenv.config({ path: envPath });
+
 class CONFIG 
 {
     private static _vars: CONFIG.Config;

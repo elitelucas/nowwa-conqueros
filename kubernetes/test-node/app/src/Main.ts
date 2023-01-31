@@ -19,7 +19,7 @@ class Main {
 
     private async AsyncInit(): Promise<void> {
         try {
-            console.log(`init express...`);
+            console.log(`init express kubernetes...`);
 
             var self: Main = this;
 
