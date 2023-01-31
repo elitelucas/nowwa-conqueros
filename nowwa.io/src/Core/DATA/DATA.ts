@@ -19,6 +19,7 @@ class DATA
     public static async init(): Promise<void> 
     {
         log( `init database...` );
+        log( `CONFIG.vars ${JSON.stringify(CONFIG.vars, null, 2)}` );
 
         let uri : string = `mongodb+srv://${ CONFIG.vars.MONGODB_USER }:${CONFIG.vars.MONGODB_PASS}@${CONFIG.vars.MONGODB_HOST}/${CONFIG.vars.MONGODB_DB}`;
 
