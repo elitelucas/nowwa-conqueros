@@ -62,7 +62,7 @@ class CONFIG
 
         return {
 
-            VERSION: "0.0.2",
+            VERSION: "0.0.3",
 
             ENVIRONMENT: this.parseEnvironment(process.env.ENVIRONMENT as string),
 
