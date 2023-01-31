@@ -102,7 +102,7 @@ class EXPRESS {
         ];
         for (let i = 0; i < routes.length; i++) {
             EXPRESS.app.get(routes[i], (req, res, next) => {
-                res.sendFile(path.resolve("storage", "Index.html"));
+                res.sendFile(path.resolve(__dirname, '..', '..', '..', 'storage', 'Index.html'));
             });
         }
 
