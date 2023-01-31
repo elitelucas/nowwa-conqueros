@@ -4,12 +4,11 @@ services:
     build:
       context: ./app
       dockerfile: Dockerfile
-    ports:
-      - 9100:9000
   nginx:
     restart: always
     build:
       context: ./nginx
       dockerfile: Dockerfile
     ports:
-      - 9300:80
+      - 80:80
+      - 443:443

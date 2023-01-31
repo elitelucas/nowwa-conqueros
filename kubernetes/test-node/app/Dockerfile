@@ -14,7 +14,7 @@ RUN npm install
 COPY . /contents
 
 # Make port 9000 available to the world outside this container
-EXPOSE 9000
+# EXPOSE 9000
 
 # Run command
 CMD [ "npm", "start" ] 
