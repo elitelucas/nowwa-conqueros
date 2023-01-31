@@ -1,4 +1,3 @@
-certificates/
 socket.io/node_modules/
 socket.io/.env
 playcanvas/node_modules/
