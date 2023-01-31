@@ -65,6 +65,7 @@
     "discord-api-types": "^0.37.17",
     "events": "^3.3.0",
     "https-browserify": "^1.0.0",
+    "lightningcss": "^1.18.0",
     "node-7z": "^3.0.0",
     "node-7z-archive": "^1.0.8",
     "node-fetch": "^2.6.7",
