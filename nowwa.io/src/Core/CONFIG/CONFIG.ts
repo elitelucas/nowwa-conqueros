@@ -61,7 +61,7 @@ class CONFIG
             MONGODB_DB: process.env.MONGODB_DB as string,
             MONGODB_USER: process.env.MONGODB_USER as string,
             MONGODB_PASS: process.env.MONGODB_PASS as string,
-            MONGODB_CERT: process.env.MONGODB_CERT as string,
+            MONGODB_CERT: path.resolve(__dirname, '..', '..', '..', process.env.MONGODB_CERT as string),
 
             CLOUDINARY_NAME: process.env.CLOUDINARY_NAME as string,
             CLOUDINARY_KEY: process.env.CLOUDINARY_KEY as string,
