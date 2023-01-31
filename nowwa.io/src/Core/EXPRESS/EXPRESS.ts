@@ -73,7 +73,7 @@ class EXPRESS {
 
     public static listen() {
 
-        EXPRESS.app.use(express.static("storage"));
+        EXPRESS.app.use(express.static(path.resolve(__dirname, '..', '..', '..', 'storage')));
 
         let routes:string[] = [
             '/',
