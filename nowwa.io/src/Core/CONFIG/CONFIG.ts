@@ -1,8 +1,11 @@
+
 import dotenv from 'dotenv';
 import path from 'path';
-let envPath = path.resolve('.env');
-console.log(`envPath`, envPath);
-dotenv.config({ path: envPath });
+if (typeof process.cwd != 'undefined') {
+    let envPath = path.resolve(__dirname, '..', '..', '..', '.env');
+    console.log(`envPath`, envPath);
+    dotenv.config({ path: envPath });
+}
 
 class CONFIG 
 {
@@ -48,9 +51,18 @@ class CONFIG
         let publicSocketUseSsl: boolean = process.env.PUBLIC_SOCKET_USE_SSL as string == 'true';
         let publicSocketFullUrl: string = this.GetFullUrl(publicSocketPort, publicSocketHost, publicSocketUseSsl);
 
+        let mongodbCert:string = '';
+        
+        if (typeof process.cwd != 'undefined') {
+            mongodbCert = path.resolve(__dirname, '..', '..', '..', process.env.MONGODB_CERT as string)
+        } else {
+            mongodbCert = process.env.MONGODB_CERT as string;
+        }
+
+
         return {
 
-            VERSION: "0.0.2",
+            VERSION: "0.0.3",
 
             ENVIRONMENT: this.parseEnvironment(process.env.ENVIRONMENT as string),
 
@@ -61,7 +73,7 @@ class CONFIG
             MONGODB_DB: process.env.MONGODB_DB as string,
             MONGODB_USER: process.env.MONGODB_USER as string,
             MONGODB_PASS: process.env.MONGODB_PASS as string,
-            MONGODB_CERT: process.env.MONGODB_CERT as string,
+            MONGODB_CERT: mongodbCert,
 
             CLOUDINARY_NAME: process.env.CLOUDINARY_NAME as string,
             CLOUDINARY_KEY: process.env.CLOUDINARY_KEY as string,

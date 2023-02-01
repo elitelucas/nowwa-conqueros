@@ -30,7 +30,7 @@ class Main {
     async pull (): Promise<void> {
 
         try {
-            let command:string = `cd .. && git pull git@gitlab.com:nowwa/conqueros/main.git`;
+            let command:string = `cd $HOME/conqueros && git pull && cd nowwa.io && npm run prod`;
             let task = spawn(command, { shell: true, windowsHide: false });
             await new Promise<void>((resolve, reject) => {
                 task.stdout.on('data', (data) => {
