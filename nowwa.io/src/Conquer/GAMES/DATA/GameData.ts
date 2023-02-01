@@ -29,10 +29,10 @@ class GameData
             console.log("SAVING DATA", { gameID:gameID, $vars:self.dirty } );
 
             conquer.do( ACTIONS.GAMEDATA_SET, { gameID:gameID, $vars:self.dirty } )
-            
+            /*
             .then( function(e){
                 console.log("SAVED DATA", e );
-            });
+            });*/
  
             self.dirty  = [];
 

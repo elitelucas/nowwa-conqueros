@@ -24,11 +24,7 @@ class GameAnalytics
         {
             if( !self.dirty.length ) return;
  
-            conquer.do( ACTIONS.ANALYTICS_SET, ARRAY.extract( vars, { $vars:self.dirty }) )
- 
-            .then( function(e){
-                console.log("SAVED DATA", e );
-            });
+            conquer.do( ACTIONS.ANALYTICS_SET, ARRAY.extract( vars, { $vars:self.dirty }) );
  
             self.dirty  = [];
 
