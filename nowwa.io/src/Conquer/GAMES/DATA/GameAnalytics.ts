@@ -23,9 +23,7 @@ class GameAnalytics
         this.interval = setInterval( function()
         {
             if( !self.dirty.length ) return;
-
-            console.log("SAVING ANALYTICS", { gameID:gameID, $vars:self.dirty });
-
+ 
             conquer.do( ACTIONS.ANALYTICS_SET, ARRAY.extract( vars, { $vars:self.dirty }) )
  
             .then( function(e){
