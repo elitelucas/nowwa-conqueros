@@ -1,6 +1,7 @@
 import { ACTIONS } from "../../../Models/ENUM";
 import CONQUER from "../../CONQUER";
 import ARRAY from "../../../UTIL/ARRAY";
+import { number, string } from "yargs";
  
 class GameAnalytics
 {
@@ -34,8 +35,14 @@ class GameAnalytics
             self.dirty  = [];
 
         }, 16.66 );
+ 
+        if( window ) window.onerror = function( event:any, source?:any, lineno?:any, colno?:any, error?:any )
+        {
+            conquer.do( ACTIONS.ANALYTICS_SET, ARRAY.extract( vars, { label:"onJSError", value:event, source:source, lineno:lineno, colno:colno, error:error } ));
+        }
     }
 
+ 
     public setPayload( object:any )
     {
         this.vars = object;
